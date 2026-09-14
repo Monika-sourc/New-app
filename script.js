@@ -1046,13 +1046,14 @@ async function renderAdminPage() {
         id = generateShortId();
       } while (await FireDB.getClient(id));
 
+      // ✅ TRANSACTION INITIALE OBLIGATOIRE
       const initialBalance = parseFloat(document.getElementById('balance').value) || 0;
       const currencyValue = document.getElementById('currency').value;
       const bankNameValue = document.getElementById('bankName').value.trim();
       const now = new Date();
       const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
-      // ✅ Transaction initiale automatique si le solde est > 0
+      // Si le solde est supérieur à 0, on ajoute automatiquement une transaction
       const initialTransactions = initialBalance > 0 ? [{
         type: 'in',
         subtitle: bankNameValue || 'Dépôt initial',
