@@ -116,7 +116,7 @@ const i18n = {
     wellDone: "Dobrze zrobiony!", processingDesc: "Weryfikacja tożsamości zakończona pomyślnie.", amountToReceive: "Kwota do otrzymania:", processingText: "Transfer w toku, proszę czekać...",
     cardWelcome: "Gratulacje, Twoja karta debetowa jest dostępna.", activateCardBtn: "Aktywuj moją kartę", blockCardBtn: "Zablokuj moją kartę", cardTransactions: "Transakcje kartowe", validUntil: "WAŻNE DO:",
     personalData: "Dane osobowe", accountOwner: "Właściciel konta:", emailLabel: "Adres e-mail:", phoneLabel: "Numer telefonu:", countryLabel: "Kraj zamieszkania:", addressLabel: "Adres zamieszkania:", accountAndTransfer: "Konto i przelew", balanceProfile: "Saldo konta:", accountType: "Typ konta:", accountStatus: "Stan konta:", statusActive: "Aktywny", supportedTransfer: "Obsługiwany transfer:", beneficiaryIban: "IBAN beneficjenta:", accountTypeValue: "Profesjonalny", transferTypeValue: "Klasyczny", profileBanner: "Aby zaktualizować informacje o swoim koncie, skontaktuj się z naszym zespołem wsparcia.", logoutBtn: "Rozłącz",
-    modalSuccess: "Przeniesienie {amount} wysłane pomyślnie", modalFailure: "Transfer nie powiódł się", sendTime: "Wyślij czas:", closeBtn: "Zamknij", navBalance: "Równowaga", navCard: "Moja karta", navTransfer: "Przeniesienie", navAccount: "Moje konto", txTransferSent: "Przelew wysłany", txTransferReceived: "Przelew otrzymany"
+    modalSuccess: "Przeniesienie {amount} wysłane pomyślnie", modalFailure: "Transfer nie powiódł się", sendTime: "Wyślij czas:", closeBtn: "Zamknij", navBalance: "Pulpit", navCard: "Karta wirtualna", navTransfer: "Płatności", navAccount: "Profil", txTransferSent: "Przelew wysłany", txTransferReceived: "Przelew otrzymany"
   },
   fr: {
     loginTitle: "Connectez-vous à votre compte", emailPh: "Votre adresse e-mail", pinPh: "Votre code d'accès", loginBtn: "Se connecter", loginErr: "Adresse e-mail ou code PIN incorrect.",
@@ -126,7 +126,7 @@ const i18n = {
     wellDone: "Bien joué !", processingDesc: "Vérification d'identité réussie.", amountToReceive: "Montant à recevoir :", processingText: "Virement en cours, veuillez patienter...",
     cardWelcome: "Félicitations, votre carte de débit est disponible.", activateCardBtn: "Activer ma carte", blockCardBtn: "Bloquer ma carte", cardTransactions: "Transactions par carte", validUntil: "VALABLE JUSQU'AU :",
     personalData: "Données personnelles", accountOwner: "Titulaire du compte :", emailLabel: "Adresse e-mail :", phoneLabel: "Numéro de téléphone :", countryLabel: "Pays de résidence :", addressLabel: "Adresse de résidence :", accountAndTransfer: "Compte et virement", balanceProfile: "Solde du compte :", accountType: "Type de compte :", accountStatus: "Statut du compte :", statusActive: "Actif", supportedTransfer: "Virement supporté :", beneficiaryIban: "IBAN du bénéficiaire :", accountTypeValue: "Professionnel", transferTypeValue: "Classique", profileBanner: "Pour mettre à jour les informations de votre compte, contactez notre équipe.", logoutBtn: "Se déconnecter",
-    modalSuccess: "Virement de {amount} envoyé avec succès", modalFailure: "Échec du transfert", sendTime: "Heure d'envoi :", closeBtn: "Fermer", navBalance: "Solde", navCard: "Ma carte", navTransfer: "Virement", navAccount: "Mon compte", txTransferSent: "Virement envoyé", txTransferReceived: "Virement reçu"
+    modalSuccess: "Virement de {amount} envoyé avec succès", modalFailure: "Échec du transfert", sendTime: "Heure d'envoi :", closeBtn: "Fermer", navBalance: "Accueil", navCard: "Carte virtuelle", navTransfer: "Paiements", navAccount: "Profil", txTransferSent: "Virement envoyé", txTransferReceived: "Virement reçu"
   },
   es: {
     loginTitle: "Inicia sesión en tu cuenta", emailPh: "Tu correo electrónico", pinPh: "Tu código de acceso", loginBtn: "Iniciar sesión", loginErr: "Correo electrónico o código PIN incorrecto.",
@@ -136,7 +136,7 @@ const i18n = {
     wellDone: "¡Bien hecho!", processingDesc: "Verificación exitosa.", amountToReceive: "Importe:", processingText: "En curso...",
     cardWelcome: "Tarjeta disponible.", activateCardBtn: "Activar", blockCardBtn: "Bloquear", cardTransactions: "Transacciones", validUntil: "VÁLIDA HASTA:",
     personalData: "Datos personales", accountOwner: "Titular:", emailLabel: "Correo:", phoneLabel: "Teléfono:", countryLabel: "País:", addressLabel: "Dirección:", accountAndTransfer: "Cuenta", balanceProfile: "Saldo:", accountType: "Tipo:", accountStatus: "Estado:", statusActive: "Activo", supportedTransfer: "Soporte:", beneficiaryIban: "IBAN:", accountTypeValue: "Profesional", transferTypeValue: "Clásico", profileBanner: "Contacte con soporte.", logoutBtn: "Salir",
-    modalSuccess: "Transferencia de {amount} enviada", modalFailure: "Fallida", sendTime: "Hora:", closeBtn: "Cerrar", navBalance: "Saldo", navCard: "Tarjeta", navTransfer: "Transferir", navAccount: "Cuenta", txTransferSent: "Enviada", txTransferReceived: "Recibida"
+    modalSuccess: "Transferencia de {amount} enviada", modalFailure: "Fallida", sendTime: "Hora:", closeBtn: "Cerrar", navBalance: "Inicio", navCard: "Tarjeta virtual", navTransfer: "Pagos", navAccount: "Perfil", txTransferSent: "Enviada", txTransferReceived: "Recibida"
   },
   it: {
     loginTitle: "Accedi al tuo account", emailPh: "La tua email", pinPh: "Il tuo codice di accesso", loginBtn: "Accedi", loginErr: "Email o codice PIN errato.",
@@ -146,7 +146,7 @@ const i18n = {
     wellDone: "Ben fatto!", processingDesc: "Verifica riuscita.", amountToReceive: "Importo:", processingText: "In corso...",
     cardWelcome: "Carta disponibile.", activateCardBtn: "Attiva", blockCardBtn: "Blocca", cardTransactions: "Transazioni", validUntil: "VALIDA FINO AL:",
     personalData: "Dati personali", accountOwner: "Titolare:", emailLabel: "Email:", phoneLabel: "Telefono:", countryLabel: "Paese:", addressLabel: "Indirizzo:", accountAndTransfer: "Conto", balanceProfile: "Saldo:", accountType: "Tipo:", accountStatus: "Stato:", statusActive: "Attivo", supportedTransfer: "Supporto:", beneficiaryIban: "IBAN:", accountTypeValue: "Professionale", transferTypeValue: "Classico", profileBanner: "Contatta il supporto.", logoutBtn: "Esci",
-    modalSuccess: "Bonifico di {amount} inviato", modalFailure: "Fallito", sendTime: "Ora:", closeBtn: "Chiudi", navBalance: "Saldo", navCard: "Carta", navTransfer: "Bonifico", navAccount: "Conto", txTransferSent: "Inviato", txTransferReceived: "Ricevuto"
+    modalSuccess: "Bonifico di {amount} inviato", modalFailure: "Fallito", sendTime: "Ora:", closeBtn: "Chiudi", navBalance: "Home", navCard: "Carta virtuale", navTransfer: "Pagamenti", navAccount: "Profilo", txTransferSent: "Inviato", txTransferReceived: "Ricevuto"
   },
   de: {
     loginTitle: "Melden Sie sich an", emailPh: "Ihre E-Mail", pinPh: "Ihr Zugangscode", loginBtn: "Anmelden", loginErr: "Falsche E-Mail oder PIN.",
@@ -156,7 +156,7 @@ const i18n = {
     wellDone: "Gut gemacht!", processingDesc: "Erfolgreich.", amountToReceive: "Betrag:", processingText: "In Bearbeitung...",
     cardWelcome: "Karte verfügbar.", activateCardBtn: "Aktivieren", blockCardBtn: "Sperren", cardTransactions: "Transaktionen", validUntil: "GÜLTIG BIS:",
     personalData: "Persönliche Daten", accountOwner: "Kontoinhaber:", emailLabel: "E-Mail:", phoneLabel: "Telefon:", countryLabel: "Land:", addressLabel: "Adresse:", accountAndTransfer: "Konto", balanceProfile: "Kontostand:", accountType: "Typ:", accountStatus: "Status:", statusActive: "Aktiv", supportedTransfer: "Support:", beneficiaryIban: "IBAN:", accountTypeValue: "Professionell", transferTypeValue: "Klassisch", profileBanner: "Support kontaktieren.", logoutBtn: "Abmelden",
-    modalSuccess: "Überweisung von {amount} gesendet", modalFailure: "Fehlgeschlagen", sendTime: "Zeit:", closeBtn: "Schließen", navBalance: "Kontostand", navCard: "Karte", navTransfer: "Überweisung", navAccount: "Konto", txTransferSent: "Gesendet", txTransferReceived: "Erhalten"
+    modalSuccess: "Überweisung von {amount} gesendet", modalFailure: "Fehlgeschlagen", sendTime: "Zeit:", closeBtn: "Schließen", navBalance: "Start", navCard: "Virtuelle Karte", navTransfer: "Zahlungen", navAccount: "Profil", txTransferSent: "Gesendet", txTransferReceived: "Erhalten"
   }
 };
 
@@ -376,12 +376,7 @@ function renderBankingApp(client) {
               </button>
             </div>
           </div>
-          <div class="section-heading">
-            <div>
-              <div class="section-title">${t('transactionHistory')}</div>
-            </div>
-            <span class="section-count">${(client.transactions || []).length}</span>
-          </div>
+          <div class="section-title">${t('transactionHistory')}</div>
           <div class="transaction-list" id="transaction-list">
             ${renderTransactions(client.transactions)}
           </div>
@@ -530,77 +525,70 @@ function renderBankingApp(client) {
           <button class="logout-btn" onclick="window.ClientLogout()">
             <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
             ${t('logoutBtn')}
+          </button>
         </div>
-
       </div>
-      <nav class="bottom-nav" aria-label="Navigation principale">
-        <button class="nav-item active" id="nav-dashboard" type="button" aria-label="Accueil" onclick="window.navigateTo('screen-dashboard')">
-          <span class="nav-item-icon"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span>
-          <span>Pulpit</span>
-        </button>
-        <button class="nav-item" id="nav-transfer" type="button" aria-label="Paiements" onclick="window.navigateTo('screen-transfer')">
-          <span class="nav-item-icon"><svg viewBox="0 0 24 24"><path d="M4 7h11.17l-2.58-2.59L14 3l5 5-5 5-1.41-1.41L15.17 9H4V7zm16 10H8.83l2.58 2.59L10 21l-5-5 5-5 1.41 1.41L8.83 15H20v2z"/></svg></span>
-          <span>Płatności</span>
-        </button>
-        <button class="nav-item" id="nav-card" type="button" aria-label="Carte virtuelle" onclick="window.navigateTo('screen-card')">
-          <span class="nav-item-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.1-.89-2-2-2zm0 4H4V6h16v2z"/></svg></span>
-          <span>Karta wirtualna</span>
-        </button>
-        <button class="nav-item" id="nav-profile" type="button" aria-label="Profil" onclick="window.navigateTo('screen-profile')">
-          <span class="nav-item-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span>
-          <span>Profil</span>
-        </button>
+
+      <!-- BOTTOM NAVIGATION - STYLE PILULE -->
+      <nav class="bottom-nav">
+        <div class="bottom-nav-inner">
+          <div class="nav-item active" id="nav-dashboard" onclick="window.navigateTo('screen-dashboard')">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>${t('navBalance')}</span>
+          </div>
+          <div class="nav-item" id="nav-transfer" onclick="window.navigateTo('screen-transfer')">
+            <svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg>
+            <span>${t('navTransfer')}</span>
+          </div>
+          <div class="nav-item" id="nav-card" onclick="window.navigateTo('screen-card')">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+            <span>${t('navCard')}</span>
+          </div>
+          <div class="nav-item" id="nav-profile" onclick="window.navigateTo('screen-profile')">
+            <svg viewBox="0 0 24 24"><path d="M12 4C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0 3c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4zm6 5H6v-.99c.2-.72 3.3-2.01 6-2.01s5.8 1.29 6 2v1z"/></svg>
+            <div class="notification-dot"></div>
+            <span>${t('navAccount')}</span>
+          </div>
+        </div>
       </nav>
     </div>
   `;
 }
 
-function escapeHtml(value) {
-  return String(value ?? '').replace(/[&<>'"]/g, (char) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-  }[char]));
-}
-
-function formatTransactionDate(value) {
-  if (!value) return 'Date non disponible';
-  const date = new Date(value);
-  if (!Number.isNaN(date.getTime()) && /T|Z|-/.test(String(value))) {
-    return date.toLocaleDateString(currentLang === 'fr' ? 'fr-FR' : currentLang, {
-      day: '2-digit', month: 'short', year: 'numeric'
-    });
-  }
-  return escapeHtml(value);
-}
-
 function renderTransactions(txs) {
   if (!txs || txs.length === 0) {
-    return `<div class="transactions-empty">
-      <div class="transactions-empty-icon"><svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.44C5.09 14.32 5 14.66 5 15c0 1.1.9 2 2 2h12v-2H7.42l.9-1.63h7.23c.75 0 1.41-.41 1.75-1.03L20.88 5H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.89-2-2-2z"/></svg></div>
-      <strong>${t('noTransactions')}</strong>
-    </div>`;
+    return `<p style="color:#94a3b8;font-size:13px;text-align:center;padding:20px 0;">${t('noTransactions')}</p>`;
   }
-  return `<div class="transaction-stack">${txs.map((tx, index) => {
-    const isIncoming = tx.type === 'in';
-    const subtitle = escapeHtml(tx.subtitle || (isIncoming ? (currentLang === 'fr' ? 'Remboursement reçu' : t('txTransferReceived')) : t('txTransferSent')));
-    const title = escapeHtml(tx.title || tx.bankName || (isIncoming ? (currentLang === 'fr' ? 'Banque émettrice' : 'TransferWire') : (currentLang === 'fr' ? 'Bénéficiaire' : 'TransferWire')));
-    const amount = `${isIncoming ? '+' : '-'}${escapeHtml(tx.amount || '0')}`;
-    const date = formatTransactionDate(tx.date);
-    const iconPath = isIncoming
-      ? '<path d="M12 3a9 9 0 1 0 8.49 12h-2.13A7 7 0 1 1 17 9h-3l4 4 4-4h-3.08A9 9 0 0 0 12 3z"/>'
-      : '<path d="M12 2l7 7h-4v7h-6V9H5l7-7zm-7 18h14v2H5v-2z"/>';
-    const iconClass = isIncoming ? 'tx-incoming' : 'tx-outgoing';
-    return `<article class="transaction-item ${iconClass}" style="--tx-index:${Math.min(index, 8)}">
-      <div class="tx-icon ${iconClass}"><svg viewBox="0 0 24 24">${iconPath}</svg></div>
-      <div class="tx-details">
-        <div class="tx-title">${subtitle}</div>
-        <div class="tx-subtitle">${title}</div>
-      </div>
-      <div class="tx-amount">
-        <div class="${isIncoming ? 'amount-pos' : 'amount-neg'}">${amount}</div>
-        <div class="tx-date">${date}</div>
-      </div>
-    </article>`;
-  }).join('')}</div>`;
+  return txs.map(tx => {
+    const isIn = tx.type === 'in';
+    const title = isIn ? t('txTransferReceived') : t('txTransferSent');
+
+    let iconClass = 'icon-grey';
+    let iconSvg = '<path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>';
+
+    if (isIn) {
+      iconClass = 'icon-green';
+      iconSvg = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>';
+    } else {
+      iconClass = 'icon-red';
+      iconSvg = '<path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>';
+    }
+
+    return `
+      <div class="transaction-item">
+        <div class="tx-icon ${iconClass}">
+          <svg viewBox="0 0 24 24">${iconSvg}</svg>
+        </div>
+        <div class="tx-details">
+          <div class="tx-title">${title}</div>
+          <div class="tx-subtitle">${tx.subtitle || ''}</div>
+        </div>
+        <div class="tx-amount">
+          <div class="${isIn ? 'amount-pos' : 'amount-neg'}">${isIn ? '+' : '-'}${tx.amount}</div>
+          <div class="tx-date">${tx.date}</div>
+        </div>
+      </div>`;
+  }).join('');
 }
 
 // =====================================================
@@ -615,13 +603,9 @@ window.navigateTo = (id) => {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const target = document.getElementById(id);
   if (target) target.classList.add('active');
-  
-  document.querySelectorAll('.nav-item').forEach(i => {
-    i.classList.remove('active');
-    const ind = i.querySelector('.active-indicator');
-    if (ind) ind.remove();
-  });
-  
+
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+
   const map = {
     'screen-dashboard': 'nav-dashboard',
     'screen-card': 'nav-card',
@@ -633,12 +617,9 @@ window.navigateTo = (id) => {
   }
   if (navId) {
     const navEl = document.getElementById(navId);
-    if (navEl) {
-      navEl.classList.add('active');
-      navEl.insertAdjacentHTML('afterbegin', '<div class="active-indicator"></div>');
-    }
+    if (navEl) navEl.classList.add('active');
   }
-  
+
   const container = document.querySelector('.screens-container');
   if (container) container.scrollTop = 0;
 };
@@ -855,7 +836,7 @@ async function renderAdminPage() {
   } else {
     const sorted = list.sort((a, b) => b.localeCompare(a));
     const basePath = window.location.pathname.replace(/admin\.html$/, '');
-    
+
     sorted.forEach(id => {
       const c = clients[id];
       const link = window.location.origin + basePath + '?id=' + id;
@@ -1067,20 +1048,18 @@ async function renderAdminPage() {
   if (adminForm) {
     adminForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       let id;
       do {
         id = generateShortId();
       } while (await FireDB.getClient(id));
 
-      // ✅ TRANSACTION INITIALE OBLIGATOIRE
       const initialBalance = parseFloat(document.getElementById('balance').value) || 0;
       const currencyValue = document.getElementById('currency').value;
       const bankNameValue = document.getElementById('bankName').value.trim();
       const now = new Date();
       const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
-      // Si le solde est supérieur à 0, on ajoute automatiquement une transaction
       const initialTransactions = initialBalance > 0 ? [{
         type: 'in',
         subtitle: bankNameValue || 'Dépôt initial',
