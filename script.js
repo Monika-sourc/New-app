@@ -1,6 +1,7 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
 // Firebase + Firestore + Logique complète
+// Avec gestion du bouton retour navigateur
 // =====================================================
 
 // ========== FIREBASE IMPORTS ==========
@@ -103,6 +104,98 @@ const ClientSession = {
   setActive: (id) => localStorage.setItem('tw_active_client', id),
   clear: () => localStorage.removeItem('tw_active_client')
 };
+
+// =====================================================
+// HISTORY MANAGEMENT (BOUTON RETOUR NAVIGATEUR)
+// =====================================================
+let isHandlingPopState = false;
+
+function pushScreenHistory(screenId) {
+  if (isHandlingPopState) return;
+  try {
+    history.pushState({ type: 'screen', screen: screenId }, '', '#' + screenId);
+  } catch (e) {
+    console.warn('pushState failed', e);
+  }
+}
+
+function replaceScreenHistory(screenId) {
+  try {
+    history.replaceState({ type: 'screen', screen: screenId }, '', '#' + screenId);
+  } catch (e) {
+    console.warn('replaceState failed', e);
+  }
+}
+
+function replaceLoginHistory() {
+  try {
+    history.replaceState({ type: 'login' }, '', '#login');
+  } catch (e) {
+    console.warn('replaceState login failed', e);
+  }
+}
+
+// Écoute du bouton retour du téléphone
+window.addEventListener('popstate', (e) => {
+  const state = e.state;
+
+  // Si aucun state (premier chargement), ne rien faire
+  if (!state || !state.type) return;
+
+  isHandlingPopState = true;
+
+  if (state.type === 'login') {
+    // Retour à l'écran de connexion
+    ClientSession.clear();
+    initClient();
+    setTimeout(() => { isHandlingPopState = false; }, 100);
+    return;
+  }
+
+  if (state.type === 'screen') {
+    const targetScreen = document.getElementById(state.screen);
+    if (targetScreen) {
+      // Cacher tous les écrans
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      targetScreen.classList.add('active');
+
+      // Mettre à jour la navigation bas
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      const map = {
+        'screen-dashboard': 'nav-dashboard',
+        'screen-card': 'nav-card',
+        'screen-profile': 'nav-profile'
+      };
+      let navId = map[state.screen];
+      if (['screen-transfer', 'screen-verification', 'screen-processing'].includes(state.screen)) {
+        navId = 'nav-transfer';
+      }
+      if (navId) {
+        const navEl = document.getElementById(navId);
+        if (navEl) navEl.classList.add('active');
+      }
+
+      // Si on revient au dashboard, rafraîchir les données depuis Firestore
+      if (state.screen === 'screen-dashboard' && currentClient) {
+        FireDB.getClient(currentClient.id).then(fresh => {
+          if (fresh && !fresh.blocked) {
+            currentClient = fresh;
+            const list = document.getElementById('transaction-list');
+            if (list) list.innerHTML = renderTransactions(fresh.transactions);
+            const balEl = document.getElementById('display-balance');
+            if (balEl) balEl.innerText = formatAmount(fresh.balance || 0, fresh.currency || '€');
+          }
+        });
+      }
+
+      // Remonter en haut
+      const container = document.querySelector('.screens-container');
+      if (container) container.scrollTop = 0;
+    }
+  }
+
+  setTimeout(() => { isHandlingPopState = false; }, 100);
+});
 
 // =====================================================
 // TRADUCTIONS (5 langues)
@@ -316,6 +409,9 @@ function renderLoginPage(client) {
     </div>
   `;
 
+  // Marquer l'état actuel comme "login"
+  replaceLoginHistory();
+
   document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('email').value.trim();
@@ -326,6 +422,10 @@ function renderLoginPage(client) {
       if (!fresh) { alert('Lien invalide'); return; }
       if (fresh.blocked) { alert('Compte suspendu'); return; }
       ClientSession.setActive(client.id);
+      
+      // Remplacer l'historique login par le dashboard
+      replaceScreenHistory('screen-dashboard');
+      
       initClient();
     } else {
       document.getElementById('error-msg').style.display = 'block';
@@ -553,6 +653,12 @@ function renderBankingApp(client) {
       </nav>
     </div>
   `;
+
+  // Établir l'historique : dashboard est maintenant l'entrée de base
+  // (sans ajouter d'entrée, juste marquer l'existant)
+  if (!window.location.hash || window.location.hash === '#login') {
+    replaceScreenHistory('screen-dashboard');
+  }
 }
 
 function renderTransactions(txs) {
@@ -592,18 +698,22 @@ function renderTransactions(txs) {
 }
 
 // =====================================================
-// NAVIGATION CLIENT
+// NAVIGATION CLIENT (avec gestion historique)
 // =====================================================
 window.ClientLogout = () => {
   ClientSession.clear();
+  // Remplacer l'historique actuel par login
+  replaceLoginHistory();
   initClient();
 };
 
 window.navigateTo = (id) => {
+  // Cacher tous les écrans
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const target = document.getElementById(id);
   if (target) target.classList.add('active');
 
+  // Mettre à jour la nav bas
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
 
   const map = {
@@ -620,8 +730,12 @@ window.navigateTo = (id) => {
     if (navEl) navEl.classList.add('active');
   }
 
+  // Remonter en haut
   const container = document.querySelector('.screens-container');
   if (container) container.scrollTop = 0;
+
+  // ✅ AJOUTER UNE ENTRÉE D'HISTORIQUE
+  pushScreenHistory(id);
 };
 
 window.submitTransferForm = () => {
@@ -753,6 +867,8 @@ window.closeResultModal = async () => {
 
   document.getElementById('transfer-form').reset();
   document.getElementById('security-code').value = '';
+  
+  // Naviguer vers dashboard (ajoute une entrée d'historique)
   window.navigateTo('screen-dashboard');
 };
 
