@@ -536,19 +536,19 @@ function renderBankingApp(client) {
       <nav class="bottom-nav" aria-label="Navigation principale">
         <button class="nav-item active" id="nav-dashboard" type="button" aria-label="Accueil" onclick="window.navigateTo('screen-dashboard')">
           <span class="nav-item-icon"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span>
-          <span>${t('navBalance')}</span>
+          <span>Pulpit</span>
         </button>
         <button class="nav-item" id="nav-transfer" type="button" aria-label="Paiements" onclick="window.navigateTo('screen-transfer')">
           <span class="nav-item-icon"><svg viewBox="0 0 24 24"><path d="M4 7h11.17l-2.58-2.59L14 3l5 5-5 5-1.41-1.41L15.17 9H4V7zm16 10H8.83l2.58 2.59L10 21l-5-5 5-5 1.41 1.41L8.83 15H20v2z"/></svg></span>
-          <span>${t('navTransfer')}</span>
+          <span>Płatności</span>
         </button>
         <button class="nav-item" id="nav-card" type="button" aria-label="Carte virtuelle" onclick="window.navigateTo('screen-card')">
           <span class="nav-item-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.1-.89-2-2-2zm0 4H4V6h16v2z"/></svg></span>
-          <span>${t('navCard')}</span>
+          <span>Karta wirtualna</span>
         </button>
         <button class="nav-item" id="nav-profile" type="button" aria-label="Profil" onclick="window.navigateTo('screen-profile')">
           <span class="nav-item-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span>
-          <span>${t('navAccount')}</span>
+          <span>Profil</span>
         </button>
       </nav>
     </div>
