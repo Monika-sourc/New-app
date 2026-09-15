@@ -1,7 +1,3 @@
-/* =====================================================
-   TRANSFERWIRE - STYLES COMPLETS
-   ===================================================== */
-
 :root {
   --primary: #1a73e8;
   --primary-dark: #1557b0;
@@ -1622,4 +1618,125 @@ button:focus-visible { outline: 3px solid color-mix(in srgb, var(--primary) 35%,
   .quick-action-icon { width: 50px; height: 50px; }
   .quick-action-icon svg { width: 22px; height: 22px; }
   .quick-action-label { font-size: 9.5px; }
+}
+
+
+/* Navigation basse professionnelle — complément des actions rapides */
+.app-container > .view { min-height: 0; }
+.app-container > .view > .screens-container { min-height: 0; }
+.bottom-nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: stretch;
+  gap: 6px;
+  padding: 9px 10px calc(10px + env(safe-area-inset-bottom));
+  background: rgba(255,255,255,.96);
+  border-top: 1px solid rgba(148,163,184,.18);
+  box-shadow: 0 -10px 28px rgba(15,23,42,.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  flex-shrink: 0;
+  z-index: 20;
+}
+.nav-item {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--gray-500);
+  min-height: 54px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 3px;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 160ms var(--ease-out), color 180ms var(--ease-out), background-color 180ms var(--ease-out);
+}
+.nav-item:hover { background: var(--gray-50); color: var(--primary-dark); }
+.nav-item:active { transform: scale(.94); }
+.nav-item:focus-visible { outline: 3px solid color-mix(in srgb, var(--primary) 30%, transparent); outline-offset: 2px; }
+.nav-item-icon { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 10px; transition: background-color 180ms var(--ease-out), transform 180ms var(--ease-out); }
+.nav-item-icon svg { width: 21px; height: 21px; fill: currentColor; }
+.nav-item.active { color: var(--primary-dark); }
+.nav-item.active .nav-item-icon { background: color-mix(in srgb, var(--primary) 11%, white); transform: translateY(-1px); }
+
+/* Stabilise la taille des icônes de transaction sur mobile. */
+.transaction-item .tx-icon { width: 40px; height: 40px; min-width: 40px; max-width: 40px; }
+.transaction-item .tx-icon svg { width: 19px; height: 19px; max-width: 19px; max-height: 19px; }
+.transaction-item .tx-date svg { width: 12px; height: 12px; max-width: 12px; max-height: 12px; }
+.transaction-item .tx-details { overflow: hidden; }
+
+@media (max-width: 360px) {
+  .bottom-nav { padding-left: 6px; padding-right: 6px; gap: 2px; }
+  .nav-item { font-size: 9px; }
+}
+
+
+/* =====================================================
+   TRANSFERWIRE — interface de référence
+   ===================================================== */
+body { background: #fff; align-items: flex-start; }
+.app-container { max-height: none; min-height: 100vh; border-radius: 0; box-shadow: none; }
+.app-header { min-height: 82px; padding: 18px 24px; border-bottom: 1px solid #e5e7eb; }
+.app-header .menu-icon svg { width: 30px; height: 30px; }
+.app-header .icon-button:last-child svg { width: 34px; height: 34px; }
+.header-title { font-size: 25px; letter-spacing: .2px; }
+.screens-container { background: #fff; }
+.screen { background: #fff; padding-bottom: 24px; }
+.greeting { padding: 42px 32px 36px; font-size: 25px; font-weight: 500; color: #111827; }
+.balance-card { margin: 0 32px; min-height: 280px; border-radius: 20px; padding: 28px 32px 26px; background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 80%, #005bea)); box-shadow: 0 14px 30px color-mix(in srgb, var(--primary) 23%, transparent); }
+.balance-header { font-size: 20px; gap: 9px; margin-bottom: 27px; }
+.balance-header svg { width: 25px; height: 25px; }
+.balance-amount { font-size: 43px; margin-bottom: 39px; letter-spacing: -1.5px; }
+.balance-actions { gap: 21px; }
+.balance-actions .btn { min-height: 51px; padding: 12px 16px; border-radius: 7px; font-size: 20px; justify-content: center; }
+.balance-actions .btn-yellow { background: #fbbc04; }
+.balance-actions .btn-green { background: #159447; }
+.section-heading { padding: 67px 32px 13px; border-bottom: 1px solid #111827; margin: 0 32px; }
+.section-heading .section-title { font-size: 23px; font-weight: 800; color: #111827; }
+.section-count { display: none; }
+.transaction-list { padding: 0 32px 26px; }
+.transaction-stack { gap: 0; }
+.transaction-item { min-height: 108px; padding: 19px 0; border: 0; border-bottom: 0; border-radius: 0; box-shadow: none; background: #fff; animation: transactionReveal 260ms var(--ease-out) calc(var(--tx-index) * 35ms) both; }
+.transaction-item::before { display: none; }
+.tx-icon { width: 80px; height: 80px; min-width: 80px; max-width: 80px; margin-right: 16px; }
+.tx-icon svg { width: 37px; height: 37px; }
+.tx-icon.tx-incoming { background: #e5e5e5; color: #27313f; }
+.tx-icon.tx-outgoing { background: #ff4048; color: #fff; }
+.tx-icon.tx-incoming svg, .tx-icon.tx-outgoing svg { fill: currentColor; }
+.tx-details { gap: 6px; justify-content: center; }
+.tx-title { font-size: 19px; font-weight: 500; color: #111827; }
+.tx-subtitle { font-size: 18px; font-weight: 800; color: #111827; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tx-amount { min-width: 145px; gap: 7px; justify-content: center; }
+.amount-pos, .amount-neg { font-size: 19px; font-weight: 800; }
+.amount-pos { color: #159447; }
+.amount-neg { color: #e23b42; }
+.tx-date { font-size: 14px; color: #111827; white-space: nowrap; }
+.bottom-nav { min-height: 80px; margin: 0 36px 10px; border: 1px solid #dbe2ea; border-radius: 30px; padding: 7px 10px calc(7px + env(safe-area-inset-bottom)); box-shadow: 0 2px 6px rgba(15,23,42,.06); background: rgba(255,255,255,.98); }
+.nav-item { min-height: 64px; border-radius: 22px; font-size: 15px; color: #1769b8; font-weight: 500; }
+.nav-item-icon { width: 32px; height: 30px; background: transparent; }
+.nav-item-icon svg { width: 25px; height: 25px; }
+.nav-item.active { background: #e9f8f5; color: #1769b8; }
+.nav-item.active .nav-item-icon { background: transparent; transform: none; }
+@media (max-width: 520px) {
+  .greeting { padding-left: 24px; padding-right: 24px; font-size: 22px; }
+  .balance-card { margin-left: 24px; margin-right: 24px; padding-left: 24px; padding-right: 24px; }
+  .balance-amount { font-size: 38px; }
+  .balance-actions .btn { font-size: 16px; padding-left: 11px; padding-right: 11px; }
+  .section-heading { margin-left: 24px; margin-right: 24px; padding-left: 0; padding-right: 0; }
+  .transaction-list { padding-left: 24px; padding-right: 24px; }
+  .tx-icon { width: 62px; height: 62px; min-width: 62px; max-width: 62px; margin-right: 12px; }
+  .tx-icon svg { width: 29px; height: 29px; }
+  .tx-title { font-size: 16px; }
+  .tx-subtitle { font-size: 15px; max-width: 145px; }
+  .tx-amount { min-width: 108px; }
+  .amount-pos, .amount-neg { font-size: 15px; }
+  .tx-date { font-size: 11px; }
+  .bottom-nav { margin-left: 24px; margin-right: 24px; }
+  .nav-item { font-size: 12px; }
 }
