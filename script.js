@@ -376,6 +376,24 @@ function renderBankingApp(client) {
               </button>
             </div>
           </div>
+          <div class="quick-actions" aria-label="Actions principales">
+            <button class="quick-action active" type="button" onclick="window.navigateTo('screen-dashboard')">
+              <span class="quick-action-icon"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span>
+              <span class="quick-action-label">Accueil</span>
+            </button>
+            <button class="quick-action" type="button" onclick="window.navigateTo('screen-transfer')">
+              <span class="quick-action-icon"><svg viewBox="0 0 24 24"><path d="M4 7h11.17l-2.58-2.59L14 3l5 5-5 5-1.41-1.41L15.17 9H4V7zm16 10H8.83l2.58 2.59L10 21l-5-5 5-5 1.41 1.41L8.83 15H20v2z"/></svg></span>
+              <span class="quick-action-label">Paiements</span>
+            </button>
+            <button class="quick-action" type="button" onclick="window.navigateTo('screen-card')">
+              <span class="quick-action-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.1.89-2-2-2zm0 4H4V6h16v2z"/></svg></span>
+              <span class="quick-action-label">Carte virtuelle</span>
+            </button>
+            <button class="quick-action" type="button" onclick="window.navigateTo('screen-profile')">
+              <span class="quick-action-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span>
+              <span class="quick-action-label">Profil</span>
+            </button>
+          </div>
           <div class="section-heading">
             <div>
               <div class="section-kicker">TRANSFERWIRE</div>
@@ -535,26 +553,7 @@ function renderBankingApp(client) {
         </div>
       </div>
 
-      <nav class="bottom-nav">
-        <div class="nav-item active" id="nav-dashboard" role="button" tabindex="0" aria-label="Accueil" onclick="window.navigateTo('screen-dashboard')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.navigateTo('screen-dashboard')}">
-          <div class="active-indicator"></div>
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
-          <span>${t('navBalance')}</span>
-        </div>
-        <div class="nav-item" id="nav-card" role="button" tabindex="0" aria-label="Carte" onclick="window.navigateTo('screen-card')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.navigateTo('screen-card')}">
-          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2z"/></svg>
-          <span>${t('navCard')}</span>
-        </div>
-        <div class="nav-item" id="nav-transfer" role="button" tabindex="0" aria-label="Virement" onclick="window.navigateTo('screen-transfer')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.navigateTo('screen-transfer')}">
-          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-          <span>${t('navTransfer')}</span>
-        </div>
-        <div class="nav-item" id="nav-profile" role="button" tabindex="0" aria-label="Compte" onclick="window.navigateTo('screen-profile')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.navigateTo('screen-profile')}">
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-          <div class="notification-dot"></div>
-          <span>${t('navAccount')}</span>
-        </div>
-      </nav>
+
     </div>
   `;
 }
