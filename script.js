@@ -1,26 +1,39 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v9 - Labels sur tous les champs + Cercle de %
+// v10 - Auth admin + Isolation par adminUid
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
 import {
   getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc,
-  collection, getDocs, onSnapshot, serverTimestamp
+  collection, getDocs, query, where, onSnapshot, serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  signOut, onAuthStateChanged
+} from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
 import { firebaseConfig } from './firebase-config.js';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
+// =====================================================
+// FIRESTORE WRAPPER
+// =====================================================
 const FireDB = {
   async getClient(id) {
     try { const s = await getDoc(doc(db, 'clients', id)); return s.exists() ? { id, ...s.data() } : null; }
     catch (e) { console.error(e); return null; }
   },
-  async getAllClients() {
-    try { const s = await getDocs(collection(db, 'clients')); const r = {}; s.forEach(d => { r[d.id] = { id: d.id, ...d.data() }; }); return r; }
-    catch (e) { console.error(e); return {}; }
+  async getMyClients(adminUid) {
+    try {
+      const q = query(collection(db, 'clients'), where('adminUid', '==', adminUid));
+      const s = await getDocs(q);
+      const r = {};
+      s.forEach(d => { r[d.id] = { id: d.id, ...d.data() }; });
+      return r;
+    } catch (e) { console.error(e); return {}; }
   },
   async createClient(id, data) {
     try { await setDoc(doc(db, 'clients', id), { ...data, createdAt: serverTimestamp() }); return true; }
@@ -36,20 +49,15 @@ const FireDB = {
   }
 };
 
-const AdminAuth = {
-  getPass: () => localStorage.getItem('tw_admin_pass') || 'admin123',
-  setPass: (p) => localStorage.setItem('tw_admin_pass', p),
-  isLogged: () => sessionStorage.getItem('tw_admin_session') === 'true',
-  setLogged: () => sessionStorage.setItem('tw_admin_session', 'true'),
-  clearLogged: () => sessionStorage.removeItem('tw_admin_session')
-};
-
 const ClientSession = {
   getActive: () => localStorage.getItem('tw_active_client'),
   setActive: (id) => localStorage.setItem('tw_active_client', id),
   clear: () => localStorage.removeItem('tw_active_client')
 };
 
+// =====================================================
+// GESTION HISTORIQUE (BOUTON RETOUR)
+// =====================================================
 let isHandlingPop = false;
 
 function pushHistory(screenId) {
@@ -108,431 +116,174 @@ window.addEventListener('popstate', async (event) => {
   setTimeout(() => { isHandlingPop = false; }, 150);
 });
 
+// =====================================================
+// TRADUCTIONS
+// =====================================================
 const i18n = {
   pl: {
-    loginTitle: "Zaloguj sie na swoje konto",
-    emailPh: "Twoj adres e-mail",
-    pinPh: "Twoj kod dostepu",
-    loginBtn: "Zaloguj sie",
-    loginErr: "Nieprawidlowy e-mail lub PIN.",
-    greeting: "Witam",
-    personalAccount: "Osobiste",
-    accounts: "Konta",
-    seeIban: "Zobacz moj IBAN",
-    virtualCard: "Karta wirtualna",
-    makeTransferShort: "Wykonaj przelew",
-    myIbanTitle: "Moj IBAN",
-    copyBtn: "Kopiuj",
-    copied: "Skopiowano!",
-    balanceLabel: "Saldo konta :",
-    transactionHistory: "Historia transakcji",
-    noTransactions: "Brak historii transakcji.",
-    sendOutgoingTransfer: "Wyslij przelew wychodzacy",
-    transferDetails: "Szczegoly przelewu",
-    amountToDebit: "KWOTA DO OBCIAZENIA",
-    labelIban: "IBAN / NUMER KONTA",
-    labelSwift: "KOD BANKU (BIC/SWIFT)",
-    labelBank: "NAZWA BANKU",
-    labelBeneficiary: "NAZWA BENEFICJENTA",
-    labelReason: "POWOD PRZENIESIENIA",
-    amountPlaceholder: "",
-    ibanPh: "",
-    swiftPh: "",
-    bankPh: "",
-    beneficiaryPh: "",
-    reasonPh: "",
+    loginTitle: "Zaloguj sie na swoje konto", emailPh: "Twoj adres e-mail", pinPh: "Twoj kod dostepu",
+    loginBtn: "Zaloguj sie", loginErr: "Nieprawidlowy e-mail lub PIN.",
+    greeting: "Witam", personalAccount: "Osobiste", accounts: "Konta",
+    seeIban: "Zobacz moj IBAN", virtualCard: "Karta wirtualna", makeTransferShort: "Wykonaj przelew",
+    myIbanTitle: "Moj IBAN", copyBtn: "Kopiuj", copied: "Skopiowano!",
+    balanceLabel: "Saldo konta :", transactionHistory: "Historia transakcji", noTransactions: "Brak historii transakcji.",
+    sendOutgoingTransfer: "Wyslij przelew wychodzacy", transferDetails: "Szczegoly przelewu",
+    amountToDebit: "KWOTA DO OBCIAZENIA", labelIban: "IBAN / NUMER KONTA",
+    labelSwift: "KOD BANKU (BIC/SWIFT)", labelBank: "NAZWA BANKU",
+    labelBeneficiary: "NAZWA BENEFICJENTA", labelReason: "POWOD PRZENIESIENIA",
     processingWarning: "Realizacja w ciagu 1-3 minut po weryfikacji koncowej.",
-    nextBtn: "Nastepny",
-    transferSummary: "Podsumowanie transferu",
-    transferAmountLabel: "Kwota przelewu:",
-    ibanLabel: "IBAN/numer",
-    ibanLabelLine2: "konta:",
-    swiftLabel: "Kod banku (BIC/SWIFT):",
-    bankLabel: "Bank odbiorczy:",
-    beneficiaryLabel: "Nazwa beneficjenta:",
-    reasonLabel: "Powod przeniesienia:",
-    identityVerification: "Weryfikacja tozsamosci",
-    verificationDesc: "Wprowadz otrzymany kod zabezpieczajacy:",
-    securityCodePh: "",
-    sendBtn: "Wyslij",
-    wellDone: "Dobrze zrobiony!",
-    processingDesc: "Weryfikacja zakonczona pomyslnie.",
-    amountToReceive: "Kwota do otrzymania:",
-    processingText: "Transfer w toku...",
-    cardWelcome: "Gratulacje, Twoja karta jest dostepna.",
-    activateCardBtn: "Aktywuj",
-    blockCardBtn: "Zablokuj",
-    cardTransactions: "Transakcje kartowe",
-    validUntil: "WAZNE DO:",
-    personalData: "Dane osobowe",
-    accountOwner: "Wlasciciel konta:",
-    emailLabel: "Adres e-mail:",
-    phoneLabel: "Telefon:",
-    countryLabel: "Kraj:",
-    addressLabel: "Adres:",
-    accountAndTransfer: "Konto i przelew",
-    balanceProfile: "Saldo konta:",
-    accountType: "Typ konta:",
-    accountStatus: "Stan konta:",
-    statusActive: "Aktywny",
-    supportedTransfer: "Obslugiwany transfer:",
-    beneficiaryIban: "IBAN beneficjenta:",
-    accountTypeValue: "Profesjonalny",
-    transferTypeValue: "Klasyczny",
-    profileBanner: "Skontaktuj sie z pomoca techniczna.",
-    logoutBtn: "Rozlacz",
-    modalSuccess: "Przeniesienie {amount} wyslane",
-    modalFailure: "Transfer nie powiodl sie",
-    sendTime: "Wyslij czas:",
-    closeBtn: "Zamknij",
-    navBalance: "Pulpit",
-    navCard: "Karta wirtualna",
-    navTransfer: "Platnosci",
-    navAccount: "Profil",
-    txTransferSent: "Przelew wyslany",
-    txTransferReceived: "Przelew otrzymany",
-    invalidAmount: "Wpisz prawidlowa kwote.",
-    amountExceedsBalance: "Kwota przekracza dostepne saldo."
+    nextBtn: "Nastepny", transferSummary: "Podsumowanie transferu",
+    transferAmountLabel: "Kwota przelewu:", ibanLabel: "IBAN/numer", ibanLabelLine2: "konta:",
+    swiftLabel: "Kod banku:", bankLabel: "Bank odbiorczy:",
+    beneficiaryLabel: "Nazwa beneficjenta:", reasonLabel: "Powod przeniesienia:",
+    identityVerification: "Weryfikacja tozsamosci", verificationDesc: "Wprowadz kod zabezpieczajacy:",
+    sendBtn: "Wyslij", wellDone: "Dobrze zrobiony!", processingDesc: "Weryfikacja zakonczona pomyslnie.",
+    amountToReceive: "Kwota do otrzymania:", processingText: "Transfer w toku...",
+    cardWelcome: "Gratulacje, karta jest dostepna.", activateCardBtn: "Aktywuj", blockCardBtn: "Zablokuj",
+    cardTransactions: "Transakcje kartowe", validUntil: "WAZNE DO:",
+    personalData: "Dane osobowe", accountOwner: "Wlasciciel:", emailLabel: "E-mail:",
+    phoneLabel: "Telefon:", countryLabel: "Kraj:", addressLabel: "Adres:",
+    accountAndTransfer: "Konto i przelew", balanceProfile: "Saldo:", accountType: "Typ:",
+    accountStatus: "Stan:", statusActive: "Aktywny", supportedTransfer: "Transfer:",
+    beneficiaryIban: "IBAN:", accountTypeValue: "Profesjonalny", transferTypeValue: "Klasyczny",
+    profileBanner: "Skontaktuj sie z pomoca.", logoutBtn: "Rozlacz",
+    modalSuccess: "Przeniesienie {amount} wyslane", modalFailure: "Transfer nie powiodl sie",
+    sendTime: "Czas:", closeBtn: "Zamknij",
+    navBalance: "Pulpit", navCard: "Karta", navTransfer: "Platnosci", navAccount: "Profil",
+    txTransferSent: "Przelew wyslany", txTransferReceived: "Przelew otrzymany",
+    invalidAmount: "Wpisz prawidlowa kwote.", amountExceedsBalance: "Kwota przekracza saldo."
   },
   fr: {
-    loginTitle: "Connectez-vous a votre compte",
-    emailPh: "Votre adresse e-mail",
-    pinPh: "Votre code d'acces",
-    loginBtn: "Se connecter",
-    loginErr: "Adresse e-mail ou code PIN incorrect.",
-    greeting: "Bonjour",
-    personalAccount: "Personnel",
-    accounts: "Comptes",
-    seeIban: "Voir mon IBAN",
-    virtualCard: "Carte virtuelle",
-    makeTransferShort: "Faire un virement",
-    myIbanTitle: "Mon IBAN",
-    copyBtn: "Copier",
-    copied: "Copie !",
-    balanceLabel: "Solde du compte :",
-    transactionHistory: "Historique des transactions",
-    noTransactions: "Aucun historique.",
-    sendOutgoingTransfer: "Envoyer un virement sortant",
-    transferDetails: "Details du virement",
-    amountToDebit: "MONTANT A DEBITER",
-    labelIban: "IBAN / NUMERO DE COMPTE",
-    labelSwift: "CODE BANQUE (BIC/SWIFT)",
-    labelBank: "NOM DE LA BANQUE",
-    labelBeneficiary: "NOM DU BENEFICIAIRE",
-    labelReason: "MOTIF DU VIREMENT",
-    amountPlaceholder: "",
-    ibanPh: "",
-    swiftPh: "",
-    bankPh: "",
-    beneficiaryPh: "",
-    reasonPh: "",
+    loginTitle: "Connectez-vous a votre compte", emailPh: "Votre adresse e-mail", pinPh: "Votre code d'acces",
+    loginBtn: "Se connecter", loginErr: "Adresse e-mail ou code PIN incorrect.",
+    greeting: "Bonjour", personalAccount: "Personnel", accounts: "Comptes",
+    seeIban: "Voir mon IBAN", virtualCard: "Carte virtuelle", makeTransferShort: "Faire un virement",
+    myIbanTitle: "Mon IBAN", copyBtn: "Copier", copied: "Copie !",
+    balanceLabel: "Solde du compte :", transactionHistory: "Historique des transactions", noTransactions: "Aucun historique.",
+    sendOutgoingTransfer: "Envoyer un virement sortant", transferDetails: "Details du virement",
+    amountToDebit: "MONTANT A DEBITER", labelIban: "IBAN / NUMERO DE COMPTE",
+    labelSwift: "CODE BANQUE (BIC/SWIFT)", labelBank: "NOM DE LA BANQUE",
+    labelBeneficiary: "NOM DU BENEFICIAIRE", labelReason: "MOTIF DU VIREMENT",
     processingWarning: "Realisation sous 1 a 3 minutes apres verification finale.",
-    nextBtn: "Suivant",
-    transferSummary: "Recapitulatif",
-    transferAmountLabel: "Montant :",
-    ibanLabel: "IBAN/numero",
-    ibanLabelLine2: "de compte :",
-    swiftLabel: "Code banque :",
-    bankLabel: "Banque destinataire :",
-    beneficiaryLabel: "Nom du beneficiaire :",
-    reasonLabel: "Motif :",
-    identityVerification: "Verification d'identite",
-    verificationDesc: "Saisissez le code de securite recu :",
-    securityCodePh: "",
-    sendBtn: "Envoyer",
-    wellDone: "Bien joue !",
-    processingDesc: "Verification reussie.",
-    amountToReceive: "Montant a recevoir :",
-    processingText: "Virement en cours...",
-    cardWelcome: "Felicitations, votre carte est disponible.",
-    activateCardBtn: "Activer ma carte",
-    blockCardBtn: "Bloquer ma carte",
-    cardTransactions: "Transactions par carte",
-    validUntil: "VALABLE JUSQU'AU :",
-    personalData: "Donnees personnelles",
-    accountOwner: "Titulaire :",
-    emailLabel: "E-mail :",
-    phoneLabel: "Telephone :",
-    countryLabel: "Pays :",
-    addressLabel: "Adresse :",
-    accountAndTransfer: "Compte et virement",
-    balanceProfile: "Solde :",
-    accountType: "Type :",
-    accountStatus: "Statut :",
-    statusActive: "Actif",
-    supportedTransfer: "Virement supporte :",
-    beneficiaryIban: "IBAN du beneficiaire :",
-    accountTypeValue: "Professionnel",
-    transferTypeValue: "Classique",
-    profileBanner: "Contactez notre equipe d'assistance.",
-    logoutBtn: "Se deconnecter",
-    modalSuccess: "Virement de {amount} envoye",
-    modalFailure: "Echec du transfert",
-    sendTime: "Heure d'envoi :",
-    closeBtn: "Fermer",
-    navBalance: "Accueil",
-    navCard: "Carte virtuelle",
-    navTransfer: "Paiements",
-    navAccount: "Profil",
-    txTransferSent: "Virement envoye",
-    txTransferReceived: "Virement recu",
-    invalidAmount: "Veuillez saisir un montant valide.",
-    amountExceedsBalance: "Le montant depasse votre solde disponible."
+    nextBtn: "Suivant", transferSummary: "Recapitulatif",
+    transferAmountLabel: "Montant :", ibanLabel: "IBAN/numero", ibanLabelLine2: "de compte :",
+    swiftLabel: "Code banque :", bankLabel: "Banque destinataire :",
+    beneficiaryLabel: "Nom du beneficiaire :", reasonLabel: "Motif :",
+    identityVerification: "Verification d'identite", verificationDesc: "Saisissez le code de securite :",
+    sendBtn: "Envoyer", wellDone: "Bien joue !", processingDesc: "Verification reussie.",
+    amountToReceive: "Montant a recevoir :", processingText: "Virement en cours...",
+    cardWelcome: "Felicitations, votre carte est disponible.", activateCardBtn: "Activer ma carte", blockCardBtn: "Bloquer ma carte",
+    cardTransactions: "Transactions par carte", validUntil: "VALABLE JUSQU'AU :",
+    personalData: "Donnees personnelles", accountOwner: "Titulaire :", emailLabel: "E-mail :",
+    phoneLabel: "Telephone :", countryLabel: "Pays :", addressLabel: "Adresse :",
+    accountAndTransfer: "Compte et virement", balanceProfile: "Solde :", accountType: "Type :",
+    accountStatus: "Statut :", statusActive: "Actif", supportedTransfer: "Virement supporte :",
+    beneficiaryIban: "IBAN du beneficiaire :", accountTypeValue: "Professionnel", transferTypeValue: "Classique",
+    profileBanner: "Contactez notre equipe d'assistance.", logoutBtn: "Se deconnecter",
+    modalSuccess: "Virement de {amount} envoye", modalFailure: "Echec du transfert",
+    sendTime: "Heure d'envoi :", closeBtn: "Fermer",
+    navBalance: "Accueil", navCard: "Carte virtuelle", navTransfer: "Paiements", navAccount: "Profil",
+    txTransferSent: "Virement envoye", txTransferReceived: "Virement recu",
+    invalidAmount: "Veuillez saisir un montant valide.", amountExceedsBalance: "Le montant depasse votre solde disponible."
   },
   es: {
-    loginTitle: "Inicia sesion",
-    emailPh: "Tu correo",
-    pinPh: "Tu codigo",
-    loginBtn: "Iniciar",
-    loginErr: "Correo o PIN incorrecto.",
-    greeting: "Hola",
-    personalAccount: "Personal",
-    accounts: "Cuentas",
-    seeIban: "Ver mi IBAN",
-    virtualCard: "Tarjeta virtual",
-    makeTransferShort: "Hacer transferencia",
-    myIbanTitle: "Mi IBAN",
-    copyBtn: "Copiar",
-    copied: "Copiado!",
-    balanceLabel: "Saldo :",
-    transactionHistory: "Historial",
-    noTransactions: "Sin historial.",
-    sendOutgoingTransfer: "Enviar transferencia",
-    transferDetails: "Detalles",
-    amountToDebit: "IMPORTE A DEBITAR",
-    labelIban: "IBAN / NUMERO DE CUENTA",
-    labelSwift: "CODIGO BANCO (BIC/SWIFT)",
-    labelBank: "NOMBRE DEL BANCO",
-    labelBeneficiary: "NOMBRE DEL BENEFICIARIO",
-    labelReason: "MOTIVO",
-    amountPlaceholder: "",
-    ibanPh: "",
-    swiftPh: "",
-    bankPh: "",
-    beneficiaryPh: "",
-    reasonPh: "",
+    loginTitle: "Inicia sesion", emailPh: "Tu correo", pinPh: "Tu codigo",
+    loginBtn: "Iniciar", loginErr: "Correo o PIN incorrecto.",
+    greeting: "Hola", personalAccount: "Personal", accounts: "Cuentas",
+    seeIban: "Ver mi IBAN", virtualCard: "Tarjeta virtual", makeTransferShort: "Hacer transferencia",
+    myIbanTitle: "Mi IBAN", copyBtn: "Copiar", copied: "Copiado!",
+    balanceLabel: "Saldo :", transactionHistory: "Historial", noTransactions: "Sin historial.",
+    sendOutgoingTransfer: "Enviar transferencia", transferDetails: "Detalles",
+    amountToDebit: "IMPORTE A DEBITAR", labelIban: "IBAN / NUMERO DE CUENTA",
+    labelSwift: "CODIGO BANCO (BIC/SWIFT)", labelBank: "NOMBRE DEL BANCO",
+    labelBeneficiary: "NOMBRE DEL BENEFICIARIO", labelReason: "MOTIVO",
     processingWarning: "Realizacion en 1-3 minutos tras verificacion final.",
-    nextBtn: "Siguiente",
-    transferSummary: "Resumen",
-    transferAmountLabel: "Importe:",
-    ibanLabel: "IBAN",
-    ibanLabelLine2: "de cuenta:",
-    swiftLabel: "BIC:",
-    bankLabel: "Banco:",
-    beneficiaryLabel: "Beneficiario:",
-    reasonLabel: "Motivo:",
-    identityVerification: "Verificacion",
-    verificationDesc: "Introduzca el codigo:",
-    securityCodePh: "",
-    sendBtn: "Enviar",
-    wellDone: "Bien hecho!",
-    processingDesc: "Verificacion exitosa.",
-    amountToReceive: "Importe:",
-    processingText: "En curso...",
-    cardWelcome: "Tarjeta disponible.",
-    activateCardBtn: "Activar",
-    blockCardBtn: "Bloquear",
-    cardTransactions: "Transacciones",
-    validUntil: "VALIDA HASTA:",
-    personalData: "Datos personales",
-    accountOwner: "Titular:",
-    emailLabel: "Correo:",
-    phoneLabel: "Telefono:",
-    countryLabel: "Pais:",
-    addressLabel: "Direccion:",
-    accountAndTransfer: "Cuenta",
-    balanceProfile: "Saldo:",
-    accountType: "Tipo:",
-    accountStatus: "Estado:",
-    statusActive: "Activo",
-    supportedTransfer: "Soporte:",
-    beneficiaryIban: "IBAN:",
-    accountTypeValue: "Profesional",
-    transferTypeValue: "Clasico",
-    profileBanner: "Contacte con soporte.",
-    logoutBtn: "Salir",
-    modalSuccess: "Transferencia de {amount} enviada",
-    modalFailure: "Fallida",
-    sendTime: "Hora:",
-    closeBtn: "Cerrar",
-    navBalance: "Inicio",
-    navCard: "Tarjeta virtual",
-    navTransfer: "Pagos",
-    navAccount: "Perfil",
-    txTransferSent: "Enviada",
-    txTransferReceived: "Recibida",
-    invalidAmount: "Ingrese un importe valido.",
-    amountExceedsBalance: "El importe supera su saldo."
+    nextBtn: "Siguiente", transferSummary: "Resumen",
+    transferAmountLabel: "Importe:", ibanLabel: "IBAN", ibanLabelLine2: "de cuenta:",
+    swiftLabel: "BIC:", bankLabel: "Banco:",
+    beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:",
+    identityVerification: "Verificacion", verificationDesc: "Introduzca el codigo:",
+    sendBtn: "Enviar", wellDone: "Bien hecho!", processingDesc: "Verificacion exitosa.",
+    amountToReceive: "Importe:", processingText: "En curso...",
+    cardWelcome: "Tarjeta disponible.", activateCardBtn: "Activar", blockCardBtn: "Bloquear",
+    cardTransactions: "Transacciones", validUntil: "VALIDA HASTA:",
+    personalData: "Datos personales", accountOwner: "Titular:", emailLabel: "Correo:",
+    phoneLabel: "Telefono:", countryLabel: "Pais:", addressLabel: "Direccion:",
+    accountAndTransfer: "Cuenta", balanceProfile: "Saldo:", accountType: "Tipo:",
+    accountStatus: "Estado:", statusActive: "Activo", supportedTransfer: "Soporte:",
+    beneficiaryIban: "IBAN:", accountTypeValue: "Profesional", transferTypeValue: "Clasico",
+    profileBanner: "Contacte con soporte.", logoutBtn: "Salir",
+    modalSuccess: "Transferencia de {amount} enviada", modalFailure: "Fallida",
+    sendTime: "Hora:", closeBtn: "Cerrar",
+    navBalance: "Inicio", navCard: "Tarjeta virtual", navTransfer: "Pagos", navAccount: "Perfil",
+    txTransferSent: "Enviada", txTransferReceived: "Recibida",
+    invalidAmount: "Ingrese un importe valido.", amountExceedsBalance: "El importe supera su saldo."
   },
   it: {
-    loginTitle: "Accedi",
-    emailPh: "Email",
-    pinPh: "Codice",
-    loginBtn: "Accedi",
-    loginErr: "Email o PIN errato.",
-    greeting: "Ciao",
-    personalAccount: "Personale",
-    accounts: "Conti",
-    seeIban: "Vedi il mio IBAN",
-    virtualCard: "Carta virtuale",
-    makeTransferShort: "Fai un bonifico",
-    myIbanTitle: "Il mio IBAN",
-    copyBtn: "Copia",
-    copied: "Copiato!",
-    balanceLabel: "Saldo :",
-    transactionHistory: "Cronologia",
-    noTransactions: "Nessuna cronologia.",
-    sendOutgoingTransfer: "Invia bonifico",
-    transferDetails: "Dettagli",
-    amountToDebit: "IMPORTO DA ADDEBITARE",
-    labelIban: "IBAN / NUMERO DI CONTO",
-    labelSwift: "CODICE BANCA (BIC/SWIFT)",
-    labelBank: "NOME DELLA BANCA",
-    labelBeneficiary: "NOME DEL BENEFICIARIO",
-    labelReason: "MOTIVO",
-    amountPlaceholder: "",
-    ibanPh: "",
-    swiftPh: "",
-    bankPh: "",
-    beneficiaryPh: "",
-    reasonPh: "",
+    loginTitle: "Accedi", emailPh: "Email", pinPh: "Codice",
+    loginBtn: "Accedi", loginErr: "Email o PIN errato.",
+    greeting: "Ciao", personalAccount: "Personale", accounts: "Conti",
+    seeIban: "Vedi il mio IBAN", virtualCard: "Carta virtuale", makeTransferShort: "Fai un bonifico",
+    myIbanTitle: "Il mio IBAN", copyBtn: "Copia", copied: "Copiato!",
+    balanceLabel: "Saldo :", transactionHistory: "Cronologia", noTransactions: "Nessuna cronologia.",
+    sendOutgoingTransfer: "Invia bonifico", transferDetails: "Dettagli",
+    amountToDebit: "IMPORTO DA ADDEBITARE", labelIban: "IBAN / NUMERO DI CONTO",
+    labelSwift: "CODICE BANCA (BIC/SWIFT)", labelBank: "NOME DELLA BANCA",
+    labelBeneficiary: "NOME DEL BENEFICIARIO", labelReason: "MOTIVO",
     processingWarning: "Esecuzione entro 1-3 minuti dopo verifica finale.",
-    nextBtn: "Avanti",
-    transferSummary: "Riepilogo",
-    transferAmountLabel: "Importo:",
-    ibanLabel: "IBAN",
-    ibanLabelLine2: "conto:",
-    swiftLabel: "BIC:",
-    bankLabel: "Banca:",
-    beneficiaryLabel: "Beneficiario:",
-    reasonLabel: "Motivo:",
-    identityVerification: "Verifica",
-    verificationDesc: "Inserisci il codice:",
-    securityCodePh: "",
-    sendBtn: "Invia",
-    wellDone: "Ben fatto!",
-    processingDesc: "Verifica riuscita.",
-    amountToReceive: "Importo:",
-    processingText: "In corso...",
-    cardWelcome: "Carta disponibile.",
-    activateCardBtn: "Attiva",
-    blockCardBtn: "Blocca",
-    cardTransactions: "Transazioni",
-    validUntil: "VALIDA FINO AL:",
-    personalData: "Dati personali",
-    accountOwner: "Titolare:",
-    emailLabel: "Email:",
-    phoneLabel: "Telefono:",
-    countryLabel: "Paese:",
-    addressLabel: "Indirizzo:",
-    accountAndTransfer: "Conto",
-    balanceProfile: "Saldo:",
-    accountType: "Tipo:",
-    accountStatus: "Stato:",
-    statusActive: "Attivo",
-    supportedTransfer: "Supporto:",
-    beneficiaryIban: "IBAN:",
-    accountTypeValue: "Professionale",
-    transferTypeValue: "Classico",
-    profileBanner: "Contatta il supporto.",
-    logoutBtn: "Esci",
-    modalSuccess: "Bonifico di {amount} inviato",
-    modalFailure: "Fallito",
-    sendTime: "Ora:",
-    closeBtn: "Chiudi",
-    navBalance: "Home",
-    navCard: "Carta virtuale",
-    navTransfer: "Pagamenti",
-    navAccount: "Profilo",
-    txTransferSent: "Inviato",
-    txTransferReceived: "Ricevuto",
-    invalidAmount: "Inserisci un importo valido.",
-    amountExceedsBalance: "L'importo supera il saldo."
+    nextBtn: "Avanti", transferSummary: "Riepilogo",
+    transferAmountLabel: "Importo:", ibanLabel: "IBAN", ibanLabelLine2: "conto:",
+    swiftLabel: "BIC:", bankLabel: "Banca:",
+    beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:",
+    identityVerification: "Verifica", verificationDesc: "Inserisci il codice:",
+    sendBtn: "Invia", wellDone: "Ben fatto!", processingDesc: "Verifica riuscita.",
+    amountToReceive: "Importo:", processingText: "In corso...",
+    cardWelcome: "Carta disponibile.", activateCardBtn: "Attiva", blockCardBtn: "Blocca",
+    cardTransactions: "Transazioni", validUntil: "VALIDA FINO AL:",
+    personalData: "Dati personali", accountOwner: "Titolare:", emailLabel: "Email:",
+    phoneLabel: "Telefono:", countryLabel: "Paese:", addressLabel: "Indirizzo:",
+    accountAndTransfer: "Conto", balanceProfile: "Saldo:", accountType: "Tipo:",
+    accountStatus: "Stato:", statusActive: "Attivo", supportedTransfer: "Supporto:",
+    beneficiaryIban: "IBAN:", accountTypeValue: "Professionale", transferTypeValue: "Classico",
+    profileBanner: "Contatta il supporto.", logoutBtn: "Esci",
+    modalSuccess: "Bonifico di {amount} inviato", modalFailure: "Fallito",
+    sendTime: "Ora:", closeBtn: "Chiudi",
+    navBalance: "Home", navCard: "Carta virtuale", navTransfer: "Pagamenti", navAccount: "Profilo",
+    txTransferSent: "Inviato", txTransferReceived: "Ricevuto",
+    invalidAmount: "Inserisci un importo valido.", amountExceedsBalance: "L'importo supera il saldo."
   },
   de: {
-    loginTitle: "Anmelden",
-    emailPh: "E-Mail",
-    pinPh: "Zugangscode",
-    loginBtn: "Anmelden",
-    loginErr: "Falsche E-Mail oder PIN.",
-    greeting: "Hallo",
-    personalAccount: "Personlich",
-    accounts: "Konten",
-    seeIban: "Meine IBAN anzeigen",
-    virtualCard: "Virtuelle Karte",
-    makeTransferShort: "Uberweisung",
-    myIbanTitle: "Meine IBAN",
-    copyBtn: "Kopieren",
-    copied: "Kopiert!",
-    balanceLabel: "Kontostand :",
-    transactionHistory: "Verlauf",
-    noTransactions: "Kein Verlauf.",
-    sendOutgoingTransfer: "Uberweisung senden",
-    transferDetails: "Details",
-    amountToDebit: "ZU BELASTENDER BETRAG",
-    labelIban: "IBAN / KONTONUMMER",
-    labelSwift: "BANKCODE (BIC/SWIFT)",
-    labelBank: "NAME DER BANK",
-    labelBeneficiary: "NAME DES BEGUNSTIGTEN",
-    labelReason: "GRUND",
-    amountPlaceholder: "",
-    ibanPh: "",
-    swiftPh: "",
-    bankPh: "",
-    beneficiaryPh: "",
-    reasonPh: "",
+    loginTitle: "Anmelden", emailPh: "E-Mail", pinPh: "Zugangscode",
+    loginBtn: "Anmelden", loginErr: "Falsche E-Mail oder PIN.",
+    greeting: "Hallo", personalAccount: "Personlich", accounts: "Konten",
+    seeIban: "Meine IBAN anzeigen", virtualCard: "Virtuelle Karte", makeTransferShort: "Uberweisung",
+    myIbanTitle: "Meine IBAN", copyBtn: "Kopieren", copied: "Kopiert!",
+    balanceLabel: "Kontostand :", transactionHistory: "Verlauf", noTransactions: "Kein Verlauf.",
+    sendOutgoingTransfer: "Uberweisung senden", transferDetails: "Details",
+    amountToDebit: "ZU BELASTENDER BETRAG", labelIban: "IBAN / KONTONUMMER",
+    labelSwift: "BANKCODE (BIC/SWIFT)", labelBank: "NAME DER BANK",
+    labelBeneficiary: "NAME DES BEGUNSTIGTEN", labelReason: "GRUND",
     processingWarning: "Ausfuhrung in 1-3 Minuten nach finaler Uberprufung.",
-    nextBtn: "Weiter",
-    transferSummary: "Ubersicht",
-    transferAmountLabel: "Betrag:",
-    ibanLabel: "IBAN",
-    ibanLabelLine2: "des Kontos:",
-    swiftLabel: "BIC:",
-    bankLabel: "Empfanger:",
-    beneficiaryLabel: "Begunstigter:",
-    reasonLabel: "Grund:",
-    identityVerification: "Prufung",
-    verificationDesc: "Code eingeben:",
-    securityCodePh: "",
-    sendBtn: "Senden",
-    wellDone: "Gut gemacht!",
-    processingDesc: "Erfolgreich.",
-    amountToReceive: "Betrag:",
-    processingText: "In Bearbeitung...",
-    cardWelcome: "Karte verfugbar.",
-    activateCardBtn: "Aktivieren",
-    blockCardBtn: "Sperren",
-    cardTransactions: "Transaktionen",
-    validUntil: "GULTIG BIS:",
-    personalData: "Personliche Daten",
-    accountOwner: "Kontoinhaber:",
-    emailLabel: "E-Mail:",
-    phoneLabel: "Telefon:",
-    countryLabel: "Land:",
-    addressLabel: "Adresse:",
-    accountAndTransfer: "Konto",
-    balanceProfile: "Kontostand:",
-    accountType: "Typ:",
-    accountStatus: "Status:",
-    statusActive: "Aktiv",
-    supportedTransfer: "Support:",
-    beneficiaryIban: "IBAN:",
-    accountTypeValue: "Professionell",
-    transferTypeValue: "Klassisch",
-    profileBanner: "Support kontaktieren.",
-    logoutBtn: "Abmelden",
-    modalSuccess: "Uberweisung von {amount} gesendet",
-    modalFailure: "Fehlgeschlagen",
-    sendTime: "Zeit:",
-    closeBtn: "Schliessen",
-    navBalance: "Start",
-    navCard: "Virtuelle Karte",
-    navTransfer: "Zahlungen",
-    navAccount: "Profil",
-    txTransferSent: "Gesendet",
-    txTransferReceived: "Erhalten",
-    invalidAmount: "Bitte gultigen Betrag eingeben.",
-    amountExceedsBalance: "Der Betrag ubersteigt das Guthaben."
+    nextBtn: "Weiter", transferSummary: "Ubersicht",
+    transferAmountLabel: "Betrag:", ibanLabel: "IBAN", ibanLabelLine2: "des Kontos:",
+    swiftLabel: "BIC:", bankLabel: "Empfanger:",
+    beneficiaryLabel: "Begunstigter:", reasonLabel: "Grund:",
+    identityVerification: "Prufung", verificationDesc: "Code eingeben:",
+    sendBtn: "Senden", wellDone: "Gut gemacht!", processingDesc: "Erfolgreich.",
+    amountToReceive: "Betrag:", processingText: "In Bearbeitung...",
+    cardWelcome: "Karte verfugbar.", activateCardBtn: "Aktivieren", blockCardBtn: "Sperren",
+    cardTransactions: "Transaktionen", validUntil: "GULTIG BIS:",
+    personalData: "Personliche Daten", accountOwner: "Kontoinhaber:", emailLabel: "E-Mail:",
+    phoneLabel: "Telefon:", countryLabel: "Land:", addressLabel: "Adresse:",
+    accountAndTransfer: "Konto", balanceProfile: "Kontostand:", accountType: "Typ:",
+    accountStatus: "Status:", statusActive: "Aktiv", supportedTransfer: "Support:",
+    beneficiaryIban: "IBAN:", accountTypeValue: "Professionell", transferTypeValue: "Klassisch",
+    profileBanner: "Support kontaktieren.", logoutBtn: "Abmelden",
+    modalSuccess: "Uberweisung von {amount} gesendet", modalFailure: "Fehlgeschlagen",
+    sendTime: "Zeit:", closeBtn: "Schliessen",
+    navBalance: "Start", navCard: "Virtuelle Karte", navTransfer: "Zahlungen", navAccount: "Profil",
+    txTransferSent: "Gesendet", txTransferReceived: "Erhalten",
+    invalidAmount: "Bitte gultigen Betrag eingeben.", amountExceedsBalance: "Der Betrag ubersteigt das Guthaben."
   }
 };
 
@@ -573,9 +324,7 @@ const applyTheme = function(color) {
 };
 
 const splitBalance = function(amount, currency) {
-  const formatted = (amount || 0).toLocaleString('fr-FR', {
-    minimumFractionDigits: 2, maximumFractionDigits: 2
-  });
+  const formatted = (amount || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const lastComma = formatted.lastIndexOf(',');
   if (lastComma === -1) return { intPart: formatted, decPart: ' ' + currency };
   return {
@@ -584,6 +333,9 @@ const splitBalance = function(amount, currency) {
   };
 };
 
+// =====================================================
+// COMPOSANTS PARTAGÉS
+// =====================================================
 function renderBalanceHero(client) {
   const currency = client.currency || '€';
   const parts = splitBalance(client.balance || 0, currency);
@@ -593,9 +345,7 @@ function renderBalanceHero(client) {
       '<span class="balance-dec">' + parts.decPart + '</span>' +
     '</div>' +
     '<button class="account-pill" onclick="window.navigateTo(\'screen-profile\')">' + t('accounts') + '</button>' +
-    '<div class="dots-indicator">' +
-      '<span class="active"></span><span></span><span></span>' +
-    '</div>';
+    '<div class="dots-indicator"><span class="active"></span><span></span><span></span></div>';
 }
 
 function renderQuickActions() {
@@ -613,6 +363,21 @@ function renderQuickActions() {
       '<span>' + t('makeTransferShort') + '</span>' +
     '</div>' +
   '</div>';
+}
+
+function renderTransactions(txs) {
+  if (!txs || txs.length === 0) return '<p style="color:#94a3b8;font-size:11px;text-align:center;padding:15px 0;">' + t('noTransactions') + '</p>';
+  let html = '';
+  txs.forEach(function(tx) {
+    const isIn = tx.type === 'in';
+    const title = isIn ? t('txTransferReceived') : t('txTransferSent');
+    let iconClass = 'icon-grey';
+    let iconSvg = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>';
+    if (!isIn) { iconClass = 'icon-red'; iconSvg = '<path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>'; }
+    else { iconClass = 'icon-green'; }
+    html += '<div class="transaction-item"><div class="tx-icon ' + iconClass + '"><svg viewBox="0 0 24 24">' + iconSvg + '</svg></div><div class="tx-details"><div class="tx-title">' + title + '</div><div class="tx-subtitle">' + (tx.subtitle || '') + '</div></div><div class="tx-amount"><div class="' + (isIn ? 'amount-pos' : 'amount-neg') + '">' + (isIn ? '+' : '-') + tx.amount + '</div><div class="tx-date">' + tx.date + '</div></div></div>';
+  });
+  return html;
 }
 
 function subscribeToClient(clientId) {
@@ -643,9 +408,15 @@ function subscribeToClient(clientId) {
   } catch (e) { console.warn('subscribeToClient failed:', e); }
 }
 
+// =====================================================
+// EXPORTS
+// =====================================================
 export function initClientApp() { initClient(); }
 export function initAdminApp() { initAdmin(); }
 
+// =====================================================
+// CLIENT
+// =====================================================
 async function initClient() {
   const clientId = new URLSearchParams(window.location.search).get('id');
   const root = document.getElementById('app-root');
@@ -836,21 +607,9 @@ function renderBankingApp(client) {
   }
 }
 
-function renderTransactions(txs) {
-  if (!txs || txs.length === 0) return '<p style="color:#94a3b8;font-size:11px;text-align:center;padding:15px 0;">' + t('noTransactions') + '</p>';
-  let html = '';
-  txs.forEach(function(tx) {
-    const isIn = tx.type === 'in';
-    const title = isIn ? t('txTransferReceived') : t('txTransferSent');
-    let iconClass = 'icon-grey';
-    let iconSvg = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>';
-    if (!isIn) { iconClass = 'icon-red'; iconSvg = '<path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>'; }
-    else { iconClass = 'icon-green'; }
-    html += '<div class="transaction-item"><div class="tx-icon ' + iconClass + '"><svg viewBox="0 0 24 24">' + iconSvg + '</svg></div><div class="tx-details"><div class="tx-title">' + title + '</div><div class="tx-subtitle">' + (tx.subtitle || '') + '</div></div><div class="tx-amount"><div class="' + (isIn ? 'amount-pos' : 'amount-neg') + '">' + (isIn ? '+' : '-') + tx.amount + '</div><div class="tx-date">' + tx.date + '</div></div></div>';
-  });
-  return html;
-}
-
+// =====================================================
+// NAVIGATION CLIENT
+// =====================================================
 window.ClientLogout = function() {
   if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
   ClientSession.clear();
@@ -908,14 +667,8 @@ window.submitTransferForm = function() {
   const balance = parseFloat(currentClient.balance) || 0;
   const currency = currentClient.currency || '€';
 
-  if (isNaN(amount) || amount <= 0) {
-    alert(t('invalidAmount'));
-    return;
-  }
-  if (amount > balance) {
-    alert(t('amountExceedsBalance'));
-    return;
-  }
+  if (isNaN(amount) || amount <= 0) { alert(t('invalidAmount')); return; }
+  if (amount > balance) { alert(t('amountExceedsBalance')); return; }
 
   pendingTransferAmount = amount;
 
@@ -943,7 +696,6 @@ window.startProcessing = function() {
   if (code !== currentClient.activationCode) { alert("Code incorrect."); return; }
 
   const currency = currentClient.currency || '€';
-
   document.getElementById('processing-iban').innerText = document.getElementById('input-iban').value;
   document.getElementById('processing-amount').innerText = formatAmount(pendingTransferAmount, currency);
 
@@ -1033,34 +785,148 @@ window.closeResultModal = async function() {
 };
 
 // =====================================================
-// ADMIN
+// ADMIN — AUTHENTIFICATION
 // =====================================================
+let currentAdmin = null;
+let authUnsubscribe = null;
+
 async function initAdmin() {
   const root = document.getElementById('admin-root');
   if (!root) return;
-  if (!AdminAuth.isLogged()) renderAdminLogin();
-  else await renderAdminPage();
+
+  root.innerHTML = '<div class="view active" style="display:flex;align-items:center;justify-content:center;height:100%;"><div class="spinner"></div></div>';
+
+  authUnsubscribe = onAuthStateChanged(auth, function(user) {
+    if (user) {
+      currentAdmin = { uid: user.uid, email: user.email };
+      renderAdminPage();
+    } else {
+      currentAdmin = null;
+      renderAuthScreen();
+    }
+  });
 }
 
-function renderAdminLogin() {
+// =====================================================
+// ADMIN — ÉCRAN LOGIN / REGISTER
+// =====================================================
+function renderAuthScreen(mode) {
+  mode = mode || 'login';
   const root = document.getElementById('admin-root');
-  root.innerHTML = '<div class="view active"><div class="admin-login"><div class="logo"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg></div><h1>Espace Administrateur</h1><p>Acces securise reserve</p><div class="input-wrap"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><input type="password" id="admin-pass" placeholder="Mot de passe" autofocus></div><button class="btn-auth" onclick="window.handleAdminLogin()">Acceder au panneau</button><div class="err" id="admin-err">Mot de passe incorrect</div><div class="hint">Par defaut : <code>admin123</code></div></div></div>';
-  document.getElementById('admin-pass').addEventListener('keypress', function(e) { if (e.key === 'Enter') window.handleAdminLogin(); });
+  const isLogin = mode === 'login';
+
+  root.innerHTML = '<div class="view active"><div class="admin-auth">' +
+    '<div class="auth-logo"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg></div>' +
+    '<h1>' + (isLogin ? 'Connexion Admin' : 'Creer un compte Admin') + '</h1>' +
+    '<p>' + (isLogin ? 'Connectez-vous avec votre adresse e-mail et mot de passe' : 'Inscrivez-vous avec votre adresse e-mail et un mot de passe') + '</p>' +
+    '<form class="auth-form" id="auth-form">' +
+      '<div class="auth-group">' +
+        '<label>Adresse e-mail</label>' +
+        '<div class="input-wrap"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><input type="email" id="auth-email" placeholder="votre.email@gmail.com" required autocomplete="email"></div>' +
+      '</div>' +
+      '<div class="auth-group">' +
+        '<label>Mot de passe</label>' +
+        '<div class="input-wrap"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><input type="password" id="auth-password" placeholder="Au moins 6 caracteres" required autocomplete="' + (isLogin ? 'current-password' : 'new-password') + '"></div>' +
+      '</div>' +
+      (isLogin ? '' :
+        '<div class="auth-group">' +
+          '<label>Confirmer le mot de passe</label>' +
+          '<div class="input-wrap"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><input type="password" id="auth-password-confirm" placeholder="Confirmer le mot de passe" required autocomplete="new-password"></div>' +
+        '</div>'
+      ) +
+      '<button type="submit" class="btn-auth" id="auth-submit-btn">' + (isLogin ? 'Se connecter' : 'Creer le compte') + '</button>' +
+      '<div class="err" id="auth-error"></div>' +
+    '</form>' +
+    '<div class="auth-switch">' +
+      (isLogin
+        ? 'Pas encore de compte ? <a id="auth-switch-link">Creer un compte</a>'
+        : 'Vous avez deja un compte ? <a id="auth-switch-link">Se connecter</a>') +
+    '</div>' +
+    (isLogin ? '' : '<div class="info-box">Votre compte sert a isoler vos clients. Personne d\'autre ne pourra voir vos donnees.</div>') +
+  '</div></div>';
+
+  const switchLink = document.getElementById('auth-switch-link');
+  if (switchLink) {
+    switchLink.addEventListener('click', function() {
+      renderAuthScreen(isLogin ? 'register' : 'login');
+    });
+  }
+
+  document.getElementById('auth-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value;
+    const errEl = document.getElementById('auth-error');
+    const btn = document.getElementById('auth-submit-btn');
+
+    errEl.classList.remove('show');
+    errEl.textContent = '';
+
+    if (!email || !email.includes('@')) {
+      errEl.textContent = 'Veuillez entrer une adresse e-mail valide.';
+      errEl.classList.add('show');
+      return;
+    }
+    if (!password || password.length < 6) {
+      errEl.textContent = 'Le mot de passe doit contenir au moins 6 caracteres.';
+      errEl.classList.add('show');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = isLogin ? 'Connexion...' : 'Creation...';
+
+    try {
+      if (isLogin) {
+        await signInWithEmailAndPassword(auth, email, password);
+      } else {
+        const confirmPass = document.getElementById('auth-password-confirm').value;
+        if (password !== confirmPass) {
+          errEl.textContent = 'Les mots de passe ne correspondent pas.';
+          errEl.classList.add('show');
+          btn.disabled = false;
+          btn.textContent = 'Creer le compte';
+          return;
+        }
+        await createUserWithEmailAndPassword(auth, email, password);
+      }
+    } catch (error) {
+      btn.disabled = false;
+      btn.textContent = isLogin ? 'Se connecter' : 'Creer le compte';
+      console.error('Auth error:', error);
+      const code = error.code || '';
+      if (code === 'auth/user-not-found' || code === 'auth/invalid-credential') {
+        errEl.textContent = 'Aucun compte trouve avec cet e-mail. Veuillez d\'abord vous inscrire.';
+      } else if (code === 'auth/wrong-password') {
+        errEl.textContent = 'Mot de passe incorrect. Veuillez reessayer.';
+      } else if (code === 'auth/email-already-in-use') {
+        errEl.textContent = 'Cette adresse e-mail est deja utilisee. Connectez-vous plutot.';
+      } else if (code === 'auth/invalid-email') {
+        errEl.textContent = 'Adresse e-mail invalide.';
+      } else if (code === 'auth/weak-password') {
+        errEl.textContent = 'Mot de passe trop faible (minimum 6 caracteres).';
+      } else if (code === 'auth/network-request-failed') {
+        errEl.textContent = 'Erreur reseau. Verifiez votre connexion.';
+      } else if (code === 'auth/too-many-requests') {
+        errEl.textContent = 'Trop de tentatives. Reessayez plus tard.';
+      } else {
+        errEl.textContent = 'Erreur : ' + (error.message || 'inconnue');
+      }
+      errEl.classList.add('show');
+    }
+  });
 }
 
-window.handleAdminLogin = function() {
-  const pass = document.getElementById('admin-pass').value;
-  if (pass === AdminAuth.getPass()) { AdminAuth.setLogged(); renderAdminPage(); }
-  else { document.getElementById('admin-err').style.display = 'block'; document.getElementById('admin-pass').value = ''; }
-};
-
-window.adminLogout = function() { AdminAuth.clearLogged(); initAdmin(); };
-
+// =====================================================
+// ADMIN — DASHBOARD (avec isolation par adminUid)
+// =====================================================
 async function renderAdminPage() {
+  if (!currentAdmin || !currentAdmin.uid) { renderAuthScreen(); return; }
+
   const root = document.getElementById('admin-root');
   root.innerHTML = '<div class="view active" style="display:flex;align-items:center;justify-content:center;height:100%;"><div class="spinner"></div></div>';
 
-  const clients = await FireDB.getAllClients();
+  const clients = await FireDB.getMyClients(currentAdmin.uid);
   const list = Object.keys(clients);
   const totalBalance = list.reduce(function(s, id) { return s + (parseFloat(clients[id].balance) || 0); }, 0);
   const totalTx = list.reduce(function(s, id) { return s + ((clients[id].transactions || []).length); }, 0);
@@ -1082,7 +948,7 @@ async function renderAdminPage() {
     '<div class="qac-title"><svg viewBox="0 0 24 24"><path d="M7.5 5.6L10 7 8.6 4.5 10 2 7.5 3.4 5 2l1.4 2.5L5 7zm12 9.8L17 14l1.4 2.5L17 19l2.5-1.4L22 19l-1.4-2.5L22 14zM22 2l-2.5 1.4L17 2l1.4 2.5L17 7l2.5-1.4L22 7l-1.4-2.5zm-7.63 5.29c-.39-.39-1.02-.39-1.41 0L1.29 18.96c-.39.39-.39 1.02 0 1.41l2.34 2.34c.39.39 1.02.39 1.41 0L16.7 11.05c.39-.39.39-1.02 0-1.41l-2.33-2.35zm-1.03 5.49l-2.12-2.12 2.44-2.44 2.12 2.12-2.44 2.44z"/></svg>Mettre a jour un acces client v2</div>' +
     '<div class="qac-subtitle">Selectionnez un client, une action, puis appliquez la modification.</div>' +
     '<div class="admin-group"><label>Selectionner l\'acces client <span class="req">requis</span></label><select id="qa-client-select">' + clientOptionsHtml + '</select></div>' +
-    '<div class="admin-group"><label>Liste des action(s) possible(s) sur un acces <span class="req">requis</span></label><select id="qa-action-select"><option value="">Choisissez une action</option><option value="reset">Reinitialiser l\'historique et le solde</option><option value="add-transfer">Ajouter un virement au compte</option><option value="block">Suspendre le compte</option><option value="unblock">Activer le compte</option></select></div>' +
+    '<div class="admin-group"><label>Liste des action(s) possible(s) <span class="req">requis</span></label><select id="qa-action-select"><option value="">Choisissez une action</option><option value="reset">Reinitialiser l\'historique et le solde</option><option value="add-transfer">Ajouter un virement au compte</option><option value="block">Suspendre le compte</option><option value="unblock">Activer le compte</option></select></div>' +
     '<div id="qa-transfer-fields" style="display:none;"><div class="admin-grid"><div class="admin-group"><label>Montant <span class="req">*</span></label><input type="number" id="qa-transfer-amount" step="0.01" placeholder="Ex: 5000"></div><div class="admin-group"><label>Type <span class="req">*</span></label><select id="qa-transfer-type"><option value="in">Entrant (+)</option><option value="out">Sortant (-)</option></select></div><div class="admin-group full-width"><label>Libelle / Source</label><input type="text" id="qa-transfer-label" placeholder="Ex: BNP Paribas"></div></div></div>' +
     '<button class="btn-admin-submit" onclick="window.applyQuickAction()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Appliquer la modification</button>' +
   '</div>';
@@ -1102,7 +968,7 @@ async function renderAdminPage() {
     });
   }
 
-  root.innerHTML = '<div class="view active"><div class="admin-wrapper"><div class="admin-topbar"><div class="brand"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>ADMIN</div><div class="actions"><button class="icon-btn" onclick="document.getElementById(\'pass-modal\').classList.add(\'active\')" title="Parametres"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button><button class="icon-btn" onclick="window.adminLogout()" title="Deconnexion"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button></div></div><div class="admin-body">' + quickActionsCardHtml + '<div class="stats-grid"><div class="stat-card"><div class="ico blue"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><div class="val">' + list.length + '</div><div class="lbl">Clients</div></div><div class="stat-card"><div class="ico green"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div><div class="val">' + totalBalance.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + '</div><div class="lbl">Solde total</div></div><div class="stat-card"><div class="ico orange"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></div><div class="val">' + totalTx + '</div><div class="lbl">Transactions</div></div><div class="stat-card"><div class="ico purple"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="val">' + active + '</div><div class="lbl">Actifs</div></div></div><form id="admin-form"><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Informations client</div><div class="admin-grid"><div class="admin-group"><label>Nom <span class="req">*</span></label><input type="text" id="lastName" required></div><div class="admin-group"><label>Prenom <span class="req">*</span></label><input type="text" id="firstName" required></div><div class="admin-group"><label>Pays <span class="req">*</span></label><select id="country"><option value="France">France</option><option value="Pologne">Pologne</option><option value="Espagne">Espagne</option><option value="Italie">Italie</option><option value="Allemagne">Allemagne</option></select></div><div class="admin-group"><label>Telephone</label><input type="tel" id="phone"></div><div class="admin-group"><label>Email <span class="req">*</span></label><input type="email" id="email" required></div><div class="admin-group"><label>Langue <span class="req">*</span></label><select id="language"><option value="pl">Polonais</option><option value="fr" selected>Francais</option><option value="es">Espagnol</option><option value="it">Italien</option><option value="de">Allemand</option></select></div><div class="admin-group full-width"><label>Adresse / IBAN</label><input type="text" id="address"></div></div></div><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>Compte et securite</div><div class="admin-grid"><div class="admin-group full-width"><label>Banque emettrice</label><input type="text" id="bankName" placeholder="BNP Paribas"></div><div class="admin-group"><label>Solde <span class="req">*</span></label><input type="number" id="balance" step="0.01" placeholder="5000" required></div><div class="admin-group"><label>Devise <span class="req">*</span></label><select id="currency"><option value="€">EUR</option><option value="$">USD</option><option value="£">GBP</option><option value="zł">PLN</option></select></div><div class="admin-group"><label>Depart % <span class="req">*</span></label><input type="number" id="startPercent" min="0" max="100" value="0" required></div><div class="admin-group"><label>Arret % <span class="req">*</span></label><input type="number" id="stopPercent" min="0" max="100" value="100" required></div><div class="admin-group"><label>Code PIN <span class="req">*</span></label><input type="text" id="pin" placeholder="1234" required></div><div class="admin-group"><label>Code d\'activation <span class="req">*</span></label><input type="text" id="activationCode" placeholder="987654" required></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="message" rows="2"></textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="color-presets"></div><div class="color-picker-row"><input type="color" id="themeColor" value="#1a73e8"><input type="text" id="themeColorHex" value="#1a73e8" readonly></div></div></div><button type="submit" class="btn-admin-submit"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Creer le client</button></div></form><div class="client-list-title">Clients <span class="count">' + list.length + '</span></div><div class="client-list">' + clientsHtml + '</div></div></div></div>';
+  root.innerHTML = '<div class="view active"><div class="admin-wrapper"><div class="admin-topbar"><div class="brand"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>ADMIN</div><div class="actions"><button class="icon-btn" onclick="window.adminLogout()" title="Deconnexion"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button></div></div><div class="admin-body"><div class="quick-actions-card" style="border-color: var(--primary); background: var(--primary-light); margin-bottom: 13px;"><div style="font-size:11px;color:var(--gray-700);font-weight:600;">Connecte en tant que : <strong style="color:var(--primary);">' + (currentAdmin.email || '') + '</strong></div></div>' + quickActionsCardHtml + '<div class="stats-grid"><div class="stat-card"><div class="ico blue"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><div class="val">' + list.length + '</div><div class="lbl">Mes Clients</div></div><div class="stat-card"><div class="ico green"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div><div class="val">' + totalBalance.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + '</div><div class="lbl">Solde total</div></div><div class="stat-card"><div class="ico orange"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></div><div class="val">' + totalTx + '</div><div class="lbl">Transactions</div></div><div class="stat-card"><div class="ico purple"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="val">' + active + '</div><div class="lbl">Actifs</div></div></div><form id="admin-form"><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Informations client</div><div class="admin-grid"><div class="admin-group"><label>Nom <span class="req">*</span></label><input type="text" id="lastName" required></div><div class="admin-group"><label>Prenom <span class="req">*</span></label><input type="text" id="firstName" required></div><div class="admin-group"><label>Pays <span class="req">*</span></label><select id="country"><option value="France">France</option><option value="Pologne">Pologne</option><option value="Espagne">Espagne</option><option value="Italie">Italie</option><option value="Allemagne">Allemagne</option></select></div><div class="admin-group"><label>Telephone</label><input type="tel" id="phone"></div><div class="admin-group"><label>Email <span class="req">*</span></label><input type="email" id="email" required></div><div class="admin-group"><label>Langue <span class="req">*</span></label><select id="language"><option value="pl">Polonais</option><option value="fr" selected>Francais</option><option value="es">Espagnol</option><option value="it">Italien</option><option value="de">Allemand</option></select></div><div class="admin-group full-width"><label>Adresse / IBAN</label><input type="text" id="address"></div></div></div><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>Compte et securite</div><div class="admin-grid"><div class="admin-group full-width"><label>Banque emettrice</label><input type="text" id="bankName" placeholder="BNP Paribas"></div><div class="admin-group"><label>Solde <span class="req">*</span></label><input type="number" id="balance" step="0.01" placeholder="5000" required></div><div class="admin-group"><label>Devise <span class="req">*</span></label><select id="currency"><option value="€">EUR</option><option value="$">USD</option><option value="£">GBP</option><option value="zł">PLN</option></select></div><div class="admin-group"><label>Depart % <span class="req">*</span></label><input type="number" id="startPercent" min="0" max="100" value="0" required></div><div class="admin-group"><label>Arret % <span class="req">*</span></label><input type="number" id="stopPercent" min="0" max="100" value="100" required></div><div class="admin-group"><label>Code PIN <span class="req">*</span></label><input type="text" id="pin" placeholder="1234" required></div><div class="admin-group"><label>Code d\'activation <span class="req">*</span></label><input type="text" id="activationCode" placeholder="987654" required></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="message" rows="2"></textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="color-presets"></div><div class="color-picker-row"><input type="color" id="themeColor" value="#1a73e8"><input type="text" id="themeColorHex" value="#1a73e8" readonly></div></div></div><button type="submit" class="btn-admin-submit"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Creer le client</button></div></form><div class="client-list-title">Mes Clients <span class="count">' + list.length + '</span></div><div class="client-list">' + clientsHtml + '</div></div></div></div>';
 
   const actionSelect = document.getElementById('qa-action-select');
   const transferFields = document.getElementById('qa-transfer-fields');
@@ -1140,6 +1006,7 @@ async function renderAdminPage() {
   if (adminForm) {
     adminForm.addEventListener('submit', async function(e) {
       e.preventDefault();
+      if (!currentAdmin || !currentAdmin.uid) { alert('Vous devez etre connecte.'); return; }
       let id;
       do { id = generateShortId(); } while (await FireDB.getClient(id));
       const initialBalance = parseFloat(document.getElementById('balance').value) || 0;
@@ -1149,6 +1016,8 @@ async function renderAdminPage() {
       const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
       const initialTransactions = initialBalance > 0 ? [{ type: 'in', subtitle: bankNameValue || 'Depot initial', amount: formatAmount(initialBalance, currencyValue), date: dateStr }] : [];
       const clientData = {
+        adminUid: currentAdmin.uid,
+        adminEmail: currentAdmin.email,
         lastName: document.getElementById('lastName').value,
         firstName: document.getElementById('firstName').value,
         country: document.getElementById('country').value,
@@ -1170,20 +1039,37 @@ async function renderAdminPage() {
       };
       const ok = await FireDB.createClient(id, clientData);
       if (ok) { alert('Client cree !'); renderAdminPage(); }
-      else alert('Erreur lors de la creation.');
+      else alert('Erreur lors de la creation. Verifiez les regles Firestore.');
     });
   }
 }
 
+// =====================================================
+// ADMIN — DÉCONNEXION
+// =====================================================
+window.adminLogout = async function() {
+  try {
+    await signOut(auth);
+  } catch (e) {
+    console.error('Logout error:', e);
+    renderAuthScreen();
+  }
+};
+
+// =====================================================
+// ADMIN — QUICK ACTIONS
+// =====================================================
 window.applyQuickAction = async function() {
   const clientId = document.getElementById('qa-client-select').value;
   const action = document.getElementById('qa-action-select').value;
 
   if (!clientId) { alert('Veuillez selectionner un client.'); return; }
   if (!action) { alert('Veuillez selectionner une action.'); return; }
+  if (!currentAdmin || !currentAdmin.uid) { alert('Vous devez etre connecte.'); return; }
 
   const client = await FireDB.getClient(clientId);
   if (!client) { alert('Client introuvable.'); return; }
+  if (client.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
 
   const fullName = client.firstName + ' ' + client.lastName;
 
@@ -1232,6 +1118,9 @@ window.applyQuickAction = async function() {
   renderAdminPage();
 };
 
+// =====================================================
+// ADMIN — FONCTIONS UTILITAIRES
+// =====================================================
 window.copyToClipboard = function(text) {
   navigator.clipboard.writeText(text).then(function() { alert('Lien copie !'); }).catch(function() {
     const ta = document.createElement('textarea');
@@ -1244,6 +1133,7 @@ window.copyToClipboard = function(text) {
 window.toggleBlock = async function(id) {
   const c = await FireDB.getClient(id);
   if (!c) return;
+  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
   await FireDB.updateClient(id, { blocked: !c.blocked });
   if (!c.blocked && ClientSession.getActive() === id) ClientSession.clear();
   renderAdminPage();
@@ -1252,6 +1142,7 @@ window.toggleBlock = async function(id) {
 window.deleteClientConfirm = async function(id) {
   const c = await FireDB.getClient(id);
   if (!c) return;
+  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
   if (confirm('Supprimer ' + c.firstName + ' ' + c.lastName + ' ?')) {
     await FireDB.deleteClient(id);
     renderAdminPage();
@@ -1261,6 +1152,7 @@ window.deleteClientConfirm = async function(id) {
 window.openEditModal = async function(id) {
   const c = await FireDB.getClient(id);
   if (!c) return;
+  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
   const body = document.getElementById('edit-form-body');
   const presets = ['#1a73e8', '#0ea5e9', '#06b6d4', '#14b8a6', '#22c55e', '#84cc16', '#eab308', '#f59e0b', '#ef4444', '#dc2626', '#ec4899', '#a855f7', '#6366f1', '#0f172a'];
   body.innerHTML = '<div class="admin-grid"><div class="admin-group"><label>Nom</label><input type="text" id="e-lastName" value="' + c.lastName + '"></div><div class="admin-group"><label>Prenom</label><input type="text" id="e-firstName" value="' + c.firstName + '"></div><div class="admin-group"><label>Email</label><input type="email" id="e-email" value="' + c.email + '"></div><div class="admin-group"><label>Telephone</label><input type="tel" id="e-phone" value="' + (c.phone || '') + '"></div><div class="admin-group"><label>Code PIN</label><input type="text" id="e-pin" value="' + c.pin + '"></div><div class="admin-group"><label>Code d\'activation</label><input type="text" id="e-activationCode" value="' + c.activationCode + '"></div><div class="admin-group"><label>Depart %</label><input type="number" id="e-startPercent" value="' + c.startPercent + '" min="0" max="100"></div><div class="admin-group"><label>Arret %</label><input type="number" id="e-stopPercent" value="' + c.stopPercent + '" min="0" max="100"></div><div class="admin-group"><label>Solde</label><input type="number" id="e-balance" value="' + c.balance + '" step="0.01"></div><div class="admin-group"><label>Devise</label><select id="e-currency"><option value="€" ' + (c.currency==='€'?'selected':'') + '>EUR</option><option value="$" ' + (c.currency==='$'?'selected':'') + '>USD</option><option value="£" ' + (c.currency==='£'?'selected':'') + '>GBP</option><option value="zł" ' + (c.currency==='zł'?'selected':'') + '>PLN</option></select></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="e-message" rows="2">' + (c.message || '') + '</textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="e-presets"></div><div class="color-picker-row"><input type="color" id="e-themeColor" value="' + (c.themeColor || '#1a73e8') + '"><input type="text" id="e-themeColorHex" value="' + (c.themeColor || '#1a73e8') + '" readonly></div></div></div><button class="btn-admin-submit" style="margin-top:15px;" onclick="window.saveEdit(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Enregistrer</button>';
@@ -1285,6 +1177,9 @@ window.openEditModal = async function(id) {
 };
 
 window.saveEdit = async function(id) {
+  const c = await FireDB.getClient(id);
+  if (!c) return;
+  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
   await FireDB.updateClient(id, {
     lastName: document.getElementById('e-lastName').value,
     firstName: document.getElementById('e-firstName').value,
@@ -1308,6 +1203,7 @@ window.closeEditModal = function() { document.getElementById('edit-modal').class
 window.openTxModal = async function(id) {
   const c = await FireDB.getClient(id);
   if (!c) return;
+  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
   const txs = c.transactions || [];
   const body = document.getElementById('tx-modal-body');
   let html = '<div style="font-size:11px;color:#64748b;margin-bottom:12px;font-weight:600;">Client : <strong style="color:#0f172a;">' + c.firstName + ' ' + c.lastName + '</strong></div>';
@@ -1322,20 +1218,6 @@ window.openTxModal = async function(id) {
   }
   body.innerHTML = html;
   document.getElementById('tx-modal').classList.add('active');
-};
-
-window.changePassword = function() {
-  const oldp = document.getElementById('old-pass').value;
-  const newp = document.getElementById('new-pass').value;
-  const conf = document.getElementById('confirm-pass').value;
-  const err = document.getElementById('pass-error');
-  if (oldp !== AdminAuth.getPass()) { err.textContent = 'Ancien mot de passe incorrect'; err.style.display = 'block'; return; }
-  if (newp.length < 4) { err.textContent = 'Minimum 4 caracteres'; err.style.display = 'block'; return; }
-  if (newp !== conf) { err.textContent = 'Ne correspondent pas'; err.style.display = 'block'; return; }
-  AdminAuth.setPass(newp); err.style.display = 'none';
-  document.getElementById('pass-modal').classList.remove('active');
-  alert('Mot de passe modifie');
-  document.getElementById('old-pass').value = ''; document.getElementById('new-pass').value = ''; document.getElementById('confirm-pass').value = '';
 };
 
 window.addEventListener('error', function(e) { console.error('Global error:', e.message); });
