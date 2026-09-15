@@ -1,9 +1,3 @@
-// =====================================================
-// TRANSFERWIRE - SCRIPT PRINCIPAL
-// Firebase + Firestore + Logique complète
-// =====================================================
-
-// ========== FIREBASE IMPORTS ==========
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
 import {
   getFirestore,
@@ -376,27 +370,8 @@ function renderBankingApp(client) {
               </button>
             </div>
           </div>
-          <div class="quick-actions" aria-label="Actions principales">
-            <button class="quick-action active" type="button" onclick="window.navigateTo('screen-dashboard')">
-              <span class="quick-action-icon"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span>
-              <span class="quick-action-label">Accueil</span>
-            </button>
-            <button class="quick-action" type="button" onclick="window.navigateTo('screen-transfer')">
-              <span class="quick-action-icon"><svg viewBox="0 0 24 24"><path d="M4 7h11.17l-2.58-2.59L14 3l5 5-5 5-1.41-1.41L15.17 9H4V7zm16 10H8.83l2.58 2.59L10 21l-5-5 5-5 1.41 1.41L8.83 15H20v2z"/></svg></span>
-              <span class="quick-action-label">Paiements</span>
-            </button>
-            <button class="quick-action" type="button" onclick="window.navigateTo('screen-card')">
-              <span class="quick-action-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.1.89-2-2-2zm0 4H4V6h16v2z"/></svg></span>
-              <span class="quick-action-label">Carte virtuelle</span>
-            </button>
-            <button class="quick-action" type="button" onclick="window.navigateTo('screen-profile')">
-              <span class="quick-action-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span>
-              <span class="quick-action-label">Profil</span>
-            </button>
-          </div>
           <div class="section-heading">
             <div>
-              <div class="section-kicker">TRANSFERWIRE</div>
               <div class="section-title">${t('transactionHistory')}</div>
             </div>
             <span class="section-count">${(client.transactions || []).length}</span>
@@ -549,11 +524,26 @@ function renderBankingApp(client) {
           <button class="logout-btn" onclick="window.ClientLogout()">
             <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
             ${t('logoutBtn')}
-          </button>
         </div>
-      </div>
 
-
+      <nav class="bottom-nav" aria-label="Navigation principale">
+        <button class="nav-item active" id="nav-dashboard" type="button" aria-label="Accueil" onclick="window.navigateTo('screen-dashboard')">
+          <span class="nav-item-icon"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span>
+          <span>${t('navBalance')}</span>
+        </button>
+        <button class="nav-item" id="nav-transfer" type="button" aria-label="Paiements" onclick="window.navigateTo('screen-transfer')">
+          <span class="nav-item-icon"><svg viewBox="0 0 24 24"><path d="M4 7h11.17l-2.58-2.59L14 3l5 5-5 5-1.41-1.41L15.17 9H4V7zm16 10H8.83l2.58 2.59L10 21l-5-5 5-5 1.41 1.41L8.83 15H20v2z"/></svg></span>
+          <span>${t('navTransfer')}</span>
+        </button>
+        <button class="nav-item" id="nav-card" type="button" aria-label="Carte virtuelle" onclick="window.navigateTo('screen-card')">
+          <span class="nav-item-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.1-.89-2-2-2zm0 4H4V6h16v2z"/></svg></span>
+          <span>${t('navCard')}</span>
+        </button>
+        <button class="nav-item" id="nav-profile" type="button" aria-label="Profil" onclick="window.navigateTo('screen-profile')">
+          <span class="nav-item-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span>
+          <span>${t('navAccount')}</span>
+        </button>
+      </nav>
     </div>
   `;
 }
@@ -578,32 +568,31 @@ function formatTransactionDate(value) {
 function renderTransactions(txs) {
   if (!txs || txs.length === 0) {
     return `<div class="transactions-empty">
-      <div class="transactions-empty-icon"><svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.44C5.09 14.32 5 14.66 5 15c0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03L20.88 5H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg></div>
+      <div class="transactions-empty-icon"><svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.44C5.09 14.32 5 14.66 5 15c0 1.1.9 2 2 2h12v-2H7.42l.9-1.63h7.23c.75 0 1.41-.41 1.75-1.03L20.88 5H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.89-2-2-2z"/></svg></div>
       <strong>${t('noTransactions')}</strong>
-      <span>Vos opérations apparaîtront ici.</span>
     </div>`;
   }
   return `<div class="transaction-stack">${txs.map((tx, index) => {
     const isIncoming = tx.type === 'in';
-    const title = isIncoming ? t('txTransferReceived') : t('txTransferSent');
+    const subtitle = escapeHtml(tx.subtitle || (isIncoming ? (currentLang === 'fr' ? 'Remboursement reçu' : t('txTransferReceived')) : t('txTransferSent')));
+    const title = escapeHtml(tx.title || tx.bankName || (isIncoming ? (currentLang === 'fr' ? 'Banque émettrice' : 'TransferWire') : (currentLang === 'fr' ? 'Bénéficiaire' : 'TransferWire')));
     const amount = `${isIncoming ? '+' : '-'}${escapeHtml(tx.amount || '0')}`;
-    const subtitle = escapeHtml(tx.subtitle || (isIncoming ? 'Crédit sur le compte' : 'Virement sortant'));
     const date = formatTransactionDate(tx.date);
-    return `
-      <article class="transaction-item ${isIncoming ? 'transaction-in' : 'transaction-out'}" style="--tx-index:${Math.min(index, 8)}">
-        <div class="tx-icon ${isIncoming ? 'icon-green' : 'icon-red'}">
-          <svg viewBox="0 0 24 24">${isIncoming ? '<path d="M5 20h14v-2H5v2zm9-9h3l-5 5-5-5h3V3h4v8z"/>' : '<path d="M5 4h14v2H5V4zm9 5h3l-5 5-5-5h3V7h4v2z"/>'}</svg>
-        </div>
-        <div class="tx-details">
-          <div class="tx-title">${title}</div>
-          <div class="tx-subtitle">${subtitle}</div>
-          <div class="tx-date"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>${date}</div>
-        </div>
-        <div class="tx-amount">
-          <div class="${isIncoming ? 'amount-pos' : 'amount-neg'}">${amount}</div>
-          <span class="tx-status ${isIncoming ? 'received' : 'sent'}">${isIncoming ? 'Reçu' : 'Envoyé'}</span>
-        </div>
-      </article>`;
+    const iconPath = isIncoming
+      ? '<path d="M12 3a9 9 0 1 0 8.49 12h-2.13A7 7 0 1 1 17 9h-3l4 4 4-4h-3.08A9 9 0 0 0 12 3z"/>'
+      : '<path d="M12 2l7 7h-4v7h-6V9H5l7-7zm-7 18h14v2H5v-2z"/>';
+    const iconClass = isIncoming ? 'tx-incoming' : 'tx-outgoing';
+    return `<article class="transaction-item ${iconClass}" style="--tx-index:${Math.min(index, 8)}">
+      <div class="tx-icon ${iconClass}"><svg viewBox="0 0 24 24">${iconPath}</svg></div>
+      <div class="tx-details">
+        <div class="tx-title">${subtitle}</div>
+        <div class="tx-subtitle">${title}</div>
+      </div>
+      <div class="tx-amount">
+        <div class="${isIncoming ? 'amount-pos' : 'amount-neg'}">${amount}</div>
+        <div class="tx-date">${date}</div>
+      </div>
+    </article>`;
   }).join('')}</div>`;
 }
 
