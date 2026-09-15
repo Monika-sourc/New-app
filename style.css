@@ -31,7 +31,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ✅ FIX : Scroll autorisé sur html/body pour permettre le refresh Chrome */
 html {
   height: 100%;
   overflow: auto;
@@ -306,7 +305,6 @@ input, select, textarea { font-family: inherit; }
 .screen.active { display: flex; }
 
 /* ========== DASHBOARD ========== */
-/* ✅ AGRANDISSEMENT : Greeting plus grand */
 .greeting {
   padding: 14px 12px 6px 12px;
   font-size: 15px;
@@ -315,6 +313,7 @@ input, select, textarea { font-family: inherit; }
   letter-spacing: -0.2px;
 }
 
+/* ===== CARTE SOLDE (INCHANGÉE) ===== */
 .dashboard-hero {
   background: linear-gradient(160deg, var(--primary) 0%, var(--primary-dark) 100%);
   margin: 8px 12px 0 12px;
@@ -423,15 +422,13 @@ input, select, textarea { font-family: inherit; }
   border-radius: 3px;
 }
 
-/* ✅ NOUVEAU : 3 icônes SORTIES de la carte, dans leur propre bloc */
+/* ✅ BLOC 3 ICÔNES - SÉPARÉ de la carte, en dessous avec espace */
 .quick-actions-block {
   background: #fff;
-  margin: -22px 12px 0 12px;
+  margin: 14px 12px 0 12px;
   border-radius: 16px;
-  padding: 38px 8px 14px 8px;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
-  position: relative;
-  z-index: 2;
+  padding: 14px 8px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
   display: flex;
   justify-content: space-around;
   align-items: flex-start;
@@ -484,7 +481,7 @@ input, select, textarea { font-family: inherit; }
 }
 
 .section-title {
-  padding: 26px 12px 10px 12px;
+  padding: 22px 12px 10px 12px;
   font-size: 11px;
   font-weight: 800;
   color: var(--gray-900);
