@@ -4,31 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1a73e8">
-<meta name="description" content="TransferWire - Application Bancaire Sécurisée">
 <title>TransferWire</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 
-<!-- CONTENEUR PRINCIPAL -->
 <div class="app-container" id="app-root">
-  <!-- Écran de chargement initial -->
   <div style="display:flex;align-items:center;justify-content:center;height:100%;background:#fff;">
     <div class="spinner"></div>
   </div>
 </div>
 
-<!-- MODAL DE RÉSULTAT (Succès / Échec du transfert) -->
+<!-- MODAL RÉSULTAT TRANSFERT -->
 <div class="overlay" id="result-modal">
   <div class="modal">
     <div class="modal-header" id="modal-header">
       <button class="close-btn" onclick="closeResultModal()" aria-label="Fermer">
-        <svg viewBox="0 0 24 24">
-          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
       </button>
       <div class="check-icon-circle" id="modal-icon-circle">
         <svg viewBox="0 0 24 24" id="modal-icon-svg"></svg>
@@ -38,40 +33,46 @@
       <div class="modal-title" id="modal-title"></div>
       <div class="transaction-details" id="modal-details"></div>
       <div class="info-text">
-        <svg viewBox="0 0 24 24" id="modal-info-icon">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-        </svg>
+        <svg viewBox="0 0 24 24" id="modal-info-icon"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
         <span id="modal-message"></span>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-close" id="modal-close-btn" onclick="closeResultModal()"></button>
+    <div class="modal-footer"><button class="btn-close" id="modal-close-btn" onclick="closeResultModal()"></button></div>
+  </div>
+</div>
+
+<!-- MODAL IBAN -->
+<div class="overlay" id="iban-modal">
+  <div class="modal" style="max-width: 320px;">
+    <div class="modal-header iban-modal-header">
+      <button class="close-btn" onclick="document.getElementById('iban-modal').classList.remove('active')" aria-label="Fermer">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+      <div class="iban-icon-circle">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title" id="iban-modal-title" style="color: var(--primary);"></div>
+      <div class="iban-value-box" id="iban-modal-value"></div>
+    </div>
+    <div class="modal-footer iban-modal-footer">
+      <button class="btn-close btn-iban-copy" id="iban-copy-btn" onclick="window.copyIban()"></button>
+      <button class="btn-close" onclick="document.getElementById('iban-modal').classList.remove('active')" id="iban-close-btn"></button>
     </div>
   </div>
 </div>
 
-<!-- SCRIPT PRINCIPAL -->
 <script type="module">
-  import { initClientApp } from './script.js';
-  
-  // Initialiser l'application cliente
+  import { initClientApp } from './script.js?v=4';
   initClientApp();
 
-  // Gestion du bouton retour du navigateur
-  window.addEventListener('popstate', () => {
-    // Ne rien faire — l'application est une SPA
-  });
-
-  // Empêcher le zoom sur double-tap (mobile)
   let lastTouchEnd = 0;
   document.addEventListener('touchend', (event) => {
     const now = Date.now();
-    if (now - lastTouchEnd <= 300) {
-      event.preventDefault();
-    }
+    if (now - lastTouchEnd <= 300) event.preventDefault();
     lastTouchEnd = now;
   }, false);
 </script>
-
 </body>
 </html>
