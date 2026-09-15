@@ -1830,3 +1830,97 @@ body { background: #fff; align-items: flex-start; }
   .bottom-nav { width: calc(100% - 28px); margin-top: 14px; margin-bottom: 18px; }
   .nav-item { font-size: 8px; }
 }
+
+
+/* Mise en page bancaire finale : contenu dans l'ordre, navigation devant en bas */
+html, body { min-height: 100%; background: #f7f9fc; }
+body { align-items: center; overflow: hidden; }
+.app-container {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  height: 100vh;
+  min-height: 0;
+  max-height: none;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 0;
+  box-shadow: none;
+}
+.app-container > .view {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden;
+}
+.app-header { flex: 0 0 auto; }
+.screens-container {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0 !important;
+}
+.screen {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 105px !important;
+}
+#screen-dashboard { display: block; }
+.greeting { padding: 22px 22px 17px; font-size: 18px; }
+.balance-card {
+  display: block !important;
+  margin: 0 22px !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 20px 22px 18px !important;
+  border-radius: 17px;
+}
+.balance-header { font-size: 15px; margin-bottom: 13px; }
+.balance-amount { font-size: 30px; margin-bottom: 21px; }
+.balance-actions .btn { min-height: 37px; font-size: 13px; padding: 8px 11px; }
+.section-heading { padding: 30px 22px 9px; margin: 0 22px; }
+.section-heading .section-title { font-size: 18px; }
+.transaction-list { padding: 0 22px 20px; }
+.transaction-item { min-height: 70px; padding: 10px 0; }
+.tx-icon { width: 48px; height: 48px; min-width: 48px; max-width: 48px; margin-right: 10px; }
+.tx-icon svg { width: 23px; height: 23px; }
+.tx-title { font-size: 13px; }
+.tx-subtitle { font-size: 12px; max-width: 160px; }
+.tx-amount { min-width: 102px; gap: 4px; }
+.amount-pos, .amount-neg { font-size: 13px; }
+.tx-date { font-size: 10px; }
+.bottom-nav {
+  position: absolute !important;
+  left: 14px;
+  right: 14px;
+  bottom: 12px;
+  width: auto !important;
+  margin: 0 !important;
+  min-height: 58px;
+  padding: 4px 6px !important;
+  border: 1px solid #d8e0e8;
+  border-radius: 24px;
+  background: rgba(255,255,255,.98);
+  box-shadow: 0 8px 22px rgba(15,23,42,.16);
+  z-index: 100;
+}
+.nav-item { min-height: 48px; padding: 4px 2px; border-radius: 16px; font-size: 9px; gap: 1px; }
+.nav-item-icon { width: 24px; height: 22px; }
+.nav-item-icon svg { width: 19px; height: 19px; }
+@media (min-width: 721px) {
+  .app-container { height: min(100vh, 900px); border-radius: 18px; box-shadow: 0 12px 40px rgba(15,23,42,.12); }
+}
+@media (max-width: 360px) {
+  .app-header { min-height: 54px; padding: 7px 13px; }
+  .header-title { font-size: 17px; }
+  .greeting { padding-left: 16px; padding-right: 16px; font-size: 17px; }
+  .balance-card { margin-left: 16px !important; margin-right: 16px !important; padding-left: 17px !important; padding-right: 17px !important; }
+  .section-heading { margin-left: 16px; margin-right: 16px; }
+  .transaction-list { padding-left: 16px; padding-right: 16px; }
+  .bottom-nav { left: 10px; right: 10px; }
+}
