@@ -52,7 +52,6 @@ body {
 button { font-family: inherit; cursor: pointer; }
 input, select, textarea { font-family: inherit; }
 
-/* ========== CONTENEUR ========== */
 .app-container {
   width: 100%; max-width: 340px;
   height: 100vh; height: 100dvh; max-height: 660px;
@@ -74,7 +73,6 @@ input, select, textarea { font-family: inherit; }
 .view { display: none; width: 100%; height: 100%; flex-direction: column; overflow: hidden; min-height: 0; }
 .view.active { display: flex; }
 
-/* ========== SPINNER ========== */
 .spinner {
   width: 26px; height: 26px;
   border: 2.5px solid var(--gray-200);
@@ -84,7 +82,6 @@ input, select, textarea { font-family: inherit; }
 .spinner-container { display: flex; justify-content: center; align-items: center; padding: 22px 0; }
 @keyframes spin { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
 
-/* ========== ACCÈS RESTREINT / BLOQUÉ ========== */
 .no-access, .blocked-screen {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   height: 100%; padding: 24px 18px; text-align: center; background: #fff;
@@ -100,7 +97,6 @@ input, select, textarea { font-family: inherit; }
 .no-access h2, .blocked-screen h2 { font-size: 14px; font-weight: 800; color: var(--gray-900); margin-bottom: 7px; }
 .no-access p, .blocked-screen p { font-size: 10.5px; color: var(--gray-500); line-height: 1.6; max-width: 240px; }
 
-/* ========== ADMIN LOGIN ========== */
 .admin-login {
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   height: 100%; padding: 24px 18px;
@@ -137,7 +133,6 @@ input, select, textarea { font-family: inherit; }
 .admin-login .hint { margin-top: 18px; font-size: 9px; color: var(--gray-400); text-align: center; }
 .admin-login .hint code { background: var(--gray-100); padding: 2px 5px; border-radius: 3px; color: var(--gray-700); font-weight: 600; }
 
-/* ========== ADMIN DASHBOARD ========== */
 .admin-wrapper { display: flex; flex-direction: column; height: 100%; background: var(--gray-50); min-height: 0; }
 .admin-topbar {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -166,7 +161,6 @@ input, select, textarea { font-family: inherit; }
 .client-list:last-child { margin-bottom: 20px; }
 .client-card:last-child { margin-bottom: 20px; }
 
-/* ===== CARTE QUICK ACTIONS (NOUVELLE) ===== */
 .quick-actions-card {
   border: 1.5px solid var(--gray-200);
   border-radius: 10px;
@@ -206,13 +200,8 @@ input, select, textarea { font-family: inherit; }
   margin-bottom: 12px;
 }
 
-.quick-actions-card .admin-group {
-  margin-bottom: 12px;
-}
-
-.quick-actions-card .admin-group:last-child {
-  margin-bottom: 0;
-}
+.quick-actions-card .admin-group { margin-bottom: 12px; }
+.quick-actions-card .admin-group:last-child { margin-bottom: 0; }
 
 .quick-actions-card label {
   font-size: 8.5px;
@@ -224,10 +213,7 @@ input, select, textarea { font-family: inherit; }
   display: block;
 }
 
-.quick-actions-card label .req {
-  color: var(--danger);
-  font-weight: 700;
-}
+.quick-actions-card label .req { color: var(--danger); font-weight: 700; }
 
 .quick-actions-card select,
 .quick-actions-card input {
@@ -268,11 +254,7 @@ input, select, textarea { font-family: inherit; }
   margin-top: 4px;
 }
 
-.quick-actions-card .btn-admin-submit {
-  margin-top: 4px;
-}
-
-/* ===== FIN CARTE QUICK ACTIONS ===== */
+.quick-actions-card .btn-admin-submit { margin-top: 4px; }
 
 .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 13px; }
 .stat-card { background: #fff; border-radius: 9px; padding: 10px; border: 1px solid #eef2f7; box-shadow: 0 1px 5px rgba(15, 23, 42, 0.04); }
@@ -312,7 +294,6 @@ input, select, textarea { font-family: inherit; }
   box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
 }
 .btn-admin-submit svg { width: 12px; height: 12px; fill: #fff; }
-.btn-admin-submit:hover { transform: translateY(-1px); }
 
 @media (max-width: 450px) {
   .admin-grid { grid-template-columns: 1fr; }
@@ -385,7 +366,6 @@ input, select, textarea { font-family: inherit; }
 .tx-row .tx-amt { font-size: 10px; font-weight: 800; flex-shrink: 0; }
 .tx-row .tx-amt.pos { color: var(--success); } .tx-row .tx-amt.neg { color: var(--danger); }
 
-/* ========== LOGIN CLIENT ========== */
 .login-container { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 18px; height: 100%; background: #fff; }
 .login-logo { margin-bottom: 14px; display: flex; align-items: center; gap: 7px; }
 .login-logo svg { width: 24px; height: 24px; }
@@ -401,19 +381,21 @@ input, select, textarea { font-family: inherit; }
 .btn-login svg { width: 12px; height: 12px; fill: #fff; }
 .error-msg { color: var(--danger); font-size: 9.5px; margin-top: 9px; display: none; text-align: center; font-weight: 600; }
 
-/* ========== APP HEADER ========== */
 .app-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #fff; border-bottom: 1px solid var(--gray-100); flex-shrink: 0; }
 .header-title { font-size: 12px; font-weight: 800; letter-spacing: 0.3px; color: var(--gray-900); }
 .icon-button { background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 3px; border-radius: 5px; }
 .icon-button svg { width: 17px; height: 17px; fill: var(--primary); }
 .menu-icon svg { fill: var(--gray-900); }
 
-/* ========== SCREENS ========== */
 .screens-container { flex: 1 1 0; min-height: 0; position: relative; overflow-y: auto; background: #fff; -webkit-overflow-scrolling: touch; }
 .screen { position: absolute; top: 0; left: 0; width: 100%; min-height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; background: #fff; display: none; flex-direction: column; padding-bottom: 12px; }
 .screen.active { display: flex; }
 
-/* ========== DASHBOARD ========== */
+/* ===== GRILLE DE FOND POUR ÉVITER L'ESPACE VIDE VISIBLE ===== */
+#screen-transfer.active {
+  min-height: 100%;
+}
+
 .greeting {
   padding: 14px 12px 6px 12px;
   font-size: 15px;
@@ -565,11 +547,7 @@ input, select, textarea { font-family: inherit; }
   transition: all 0.2s ease;
 }
 
-.quick-icon svg {
-  width: 20px;
-  height: 20px;
-  fill: var(--primary);
-}
+.quick-icon svg { width: 20px; height: 20px; fill: var(--primary); }
 
 .quick-action:hover .quick-icon,
 .quick-action:active .quick-icon {
@@ -615,7 +593,6 @@ input, select, textarea { font-family: inherit; }
 .amount-neg { font-size: 11px; font-weight: 800; color: #ea4335; letter-spacing: -0.2px; }
 .tx-date { font-size: 8px; color: var(--gray-500); font-weight: 400; }
 
-/* ========== BOTTOM NAV ========== */
 .bottom-nav { background: #e8eaf0; padding: 7px 10px 8px 10px; flex-shrink: 0; z-index: 10; position: relative; }
 @supports (padding: env(safe-area-inset-bottom)) {
   .bottom-nav { padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
@@ -629,7 +606,7 @@ input, select, textarea { font-family: inherit; }
 .nav-item.active span { color: #7c3aed; }
 .notification-dot { position: absolute; top: 4px; right: 20%; width: 4px; height: 4px; background: #ea4335; border-radius: 50%; border: 1px solid #fff; z-index: 2; }
 
-/* ========== TRANSFERT ========== */
+/* ===== TRANSFERT ===== */
 .page-title-bar { display: flex; align-items: center; gap: 7px; padding: 11px 12px; font-size: 10.5px; font-weight: 700; color: var(--gray-900); }
 .page-title-icon { background: var(--primary); color: #fff; width: 16px; height: 16px; border-radius: 5px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .page-title-icon svg { width: 10px; height: 10px; fill: #fff; }
@@ -637,13 +614,46 @@ input, select, textarea { font-family: inherit; }
 .details-header { display: flex; align-items: center; gap: 7px; padding: 0 12px 9px 12px; font-size: 10px; font-weight: 800; color: var(--gray-900); }
 .details-icon { background: var(--primary); color: #fff; width: 14px; height: 14px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 8px; }
 .form-group { padding: 0 12px 9px 12px; }
+
+/* ===== NEW : Label + Input montant ===== */
+.form-label {
+  display: block;
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--gray-700);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 5px;
+}
 .form-input { width: 100%; padding: 9px; border: 1.5px solid var(--gray-200); border-radius: 7px; font-size: 9.5px; color: var(--gray-900); outline: none; background: #fff; font-family: inherit; }
 .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1); }
-.warning-box { background: var(--warning-light); border-radius: 7px; padding: 9px; margin: 3px 12px 13px 12px; display: flex; align-items: flex-start; gap: 7px; border-left: 3px solid var(--warning); }
+.amount-input {
+  font-size: 14px !important;
+  font-weight: 800;
+  padding: 11px !important;
+  color: var(--primary) !important;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* ===== Warning box sans bordure gauche ===== */
+.warning-box {
+  background: var(--warning-light);
+  border-radius: 7px;
+  padding: 9px;
+  margin: 3px 12px 13px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
 .warning-box svg { width: 11px; height: 11px; fill: #b08d00; flex-shrink: 0; margin-top: 2px; }
 .warning-text { font-size: 8.5px; color: #78350f; line-height: 1.5; font-weight: 600; }
+
 .submit-btn { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; border: none; border-radius: 7px; padding: 10px; margin: 0 12px 12px 12px; font-size: 10.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 4px 12px rgba(26, 115, 232, 0.25); cursor: pointer; }
 .submit-btn svg { width: 11px; height: 11px; fill: #fff; }
+
+/* ✅ NOUVEAU : Pousser le bouton Suivant en bas de l'écran transfert */
+#screen-transfer .submit-btn { margin-top: auto; }
 
 .summary-card { background: var(--primary-light); border-radius: 8px; padding: 12px; margin: 12px; border: 1px solid #dbeafe; }
 .summary-header { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; color: var(--gray-900); margin-bottom: 9px; }
@@ -670,7 +680,6 @@ input, select, textarea { font-family: inherit; }
 .progress-fill { background: #16a34a; height: 100%; width: 0; display: flex; align-items: center; border-radius: 5px 0 0 5px; transition: width 0.15s linear; background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 0, rgba(255, 255, 255, 0.15) 8px, transparent 8px, transparent 16px), linear-gradient(90deg, #16a34a, #22c55e); }
 .progress-percentage { color: #fff; font-weight: 800; font-size: 9.5px; padding-left: 9px; z-index: 2; }
 
-/* ========== MODAL ========== */
 .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 12px; }
 .overlay.active { display: flex; }
 .modal { background: #fff; border-radius: 11px; width: 100%; max-width: 300px; overflow: hidden; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.3); display: flex; flex-direction: column; animation: popIn 0.3s ease-out; max-height: 92vh; overflow-y: auto; }
@@ -715,7 +724,6 @@ input, select, textarea { font-family: inherit; }
   line-height: 1.5;
 }
 
-/* ========== CARTE ========== */
 .info-banner { display: flex; justify-content: space-between; align-items: flex-start; padding: 9px; margin: 12px; border-radius: 7px; font-size: 8.5px; line-height: 1.5; }
 .info-banner-blue { background: #eff6ff; border: 1px solid #dbeafe; }
 .info-banner-blue .banner-text { color: #1e40af; font-weight: 600; }
@@ -736,7 +744,6 @@ input, select, textarea { font-family: inherit; }
 .card-actions .btn { flex: 1; justify-content: center; padding: 7px; font-size: 8.5px; }
 .card-transactions-title { padding: 0 12px 9px 12px; font-size: 10px; font-weight: 800; color: var(--gray-900); border-bottom: 1px solid var(--gray-100); margin: 0 12px; }
 
-/* ========== PROFIL ========== */
 .profile-section { padding: 12px; }
 .profile-header { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; color: var(--gray-900); margin-bottom: 9px; }
 .profile-header svg { width: 12px; height: 12px; fill: var(--primary); flex-shrink: 0; }
