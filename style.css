@@ -1,5 +1,5 @@
 /* =====================================================
-   TRANSFERWIRE - STYLES COMPLETS
+   TRANSFERWIRE - STYLES
    ===================================================== */
 
 :root {
@@ -31,31 +31,41 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-html, body {
-  height: 100%; width: 100%; margin: 0; padding: 0;
-  overflow: hidden; overscroll-behavior: none;
+/* ✅ FIX : Scroll autorisé sur html/body pour permettre le refresh Chrome */
+html {
+  height: 100%;
+  overflow: auto;
+  overscroll-behavior-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
+  min-height: 100%;
+  margin: 0; padding: 0;
   background: #e0e0e0;
-  display: flex; justify-content: center; align-items: center;
   color: var(--gray-900);
+  overflow: auto;
+  overscroll-behavior-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 button { font-family: inherit; cursor: pointer; }
 input, select, textarea { font-family: inherit; }
 
+/* ========== CONTENEUR ========== */
 .app-container {
   width: 100%; max-width: 340px;
   height: 100vh; height: 100dvh; max-height: 660px;
   background: #fff; position: relative;
   display: flex; flex-direction: column;
+  margin: 0 auto;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   overflow: hidden; border-radius: 14px;
 }
 
 @media (max-width: 500px) {
-  body { align-items: stretch; background: #fff; }
+  body { background: #fff; }
   .app-container {
     max-width: 100%; max-height: 100dvh;
     height: 100dvh; border-radius: 0; box-shadow: none;
@@ -291,14 +301,20 @@ input, select, textarea { font-family: inherit; }
 .menu-icon svg { fill: var(--gray-900); }
 
 /* ========== SCREENS ========== */
-.screens-container { flex: 1 1 0; min-height: 0; position: relative; overflow: hidden; background: #fff; }
-.screen { position: absolute; inset: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; background: #fff; display: none; flex-direction: column; padding-bottom: 12px; }
+.screens-container { flex: 1 1 0; min-height: 0; position: relative; overflow-y: auto; background: #fff; -webkit-overflow-scrolling: touch; }
+.screen { position: absolute; top: 0; left: 0; width: 100%; min-height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; background: #fff; display: none; flex-direction: column; padding-bottom: 12px; }
 .screen.active { display: flex; }
 
 /* ========== DASHBOARD ========== */
-.greeting { padding: 12px 12px 4px 12px; font-size: 10.5px; color: var(--gray-900); font-weight: 400; }
+/* ✅ AGRANDISSEMENT : Greeting plus grand */
+.greeting {
+  padding: 14px 12px 6px 12px;
+  font-size: 15px;
+  color: var(--gray-900);
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
 
-/* ===== NOUVELLE CARTE SOLDE ===== */
 .dashboard-hero {
   background: linear-gradient(160deg, var(--primary) 0%, var(--primary-dark) 100%);
   margin: 8px 12px 0 12px;
@@ -383,16 +399,13 @@ input, select, textarea { font-family: inherit; }
   font-family: inherit;
 }
 
-.account-pill:active {
-  background: rgba(0, 0, 0, 0.35);
-}
+.account-pill:active { background: rgba(0, 0, 0, 0.35); }
 
 .dots-indicator {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 4px;
-  margin-bottom: 20px;
   position: relative;
   z-index: 1;
 }
@@ -410,14 +423,19 @@ input, select, textarea { font-family: inherit; }
   border-radius: 3px;
 }
 
-/* ===== 3 ICÔNES RONDES ===== */
-.quick-actions {
+/* ✅ NOUVEAU : 3 icônes SORTIES de la carte, dans leur propre bloc */
+.quick-actions-block {
+  background: #fff;
+  margin: -22px 12px 0 12px;
+  border-radius: 16px;
+  padding: 38px 8px 14px 8px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+  position: relative;
+  z-index: 2;
   display: flex;
   justify-content: space-around;
   align-items: flex-start;
   gap: 4px;
-  position: relative;
-  z-index: 1;
 }
 
 .quick-action {
@@ -435,8 +453,8 @@ input, select, textarea { font-family: inherit; }
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--primary-light);
+  border: 1px solid rgba(26, 115, 232, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -446,27 +464,25 @@ input, select, textarea { font-family: inherit; }
 .quick-icon svg {
   width: 20px;
   height: 20px;
-  fill: #fff;
+  fill: var(--primary);
 }
 
 .quick-action:hover .quick-icon,
 .quick-action:active .quick-icon {
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(26, 115, 232, 0.2);
   transform: scale(1.05);
 }
 
 .quick-action span {
   font-size: 8px;
-  font-weight: 500;
-  color: #fff;
+  font-weight: 600;
+  color: var(--gray-900);
   text-align: center;
   line-height: 1.25;
-  opacity: 0.95;
   word-break: break-word;
   max-width: 90px;
 }
 
-/* ===== TITRE HISTORIQUE (déplacé un peu plus bas) ===== */
 .section-title {
   padding: 26px 12px 10px 12px;
   font-size: 11px;
@@ -580,7 +596,6 @@ input, select, textarea { font-family: inherit; }
 .btn-close { background: var(--gray-100); border: none; border-radius: 6px; padding: 7px 15px; font-size: 9.5px; font-weight: 700; color: var(--gray-700); cursor: pointer; }
 .btn-iban-copy { flex: 1; background: var(--primary); color: #fff; }
 
-/* ===== IBAN VALUE BOX ===== */
 .iban-value-box {
   background: var(--gray-50);
   padding: 14px 12px;
