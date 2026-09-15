@@ -376,7 +376,13 @@ function renderBankingApp(client) {
               </button>
             </div>
           </div>
-          <div class="section-title">${t('transactionHistory')}</div>
+          <div class="section-heading">
+            <div>
+              <div class="section-kicker">TRANSFERWIRE</div>
+              <div class="section-title">${t('transactionHistory')}</div>
+            </div>
+            <span class="section-count">${(client.transactions || []).length}</span>
+          </div>
           <div class="transaction-list" id="transaction-list">
             ${renderTransactions(client.transactions)}
           </div>
@@ -530,20 +536,20 @@ function renderBankingApp(client) {
       </div>
 
       <nav class="bottom-nav">
-        <div class="nav-item active" id="nav-dashboard" onclick="window.navigateTo('screen-dashboard')">
+        <div class="nav-item active" id="nav-dashboard" role="button" tabindex="0" aria-label="Accueil" onclick="window.navigateTo('screen-dashboard')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.navigateTo('screen-dashboard')}">
           <div class="active-indicator"></div>
           <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
           <span>${t('navBalance')}</span>
         </div>
-        <div class="nav-item" id="nav-card" onclick="window.navigateTo('screen-card')">
+        <div class="nav-item" id="nav-card" role="button" tabindex="0" aria-label="Carte" onclick="window.navigateTo('screen-card')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.navigateTo('screen-card')}">
           <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2z"/></svg>
           <span>${t('navCard')}</span>
         </div>
-        <div class="nav-item" id="nav-transfer" onclick="window.navigateTo('screen-transfer')">
+        <div class="nav-item" id="nav-transfer" role="button" tabindex="0" aria-label="Virement" onclick="window.navigateTo('screen-transfer')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.navigateTo('screen-transfer')}">
           <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
           <span>${t('navTransfer')}</span>
         </div>
-        <div class="nav-item" id="nav-profile" onclick="window.navigateTo('screen-profile')">
+        <div class="nav-item" id="nav-profile" role="button" tabindex="0" aria-label="Compte" onclick="window.navigateTo('screen-profile')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.navigateTo('screen-profile')}">
           <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
           <div class="notification-dot"></div>
           <span>${t('navAccount')}</span>
@@ -553,27 +559,53 @@ function renderBankingApp(client) {
   `;
 }
 
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>'"]/g, (char) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+  }[char]));
+}
+
+function formatTransactionDate(value) {
+  if (!value) return 'Date non disponible';
+  const date = new Date(value);
+  if (!Number.isNaN(date.getTime()) && /T|Z|-/.test(String(value))) {
+    return date.toLocaleDateString(currentLang === 'fr' ? 'fr-FR' : currentLang, {
+      day: '2-digit', month: 'short', year: 'numeric'
+    });
+  }
+  return escapeHtml(value);
+}
+
 function renderTransactions(txs) {
   if (!txs || txs.length === 0) {
-    return `<p style="color:#94a3b8;font-size:13px;text-align:center;padding:20px 0;">${t('noTransactions')}</p>`;
+    return `<div class="transactions-empty">
+      <div class="transactions-empty-icon"><svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.44C5.09 14.32 5 14.66 5 15c0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03L20.88 5H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg></div>
+      <strong>${t('noTransactions')}</strong>
+      <span>Vos opérations apparaîtront ici.</span>
+    </div>`;
   }
-  return txs.map(tx => {
-    const title = tx.type === 'out' ? t('txTransferSent') : t('txTransferReceived');
+  return `<div class="transaction-stack">${txs.map((tx, index) => {
+    const isIncoming = tx.type === 'in';
+    const title = isIncoming ? t('txTransferReceived') : t('txTransferSent');
+    const amount = `${isIncoming ? '+' : '-'}${escapeHtml(tx.amount || '0')}`;
+    const subtitle = escapeHtml(tx.subtitle || (isIncoming ? 'Crédit sur le compte' : 'Virement sortant'));
+    const date = formatTransactionDate(tx.date);
     return `
-      <div class="transaction-item">
-        <div class="tx-icon ${tx.type === 'in' ? 'icon-green' : 'icon-red'}">
-          <svg viewBox="0 0 24 24">${tx.type === 'in' ? '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>' : '<path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>'}</svg>
+      <article class="transaction-item ${isIncoming ? 'transaction-in' : 'transaction-out'}" style="--tx-index:${Math.min(index, 8)}">
+        <div class="tx-icon ${isIncoming ? 'icon-green' : 'icon-red'}">
+          <svg viewBox="0 0 24 24">${isIncoming ? '<path d="M5 20h14v-2H5v2zm9-9h3l-5 5-5-5h3V3h4v8z"/>' : '<path d="M5 4h14v2H5V4zm9 5h3l-5 5-5-5h3V7h4v2z"/>'}</svg>
         </div>
         <div class="tx-details">
           <div class="tx-title">${title}</div>
-          <div class="tx-subtitle">${tx.subtitle || ''}</div>
+          <div class="tx-subtitle">${subtitle}</div>
+          <div class="tx-date"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>${date}</div>
         </div>
         <div class="tx-amount">
-          <div class="${tx.type === 'in' ? 'amount-pos' : 'amount-neg'}">${tx.type === 'in' ? '+' : '-'}${tx.amount}</div>
-          <div class="tx-date">${tx.date}</div>
+          <div class="${isIncoming ? 'amount-pos' : 'amount-neg'}">${amount}</div>
+          <span class="tx-status ${isIncoming ? 'received' : 'sent'}">${isIncoming ? 'Reçu' : 'Envoyé'}</span>
         </div>
-      </div>`;
-  }).join('');
+      </article>`;
+  }).join('')}</div>`;
 }
 
 // =====================================================
