@@ -136,7 +136,7 @@ const generateShortId = () => { const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 const darken = (hex, pct) => { const n = parseInt(hex.replace('#', ''), 16); const r = Math.max(0, ((n >> 16) & 255) - pct); const g = Math.max(0, ((n >> 8) & 255) - pct); const b = Math.max(0, (n & 255) - pct); return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0'); };
 const applyTheme = (color) => { color = color || '#1a73e8'; document.documentElement.style.setProperty('--primary', color); document.documentElement.style.setProperty('--primary-dark', darken(color, 40)); };
 
-// ✅ NOUVEAU : Split balance pour afficher centimes en petit
+// ✅ Split balance pour afficher centimes en petit
 const splitBalance = (amount, currency) => {
   const formatted = (amount || 0).toLocaleString('fr-FR', {
     minimumFractionDigits: 2, maximumFractionDigits: 2
@@ -149,7 +149,7 @@ const splitBalance = (amount, currency) => {
   };
 };
 
-// ✅ NOUVEAU : Rendu du hero de solde
+// ✅ NOUVEAU : Hero de solde SANS les 3 icônes (elles sont maintenant en dehors)
 function renderBalanceHero(client) {
   const currency = client.currency || '€';
   const { intPart, decPart } = splitBalance(client.balance || 0, currency);
@@ -162,7 +162,13 @@ function renderBalanceHero(client) {
     <div class="dots-indicator">
       <span class="active"></span><span></span><span></span>
     </div>
-    <div class="quick-actions">
+  `;
+}
+
+// ✅ NOUVEAU : Bloc des 3 icônes rondes (séparé de la carte)
+function renderQuickActions() {
+  return `
+    <div class="quick-actions-block">
       <div class="quick-action" onclick="window.showIban()">
         <div class="quick-icon">
           <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
@@ -278,6 +284,7 @@ function renderBankingApp(client) {
         <div class="dashboard-hero" id="balance-hero">
           ${renderBalanceHero(client)}
         </div>
+        ${renderQuickActions()}
         <div class="section-title">${t('transactionHistory')}</div>
         <div class="transaction-list" id="transaction-list">${renderTransactions(client.transactions)}</div>
       </div>
@@ -421,7 +428,7 @@ window.navigateTo = (id) => {
   pushHistory(id);
 };
 
-// ✅ NOUVEAU : Afficher le modal IBAN
+// ✅ Afficher le modal IBAN
 window.showIban = () => {
   const iban = currentClient.address || 'N/A';
   document.getElementById('iban-modal-title').innerText = t('myIbanTitle');
@@ -431,7 +438,7 @@ window.showIban = () => {
   document.getElementById('iban-modal').classList.add('active');
 };
 
-// ✅ NOUVEAU : Copier l'IBAN
+// ✅ Copier l'IBAN
 window.copyIban = () => {
   const iban = currentClient.address || '';
   navigator.clipboard.writeText(iban).then(() => {
