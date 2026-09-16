@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v22 - Masquage forcé par admin (impossible à révéler)
+// v23 - Carte plus compacte + Titulaire personnalisable
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -71,7 +71,14 @@ function generateBic(country) {
 function generateCardNumber() { let n = '4'; for (let i = 0; i < 15; i++) n += Math.floor(Math.random() * 10); return n; }
 function generateCardExpiry() { return String(Math.floor(Math.random() * 12) + 1).padStart(2, '0') + '/' + String(Math.floor(Math.random() * 5) + 26); }
 function generateCardCvv() { return String(Math.floor(Math.random() * 900) + 100); }
-function getCardHolderName(client) { return client ? ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase() : ''; }
+
+// ✅ NOUVEAU : le titulaire utilise d'abord cardHolder custom, sinon firstName + lastName
+function getCardHolderName(client) {
+  if (!client) return '';
+  if (client.cardHolder && client.cardHolder.trim()) return client.cardHolder.trim().toUpperCase();
+  return ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase();
+}
+
 function formatIban(iban) { return iban ? iban.replace(/(.{4})/g, '$1 ').trim() : ''; }
 function formatCardNumber(num) { return num ? num.replace(/(.{4})/g, '$1 ').trim() : ''; }
 function maskIban(iban) { return (iban && iban.length >= 4) ? iban.slice(0, -4) + '••••' : iban; }
@@ -191,10 +198,9 @@ function subscribeToClient(clientId) {
       currentClient = fresh; currentLang = fresh.language || 'fr'; applyTheme(fresh.themeColor);
       const hero = document.getElementById('balance-hero'); if (hero) hero.innerHTML = renderBalanceHero(fresh);
       const list = document.getElementById('transaction-list'); if (list) list.innerHTML = renderTransactions(fresh.transactions);
-      // Si la modale carte est ouverte, on la re-render avec les nouvelles données admin
       const cardBody = document.getElementById('card-modal-body-content');
       if (cardBody) {
-        virtualCardRevealed = false; // reset le toggle client
+        virtualCardRevealed = false;
         const cardNum = fresh.cardNumber || '4987103143003327';
         const cardHolder = getCardHolderName(fresh);
         const cardExpiry = fresh.cardExpiry || '12/40';
@@ -294,21 +300,17 @@ window.navigateTo = function(id) {
   pushHistory(id);
 };
 
-// =====================================================
-// IBAN MODAL (client) — masquage forcé si admin a activé
-// =====================================================
 window.showIban = function() {
   if (!currentClient) return;
   const old = document.getElementById('iban-modal-dynamic'); if (old) old.remove();
   const rawIban = currentClient.iban || currentClient.address || 'N/A';
   const ownerName = getCardHolderName(currentClient);
   const bic = currentClient.bic || 'BICCODEXX';
-  // Si l'admin a activé le masquage, on masque TOUJOURS, aucune exception
   const adminForcedMask = currentClient.ibanMasked === true;
   const displayIban = adminForcedMask ? maskIban(rawIban) : rawIban;
   const formattedIban = formatIban(displayIban);
   const L = ibanLabels[currentLang] || ibanLabels.fr;
-  const warningText = adminForcedMask ? L.warning : L.warning;
+  const warningText = L.warning;
   const ov = document.createElement('div');
   ov.id = 'iban-modal-dynamic';
   ov.style.cssText = 'position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100vh!important;background:rgba(15,23,42,0.7)!important;display:flex!important;justify-content:center!important;align-items:center!important;z-index:2147483647!important;padding:16px!important;box-sizing:border-box!important;overflow-y:auto!important;';
@@ -323,7 +325,6 @@ window.showIban = function() {
 };
 
 window.copyIban = function() {
-  // Si l'admin a masqué, on copie la version MASQUÉE (pour empêcher la récupération du vrai numéro)
   const adminForcedMask = currentClient.ibanMasked === true;
   const rawIban = currentClient.iban || currentClient.address || '';
   const toCopy = adminForcedMask ? maskIban(rawIban) : rawIban;
@@ -337,7 +338,7 @@ window.copyIban = function() {
 };
 
 // =====================================================
-// VIRTUAL CARD MODAL (client) — masquage forcé par admin
+// VIRTUAL CARD MODAL (client) — version COMPACTE
 // =====================================================
 window.showVirtualCard = function() {
   if (!currentClient) { alert('Erreur : client non initialise'); return; }
@@ -353,14 +354,16 @@ window.showVirtualCard = function() {
   const L = cardLabels[currentLang] || cardLabels.fr;
   const ov = document.createElement('div');
   ov.id = 'card-modal-dynamic';
-  ov.style.cssText = 'position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100vh!important;background:rgba(15,23,42,0.75)!important;display:flex!important;justify-content:center!important;align-items:center!important;z-index:2147483647!important;padding:16px!important;box-sizing:border-box!important;overflow-y:auto!important;';
-  ov.innerHTML = '<div style="background:#f8fafc!important;border-radius:16px!important;width:100%!important;max-width:340px!important;max-height:90vh!important;overflow-y:auto!important;box-shadow:0 20px 50px rgba(0,0,0,0.4)!important;display:flex!important;flex-direction:column!important;">' +
-    '<div style="background:#fff!important;padding:16px 18px!important;display:flex!important;align-items:center!important;gap:12px!important;position:sticky!important;top:0!important;z-index:3!important;border-bottom:1px solid #eef2f7!important;border-radius:16px 16px 0 0!important;">' +
-      '<div style="width:34px!important;height:34px!important;border-radius:10px!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;"><svg viewBox="0 0 24 24" style="width:18px!important;height:18px!important;fill:#fff!important;"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6z"/></svg></div>' +
-      '<div style="flex:1!important;font-size:16px!important;font-weight:800!important;color:#0f172a!important;">' + L.title + '</div>' +
-      '<button onclick="document.getElementById(\'card-modal-dynamic\').remove()" style="width:32px!important;height:32px!important;border-radius:50%!important;background:#e2e8f0!important;border:none!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;"><svg viewBox="0 0 24 24" style="width:14px!important;height:14px!important;fill:#475569!important;"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
+  ov.style.cssText = 'position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100vh!important;background:rgba(15,23,42,0.75)!important;display:flex!important;justify-content:center!important;align-items:center!important;z-index:2147483647!important;padding:12px!important;box-sizing:border-box!important;overflow-y:auto!important;';
+
+  // ✅ Container réduit : 290px au lieu de 340px, gaps réduits
+  ov.innerHTML = '<div style="background:#f8fafc!important;border-radius:14px!important;width:100%!important;max-width:290px!important;max-height:92vh!important;overflow-y:auto!important;box-shadow:0 20px 50px rgba(0,0,0,0.4)!important;display:flex!important;flex-direction:column!important;">' +
+    '<div style="background:#fff!important;padding:12px 14px!important;display:flex!important;align-items:center!important;gap:10px!important;position:sticky!important;top:0!important;z-index:3!important;border-bottom:1px solid #eef2f7!important;border-radius:14px 14px 0 0!important;">' +
+      '<div style="width:28px!important;height:28px!important;border-radius:9px!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;"><svg viewBox="0 0 24 24" style="width:14px!important;height:14px!important;fill:#fff!important;"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6z"/></svg></div>' +
+      '<div style="flex:1!important;font-size:13.5px!important;font-weight:800!important;color:#0f172a!important;">' + L.title + '</div>' +
+      '<button onclick="document.getElementById(\'card-modal-dynamic\').remove()" style="width:26px!important;height:26px!important;border-radius:50%!important;background:#e2e8f0!important;border:none!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;"><svg viewBox="0 0 24 24" style="width:12px!important;height:12px!important;fill:#475569!important;"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
     '</div>' +
-    '<div id="card-modal-body-content" style="padding:16px!important;display:flex!important;flex-direction:column!important;gap:12px!important;background:#f8fafc!important;">' + renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, maskLast4, maskCvv, false) + '</div>' +
+    '<div id="card-modal-body-content" style="padding:12px!important;display:flex!important;flex-direction:column!important;gap:9px!important;background:#f8fafc!important;">' + renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, maskLast4, maskCvv, false) + '</div>' +
   '</div>';
   ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
   document.body.appendChild(ov);
@@ -368,83 +371,64 @@ window.showVirtualCard = function() {
 
 function renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, maskLast4, maskCvv, revealed) {
   const L = cardLabels[currentLang] || cardLabels.fr;
-
-  // ✅ RÈGLE MÉTIER : si l'admin a activé un masquage, le client ne peut JAMAIS le révéler
   const adminForcedNumber = maskLast4 === true;
   const adminForcedCvv = maskCvv === true;
   const anyAdminForced = adminForcedNumber || adminForcedCvv;
-
-  // Le toggle client (revealed) ne fonctionne QUE si l'admin n'a rien forcé
   const showFullNumber = adminForcedNumber ? false : (anyAdminForced ? true : revealed);
   const showFullCvv = adminForcedCvv ? false : (anyAdminForced ? true : revealed);
-
   const displayNum = showFullNumber ? cardNum : maskCardNumber(cardNum);
   const displayCvv = showFullCvv ? cardCvv : '•••';
   const formattedNum = formatCardNumber(displayNum);
   const formattedHolder = (cardHolder || '').toUpperCase();
 
-  // Warning
   let warningText, warningBg, warningColor, warningBorder;
-  if (adminForcedNumber && adminForcedCvv) {
-    warningText = L.warningAdminMasked;
-    warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a';
-  } else if (adminForcedNumber) {
-    warningText = L.warningMasked;
-    warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a';
-  } else if (adminForcedCvv) {
-    warningText = L.warningCvvMasked;
-    warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a';
-  } else if (revealed) {
-    warningText = L.warningFull;
-    warningBg = '#dcfce7'; warningColor = '#14532d'; warningBorder = '1px solid #bbf7d0';
-  } else {
-    warningText = L.warningMasked;
-    warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a';
-  }
+  if (adminForcedNumber && adminForcedCvv) { warningText = L.warningAdminMasked; warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a'; }
+  else if (adminForcedNumber) { warningText = L.warningMasked; warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a'; }
+  else if (adminForcedCvv) { warningText = L.warningCvvMasked; warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a'; }
+  else if (revealed) { warningText = L.warningFull; warningBg = '#dcfce7'; warningColor = '#14532d'; warningBorder = '1px solid #bbf7d0'; }
+  else { warningText = L.warningMasked; warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a'; }
 
-  // Cache le bouton toggle si l'admin a forcé QUELQUE CHOSE
   const hideToggleButton = anyAdminForced;
   const actionsHtml = hideToggleButton
-    ? '<div style="display:grid!important;grid-template-columns:1fr!important;gap:10px!important;margin-top:4px!important;">' +
-        '<button onclick="window.copyCardNumber()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;border:none!important;border-radius:11px!important;padding:14px 12px!important;font-size:13px!important;font-weight:700!important;cursor:pointer!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;box-shadow:0 6px 16px rgba(124,58,237,0.35)!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:15px!important;height:15px!important;fill:#fff!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="card-copy-label">' + L.copyBtn + '</span></button>' +
+    ? '<div style="display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin-top:2px!important;">' +
+        '<button onclick="window.copyCardNumber()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;border:none!important;border-radius:9px!important;padding:11px 10px!important;font-size:11.5px!important;font-weight:700!important;cursor:pointer!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;box-shadow:0 5px 14px rgba(124,58,237,0.32)!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#fff!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="card-copy-label">' + L.copyBtn + '</span></button>' +
       '</div>'
-    : '<div style="display:grid!important;grid-template-columns:1.4fr 1fr!important;gap:10px!important;margin-top:4px!important;">' +
-        '<button onclick="window.copyCardNumber()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;border:none!important;border-radius:11px!important;padding:14px 12px!important;font-size:13px!important;font-weight:700!important;cursor:pointer!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;box-shadow:0 6px 16px rgba(124,58,237,0.35)!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:15px!important;height:15px!important;fill:#fff!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="card-copy-label">' + L.copyBtn + '</span></button>' +
-        '<button onclick="window.toggleCardVisibility()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;border:none!important;border-radius:11px!important;padding:14px 12px!important;font-size:13px!important;font-weight:700!important;cursor:pointer!important;background:#e2e8f0!important;color:#1e293b!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:15px!important;height:15px!important;fill:#475569!important;"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg><span>' + (revealed ? L.hideBtn : L.showBtn) + '</span></button>' +
+    : '<div style="display:grid!important;grid-template-columns:1.4fr 1fr!important;gap:8px!important;margin-top:2px!important;">' +
+        '<button onclick="window.copyCardNumber()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;border:none!important;border-radius:9px!important;padding:11px 10px!important;font-size:11.5px!important;font-weight:700!important;cursor:pointer!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;box-shadow:0 5px 14px rgba(124,58,237,0.32)!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#fff!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="card-copy-label">' + L.copyBtn + '</span></button>' +
+        '<button onclick="window.toggleCardVisibility()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;border:none!important;border-radius:9px!important;padding:11px 10px!important;font-size:11.5px!important;font-weight:700!important;cursor:pointer!important;background:#e2e8f0!important;color:#1e293b!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#475569!important;"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg><span>' + (revealed ? L.hideBtn : L.showBtn) + '</span></button>' +
       '</div>';
 
   return '' +
-    '<div style="position:relative!important;width:100%!important;aspect-ratio:1.586/1!important;max-height:200px!important;border-radius:16px!important;padding:16px 18px!important;background:linear-gradient(135deg,#fce8a0 0%,#f5d670 35%,#e8b923 70%,#c69a0e 100%)!important;overflow:hidden!important;box-shadow:0 12px 30px rgba(218,165,32,0.35),0 4px 12px rgba(0,0,0,0.1)!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;color:#1a2332!important;box-sizing:border-box!important;">' +
+    // CARTE JAUNE - réduite
+    '<div style="position:relative!important;width:100%!important;aspect-ratio:1.586/1!important;max-height:160px!important;border-radius:14px!important;padding:13px 15px!important;background:linear-gradient(135deg,#fce8a0 0%,#f5d670 35%,#e8b923 70%,#c69a0e 100%)!important;overflow:hidden!important;box-shadow:0 10px 24px rgba(218,165,32,0.32),0 3px 10px rgba(0,0,0,0.08)!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;color:#1a2332!important;box-sizing:border-box!important;">' +
       '<div style="position:absolute!important;top:0!important;left:-100%!important;width:60%!important;height:100%!important;background:linear-gradient(115deg,transparent 0%,rgba(255,255,255,0.5) 50%,transparent 100%)!important;animation:cardShine 4s ease-in-out infinite!important;pointer-events:none!important;z-index:2!important;"></div>' +
       '<div style="display:flex!important;align-items:flex-start!important;justify-content:space-between!important;position:relative!important;z-index:3!important;">' +
-        '<div style="width:40px!important;height:30px!important;border-radius:5px!important;overflow:hidden!important;box-shadow:0 1px 3px rgba(0,0,0,0.15)!important;"><svg viewBox="0 0 40 30" style="width:100%!important;height:100%!important;display:block!important;"><rect x="0" y="0" width="40" height="30" rx="4" fill="#e5c47a"/><rect x="2" y="2" width="36" height="26" rx="3" fill="none" stroke="#b8954a" stroke-width="1"/><line x1="0" y1="10" x2="40" y2="10" stroke="#b8954a" stroke-width="0.7"/><line x1="0" y1="20" x2="40" y2="20" stroke="#b8954a" stroke-width="0.7"/><line x1="13" y1="0" x2="13" y2="30" stroke="#b8954a" stroke-width="0.7"/><line x1="27" y1="0" x2="27" y2="30" stroke="#b8954a" stroke-width="0.7"/></svg></div>' +
-        '<div style="display:flex!important;position:relative!important;width:42px!important;height:26px!important;"><span style="width:26px!important;height:26px!important;border-radius:50%!important;background:#eb001b!important;position:absolute!important;top:0!important;left:0!important;z-index:2!important;"></span><span style="width:26px!important;height:26px!important;border-radius:50%!important;background:#f79e1b!important;position:absolute!important;top:0!important;right:0!important;z-index:1!important;opacity:0.9!important;"></span></div>' +
+        '<div style="width:32px!important;height:24px!important;border-radius:4px!important;overflow:hidden!important;box-shadow:0 1px 2px rgba(0,0,0,0.12)!important;"><svg viewBox="0 0 40 30" style="width:100%!important;height:100%!important;display:block!important;"><rect x="0" y="0" width="40" height="30" rx="4" fill="#e5c47a"/><rect x="2" y="2" width="36" height="26" rx="3" fill="none" stroke="#b8954a" stroke-width="1"/><line x1="0" y1="10" x2="40" y2="10" stroke="#b8954a" stroke-width="0.7"/><line x1="0" y1="20" x2="40" y2="20" stroke="#b8954a" stroke-width="0.7"/><line x1="13" y1="0" x2="13" y2="30" stroke="#b8954a" stroke-width="0.7"/><line x1="27" y1="0" x2="27" y2="30" stroke="#b8954a" stroke-width="0.7"/></svg></div>' +
+        '<div style="display:flex!important;position:relative!important;width:34px!important;height:21px!important;"><span style="width:21px!important;height:21px!important;border-radius:50%!important;background:#eb001b!important;position:absolute!important;top:0!important;left:0!important;z-index:2!important;"></span><span style="width:21px!important;height:21px!important;border-radius:50%!important;background:#f79e1b!important;position:absolute!important;top:0!important;right:0!important;z-index:1!important;opacity:0.9!important;"></span></div>' +
       '</div>' +
-      '<div style="font-family:Courier New,Consolas,monospace!important;font-size:17px!important;font-weight:800!important;letter-spacing:1.8px!important;color:#1a2332!important;margin:8px 0!important;position:relative!important;z-index:3!important;word-break:break-all!important;line-height:1.2!important;">' + formattedNum + '</div>' +
-      '<div style="display:flex!important;justify-content:space-between!important;align-items:flex-end!important;gap:10px!important;position:relative!important;z-index:3!important;">' +
-        '<div><div style="font-size:8px!important;font-weight:700!important;color:rgba(26,35,50,0.6)!important;letter-spacing:1.1px!important;margin-bottom:2px!important;">' + L.holderLabel + '</div><div style="font-size:11px!important;font-weight:800!important;color:#1a2332!important;text-transform:uppercase!important;letter-spacing:0.3px!important;">' + formattedHolder + '</div></div>' +
-        '<div><div style="font-size:8px!important;font-weight:700!important;color:rgba(26,35,50,0.6)!important;letter-spacing:1.1px!important;margin-bottom:2px!important;">' + L.expiryLabel + '</div><div style="font-size:11px!important;font-weight:800!important;color:#1a2332!important;letter-spacing:0.3px!important;">' + cardExpiry + '</div></div>' +
-        '<div><div style="font-size:8px!important;font-weight:700!important;color:rgba(26,35,50,0.6)!important;letter-spacing:1.1px!important;margin-bottom:2px!important;">' + L.cvvLabel + '</div><div style="font-size:11px!important;font-weight:800!important;color:#1a2332!important;letter-spacing:0.3px!important;">' + displayCvv + '</div></div>' +
+      '<div style="font-family:Courier New,Consolas,monospace!important;font-size:14px!important;font-weight:800!important;letter-spacing:1.5px!important;color:#1a2332!important;margin:6px 0!important;position:relative!important;z-index:3!important;word-break:break-all!important;line-height:1.15!important;">' + formattedNum + '</div>' +
+      '<div style="display:flex!important;justify-content:space-between!important;align-items:flex-end!important;gap:8px!important;position:relative!important;z-index:3!important;">' +
+        '<div><div style="font-size:7px!important;font-weight:700!important;color:rgba(26,35,50,0.6)!important;letter-spacing:1px!important;margin-bottom:2px!important;">' + L.holderLabel + '</div><div style="font-size:9.5px!important;font-weight:800!important;color:#1a2332!important;text-transform:uppercase!important;letter-spacing:0.3px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:110px!important;">' + formattedHolder + '</div></div>' +
+        '<div><div style="font-size:7px!important;font-weight:700!important;color:rgba(26,35,50,0.6)!important;letter-spacing:1px!important;margin-bottom:2px!important;">' + L.expiryLabel + '</div><div style="font-size:9.5px!important;font-weight:800!important;color:#1a2332!important;letter-spacing:0.3px!important;">' + cardExpiry + '</div></div>' +
+        '<div><div style="font-size:7px!important;font-weight:700!important;color:rgba(26,35,50,0.6)!important;letter-spacing:1px!important;margin-bottom:2px!important;">' + L.cvvLabel + '</div><div style="font-size:9.5px!important;font-weight:800!important;color:#1a2332!important;letter-spacing:0.3px!important;">' + displayCvv + '</div></div>' +
       '</div>' +
     '</div>' +
-    '<div style="display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;">' +
-      '<div style="background:#eef2f7!important;border-radius:10px!important;padding:10px 12px!important;"><div style="font-size:9px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:1px!important;margin-bottom:4px!important;">' + L.holderLabel + '</div><div style="font-size:12.5px!important;font-weight:800!important;color:#0f172a!important;text-transform:uppercase!important;word-break:break-word!important;">' + formattedHolder + '</div></div>' +
-      '<div style="background:#eef2f7!important;border-radius:10px!important;padding:10px 12px!important;"><div style="font-size:9px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:1px!important;margin-bottom:4px!important;">' + L.expiryLabel + '</div><div style="font-size:12.5px!important;font-weight:800!important;color:#0f172a!important;">' + cardExpiry + '</div></div>' +
-      '<div style="background:#eef2f7!important;border-radius:10px!important;padding:10px 12px!important;grid-column:span 2!important;"><div style="font-size:9px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:1px!important;margin-bottom:4px!important;">' + L.numberLabel + '</div><div style="font-family:Courier New,Consolas,monospace!important;font-size:12.5px!important;font-weight:700!important;color:#0f172a!important;letter-spacing:1.5px!important;word-break:break-word!important;">' + formattedNum + '</div></div>' +
-      '<div style="background:#eef2f7!important;border-radius:10px!important;padding:10px 12px!important;"><div style="font-size:9px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:1px!important;margin-bottom:4px!important;">' + L.cvvLabel + '</div><div style="font-size:12.5px!important;font-weight:800!important;color:#0f172a!important;">' + displayCvv + '</div></div>' +
-      '<div style="background:#eef2f7!important;border-radius:10px!important;padding:10px 12px!important;"><div style="font-size:9px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:1px!important;margin-bottom:4px!important;">' + L.typeLabel + '</div><div style="font-size:12.5px!important;font-weight:800!important;color:#0f172a!important;">' + cardType + '</div></div>' +
+    // INFO GRID - réduite
+    '<div style="display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;">' +
+      '<div style="background:#eef2f7!important;border-radius:8px!important;padding:8px 10px!important;"><div style="font-size:8px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:0.8px!important;margin-bottom:3px!important;">' + L.holderLabel + '</div><div style="font-size:11px!important;font-weight:800!important;color:#0f172a!important;text-transform:uppercase!important;word-break:break-word!important;line-height:1.2!important;">' + formattedHolder + '</div></div>' +
+      '<div style="background:#eef2f7!important;border-radius:8px!important;padding:8px 10px!important;"><div style="font-size:8px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:0.8px!important;margin-bottom:3px!important;">' + L.expiryLabel + '</div><div style="font-size:11px!important;font-weight:800!important;color:#0f172a!important;">' + cardExpiry + '</div></div>' +
+      '<div style="background:#eef2f7!important;border-radius:8px!important;padding:8px 10px!important;grid-column:span 2!important;"><div style="font-size:8px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:0.8px!important;margin-bottom:3px!important;">' + L.numberLabel + '</div><div style="font-family:Courier New,Consolas,monospace!important;font-size:11px!important;font-weight:700!important;color:#0f172a!important;letter-spacing:1.3px!important;word-break:break-word!important;">' + formattedNum + '</div></div>' +
+      '<div style="background:#eef2f7!important;border-radius:8px!important;padding:8px 10px!important;"><div style="font-size:8px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:0.8px!important;margin-bottom:3px!important;">' + L.cvvLabel + '</div><div style="font-size:11px!important;font-weight:800!important;color:#0f172a!important;">' + displayCvv + '</div></div>' +
+      '<div style="background:#eef2f7!important;border-radius:8px!important;padding:8px 10px!important;"><div style="font-size:8px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:0.8px!important;margin-bottom:3px!important;">' + L.typeLabel + '</div><div style="font-size:11px!important;font-weight:800!important;color:#0f172a!important;">' + cardType + '</div></div>' +
     '</div>' +
     actionsHtml +
-    '<div style="display:flex!important;align-items:flex-start!important;gap:9px!important;padding:11px 13px!important;border-radius:11px!important;font-size:11px!important;line-height:1.5!important;font-weight:600!important;background:' + warningBg + '!important;color:' + warningColor + '!important;border:' + warningBorder + '!important;"><svg viewBox="0 0 24 24" style="width:14px!important;height:14px!important;flex-shrink:0!important;margin-top:1px!important;fill:currentColor!important;"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><span>' + warningText + '</span></div>';
+    // WARNING - réduit
+    '<div style="display:flex!important;align-items:flex-start!important;gap:7px!important;padding:9px 11px!important;border-radius:9px!important;font-size:9.5px!important;line-height:1.45!important;font-weight:600!important;background:' + warningBg + '!important;color:' + warningColor + '!important;border:' + warningBorder + '!important;"><svg viewBox="0 0 24 24" style="width:12px!important;height:12px!important;flex-shrink:0!important;margin-top:1px!important;fill:currentColor!important;"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><span>' + warningText + '</span></div>';
 }
 
 window.toggleCardVisibility = function() {
-  // ✅ SÉCURITÉ : si l'admin a forcé un masquage, on ne peut PAS toggle
   if (!currentClient) return;
-  if (currentClient.cardMaskLast4 === true || currentClient.cardMaskCvv === true) {
-    // On ne fait rien. Le bouton ne devrait même pas apparaître dans ce cas.
-    return;
-  }
+  if (currentClient.cardMaskLast4 === true || currentClient.cardMaskCvv === true) return;
   virtualCardRevealed = !virtualCardRevealed;
   const cardNum = currentClient.cardNumber || '4987103143003327';
   const cardHolder = getCardHolderName(currentClient);
@@ -459,7 +443,6 @@ window.toggleCardVisibility = function() {
 };
 
 window.copyCardNumber = function() {
-  // Si l'admin a masqué, on copie la version MASQUÉE
   const adminForcedNumber = currentClient.cardMaskLast4 === true;
   const raw = currentClient.cardNumber || '';
   const toCopy = adminForcedNumber ? maskCardNumber(raw) : raw;
@@ -664,13 +647,14 @@ async function renderAdminPage() {
     '<div id="qa-iban-fields" style="display:none;"><div class="admin-grid"><div class="admin-group full-width"><label>Numero IBAN</label><input type="text" id="qa-iban-value"></div><div class="admin-group full-width"><label>BIC / SWIFT</label><input type="text" id="qa-bic-value"></div></div><div class="qa-mask-toggle"><div class="qa-mask-label">AFFICHAGE DES 4 DERNIERS CARACTERES</div><label class="qa-switch"><input type="checkbox" id="qa-iban-masked"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers caracteres dans l\'application</span></label></div></div>' +
     '<div id="qa-card-fields" style="display:none;">' +
       '<div class="admin-grid">' +
-        '<div class="admin-group full-width"><label>Titulaire (auto)</label><input type="text" id="qa-card-holder" readonly style="background:#eef2f7;cursor:not-allowed;font-weight:700;color:#0f172a;"></div>' +
+        // ✅ Titulaire ÉDITABLE maintenant
+        '<div class="admin-group full-width"><label>Titulaire de la carte</label><input type="text" id="qa-card-holder" placeholder="Laissez vide pour utiliser Prenom Nom" style="font-weight:700;"></div>' +
         '<div class="admin-group full-width"><label>Numero de carte</label><input type="text" id="qa-card-number" maxlength="19"></div>' +
         '<div class="admin-group"><label>Date d\'expiration</label><input type="text" id="qa-card-expiry" maxlength="5" placeholder="MM/YY"></div>' +
         '<div class="admin-group"><label>CVV</label><input type="text" id="qa-card-cvv" maxlength="4"></div>' +
         '<div class="admin-group full-width"><label>Type de carte</label><input type="text" id="qa-card-type"></div>' +
       '</div>' +
-      '<div class="qa-card-holder-note"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span>Le titulaire est genere automatiquement a partir du nom et prenom du client.</span></div>' +
+      '<div class="qa-card-holder-note"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span>Si le champ Titulaire est vide, le nom et prenom du client seront utilises automatiquement.</span></div>' +
       '<div class="qa-mask-toggle"><div class="qa-mask-label">OPTIONS DE MASQUAGE (FORCE LE CLIENT)</div><label class="qa-switch"><input type="checkbox" id="qa-card-mask-last4"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers chiffres (definitif)</span></label><label class="qa-switch" style="margin-top:8px;"><input type="checkbox" id="qa-card-mask-cvv"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer le CVV (definitif)</span></label></div>' +
     '</div>' +
     '<button class="btn-admin-submit" onclick="window.applyQuickAction()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Appliquer la modification</button>' +
@@ -713,7 +697,8 @@ async function renderAdminPage() {
   const fillCardFields = (clientId) => {
     if (!clientId || !clients[clientId]) return;
     const cc = clients[clientId];
-    document.getElementById('qa-card-holder').value = getCardHolderName(cc);
+    // ✅ Titulaire : on affiche la valeur custom si elle existe, sinon vide (placeholder visible)
+    document.getElementById('qa-card-holder').value = cc.cardHolder || '';
     let numValue = cc.cardNumber || '';
     if (!numValue) numValue = generateCardNumber();
     document.getElementById('qa-card-number').value = numValue;
@@ -801,6 +786,7 @@ async function renderAdminPage() {
         email: document.getElementById('email').value, address: document.getElementById('address').value,
         language: document.getElementById('language').value,
         bankName: bankNameValue, iban: generatedIban, bic: generatedBic, ibanMasked: false,
+        cardHolder: '', // vide par defaut = utilise Prenom Nom
         cardNumber: generatedCardNumber, cardExpiry: generatedCardExpiry, cardCvv: generatedCardCvv,
         cardType: 'Visa Debit', cardMaskLast4: false, cardMaskCvv: false,
         balance: initialBalance, currency: currencyValue,
@@ -857,6 +843,7 @@ window.applyQuickAction = async function() {
     await FireDB.updateClient(clientId, { iban: newIban, bic: newBic, ibanMasked: masked });
     alert('IBAN et BIC mis a jour.');
   } else if (action === 'edit-card') {
+    const newHolder = document.getElementById('qa-card-holder').value.trim().toUpperCase();
     const newNum = document.getElementById('qa-card-number').value.trim().replace(/\s+/g, '');
     const newExpiry = document.getElementById('qa-card-expiry').value.trim();
     const newCvv = document.getElementById('qa-card-cvv').value.trim();
@@ -864,7 +851,12 @@ window.applyQuickAction = async function() {
     const maskLast4 = document.getElementById('qa-card-mask-last4').checked;
     const maskCvv = document.getElementById('qa-card-mask-cvv').checked;
     if (!newNum || !newExpiry || !newCvv) { alert('Remplissez tous les champs.'); return; }
-    await FireDB.updateClient(clientId, { cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv, cardType: newType, cardMaskLast4: maskLast4, cardMaskCvv: maskCvv });
+    // ✅ Si newHolder est vide → on supprime le cardHolder custom (utilisation du nom du client)
+    await FireDB.updateClient(clientId, {
+      cardHolder: newHolder, // chaîne vide = utilise Prenom Nom
+      cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv,
+      cardType: newType, cardMaskLast4: maskLast4, cardMaskCvv: maskCvv
+    });
     alert('Carte mise a jour. Le masquage est desormais ' + (maskLast4 || maskCvv ? 'ACTIF et definitif cote client.' : 'desactive.'));
   } else if (action === 'block') {
     await FireDB.updateClient(clientId, { blocked: true });
