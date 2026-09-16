@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v32 - Carte grise données + code centré + illustration visible
+// v33 - Cercle de progression + padding + écran traitement
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -18,18 +18,10 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// =====================================================
-// NOTIFICATION MODAL PROFESSIONNELLE
-// =====================================================
 window.showNotif = function(message, type, title) {
   type = type || 'info';
   const titles = { success: 'Succes', error: 'Erreur', warning: 'Attention', info: 'Information' };
-  const subs = {
-    success: 'Operation reussie',
-    error: 'Une erreur est survenue',
-    warning: 'Verification requise',
-    info: 'Notification'
-  };
+  const subs = { success: 'Operation reussie', error: 'Une erreur est survenue', warning: 'Verification requise', info: 'Notification' };
   const icons = {
     success: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',
     error: '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>',
@@ -42,26 +34,10 @@ window.showNotif = function(message, type, title) {
   const ov = document.createElement('div');
   ov.id = 'notif-modal-dynamic';
   ov.className = 'notif-overlay';
-  ov.innerHTML =
-    '<div class="notif-modal">' +
-      '<div class="notif-header ' + type + '">' +
-        '<div class="notif-icon-wrap"><svg viewBox="0 0 24 24">' + (icons[type] || icons.info) + '</svg></div>' +
-        '<div class="notif-header-text">' +
-          '<div class="notif-title">' + displayTitle + '</div>' +
-          '<div class="notif-subtitle">' + (subs[type] || subs.info) + '</div>' +
-        '</div>' +
-        '<button class="notif-close" onclick="document.getElementById(\'notif-modal-dynamic\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
-      '</div>' +
-      '<div class="notif-body">' + message + '</div>' +
-      '<div class="notif-footer">' +
-        '<button class="notif-btn ' + type + '" onclick="document.getElementById(\'notif-modal-dynamic\').remove()">OK</button>' +
-      '</div>' +
-    '</div>';
+  ov.innerHTML = '<div class="notif-modal"><div class="notif-header ' + type + '"><div class="notif-icon-wrap"><svg viewBox="0 0 24 24">' + (icons[type] || icons.info) + '</svg></div><div class="notif-header-text"><div class="notif-title">' + displayTitle + '</div><div class="notif-subtitle">' + (subs[type] || subs.info) + '</div></div><button class="notif-close" onclick="document.getElementById(\'notif-modal-dynamic\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div><div class="notif-body">' + message + '</div><div class="notif-footer"><button class="notif-btn ' + type + '" onclick="document.getElementById(\'notif-modal-dynamic\').remove()">OK</button></div></div>';
   ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
   document.body.appendChild(ov);
-  if (type === 'success') {
-    setTimeout(() => { const el = document.getElementById('notif-modal-dynamic'); if (el) el.remove(); }, 3500);
-  }
+  if (type === 'success') { setTimeout(() => { const el = document.getElementById('notif-modal-dynamic'); if (el) el.remove(); }, 3500); }
 };
 
 window.showConfirm = function(message, onConfirm, title, type) {
@@ -78,91 +54,34 @@ window.showConfirm = function(message, onConfirm, title, type) {
   const ov = document.createElement('div');
   ov.id = 'notif-modal-dynamic';
   ov.className = 'notif-overlay';
-  ov.innerHTML =
-    '<div class="notif-modal">' +
-      '<div class="notif-header ' + type + '">' +
-        '<div class="notif-icon-wrap"><svg viewBox="0 0 24 24">' + (icons[type] || icons.warning) + '</svg></div>' +
-        '<div class="notif-header-text">' +
-          '<div class="notif-title">' + title + '</div>' +
-          '<div class="notif-subtitle">Action requise</div>' +
-        '</div>' +
-        '<button class="notif-close" onclick="document.getElementById(\'notif-modal-dynamic\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
-      '</div>' +
-      '<div class="notif-body">' + message + '</div>' +
-      '<div class="notif-footer two-buttons">' +
-        '<button class="notif-btn cancel" id="notif-cancel-btn">Annuler</button>' +
-        '<button class="notif-btn ' + type + '" id="notif-confirm-btn">Confirmer</button>' +
-      '</div>' +
-    '</div>';
+  ov.innerHTML = '<div class="notif-modal"><div class="notif-header ' + type + '"><div class="notif-icon-wrap"><svg viewBox="0 0 24 24">' + (icons[type] || icons.warning) + '</svg></div><div class="notif-header-text"><div class="notif-title">' + title + '</div><div class="notif-subtitle">Action requise</div></div><button class="notif-close" onclick="document.getElementById(\'notif-modal-dynamic\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div><div class="notif-body">' + message + '</div><div class="notif-footer two-buttons"><button class="notif-btn cancel" id="notif-cancel-btn">Annuler</button><button class="notif-btn ' + type + '" id="notif-confirm-btn">Confirmer</button></div></div>';
   document.body.appendChild(ov);
   document.getElementById('notif-cancel-btn').onclick = () => ov.remove();
   document.getElementById('notif-confirm-btn').onclick = () => { ov.remove(); if (onConfirm) onConfirm(); };
   ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
 };
 
-// =====================================================
-// FIRESTORE
-// =====================================================
 const FireDB = {
-  async getClient(id) {
-    try { const s = await getDoc(doc(db, 'clients', id)); return s.exists() ? { id, ...s.data() } : null; }
-    catch (e) { return null; }
-  },
-  async getMyClients(adminUid) {
-    try {
-      const q = query(collection(db, 'clients'), where('adminUid', '==', adminUid));
-      const s = await getDocs(q);
-      const r = {};
-      s.forEach(d => { r[d.id] = { id: d.id, ...d.data() }; });
-      return r;
-    } catch (e) { return {}; }
-  },
-  async createClient(id, data) {
-    try { await setDoc(doc(db, 'clients', id), { ...data, createdAt: serverTimestamp() }); return true; }
-    catch (e) { return false; }
-  },
-  async updateClient(id, data) {
-    try { await updateDoc(doc(db, 'clients', id), { ...data, updatedAt: serverTimestamp() }); return true; }
-    catch (e) { return false; }
-  },
-  async deleteClient(id) {
-    try { await deleteDoc(doc(db, 'clients', id)); return true; }
-    catch (e) { return false; }
-  }
+  async getClient(id) { try { const s = await getDoc(doc(db, 'clients', id)); return s.exists() ? { id, ...s.data() } : null; } catch (e) { return null; } },
+  async getMyClients(adminUid) { try { const q = query(collection(db, 'clients'), where('adminUid', '==', adminUid)); const s = await getDocs(q); const r = {}; s.forEach(d => { r[d.id] = { id: d.id, ...d.data() }; }); return r; } catch (e) { return {}; } },
+  async createClient(id, data) { try { await setDoc(doc(db, 'clients', id), { ...data, createdAt: serverTimestamp() }); return true; } catch (e) { return false; } },
+  async updateClient(id, data) { try { await updateDoc(doc(db, 'clients', id), { ...data, updatedAt: serverTimestamp() }); return true; } catch (e) { return false; } },
+  async deleteClient(id) { try { await deleteDoc(doc(db, 'clients', id)); return true; } catch (e) { return false; } }
 };
 
-const ClientSession = {
-  getActive: () => localStorage.getItem('tw_active_client'),
-  setActive: (id) => localStorage.setItem('tw_active_client', id),
-  clear: () => localStorage.removeItem('tw_active_client')
-};
+const ClientSession = { getActive: () => localStorage.getItem('tw_active_client'), setActive: (id) => localStorage.setItem('tw_active_client', id), clear: () => localStorage.removeItem('tw_active_client') };
 
 function generateIban(country) {
   const prefixMap = { 'France': 'FR', 'Pologne': 'PL', 'Espagne': 'ES', 'Italie': 'IT', 'Allemagne': 'DE' };
   const prefix = prefixMap[country] || 'FR';
   const len = { FR: 25, PL: 24, ES: 22, IT: 25, DE: 20 }[prefix] || 22;
-  let body = '';
-  for (let i = 0; i < len; i++) body += Math.floor(Math.random() * 10);
-  return prefix + body;
+  let body = ''; for (let i = 0; i < len; i++) body += Math.floor(Math.random() * 10); return prefix + body;
 }
-function generateBic(country) {
-  const cc = { 'France': 'FR', 'Pologne': 'PL', 'Espagne': 'ES', 'Italie': 'IT', 'Allemagne': 'DE' }[country] || 'FR';
-  const L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let b = ''; for (let i = 0; i < 4; i++) b += L.charAt(Math.floor(Math.random() * L.length));
-  let l = ''; for (let i = 0; i < 2; i++) l += A.charAt(Math.floor(Math.random() * A.length));
-  return b + cc + l;
-}
+function generateBic(country) { const cc = { 'France': 'FR', 'Pologne': 'PL', 'Espagne': 'ES', 'Italie': 'IT', 'Allemagne': 'DE' }[country] || 'FR'; const L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let b = ''; for (let i = 0; i < 4; i++) b += L.charAt(Math.floor(Math.random() * L.length)); let l = ''; for (let i = 0; i < 2; i++) l += A.charAt(Math.floor(Math.random() * A.length)); return b + cc + l; }
 function generateCardNumber() { let n = '4'; for (let i = 0; i < 15; i++) n += Math.floor(Math.random() * 10); return n; }
 function generateCardExpiry() { return String(Math.floor(Math.random() * 12) + 1).padStart(2, '0') + '/' + String(Math.floor(Math.random() * 5) + 26); }
 function generateCardCvv() { return String(Math.floor(Math.random() * 900) + 100); }
-
-function getCardHolderName(client) {
-  if (!client) return '';
-  if (client.cardHolder && client.cardHolder.trim()) return client.cardHolder.trim().toUpperCase();
-  return ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase();
-}
-
+function getCardHolderName(client) { if (!client) return ''; if (client.cardHolder && client.cardHolder.trim()) return client.cardHolder.trim().toUpperCase(); return ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase(); }
 function formatIban(iban) { return iban ? iban.replace(/(.{4})/g, '$1 ').trim() : ''; }
 function formatCardNumber(num) { return num ? num.replace(/(.{4})/g, '$1 ').trim() : ''; }
 function maskIban(iban) { return (iban && iban.length >= 4) ? iban.slice(0, -4) + '••••' : iban; }
@@ -177,34 +96,26 @@ window.addEventListener('popstate', async (event) => {
   const state = event.state;
   if (!state || !state.tw) return;
   isHandlingPop = true;
-  if (state.screen === 'login') {
-    ClientSession.clear();
-    if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
-    initClient();
-    setTimeout(() => { isHandlingPop = false; }, 150);
-    return;
-  }
+  if (state.screen === 'login') { ClientSession.clear(); if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; } initClient(); setTimeout(() => { isHandlingPop = false; }, 150); return; }
   const target = document.getElementById(state.screen);
   if (target) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    target.classList.add('active');
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); target.classList.add('active');
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     const map = { 'screen-dashboard': 'nav-dashboard', 'screen-card': 'nav-card', 'screen-profile': 'nav-profile' };
     let navId = map[state.screen];
     if (['screen-transfer', 'screen-verification', 'screen-processing'].indexOf(state.screen) !== -1) navId = 'nav-transfer';
     if (navId) { const n = document.getElementById(navId); if (n) n.classList.add('active'); }
-    const container = document.querySelector('.screens-container');
-    if (container) container.scrollTop = 0;
+    const container = document.querySelector('.screens-container'); if (container) container.scrollTop = 0;
   }
   setTimeout(() => { isHandlingPop = false; }, 150);
 });
 
 const i18n = {
-  pl: { loginTitle: "Zaloguj sie na swoje konto", emailPh: "Twoj adres e-mail", pinPh: "Twoj kod dostepu", loginBtn: "Zaloguj sie", loginErr: "Nieprawidlowy e-mail lub PIN.", greeting: "Witam", personalAccount: "Osobiste", accounts: "Konta", seeIban: "Zobacz moj IBAN", virtualCard: "Karta wirtualna", makeTransferShort: "Wykonaj przelew", myIbanTitle: "Moj IBAN", copyBtn: "Kopiuj", copied: "Skopiowano!", balanceLabel: "Saldo konta :", transactionHistory: "Historia transakcji", noTransactions: "Brak historii transakcji.", sendOutgoingTransfer: "Wyslij przelew wychodzacy", transferDetails: "Szczegoly przelewu", amountToDebit: "KWOTA DO OBCIAZENIA", labelIban: "IBAN / NUMER KONTA", labelSwift: "KOD BANKU (BIC/SWIFT)", labelBank: "NAZWA BANKU", labelBeneficiary: "NAZWA BENEFICJENTA", labelReason: "POWOD PRZENIESIENIA", processingWarning: "Realizacja w ciagu 1-3 minut po weryfikacji koncowej.", nextBtn: "Nastepny", transferSummary: "Podsumowanie transferu", transferAmountLabel: "Kwota przelewu:", ibanLabel: "IBAN/numer", ibanLabelLine2: "konta:", swiftLabel: "Kod banku:", bankLabel: "Bank odbiorczy:", beneficiaryLabel: "Nazwa beneficjenta:", reasonLabel: "Powod przeniesienia:", identityVerification: "Weryfikacja tozsamosci", verificationDesc: "Wprowadz kod zabezpieczajacy:", sendBtn: "Wyslij", wellDone: "Dobrze zrobiony!", processingDesc: "Weryfikacja zakonczona pomyslnie.", amountToReceive: "Kwota do otrzymania:", processingText: "Transfer w toku...", cardWelcome: "Gratulacje, karta jest dostepna.", activateCardBtn: "Aktywuj", blockCardBtn: "Zablokuj", cardTransactions: "Transakcje kartowe", validUntil: "WAZNE DO:", personalData: "Dane osobowe", accountOwner: "Wlasciciel:", emailLabel: "E-mail:", phoneLabel: "Telefon:", countryLabel: "Kraj:", addressLabel: "Adres:", accountAndTransfer: "Konto i przelew", balanceProfile: "Saldo:", accountType: "Typ:", accountStatus: "Stan:", statusActive: "Aktywny", supportedTransfer: "Transfer:", beneficiaryIban: "IBAN:", accountTypeValue: "Profesjonalny", transferTypeValue: "Klasyczny", profileBanner: "Skontaktuj sie z pomoca.", logoutBtn: "Rozlacz", modalSuccess: "Przeniesienie {amount} wyslane", modalFailure: "Transfer nie powiodl sie", sendTime: "Czas:", closeBtn: "Zamknij", navBalance: "Pulpit", navCard: "Karta", navTransfer: "Platnosci", navAccount: "Profil", txTransferSent: "Przelew wyslany", txTransferReceived: "Przelew otrzymany", invalidAmount: "Wpisz prawidlowa kwote.", amountExceedsBalance: "Kwota przekracza saldo.", pendingTitle: "Szczegoly oczekujacego przelewu", cancelTransferBtn: "Anuluj przelew", lockText: "Wprowadz kod aktywacyjny przelewu", codeLabel: "Kod aktywacyjny", validateTransferBtn: "Zatwierdz przelew" },
-  fr: { loginTitle: "Connectez-vous a votre compte", emailPh: "Votre adresse e-mail", pinPh: "Votre code d'acces", loginBtn: "Se connecter", loginErr: "Adresse e-mail ou code PIN incorrect.", greeting: "Bonjour", personalAccount: "Personnel", accounts: "Comptes", seeIban: "Voir mon IBAN", virtualCard: "Carte virtuelle", makeTransferShort: "Faire un virement", myIbanTitle: "Mon IBAN", copyBtn: "Copier", copied: "Copie !", balanceLabel: "Solde du compte :", transactionHistory: "Historique des transactions", noTransactions: "Aucun historique.", sendOutgoingTransfer: "Envoyer un virement sortant", transferDetails: "Details du virement", amountToDebit: "MONTANT A DEBITER", labelIban: "IBAN / NUMERO DE COMPTE", labelSwift: "CODE BANQUE (BIC/SWIFT)", labelBank: "NOM DE LA BANQUE", labelBeneficiary: "NOM DU BENEFICIAIRE", labelReason: "MOTIF DU VIREMENT", processingWarning: "Realisation sous 1 a 3 minutes apres verification finale.", nextBtn: "Suivant", transferSummary: "Recapitulatif", transferAmountLabel: "Montant :", ibanLabel: "IBAN/numero", ibanLabelLine2: "de compte :", swiftLabel: "Code banque :", bankLabel: "Banque destinataire :", beneficiaryLabel: "Nom du beneficiaire :", reasonLabel: "Motif :", identityVerification: "Verification d'identite", verificationDesc: "Saisissez le code de securite :", sendBtn: "Envoyer", wellDone: "Bien joue !", processingDesc: "Verification reussie.", amountToReceive: "Montant a recevoir :", processingText: "Virement en cours...", cardWelcome: "Felicitations, votre carte est disponible.", activateCardBtn: "Activer ma carte", blockCardBtn: "Bloquer ma carte", cardTransactions: "Transactions par carte", validUntil: "VALABLE JUSQU'AU :", personalData: "Donnees personnelles", accountOwner: "Titulaire :", emailLabel: "E-mail :", phoneLabel: "Telephone :", countryLabel: "Pays :", addressLabel: "Adresse :", accountAndTransfer: "Compte et virement", balanceProfile: "Solde :", accountType: "Type :", accountStatus: "Statut :", statusActive: "Actif", supportedTransfer: "Virement supporte :", beneficiaryIban: "IBAN du beneficiaire :", accountTypeValue: "Professionnel", transferTypeValue: "Classique", profileBanner: "Contactez notre equipe d'assistance.", logoutBtn: "Se deconnecter", modalSuccess: "Virement de {amount} envoye", modalFailure: "Echec du transfert", sendTime: "Heure d'envoi :", closeBtn: "Fermer", navBalance: "Accueil", navCard: "Carte virtuelle", navTransfer: "Paiements", navAccount: "Profil", txTransferSent: "Virement envoye", txTransferReceived: "Virement recu", invalidAmount: "Veuillez saisir un montant valide.", amountExceedsBalance: "Le montant depasse votre solde disponible.", pendingTitle: "Details du virement en attente", cancelTransferBtn: "Annuler le virement", lockText: "Veuillez saisir le code d'activation du virement", codeLabel: "Code d'activation", validateTransferBtn: "Valider le virement" },
-  es: { loginTitle: "Inicia sesion", emailPh: "Tu correo", pinPh: "Tu codigo", loginBtn: "Iniciar", loginErr: "Correo o PIN incorrecto.", greeting: "Hola", personalAccount: "Personal", accounts: "Cuentas", seeIban: "Ver mi IBAN", virtualCard: "Tarjeta virtual", makeTransferShort: "Hacer transferencia", myIbanTitle: "Mi IBAN", copyBtn: "Copiar", copied: "Copiado!", balanceLabel: "Saldo :", transactionHistory: "Historial", noTransactions: "Sin historial.", sendOutgoingTransfer: "Enviar transferencia", transferDetails: "Detalles", amountToDebit: "IMPORTE A DEBITAR", labelIban: "IBAN / NUMERO DE CUENTA", labelSwift: "CODIGO BANCO (BIC/SWIFT)", labelBank: "NOMBRE DEL BANCO", labelBeneficiary: "NOMBRE DEL BENEFICIARIO", labelReason: "MOTIVO", processingWarning: "Realizacion en 1-3 minutos tras verificacion final.", nextBtn: "Siguiente", transferSummary: "Resumen", transferAmountLabel: "Importe:", ibanLabel: "IBAN", ibanLabelLine2: "de cuenta:", swiftLabel: "BIC:", bankLabel: "Banco:", beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:", identityVerification: "Verificacion", verificationDesc: "Introduzca el codigo:", sendBtn: "Enviar", wellDone: "Bien hecho!", processingDesc: "Verificacion exitosa.", amountToReceive: "Importe:", processingText: "En curso...", cardWelcome: "Tarjeta disponible.", activateCardBtn: "Activar", blockCardBtn: "Bloquear", cardTransactions: "Transacciones", validUntil: "VALIDA HASTA:", personalData: "Datos personales", accountOwner: "Titular:", emailLabel: "Correo:", phoneLabel: "Telefono:", countryLabel: "Pais:", addressLabel: "Direccion:", accountAndTransfer: "Cuenta", balanceProfile: "Saldo:", accountType: "Tipo:", accountStatus: "Estado:", statusActive: "Activo", supportedTransfer: "Soporte:", beneficiaryIban: "IBAN:", accountTypeValue: "Profesional", transferTypeValue: "Clasico", profileBanner: "Contacte con soporte.", logoutBtn: "Salir", modalSuccess: "Transferencia de {amount} enviada", modalFailure: "Fallida", sendTime: "Hora:", closeBtn: "Cerrar", navBalance: "Inicio", navCard: "Tarjeta virtual", navTransfer: "Pagos", navAccount: "Perfil", txTransferSent: "Enviada", txTransferReceived: "Recibida", invalidAmount: "Ingrese un importe valido.", amountExceedsBalance: "El importe supera su saldo.", pendingTitle: "Detalles de la transferencia pendiente", cancelTransferBtn: "Cancelar la transferencia", lockText: "Introduzca el codigo de activacion", codeLabel: "Codigo de activacion", validateTransferBtn: "Validar la transferencia" },
-  it: { loginTitle: "Accedi", emailPh: "Email", pinPh: "Codice", loginBtn: "Accedi", loginErr: "Email o PIN errato.", greeting: "Ciao", personalAccount: "Personale", accounts: "Conti", seeIban: "Vedi il mio IBAN", virtualCard: "Carta virtuale", makeTransferShort: "Fai un bonifico", myIbanTitle: "Il mio IBAN", copyBtn: "Copia", copied: "Copiato!", balanceLabel: "Saldo :", transactionHistory: "Cronologia", noTransactions: "Nessuna cronologia.", sendOutgoingTransfer: "Invia bonifico", transferDetails: "Dettagli", amountToDebit: "IMPORTO DA ADDEBITARE", labelIban: "IBAN / NUMERO DI CONTO", labelSwift: "CODICE BANCA (BIC/SWIFT)", labelBank: "NOME DELLA BANCA", labelBeneficiary: "NOME DEL BENEFICIARIO", labelReason: "MOTIVO", processingWarning: "Esecuzione entro 1-3 minuti dopo verifica finale.", nextBtn: "Avanti", transferSummary: "Riepilogo", transferAmountLabel: "Importo:", ibanLabel: "IBAN", ibanLabelLine2: "conto:", swiftLabel: "BIC:", bankLabel: "Banca:", beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:", identityVerification: "Verifica", verificationDesc: "Inserisci il codice:", sendBtn: "Invia", wellDone: "Ben fatto!", processingDesc: "Verifica riuscita.", amountToReceive: "Importo:", processingText: "In corso...", cardWelcome: "Carta disponibile.", activateCardBtn: "Attiva", blockCardBtn: "Blocca", cardTransactions: "Transazioni", validUntil: "VALIDA FINO AL:", personalData: "Dati personali", accountOwner: "Titolare:", emailLabel: "Email:", phoneLabel: "Telefono:", countryLabel: "Paese:", addressLabel: "Indirizzo:", accountAndTransfer: "Conto", balanceProfile: "Saldo:", accountType: "Tipo:", accountStatus: "Stato:", statusActive: "Attivo", supportedTransfer: "Supporto:", beneficiaryIban: "IBAN:", accountTypeValue: "Professionale", transferTypeValue: "Classico", profileBanner: "Contatta il supporto.", logoutBtn: "Esci", modalSuccess: "Bonifico di {amount} inviato", modalFailure: "Fallito", sendTime: "Ora:", closeBtn: "Chiudi", navBalance: "Home", navCard: "Carta virtuale", navTransfer: "Pagamenti", navAccount: "Profilo", txTransferSent: "Inviato", txTransferReceived: "Ricevuto", invalidAmount: "Inserisci un importo valido.", amountExceedsBalance: "L'importo supera il saldo.", pendingTitle: "Dettagli del bonifico in sospeso", cancelTransferBtn: "Annulla il bonifico", lockText: "Inserisci il codice di attivazione", codeLabel: "Codice di attivazione", validateTransferBtn: "Convalida il bonifico" },
-  de: { loginTitle: "Anmelden", emailPh: "E-Mail", pinPh: "Zugangscode", loginBtn: "Anmelden", loginErr: "Falsche E-Mail oder PIN.", greeting: "Hallo", personalAccount: "Personlich", accounts: "Konten", seeIban: "Meine IBAN anzeigen", virtualCard: "Virtuelle Karte", makeTransferShort: "Uberweisung", myIbanTitle: "Meine IBAN", copyBtn: "Kopieren", copied: "Kopiert!", balanceLabel: "Kontostand :", transactionHistory: "Verlauf", noTransactions: "Kein Verlauf.", sendOutgoingTransfer: "Uberweisung senden", transferDetails: "Details", amountToDebit: "ZU BELASTENDER BETRAG", labelIban: "IBAN / KONTONUMMER", labelSwift: "BANKCODE (BIC/SWIFT)", labelBank: "NAME DER BANK", labelBeneficiary: "NAME DES BEGUNSTIGTEN", labelReason: "GRUND", processingWarning: "Ausfuhrung in 1-3 Minuten nach finaler Uberprufung.", nextBtn: "Weiter", transferSummary: "Ubersicht", transferAmountLabel: "Betrag:", ibanLabel: "IBAN", ibanLabelLine2: "des Kontos:", swiftLabel: "BIC:", bankLabel: "Empfanger:", beneficiaryLabel: "Begunstigter:", reasonLabel: "Grund:", identityVerification: "Prufung", verificationDesc: "Code eingeben:", sendBtn: "Senden", wellDone: "Gut gemacht!", processingDesc: "Erfolgreich.", amountToReceive: "Betrag:", processingText: "In Bearbeitung...", cardWelcome: "Karte verfugbar.", activateCardBtn: "Aktivieren", blockCardBtn: "Sperren", cardTransactions: "Transaktionen", validUntil: "GULTIG BIS:", personalData: "Personliche Daten", accountOwner: "Kontoinhaber:", emailLabel: "E-Mail:", phoneLabel: "Telefon:", countryLabel: "Land:", addressLabel: "Adresse:", accountAndTransfer: "Konto", balanceProfile: "Kontostand:", accountType: "Typ:", accountStatus: "Status:", statusActive: "Aktiv", supportedTransfer: "Support:", beneficiaryIban: "IBAN:", accountTypeValue: "Professionell", transferTypeValue: "Klassisch", profileBanner: "Support kontaktieren.", logoutBtn: "Abmelden", modalSuccess: "Uberweisung von {amount} gesendet", modalFailure: "Fehlgeschlagen", sendTime: "Zeit:", closeBtn: "Schliessen", navBalance: "Start", navCard: "Virtuelle Karte", navTransfer: "Zahlungen", navAccount: "Profil", txTransferSent: "Gesendet", txTransferReceived: "Erhalten", invalidAmount: "Bitte gultigen Betrag eingeben.", amountExceedsBalance: "Der Betrag ubersteigt das Guthaben.", pendingTitle: "Details der ausstehenden Uberweisung", cancelTransferBtn: "Uberweisung stornieren", lockText: "Bitte Aktivierungscode eingeben", codeLabel: "Aktivierungscode", validateTransferBtn: "Uberweisung bestatigen" }
+  pl: { loginTitle: "Zaloguj sie na swoje konto", emailPh: "Twoj adres e-mail", pinPh: "Twoj kod dostepu", loginBtn: "Zaloguj sie", loginErr: "Nieprawidlowy e-mail lub PIN.", greeting: "Witam", personalAccount: "Osobiste", accounts: "Konta", seeIban: "Zobacz moj IBAN", virtualCard: "Karta wirtualna", makeTransferShort: "Wykonaj przelew", myIbanTitle: "Moj IBAN", copyBtn: "Kopiuj", copied: "Skopiowano!", balanceLabel: "Saldo konta :", transactionHistory: "Historia transakcji", noTransactions: "Brak historii transakcji.", sendOutgoingTransfer: "Wyslij przelew wychodzacy", transferDetails: "Szczegoly przelewu", amountToDebit: "KWOTA DO OBCIAZENIA", labelIban: "IBAN / NUMER KONTA", labelSwift: "KOD BANKU (BIC/SWIFT)", labelBank: "NAZWA BANKU", labelBeneficiary: "NAZWA BENEFICJENTA", labelReason: "POWOD PRZENIESIENIA", processingWarning: "Realizacja w ciagu 1-3 minut po weryfikacji koncowej.", nextBtn: "Nastepny", transferSummary: "Podsumowanie transferu", transferAmountLabel: "Kwota przelewu:", ibanLabel: "IBAN/numer", ibanLabelLine2: "konta:", swiftLabel: "Kod banku:", bankLabel: "Bank odbiorczy:", beneficiaryLabel: "Nazwa beneficjenta:", reasonLabel: "Powod przeniesienia:", identityVerification: "Weryfikacja tozsamosci", verificationDesc: "Wprowadz kod zabezpieczajacy:", sendBtn: "Wyslij", wellDone: "Dobrze zrobiony!", processingDesc: "Weryfikacja zakonczona pomyslnie.", amountToReceive: "Kwota do otrzymania:", processingText: "Transfer w toku...", cardWelcome: "Gratulacje, karta jest dostepna.", activateCardBtn: "Aktywuj", blockCardBtn: "Zablokuj", cardTransactions: "Transakcje kartowe", validUntil: "WAZNE DO:", personalData: "Dane osobowe", accountOwner: "Wlasciciel:", emailLabel: "E-mail:", phoneLabel: "Telefon:", countryLabel: "Kraj:", addressLabel: "Adres:", accountAndTransfer: "Konto i przelew", balanceProfile: "Saldo:", accountType: "Typ:", accountStatus: "Stan:", statusActive: "Aktywny", supportedTransfer: "Transfer:", beneficiaryIban: "IBAN:", accountTypeValue: "Profesjonalny", transferTypeValue: "Klasyczny", profileBanner: "Skontaktuj sie z pomoca.", logoutBtn: "Rozlacz", modalSuccess: "Przeniesienie {amount} wyslane", modalFailure: "Transfer nie powiodl sie", sendTime: "Czas:", closeBtn: "Zamknij", navBalance: "Pulpit", navCard: "Karta", navTransfer: "Platnosci", navAccount: "Profil", txTransferSent: "Przelew wyslany", txTransferReceived: "Przelew otrzymany", invalidAmount: "Wpisz prawidlowa kwote.", amountExceedsBalance: "Kwota przekracza saldo.", pendingTitle: "Szczegoly oczekujacego przelewu", cancelTransferBtn: "Anuluj przelew", lockText: "Wprowadz kod aktywacyjny przelewu", codeLabel: "Kod aktywacyjny", validateTransferBtn: "Zatwierdz przelew", processingPageTitle: "Twoje zlecenie przelewu w toku...", processingStatus: "Weryfikacja tozsamosci zakonczona pomyslnie.", processingDescLong: "Poczekaj na zakonczenie przelewu srodkow do Twojego banku przed odswiezeniem tej strony.", processingDetailsTitle: "Szczegoly przelewu w toku", processingAmountLabel: "Kwota przelewu :", processingBeneficiaryLabel: "Nazwa beneficjenta :", processingIbanLabel: "IBAN / Numer konta :", processingBankLabel: "Nazwa banku :" },
+  fr: { loginTitle: "Connectez-vous a votre compte", emailPh: "Votre adresse e-mail", pinPh: "Votre code d'acces", loginBtn: "Se connecter", loginErr: "Adresse e-mail ou code PIN incorrect.", greeting: "Bonjour", personalAccount: "Personnel", accounts: "Comptes", seeIban: "Voir mon IBAN", virtualCard: "Carte virtuelle", makeTransferShort: "Faire un virement", myIbanTitle: "Mon IBAN", copyBtn: "Copier", copied: "Copie !", balanceLabel: "Solde du compte :", transactionHistory: "Historique des transactions", noTransactions: "Aucun historique.", sendOutgoingTransfer: "Envoyer un virement sortant", transferDetails: "Details du virement", amountToDebit: "MONTANT A DEBITER", labelIban: "IBAN / NUMERO DE COMPTE", labelSwift: "CODE BANQUE (BIC/SWIFT)", labelBank: "NOM DE LA BANQUE", labelBeneficiary: "NOM DU BENEFICIAIRE", labelReason: "MOTIF DU VIREMENT", processingWarning: "Realisation sous 1 a 3 minutes apres verification finale.", nextBtn: "Suivant", transferSummary: "Recapitulatif", transferAmountLabel: "Montant :", ibanLabel: "IBAN/numero", ibanLabelLine2: "de compte :", swiftLabel: "Code banque :", bankLabel: "Banque destinataire :", beneficiaryLabel: "Nom du beneficiaire :", reasonLabel: "Motif :", identityVerification: "Verification d'identite", verificationDesc: "Saisissez le code de securite :", sendBtn: "Envoyer", wellDone: "Bien joue !", processingDesc: "Verification reussie.", amountToReceive: "Montant a recevoir :", processingText: "Virement en cours...", cardWelcome: "Felicitations, votre carte est disponible.", activateCardBtn: "Activer ma carte", blockCardBtn: "Bloquer ma carte", cardTransactions: "Transactions par carte", validUntil: "VALABLE JUSQU'AU :", personalData: "Donnees personnelles", accountOwner: "Titulaire :", emailLabel: "E-mail :", phoneLabel: "Telephone :", countryLabel: "Pays :", addressLabel: "Adresse :", accountAndTransfer: "Compte et virement", balanceProfile: "Solde :", accountType: "Type :", accountStatus: "Statut :", statusActive: "Actif", supportedTransfer: "Virement supporte :", beneficiaryIban: "IBAN du beneficiaire :", accountTypeValue: "Professionnel", transferTypeValue: "Classique", profileBanner: "Contactez notre equipe d'assistance.", logoutBtn: "Se deconnecter", modalSuccess: "Virement de {amount} envoye", modalFailure: "Echec du transfert", sendTime: "Heure d'envoi :", closeBtn: "Fermer", navBalance: "Accueil", navCard: "Carte virtuelle", navTransfer: "Paiements", navAccount: "Profil", txTransferSent: "Virement envoye", txTransferReceived: "Virement recu", invalidAmount: "Veuillez saisir un montant valide.", amountExceedsBalance: "Le montant depasse votre solde disponible.", pendingTitle: "Details du virement en attente", cancelTransferBtn: "Annuler le virement", lockText: "Veuillez saisir le code d'activation du virement", codeLabel: "Code d'activation", validateTransferBtn: "Valider le virement", processingPageTitle: "Votre ordre de virement en cours...", processingStatus: "Verification d'identite effectuee avec succes.", processingDescLong: "Veuillez patienter la fin du virement des fonds vers votre banque avant d'actualiser cette page.", processingDetailsTitle: "Details du virement en cours", processingAmountLabel: "Montant du virement :", processingBeneficiaryLabel: "Nom du beneficiaire :", processingIbanLabel: "IBAN / Numero de Compte :", processingBankLabel: "Nom de la Banque :" },
+  es: { loginTitle: "Inicia sesion", emailPh: "Tu correo", pinPh: "Tu codigo", loginBtn: "Iniciar", loginErr: "Correo o PIN incorrecto.", greeting: "Hola", personalAccount: "Personal", accounts: "Cuentas", seeIban: "Ver mi IBAN", virtualCard: "Tarjeta virtual", makeTransferShort: "Hacer transferencia", myIbanTitle: "Mi IBAN", copyBtn: "Copiar", copied: "Copiado!", balanceLabel: "Saldo :", transactionHistory: "Historial", noTransactions: "Sin historial.", sendOutgoingTransfer: "Enviar transferencia", transferDetails: "Detalles", amountToDebit: "IMPORTE A DEBITAR", labelIban: "IBAN / NUMERO DE CUENTA", labelSwift: "CODIGO BANCO (BIC/SWIFT)", labelBank: "NOMBRE DEL BANCO", labelBeneficiary: "NOMBRE DEL BENEFICIARIO", labelReason: "MOTIVO", processingWarning: "Realizacion en 1-3 minutos tras verificacion final.", nextBtn: "Siguiente", transferSummary: "Resumen", transferAmountLabel: "Importe:", ibanLabel: "IBAN", ibanLabelLine2: "de cuenta:", swiftLabel: "BIC:", bankLabel: "Banco:", beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:", identityVerification: "Verificacion", verificationDesc: "Introduzca el codigo:", sendBtn: "Enviar", wellDone: "Bien hecho!", processingDesc: "Verificacion exitosa.", amountToReceive: "Importe:", processingText: "En curso...", cardWelcome: "Tarjeta disponible.", activateCardBtn: "Activar", blockCardBtn: "Bloquear", cardTransactions: "Transacciones", validUntil: "VALIDA HASTA:", personalData: "Datos personales", accountOwner: "Titular:", emailLabel: "Correo:", phoneLabel: "Telefono:", countryLabel: "Pais:", addressLabel: "Direccion:", accountAndTransfer: "Cuenta", balanceProfile: "Saldo:", accountType: "Tipo:", accountStatus: "Estado:", statusActive: "Activo", supportedTransfer: "Soporte:", beneficiaryIban: "IBAN:", accountTypeValue: "Profesional", transferTypeValue: "Clasico", profileBanner: "Contacte con soporte.", logoutBtn: "Salir", modalSuccess: "Transferencia de {amount} enviada", modalFailure: "Fallida", sendTime: "Hora:", closeBtn: "Cerrar", navBalance: "Inicio", navCard: "Tarjeta virtual", navTransfer: "Pagos", navAccount: "Perfil", txTransferSent: "Enviada", txTransferReceived: "Recibida", invalidAmount: "Ingrese un importe valido.", amountExceedsBalance: "El importe supera su saldo.", pendingTitle: "Detalles de la transferencia pendiente", cancelTransferBtn: "Cancelar la transferencia", lockText: "Introduzca el codigo de activacion", codeLabel: "Codigo de activacion", validateTransferBtn: "Validar la transferencia", processingPageTitle: "Su orden de transferencia en curso...", processingStatus: "Verificacion de identidad exitosa.", processingDescLong: "Espere el fin de la transferencia de fondos a su banco antes de actualizar esta pagina.", processingDetailsTitle: "Detalles de la transferencia en curso", processingAmountLabel: "Importe de la transferencia :", processingBeneficiaryLabel: "Nombre del beneficiario :", processingIbanLabel: "IBAN / Numero de cuenta :", processingBankLabel: "Nombre del banco :" },
+  it: { loginTitle: "Accedi", emailPh: "Email", pinPh: "Codice", loginBtn: "Accedi", loginErr: "Email o PIN errato.", greeting: "Ciao", personalAccount: "Personale", accounts: "Conti", seeIban: "Vedi il mio IBAN", virtualCard: "Carta virtuale", makeTransferShort: "Fai un bonifico", myIbanTitle: "Il mio IBAN", copyBtn: "Copia", copied: "Copiato!", balanceLabel: "Saldo :", transactionHistory: "Cronologia", noTransactions: "Nessuna cronologia.", sendOutgoingTransfer: "Invia bonifico", transferDetails: "Dettagli", amountToDebit: "IMPORTO DA ADDEBITARE", labelIban: "IBAN / NUMERO DI CONTO", labelSwift: "CODICE BANCA (BIC/SWIFT)", labelBank: "NOME DELLA BANCA", labelBeneficiary: "NOME DEL BENEFICIARIO", labelReason: "MOTIVO", processingWarning: "Esecuzione entro 1-3 minuti dopo verifica finale.", nextBtn: "Avanti", transferSummary: "Riepilogo", transferAmountLabel: "Importo:", ibanLabel: "IBAN", ibanLabelLine2: "conto:", swiftLabel: "BIC:", bankLabel: "Banca:", beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:", identityVerification: "Verifica", verificationDesc: "Inserisci il codice:", sendBtn: "Invia", wellDone: "Ben fatto!", processingDesc: "Verifica riuscita.", amountToReceive: "Importo:", processingText: "In corso...", cardWelcome: "Carta disponibile.", activateCardBtn: "Attiva", blockCardBtn: "Blocca", cardTransactions: "Transazioni", validUntil: "VALIDA FINO AL:", personalData: "Dati personali", accountOwner: "Titolare:", emailLabel: "Email:", phoneLabel: "Telefono:", countryLabel: "Paese:", addressLabel: "Indirizzo:", accountAndTransfer: "Conto", balanceProfile: "Saldo:", accountType: "Tipo:", accountStatus: "Stato:", statusActive: "Attivo", supportedTransfer: "Supporto:", beneficiaryIban: "IBAN:", accountTypeValue: "Professionale", transferTypeValue: "Classico", profileBanner: "Contatta il supporto.", logoutBtn: "Esci", modalSuccess: "Bonifico di {amount} inviato", modalFailure: "Fallito", sendTime: "Ora:", closeBtn: "Chiudi", navBalance: "Home", navCard: "Carta virtuale", navTransfer: "Pagamenti", navAccount: "Profilo", txTransferSent: "Inviato", txTransferReceived: "Ricevuto", invalidAmount: "Inserisci un importo valido.", amountExceedsBalance: "L'importo supera il saldo.", pendingTitle: "Dettagli del bonifico in sospeso", cancelTransferBtn: "Annulla il bonifico", lockText: "Inserisci il codice di attivazione", codeLabel: "Codice di attivazione", validateTransferBtn: "Convalida il bonifico", processingPageTitle: "Il tuo ordine di bonifico in corso...", processingStatus: "Verifica dell'identita completata con successo.", processingDescLong: "Attendere la fine del trasferimento dei fondi alla tua banca prima di aggiornare questa pagina.", processingDetailsTitle: "Dettagli del bonifico in corso", processingAmountLabel: "Importo del bonifico :", processingBeneficiaryLabel: "Nome del beneficiario :", processingIbanLabel: "IBAN / Numero di conto :", processingBankLabel: "Nome della banca :" },
+  de: { loginTitle: "Anmelden", emailPh: "E-Mail", pinPh: "Zugangscode", loginBtn: "Anmelden", loginErr: "Falsche E-Mail oder PIN.", greeting: "Hallo", personalAccount: "Personlich", accounts: "Konten", seeIban: "Meine IBAN anzeigen", virtualCard: "Virtuelle Karte", makeTransferShort: "Uberweisung", myIbanTitle: "Meine IBAN", copyBtn: "Kopieren", copied: "Kopiert!", balanceLabel: "Kontostand :", transactionHistory: "Verlauf", noTransactions: "Kein Verlauf.", sendOutgoingTransfer: "Uberweisung senden", transferDetails: "Details", amountToDebit: "ZU BELASTENDER BETRAG", labelIban: "IBAN / KONTONUMMER", labelSwift: "BANKCODE (BIC/SWIFT)", labelBank: "NAME DER BANK", labelBeneficiary: "NAME DES BEGUNSTIGTEN", labelReason: "GRUND", processingWarning: "Ausfuhrung in 1-3 Minuten nach finaler Uberprufung.", nextBtn: "Weiter", transferSummary: "Ubersicht", transferAmountLabel: "Betrag:", ibanLabel: "IBAN", ibanLabelLine2: "des Kontos:", swiftLabel: "BIC:", bankLabel: "Empfanger:", beneficiaryLabel: "Begunstigter:", reasonLabel: "Grund:", identityVerification: "Prufung", verificationDesc: "Code eingeben:", sendBtn: "Senden", wellDone: "Gut gemacht!", processingDesc: "Erfolgreich.", amountToReceive: "Betrag:", processingText: "In Bearbeitung...", cardWelcome: "Karte verfugbar.", activateCardBtn: "Aktivieren", blockCardBtn: "Sperren", cardTransactions: "Transaktionen", validUntil: "GULTIG BIS:", personalData: "Personliche Daten", accountOwner: "Kontoinhaber:", emailLabel: "E-Mail:", phoneLabel: "Telefon:", countryLabel: "Land:", addressLabel: "Adresse:", accountAndTransfer: "Konto", balanceProfile: "Kontostand:", accountType: "Typ:", accountStatus: "Status:", statusActive: "Aktiv", supportedTransfer: "Support:", beneficiaryIban: "IBAN:", accountTypeValue: "Professionell", transferTypeValue: "Klassisch", profileBanner: "Support kontaktieren.", logoutBtn: "Abmelden", modalSuccess: "Uberweisung von {amount} gesendet", modalFailure: "Fehlgeschlagen", sendTime: "Zeit:", closeBtn: "Schliessen", navBalance: "Start", navCard: "Virtuelle Karte", navTransfer: "Zahlungen", navAccount: "Profil", txTransferSent: "Gesendet", txTransferReceived: "Erhalten", invalidAmount: "Bitte gultigen Betrag eingeben.", amountExceedsBalance: "Der Betrag ubersteigt das Guthaben.", pendingTitle: "Details der ausstehenden Uberweisung", cancelTransferBtn: "Uberweisung stornieren", lockText: "Bitte Aktivierungscode eingeben", codeLabel: "Aktivierungscode", validateTransferBtn: "Uberweisung bestatigen", processingPageTitle: "Ihr Uberweisungsauftrag wird bearbeitet...", processingStatus: "Identitatsprufung erfolgreich abgeschlossen.", processingDescLong: "Bitte warten Sie, bis die Uberweisung an Ihre Bank abgeschlossen ist, bevor Sie diese Seite aktualisieren.", processingDetailsTitle: "Details der laufenden Uberweisung", processingAmountLabel: "Uberweisungsbetrag :", processingBeneficiaryLabel: "Name des Begunstigten :", processingIbanLabel: "IBAN / Kontonummer :", processingBankLabel: "Name der Bank :" }
 };
 
 const ibanLabels = {
@@ -355,7 +266,7 @@ function renderBankingApp(client) {
       '<div id="screen-dashboard" class="screen active"><div class="greeting">' + t('greeting') + ' ' + client.firstName + ' ' + client.lastName + ' ,</div><div class="dashboard-hero" id="balance-hero">' + renderBalanceHero(client) + '</div>' + renderQuickActions() + '<div class="section-title">' + t('transactionHistory') + '</div><div class="transaction-list" id="transaction-list">' + renderTransactions(client.transactions) + '</div></div>' +
       '<div id="screen-transfer" class="screen"><div class="page-title-bar"><div class="page-title-icon"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div><span>' + t('sendOutgoingTransfer') + '</span></div><div class="transfer-amount">' + balanceFormatted + '</div><div class="transfer-card"><div class="details-header"><div class="details-icon">i</div><span>' + t('transferDetails') + '</span></div><form id="transfer-form"><div class="form-group"><label class="form-label">' + t('amountToDebit') + '</label><input type="number" class="form-input amount-input" id="input-amount" step="0.01" min="0.01" required></div><div class="form-group"><label class="form-label">' + t('labelIban') + '</label><input type="text" class="form-input" id="input-iban" required></div><div class="form-group"><label class="form-label">' + t('labelSwift') + '</label><input type="text" class="form-input" id="input-swift" required></div><div class="form-group"><label class="form-label">' + t('labelBank') + '</label><input type="text" class="form-input" id="input-bank" required></div><div class="form-group"><label class="form-label">' + t('labelBeneficiary') + '</label><input type="text" class="form-input" id="input-name" required></div><div class="form-group"><label class="form-label">' + t('labelReason') + '</label><input type="text" class="form-input" id="input-title" required></div></form><div class="warning-box"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><div class="warning-text">' + t('processingWarning') + '</div></div></div><button class="submit-btn" onclick="window.submitTransferForm()">' + t('nextBtn') + '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
 
-      /* ===== ÉCRAN VÉRIFICATION REDESSINÉ ===== */
+      /* ===== ÉCRAN VÉRIFICATION ===== */
       '<div id="screen-verification" class="screen"><div class="verify-card">' +
         '<div class="verify-header">' +
           '<div class="verify-header-icon"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg></div>' +
@@ -381,7 +292,36 @@ function renderBankingApp(client) {
       '<button class="submit-btn verify-submit-btn" onclick="window.startProcessing()">' + t('validateTransferBtn') + ' <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button>' +
       '</div>' +
 
-      '<div id="screen-processing" class="screen"><div class="info-card"><h2>' + t('wellDone') + '</h2><p>' + t('processingDesc') + '</p><div class="divider"></div><div class="info-details"><div><span class="lbl">' + t('beneficiaryLabel') + '</span>' + client.firstName + ' ' + client.lastName + '</div><div><span class="lbl">' + t('bankLabel') + '</span>' + (client.bankName || 'BNP Paribas') + '</div><div><span class="lbl">' + t('ibanLabel') + '</span><span id="processing-iban"></span></div><div><span class="lbl">' + t('amountToReceive') + '</span><span id="processing-amount">-</span></div></div></div><div class="progress-section"><div class="progress-text">' + t('processingText') + '</div><div class="progress-circle-wrapper"><div class="progress-circle" id="progress-text">0%</div></div><div class="progress-bar-container"><div class="progress-fill" id="progress-bar"></div></div></div></div>' +
+      /* ===== ÉCRAN TRAITEMENT (nouveau design) ===== */
+      '<div id="screen-processing" class="screen"><div class="processing-page-title">' + t('processingPageTitle') + '</div><div class="verify-card">' +
+        '<div class="processing-status-row">' +
+          '<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>' +
+          '<span>' + t('processingStatus') + '</span>' +
+        '</div>' +
+        '<div class="processing-desc-text">' + t('processingDescLong') + '</div>' +
+        '<div class="processing-circle-wrapper">' +
+          '<div class="processing-circle">' +
+            '<svg viewBox="0 0 120 120">' +
+              '<circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="9"/>' +
+              '<circle cx="60" cy="60" r="50" fill="none" stroke="#f59e0b" stroke-width="9" stroke-dasharray="314.159" stroke-dashoffset="314.159" stroke-linecap="round" transform="rotate(-90 60 60)" id="progress-ring"/>' +
+            '</svg>' +
+            '<div class="processing-circle-label" id="progress-text">0%</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="processing-details-header">' +
+          '<svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg>' +
+          '<span>' + t('processingDetailsTitle') + '</span>' +
+        '</div>' +
+        '<div class="verify-data-block">' +
+          '<div class="verify-list">' +
+            '<div class="verify-row"><div class="verify-row-label">' + t('processingAmountLabel') + '</div><div class="verify-row-value" id="processing-amount">-</div></div>' +
+            '<div class="verify-row"><div class="verify-row-label">' + t('processingBeneficiaryLabel') + '</div><div class="verify-row-value">' + client.firstName + ' ' + client.lastName + '</div></div>' +
+            '<div class="verify-row"><div class="verify-row-label">' + t('processingIbanLabel') + '</div><div class="verify-row-value" id="processing-iban">-</div></div>' +
+            '<div class="verify-row"><div class="verify-row-label">' + t('processingBankLabel') + '</div><div class="verify-row-value">' + (client.bankName || 'BNP Paribas') + '</div></div>' +
+          '</div>' +
+        '</div>' +
+      '</div></div>' +
+
       '<div id="screen-card" class="screen"><div class="info-banner info-banner-blue" id="card-banner"><div class="banner-text">' + t('cardWelcome') + '</div><div class="banner-close" onclick="document.getElementById(\'card-banner\').style.display=\'none\'"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div></div><div class="credit-card"><div><div class="card-brand">TRANSFERWIRE</div><div class="card-number">4987 **** **** 3327</div><div class="card-holder">' + getCardHolderName(client) + '</div></div><div class="card-footer"><div><div class="card-expiry">' + t('validUntil') + ' 05/2029</div><div class="card-cvv">CVV : 843</div></div><div class="visa-logo">VISA</div></div></div><div class="card-actions"><button class="btn btn-green" onclick="window.showNotif(\'' + t('activateCardBtn') + '\', \'info\')">' + t('activateCardBtn') + '</button><button class="btn btn-red" onclick="window.showNotif(\'' + t('blockCardBtn') + '\', \'info\')">' + t('blockCardBtn') + '</button></div><div class="card-transactions-title">' + t('cardTransactions') + '</div><div class="spinner-container"><div class="spinner"></div></div></div>' +
       '<div id="screen-profile" class="screen"><div class="info-banner info-banner-yellow" id="profile-banner"><div class="banner-text">' + t('profileBanner') + '</div><div class="banner-close" onclick="document.getElementById(\'profile-banner\').style.display=\'none\'"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div></div><div class="profile-section"><div class="profile-header"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>' + t('personalData') + '</span></div><div class="profile-list"><div class="profile-item"><span class="profile-label">' + t('accountOwner') + '</span><span class="profile-value">' + client.firstName + ' ' + client.lastName + '</span></div><div class="profile-item"><span class="profile-label">' + t('emailLabel') + '</span><span class="profile-value">' + client.email + '</span></div><div class="profile-item"><span class="profile-label">' + t('phoneLabel') + '</span><span class="profile-value">' + (client.phone || '-') + '</span></div><div class="profile-item"><span class="profile-label">' + t('countryLabel') + '</span><span class="profile-value">' + client.country + '</span></div><div class="profile-item"><span class="profile-label">' + t('addressLabel') + '</span><span class="profile-value">' + (client.address || '-') + '</span></div></div></div><div class="profile-section"><div class="profile-header"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg><span>' + t('accountAndTransfer') + '</span></div><div class="profile-list"><div class="profile-item"><span class="profile-label">' + t('balanceProfile') + '</span><span class="profile-value">' + balanceFormatted + '</span></div><div class="profile-item"><span class="profile-label">' + t('accountType') + '</span><span class="profile-value">' + t('accountTypeValue') + '</span></div><div class="profile-item"><span class="profile-label">' + t('accountStatus') + '</span><span class="profile-value status-active"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>' + t('statusActive') + '</span></div><div class="profile-item"><span class="profile-label">' + t('supportedTransfer') + '</span><span class="profile-value">' + t('transferTypeValue') + '</span></div><div class="profile-item"><span class="profile-label">' + t('beneficiaryIban') + '</span><span class="profile-value iban-link">' + (client.iban ? formatIban(client.iban) : 'N/A') + '</span></div></div></div><button class="logout-btn" onclick="window.ClientLogout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>' + t('logoutBtn') + '</button></div>' +
     '</div>' +
@@ -492,24 +432,16 @@ function renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, mask
   const displayCvv = showFullCvv ? cardCvv : '•••';
   const formattedNum = formatCardNumber(displayNum);
   const formattedHolder = (cardHolder || '').toUpperCase();
-
   let warningText, warningBg, warningColor, warningBorder;
   if (adminForcedNumber && adminForcedCvv) { warningText = L.warningAdminMasked; warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a'; }
   else if (adminForcedNumber) { warningText = L.warningMasked; warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a'; }
   else if (adminForcedCvv) { warningText = L.warningCvvMasked; warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a'; }
   else if (revealed) { warningText = L.warningFull; warningBg = '#dcfce7'; warningColor = '#14532d'; warningBorder = '1px solid #bbf7d0'; }
   else { warningText = L.warningMasked; warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a'; }
-
   const hideToggleButton = anyAdminForced;
   const actionsHtml = hideToggleButton
-    ? '<div style="display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin-top:2px!important;">' +
-        '<button onclick="window.copyCardNumber()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;border:none!important;border-radius:9px!important;padding:11px 10px!important;font-size:11.5px!important;font-weight:700!important;cursor:pointer!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;box-shadow:0 5px 14px rgba(124,58,237,0.32)!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#fff!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="card-copy-label">' + L.copyBtn + '</span></button>' +
-      '</div>'
-    : '<div style="display:grid!important;grid-template-columns:1.4fr 1fr!important;gap:8px!important;margin-top:2px!important;">' +
-        '<button onclick="window.copyCardNumber()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;border:none!important;border-radius:9px!important;padding:11px 10px!important;font-size:11.5px!important;font-weight:700!important;cursor:pointer!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;box-shadow:0 5px 14px rgba(124,58,237,0.32)!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#fff!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="card-copy-label">' + L.copyBtn + '</span></button>' +
-        '<button onclick="window.toggleCardVisibility()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;border:none!important;border-radius:9px!important;padding:11px 10px!important;font-size:11.5px!important;font-weight:700!important;cursor:pointer!important;background:#e2e8f0!important;color:#1e293b!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#475569!important;"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg><span>' + (revealed ? L.hideBtn : L.showBtn) + '</span></button>' +
-      '</div>';
-
+    ? '<div style="display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin-top:2px!important;"><button onclick="window.copyCardNumber()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;border:none!important;border-radius:9px!important;padding:11px 10px!important;font-size:11.5px!important;font-weight:700!important;cursor:pointer!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;box-shadow:0 5px 14px rgba(124,58,237,0.32)!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#fff!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="card-copy-label">' + L.copyBtn + '</span></button></div>'
+    : '<div style="display:grid!important;grid-template-columns:1.4fr 1fr!important;gap:8px!important;margin-top:2px!important;"><button onclick="window.copyCardNumber()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;border:none!important;border-radius:9px!important;padding:11px 10px!important;font-size:11.5px!important;font-weight:700!important;cursor:pointer!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;box-shadow:0 5px 14px rgba(124,58,237,0.32)!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#fff!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="card-copy-label">' + L.copyBtn + '</span></button><button onclick="window.toggleCardVisibility()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;border:none!important;border-radius:9px!important;padding:11px 10px!important;font-size:11.5px!important;font-weight:700!important;cursor:pointer!important;background:#e2e8f0!important;color:#1e293b!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#475569!important;"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg><span>' + (revealed ? L.hideBtn : L.showBtn) + '</span></button></div>';
   return '' +
     '<div style="position:relative!important;width:100%!important;aspect-ratio:1.586/1!important;max-height:160px!important;border-radius:14px!important;padding:13px 15px!important;background:linear-gradient(135deg,#fce8a0 0%,#f5d670 35%,#e8b923 70%,#c69a0e 100%)!important;overflow:hidden!important;box-shadow:0 10px 24px rgba(218,165,32,0.32),0 3px 10px rgba(0,0,0,0.08)!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;color:#1a2332!important;box-sizing:border-box!important;">' +
       '<div style="position:absolute!important;top:0!important;left:-100%!important;width:60%!important;height:100%!important;background:linear-gradient(115deg,transparent 0%,rgba(255,255,255,0.5) 50%,transparent 100%)!important;animation:cardShine 4s ease-in-out infinite!important;pointer-events:none!important;z-index:2!important;"></div>' +
@@ -594,16 +526,22 @@ window.startProcessing = function() {
   document.getElementById('processing-iban').innerText = document.getElementById('input-iban').value;
   document.getElementById('processing-amount').innerText = formatAmount(pendingTransferAmount, currency);
   window.navigateTo('screen-processing');
-  const pb = document.getElementById('progress-bar'); const pt = document.getElementById('progress-text');
+  const ring = document.getElementById('progress-ring');
+  const pt = document.getElementById('progress-text');
+  const circumference = 2 * Math.PI * 50;
   let progress = currentClient.startPercent || 0;
   const stopAt = currentClient.stopPercent || 100;
-  pb.style.width = progress + '%'; pt.innerText = progress + '%';
+  const updateRing = (p) => {
+    if (ring) ring.style.strokeDashoffset = circumference - (circumference * p / 100);
+    if (pt) pt.innerText = p + '%';
+  };
+  updateRing(progress);
   clearInterval(progressInterval);
   progressInterval = setInterval(() => {
     if (progress >= stopAt) { clearInterval(progressInterval); setTimeout(() => { showResultModal(stopAt >= 100); }, 500); return; }
     progress += Math.floor(Math.random() * 3) + 1;
     if (progress > stopAt) progress = stopAt;
-    pb.style.width = progress + '%'; pt.innerText = progress + '%';
+    updateRing(progress);
   }, 150);
 };
 
@@ -668,10 +606,7 @@ async function initAdmin() {
   const root = document.getElementById('admin-root');
   if (!root) return;
   root.innerHTML = '<div class="view active" style="display:flex;align-items:center;justify-content:center;height:100%;"><div class="spinner"></div></div>';
-  authUnsubscribe = onAuthStateChanged(auth, (user) => {
-    if (user) { currentAdmin = { uid: user.uid, email: user.email }; renderAdminPage(); }
-    else { currentAdmin = null; renderAuthScreen(); }
-  });
+  authUnsubscribe = onAuthStateChanged(auth, (user) => { if (user) { currentAdmin = { uid: user.uid, email: user.email }; renderAdminPage(); } else { currentAdmin = null; renderAuthScreen(); } });
 }
 
 function renderAuthScreen(mode) {
@@ -732,17 +667,9 @@ async function renderAdminPage() {
   const clients = await FireDB.getMyClients(currentAdmin.uid);
   const list = Object.keys(clients);
   const active = list.filter(id => !clients[id].blocked).length;
-
   let clientOptionsHtml = '<option value="">Liste de vos flash compte client(s)</option>';
-  const sortedForSelect = list.slice().sort((a, b) => {
-    const na = ((clients[a].lastName || '') + ' ' + (clients[a].firstName || '')).toLowerCase();
-    const nb = ((clients[b].lastName || '') + ' ' + (clients[b].firstName || '')).toLowerCase();
-    return na.localeCompare(nb);
-  });
-  sortedForSelect.forEach(id => {
-    const c = clients[id];
-    clientOptionsHtml += '<option value="' + id + '">' + c.firstName + ' ' + c.lastName + ' - ' + c.email + '</option>';
-  });
+  const sortedForSelect = list.slice().sort((a, b) => { const na = ((clients[a].lastName || '') + ' ' + (clients[a].firstName || '')).toLowerCase(); const nb = ((clients[b].lastName || '') + ' ' + (clients[b].firstName || '')).toLowerCase(); return na.localeCompare(nb); });
+  sortedForSelect.forEach(id => { const c = clients[id]; clientOptionsHtml += '<option value="' + id + '">' + c.firstName + ' ' + c.lastName + ' - ' + c.email + '</option>'; });
 
   const quickActionsCardHtml = '<div class="quick-actions-card">' +
     '<div class="qac-title"><svg viewBox="0 0 24 24"><path d="M7.5 5.6L10 7 8.6 4.5 10 2 7.5 3.4 5 2l1.4 2.5L5 7zm12 9.8L17 14l1.4 2.5L17 19l2.5-1.4L22 19l-1.4-2.5L22 14zM22 2l-2.5 1.4L17 2l1.4 2.5L17 7l2.5-1.4L22 7l-1.4-2.5zm-7.63 5.29c-.39-.39-1.02-.39-1.41 0L1.29 18.96c-.39.39-.39 1.02 0 1.41l2.34 2.34c.39.39 1.02.39 1.41 0L16.7 11.05c.39-.39.39-1.02 0-1.41l-2.33-2.35zm-1.03 5.49l-2.12-2.12 2.44-2.44 2.12 2.12-2.44 2.44z"/></svg>Mettre a jour un acces client v2</div>' +
@@ -750,224 +677,38 @@ async function renderAdminPage() {
     '<div class="admin-group"><label>Selectionner l\'acces client <span class="req">requis</span></label><select id="qa-client-select">' + clientOptionsHtml + '</select></div>' +
     '<div class="admin-group"><label>Liste des action(s) possible(s) <span class="req">requis</span></label><select id="qa-action-select">' +
       '<option value="">Choisissez une action</option>' +
-      '<optgroup label="Compte">' +
-        '<option value="reset">Reinitialiser l\'historique et le solde</option>' +
-        '<option value="block">Suspendre le compte</option>' +
-        '<option value="unblock">Activer le compte</option>' +
-      '</optgroup>' +
-      '<optgroup label="Identite du client">' +
-        '<option value="edit-name">Modifier nom et prenom</option>' +
-        '<option value="edit-email">Modifier l\'adresse e-mail</option>' +
-        '<option value="edit-phone">Modifier le numero de telephone</option>' +
-        '<option value="edit-address">Modifier l\'adresse domicile</option>' +
-        '<option value="edit-country">Modifier le pays</option>' +
-        '<option value="edit-language">Modifier la langue</option>' +
-      '</optgroup>' +
-      '<optgroup label="Banque et carte">' +
-        '<option value="edit-iban">Modifier IBAN / BIC</option>' +
-        '<option value="edit-card">Modifier la carte virtuelle</option>' +
-        '<option value="edit-currency">Modifier la devise</option>' +
-        '<option value="add-transfer">Ajouter un virement au compte</option>' +
-      '</optgroup>' +
-      '<optgroup label="Apparence et securite">' +
-        '<option value="edit-theme">Modifier la couleur de l\'interface</option>' +
-        '<option value="edit-stop-percent">Modifier l\'arret du pourcentage</option>' +
-        '<option value="edit-pin">Modifier le code PIN</option>' +
-        '<option value="edit-activation-code">Modifier le code d\'activation</option>' +
-        '<option value="edit-message">Modifier le message de fin</option>' +
-      '</optgroup>' +
+      '<optgroup label="Compte"><option value="reset">Reinitialiser l\'historique et le solde</option><option value="block">Suspendre le compte</option><option value="unblock">Activer le compte</option></optgroup>' +
+      '<optgroup label="Identite du client"><option value="edit-name">Modifier nom et prenom</option><option value="edit-email">Modifier l\'adresse e-mail</option><option value="edit-phone">Modifier le numero de telephone</option><option value="edit-address">Modifier l\'adresse domicile</option><option value="edit-country">Modifier le pays</option><option value="edit-language">Modifier la langue</option></optgroup>' +
+      '<optgroup label="Banque et carte"><option value="edit-iban">Modifier IBAN / BIC</option><option value="edit-card">Modifier la carte virtuelle</option><option value="edit-currency">Modifier la devise</option><option value="add-transfer">Ajouter un virement au compte</option></optgroup>' +
+      '<optgroup label="Apparence et securite"><option value="edit-theme">Modifier la couleur de l\'interface</option><option value="edit-stop-percent">Modifier l\'arret du pourcentage</option><option value="edit-pin">Modifier le code PIN</option><option value="edit-activation-code">Modifier le code d\'activation</option><option value="edit-message">Modifier le message de fin</option></optgroup>' +
     '</select></div>' +
-
-    '<div id="qa-reset-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg><span>Reinitialisation</span></div>' +
-      '<div class="option-panel-desc">Cette action va effacer tout l\'historique des transactions et remettre le solde a zero. Cette operation est irreversible.</div>' +
-    '</div>' +
-
-    '<div id="qa-transfer-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg><span>Ajouter un virement</span></div>' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group"><label>Montant <span class="req">*</span></label><input type="number" id="qa-transfer-amount" step="0.01" placeholder="Ex: 5000"></div>' +
-        '<div class="admin-group"><label>Type <span class="req">*</span></label><select id="qa-transfer-type"><option value="in">Entrant (+)</option><option value="out">Sortant (-)</option></select></div>' +
-        '<div class="admin-group full-width"><label>Libelle / Source</label><input type="text" id="qa-transfer-label" placeholder="Ex: BNP Paribas"></div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div id="qa-iban-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg><span>Modifier IBAN / BIC</span></div>' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group full-width"><label>Numero IBAN</label><input type="text" id="qa-iban-value" placeholder="FR76 1234 5678 9012 3456 7890 12"></div>' +
-        '<div class="admin-group full-width"><label>BIC / SWIFT</label><input type="text" id="qa-bic-value" placeholder="BNPAFRPP"></div>' +
-      '</div>' +
-      '<div class="option-panel-toggle">' +
-        '<div class="option-panel-toggle-label">AFFICHAGE DES 4 DERNIERS CARACTERES</div>' +
-        '<label class="qa-switch"><input type="checkbox" id="qa-iban-masked"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers caracteres dans l\'application</span></label>' +
-      '</div>' +
-    '</div>' +
-
-    '<div id="qa-card-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg><span>Modifier la carte virtuelle</span></div>' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group full-width"><label>Titulaire de la carte</label><input type="text" id="qa-card-holder" placeholder="Prenom Nom" style="font-weight:700;text-transform:uppercase;"></div>' +
-        '<div class="admin-group full-width"><label>Numero de carte</label><input type="text" id="qa-card-number" maxlength="19"></div>' +
-        '<div class="admin-group"><label>Date d\'expiration</label><input type="text" id="qa-card-expiry" maxlength="5" placeholder="MM/YY"></div>' +
-        '<div class="admin-group"><label>CVV</label><input type="text" id="qa-card-cvv" maxlength="4"></div>' +
-        '<div class="admin-group full-width"><label>Type de carte</label><input type="text" id="qa-card-type"></div>' +
-      '</div>' +
-      '<div class="qa-card-holder-note"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span>Le titulaire est affiche par defaut avec le nom et prenom du client. Modifiez-le librement.</span></div>' +
-      '<div class="option-panel-toggle">' +
-        '<div class="option-panel-toggle-label">OPTIONS DE MASQUAGE (FORCE LE CLIENT)</div>' +
-        '<label class="qa-switch"><input type="checkbox" id="qa-card-mask-last4"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers chiffres (definitif)</span></label>' +
-        '<label class="qa-switch" style="margin-top:8px;"><input type="checkbox" id="qa-card-mask-cvv"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer le CVV (definitif)</span></label>' +
-      '</div>' +
-    '</div>' +
-
-    '<div id="qa-name-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Nom et prenom du client</span></div>' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group"><label>Nom <span class="req">*</span></label><input type="text" id="qa-lastName"></div>' +
-        '<div class="admin-group"><label>Prenom <span class="req">*</span></label><input type="text" id="qa-firstName"></div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div id="qa-email-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>Adresse e-mail du client</span></div>' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group full-width"><label>Adresse e-mail <span class="req">*</span></label><input type="email" id="qa-email"></div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div id="qa-phone-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span>Numero de telephone</span></div>' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group full-width"><label>Telephone</label><input type="tel" id="qa-phone"></div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div id="qa-address-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span>Adresse domicile</span></div>' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group full-width"><label>Adresse complete</label><input type="text" id="qa-address"></div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div id="qa-country-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg><span>Pays du client</span></div>' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group full-width"><label>Pays <span class="req">*</span></label><select id="qa-country">' +
-          '<option value="France">France</option>' +
-          '<option value="Pologne">Pologne</option>' +
-          '<option value="Espagne">Espagne</option>' +
-          '<option value="Italie">Italie</option>' +
-          '<option value="Allemagne">Allemagne</option>' +
-        '</select></div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div id="qa-language-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg><span>Langue de l\'application</span></div>' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group full-width"><label>Langue <span class="req">*</span></label><select id="qa-language">' +
-          '<option value="pl">Polonais</option>' +
-          '<option value="fr">Francais</option>' +
-          '<option value="es">Espagnol</option>' +
-          '<option value="it">Italien</option>' +
-          '<option value="de">Allemand</option>' +
-        '</select></div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div id="qa-currency-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg><span>Devise du compte</span></div>' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group full-width"><label>Devise <span class="req">*</span></label><select id="qa-currency">' +
-          '<option value="€">EUR (€)</option>' +
-          '<option value="$">USD ($)</option>' +
-          '<option value="£">GBP (£)</option>' +
-          '<option value="zł">PLN (zł)</option>' +
-        '</select></div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div id="qa-theme-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg><span>Couleur de l\'interface</span></div>' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group full-width"><label>Couleur du theme</label>' +
-          '<div class="color-presets" id="qa-color-presets"></div>' +
-          '<div class="color-picker-row">' +
-            '<input type="color" id="qa-themeColor" value="#1a73e8">' +
-            '<input type="text" id="qa-themeColorHex" value="#1a73e8" readonly>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div id="qa-stop-percent-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2.03 0v8.99H22c-.47-4.74-4.24-8.52-8.97-8.99zm0 11.01V22c4.74-.47 8.5-4.25 8.97-8.99h-8.97z"/></svg><span>Pourcentage du transfert</span></div>' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group"><label>Depart %</label><input type="number" id="qa-startPercent" min="0" max="100"></div>' +
-        '<div class="admin-group"><label>Arret % <span class="req">*</span></label><input type="number" id="qa-stopPercent" min="0" max="100"></div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div id="qa-pin-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><span>Code PIN de connexion</span></div>' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group full-width"><label>Code PIN <span class="req">*</span></label><input type="text" id="qa-pin"></div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div id="qa-activation-code-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11zm0-6c-2.48 0-4.5 2.02-4.5 4.5S9.52 14 12 14s4.5-2.02 4.5-4.5S14.48 5 12 5z"/></svg><span>Code d\'activation transfert</span></div>' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group full-width"><label>Code d\'activation <span class="req">*</span></label><input type="text" id="qa-activation-code"></div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div id="qa-message-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg><span>Message apres le code d\'activation</span></div>' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group full-width"><label>Message affiche au client</label><textarea id="qa-message" rows="3" placeholder="Ex : Votre transfert a ete valide avec succes."></textarea></div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div id="qa-block-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg><span>Suspendre le compte</span></div>' +
-      '<div class="option-panel-desc">Le client ne pourra plus acceder a son application.</div>' +
-    '</div>' +
-    '<div id="qa-unblock-fields" class="option-panel" style="display:none;">' +
-      '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg><span>Activer le compte</span></div>' +
-      '<div class="option-panel-desc">Le client pourra a nouveau acceder a son application.</div>' +
-    '</div>' +
-
+    '<div id="qa-reset-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg><span>Reinitialisation</span></div><div class="option-panel-desc">Cette action va effacer tout l\'historique des transactions et remettre le solde a zero. Cette operation est irreversible.</div></div>' +
+    '<div id="qa-transfer-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg><span>Ajouter un virement</span></div><div class="admin-grid"><div class="admin-group"><label>Montant <span class="req">*</span></label><input type="number" id="qa-transfer-amount" step="0.01" placeholder="Ex: 5000"></div><div class="admin-group"><label>Type <span class="req">*</span></label><select id="qa-transfer-type"><option value="in">Entrant (+)</option><option value="out">Sortant (-)</option></select></div><div class="admin-group full-width"><label>Libelle / Source</label><input type="text" id="qa-transfer-label" placeholder="Ex: BNP Paribas"></div></div></div>' +
+    '<div id="qa-iban-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg><span>Modifier IBAN / BIC</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Numero IBAN</label><input type="text" id="qa-iban-value"></div><div class="admin-group full-width"><label>BIC / SWIFT</label><input type="text" id="qa-bic-value"></div></div><div class="option-panel-toggle"><div class="option-panel-toggle-label">AFFICHAGE DES 4 DERNIERS CARACTERES</div><label class="qa-switch"><input type="checkbox" id="qa-iban-masked"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers caracteres dans l\'application</span></label></div></div>' +
+    '<div id="qa-card-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg><span>Modifier la carte virtuelle</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Titulaire de la carte</label><input type="text" id="qa-card-holder" style="font-weight:700;text-transform:uppercase;"></div><div class="admin-group full-width"><label>Numero de carte</label><input type="text" id="qa-card-number" maxlength="19"></div><div class="admin-group"><label>Date d\'expiration</label><input type="text" id="qa-card-expiry" maxlength="5" placeholder="MM/YY"></div><div class="admin-group"><label>CVV</label><input type="text" id="qa-card-cvv" maxlength="4"></div><div class="admin-group full-width"><label>Type de carte</label><input type="text" id="qa-card-type"></div></div><div class="qa-card-holder-note"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span>Le titulaire est affiche par defaut avec le nom et prenom du client. Modifiez-le librement.</span></div><div class="option-panel-toggle"><div class="option-panel-toggle-label">OPTIONS DE MASQUAGE (FORCE LE CLIENT)</div><label class="qa-switch"><input type="checkbox" id="qa-card-mask-last4"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers chiffres (definitif)</span></label><label class="qa-switch" style="margin-top:8px;"><input type="checkbox" id="qa-card-mask-cvv"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer le CVV (definitif)</span></label></div></div>' +
+    '<div id="qa-name-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Nom et prenom du client</span></div><div class="admin-grid"><div class="admin-group"><label>Nom <span class="req">*</span></label><input type="text" id="qa-lastName"></div><div class="admin-group"><label>Prenom <span class="req">*</span></label><input type="text" id="qa-firstName"></div></div></div>' +
+    '<div id="qa-email-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>Adresse e-mail du client</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Adresse e-mail <span class="req">*</span></label><input type="email" id="qa-email"></div></div></div>' +
+    '<div id="qa-phone-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span>Numero de telephone</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Telephone</label><input type="tel" id="qa-phone"></div></div></div>' +
+    '<div id="qa-address-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span>Adresse domicile</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Adresse complete</label><input type="text" id="qa-address"></div></div></div>' +
+    '<div id="qa-country-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg><span>Pays du client</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Pays <span class="req">*</span></label><select id="qa-country"><option value="France">France</option><option value="Pologne">Pologne</option><option value="Espagne">Espagne</option><option value="Italie">Italie</option><option value="Allemagne">Allemagne</option></select></div></div></div>' +
+    '<div id="qa-language-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg><span>Langue de l\'application</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Langue <span class="req">*</span></label><select id="qa-language"><option value="pl">Polonais</option><option value="fr">Francais</option><option value="es">Espagnol</option><option value="it">Italien</option><option value="de">Allemand</option></select></div></div></div>' +
+    '<div id="qa-currency-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg><span>Devise du compte</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Devise <span class="req">*</span></label><select id="qa-currency"><option value="€">EUR (€)</option><option value="$">USD ($)</option><option value="£">GBP (£)</option><option value="zł">PLN (zł)</option></select></div></div></div>' +
+    '<div id="qa-theme-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg><span>Couleur de l\'interface</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="qa-color-presets"></div><div class="color-picker-row"><input type="color" id="qa-themeColor" value="#1a73e8"><input type="text" id="qa-themeColorHex" value="#1a73e8" readonly></div></div></div></div>' +
+    '<div id="qa-stop-percent-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2.03 0v8.99H22c-.47-4.74-4.24-8.52-8.97-8.99zm0 11.01V22c4.74-.47 8.5-4.25 8.97-8.99h-8.97z"/></svg><span>Pourcentage du transfert</span></div><div class="admin-grid"><div class="admin-group"><label>Depart %</label><input type="number" id="qa-startPercent" min="0" max="100"></div><div class="admin-group"><label>Arret % <span class="req">*</span></label><input type="number" id="qa-stopPercent" min="0" max="100"></div></div></div>' +
+    '<div id="qa-pin-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><span>Code PIN de connexion</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Code PIN <span class="req">*</span></label><input type="text" id="qa-pin"></div></div></div>' +
+    '<div id="qa-activation-code-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11zm0-6c-2.48 0-4.5 2.02-4.5 4.5S9.52 14 12 14s4.5-2.02 4.5-4.5S14.48 5 12 5z"/></svg><span>Code d\'activation transfert</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Code d\'activation <span class="req">*</span></label><input type="text" id="qa-activation-code"></div></div></div>' +
+    '<div id="qa-message-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg><span>Message apres le code d\'activation</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Message affiche au client</label><textarea id="qa-message" rows="3"></textarea></div></div></div>' +
+    '<div id="qa-block-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg><span>Suspendre le compte</span></div><div class="option-panel-desc">Le client ne pourra plus acceder a son application.</div></div>' +
+    '<div id="qa-unblock-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg><span>Activer le compte</span></div><div class="option-panel-desc">Le client pourra a nouveau acceder a son application.</div></div>' +
     '<button class="btn-admin-submit" onclick="window.applyQuickAction()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Appliquer la modification</button>' +
   '</div>';
 
   let clientsHtml = '';
-  if (list.length === 0) {
-    clientsHtml = '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm-7 13c0-2.33 4.67-3.5 7-3.5s7 1.17 7 3.5v1H5v-1z"/></svg><p>Aucun client cree</p></div>';
-  } else {
-    const sorted = list.sort((a, b) => b.localeCompare(a));
-    let rowsHtml = '';
-    sorted.forEach((id) => {
-      const c = clients[id];
-      const balance = formatAmount(parseFloat(c.balance) || 0, c.currency || '€');
-      const blocked = c.blocked === true;
-
-      rowsHtml +=
-        '<div class="client-line">' +
-          '<div class="client-line-name" onclick="window.openClientDetail(\'' + id + '\')">' + c.firstName + ' ' + c.lastName + '</div>' +
-          '<div class="client-line-balance">' + balance + '</div>' +
-          '<button class="client-line-btn ' + (blocked ? 'unblock' : 'block') + '" onclick="window.toggleBlock(\'' + id + '\')">' + (blocked ? 'Activer' : 'Bloquer') + '</button>' +
-          '<button class="client-line-btn del" onclick="window.deleteClientConfirm(\'' + id + '\')">Suppr.</button>' +
-        '</div>';
-    });
-    clientsHtml = '<div class="client-list-card">' + rowsHtml + '</div>';
-  }
+  if (list.length === 0) { clientsHtml = '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm-7 13c0-2.33 4.67-3.5 7-3.5s7 1.17 7 3.5v1H5v-1z"/></svg><p>Aucun client cree</p></div>'; }
+  else { const sorted = list.sort((a, b) => b.localeCompare(a)); let rowsHtml = ''; sorted.forEach((id) => { const c = clients[id]; const balance = formatAmount(parseFloat(c.balance) || 0, c.currency || '€'); const blocked = c.blocked === true; rowsHtml += '<div class="client-line"><div class="client-line-name" onclick="window.openClientDetail(\'' + id + '\')">' + c.firstName + ' ' + c.lastName + '</div><div class="client-line-balance">' + balance + '</div><button class="client-line-btn ' + (blocked ? 'unblock' : 'block') + '" onclick="window.toggleBlock(\'' + id + '\')">' + (blocked ? 'Activer' : 'Bloquer') + '</button><button class="client-line-btn del" onclick="window.deleteClientConfirm(\'' + id + '\')">Suppr.</button></div>'; }); clientsHtml = '<div class="client-list-card">' + rowsHtml + '</div>'; }
 
   root.innerHTML = '<div class="view active"><div class="admin-wrapper">' +
-    '<div class="admin-topbar"><div class="brand"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>ADMIN</div><div class="actions">' +
-      '<button class="icon-btn" onclick="window.refreshAdminPage()" title="Actualiser la page"><svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button>' +
-      '<button class="icon-btn" onclick="window.adminLogout()" title="Deconnexion"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button></div></div>' +
+    '<div class="admin-topbar"><div class="brand"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>ADMIN</div><div class="actions"><button class="icon-btn" onclick="window.refreshAdminPage()" title="Actualiser la page"><svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button><button class="icon-btn" onclick="window.adminLogout()" title="Deconnexion"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button></div></div>' +
     '<div class="admin-body">' +
       '<div class="admin-identity-card"><div>Connecte en tant que : <strong>' + (currentAdmin.email || '') + '</strong></div></div>' +
       quickActionsCardHtml +
@@ -977,172 +718,35 @@ async function renderAdminPage() {
     '</div></div></div>';
 
   const actionSelect = document.getElementById('qa-action-select');
-  const resetFields = document.getElementById('qa-reset-fields');
-  const transferFields = document.getElementById('qa-transfer-fields');
-  const ibanFields = document.getElementById('qa-iban-fields');
-  const cardFields = document.getElementById('qa-card-fields');
-  const blockFields = document.getElementById('qa-block-fields');
-  const unblockFields = document.getElementById('qa-unblock-fields');
-  const nameFields = document.getElementById('qa-name-fields');
-  const emailFields = document.getElementById('qa-email-fields');
-  const phoneFields = document.getElementById('qa-phone-fields');
-  const addressFields = document.getElementById('qa-address-fields');
-  const countryFields = document.getElementById('qa-country-fields');
-  const languageFields = document.getElementById('qa-language-fields');
-  const currencyFields = document.getElementById('qa-currency-fields');
-  const themeFields = document.getElementById('qa-theme-fields');
-  const stopPercentFields = document.getElementById('qa-stop-percent-fields');
-  const pinFields = document.getElementById('qa-pin-fields');
-  const activationCodeFields = document.getElementById('qa-activation-code-fields');
-  const messageFields = document.getElementById('qa-message-fields');
+  const resetFields = document.getElementById('qa-reset-fields'); const transferFields = document.getElementById('qa-transfer-fields'); const ibanFields = document.getElementById('qa-iban-fields'); const cardFields = document.getElementById('qa-card-fields'); const blockFields = document.getElementById('qa-block-fields'); const unblockFields = document.getElementById('qa-unblock-fields'); const nameFields = document.getElementById('qa-name-fields'); const emailFields = document.getElementById('qa-email-fields'); const phoneFields = document.getElementById('qa-phone-fields'); const addressFields = document.getElementById('qa-address-fields'); const countryFields = document.getElementById('qa-country-fields'); const languageFields = document.getElementById('qa-language-fields'); const currencyFields = document.getElementById('qa-currency-fields'); const themeFields = document.getElementById('qa-theme-fields'); const stopPercentFields = document.getElementById('qa-stop-percent-fields'); const pinFields = document.getElementById('qa-pin-fields'); const activationCodeFields = document.getElementById('qa-activation-code-fields'); const messageFields = document.getElementById('qa-message-fields');
 
-  const fillIbanFields = (clientId) => {
-    if (!clientId || !clients[clientId]) return;
-    const cc = clients[clientId];
-    let ibanValue = cc.iban || cc.address || '';
-    if (!ibanValue) ibanValue = generateIban(cc.country || 'France');
-    document.getElementById('qa-iban-value').value = ibanValue;
-    let bicValue = cc.bic || '';
-    if (!bicValue) bicValue = generateBic(cc.country || 'France');
-    document.getElementById('qa-bic-value').value = bicValue;
-    document.getElementById('qa-iban-masked').checked = cc.ibanMasked === true;
-  };
-
-  const fillCardFields = (clientId) => {
-    if (!clientId || !clients[clientId]) return;
-    const cc = clients[clientId];
-    let holderValue = (cc.cardHolder && cc.cardHolder.trim()) ? cc.cardHolder : ((cc.firstName || '') + ' ' + (cc.lastName || '')).trim();
-    document.getElementById('qa-card-holder').value = holderValue.toUpperCase();
-    let numValue = cc.cardNumber || generateCardNumber();
-    document.getElementById('qa-card-number').value = numValue;
-    let expValue = cc.cardExpiry || generateCardExpiry();
-    document.getElementById('qa-card-expiry').value = expValue;
-    let cvvValue = cc.cardCvv || generateCardCvv();
-    document.getElementById('qa-card-cvv').value = cvvValue;
-    let typeValue = cc.cardType || 'Visa Debit';
-    document.getElementById('qa-card-type').value = typeValue;
-    document.getElementById('qa-card-mask-last4').checked = cc.cardMaskLast4 === true;
-    document.getElementById('qa-card-mask-cvv').checked = cc.cardMaskCvv === true;
-  };
-
-  const fillNameFields = (clientId) => {
-    if (!clientId || !clients[clientId]) return;
-    const cc = clients[clientId];
-    document.getElementById('qa-lastName').value = cc.lastName || '';
-    document.getElementById('qa-firstName').value = cc.firstName || '';
-  };
-  const fillEmailFields = (clientId) => {
-    if (!clientId || !clients[clientId]) return;
-    document.getElementById('qa-email').value = clients[clientId].email || '';
-  };
-  const fillPhoneFields = (clientId) => {
-    if (!clientId || !clients[clientId]) return;
-    document.getElementById('qa-phone').value = clients[clientId].phone || '';
-  };
-  const fillAddressFields = (clientId) => {
-    if (!clientId || !clients[clientId]) return;
-    document.getElementById('qa-address').value = clients[clientId].address || '';
-  };
-  const fillCountryFields = (clientId) => {
-    if (!clientId || !clients[clientId]) return;
-    document.getElementById('qa-country').value = clients[clientId].country || 'France';
-  };
-  const fillLanguageFields = (clientId) => {
-    if (!clientId || !clients[clientId]) return;
-    document.getElementById('qa-language').value = clients[clientId].language || 'fr';
-  };
-  const fillCurrencyFields = (clientId) => {
-    if (!clientId || !clients[clientId]) return;
-    document.getElementById('qa-currency').value = clients[clientId].currency || '€';
-  };
-  const fillStopPercentFields = (clientId) => {
-    if (!clientId || !clients[clientId]) return;
-    const cc = clients[clientId];
-    document.getElementById('qa-startPercent').value = cc.startPercent != null ? cc.startPercent : 0;
-    document.getElementById('qa-stopPercent').value = cc.stopPercent != null ? cc.stopPercent : 100;
-  };
-  const fillPinFields = (clientId) => {
-    if (!clientId || !clients[clientId]) return;
-    document.getElementById('qa-pin').value = clients[clientId].pin || '';
-  };
-  const fillActivationCodeFields = (clientId) => {
-    if (!clientId || !clients[clientId]) return;
-    document.getElementById('qa-activation-code').value = clients[clientId].activationCode || '';
-  };
-  const fillMessageFields = (clientId) => {
-    if (!clientId || !clients[clientId]) return;
-    document.getElementById('qa-message').value = clients[clientId].message || '';
-  };
-
-  const fillThemeFields = (clientId) => {
-    if (!clientId || !clients[clientId]) return;
-    const cc = clients[clientId];
-    const cur = cc.themeColor || '#1a73e8';
-    document.getElementById('qa-themeColor').value = cur;
-    document.getElementById('qa-themeColorHex').value = cur;
-    const pc = document.getElementById('qa-color-presets');
-    if (pc) {
-      pc.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected'));
-      pc.querySelectorAll('.color-preset').forEach(p => {
-        if ((p.dataset.color || '').toLowerCase() === cur.toLowerCase()) p.classList.add('selected');
-      });
-    }
-  };
+  const fillIbanFields = (clientId) => { if (!clientId || !clients[clientId]) return; const cc = clients[clientId]; let ibanValue = cc.iban || cc.address || ''; if (!ibanValue) ibanValue = generateIban(cc.country || 'France'); document.getElementById('qa-iban-value').value = ibanValue; let bicValue = cc.bic || ''; if (!bicValue) bicValue = generateBic(cc.country || 'France'); document.getElementById('qa-bic-value').value = bicValue; document.getElementById('qa-iban-masked').checked = cc.ibanMasked === true; };
+  const fillCardFields = (clientId) => { if (!clientId || !clients[clientId]) return; const cc = clients[clientId]; let holderValue = (cc.cardHolder && cc.cardHolder.trim()) ? cc.cardHolder : ((cc.firstName || '') + ' ' + (cc.lastName || '')).trim(); document.getElementById('qa-card-holder').value = holderValue.toUpperCase(); let numValue = cc.cardNumber || generateCardNumber(); document.getElementById('qa-card-number').value = numValue; let expValue = cc.cardExpiry || generateCardExpiry(); document.getElementById('qa-card-expiry').value = expValue; let cvvValue = cc.cardCvv || generateCardCvv(); document.getElementById('qa-card-cvv').value = cvvValue; let typeValue = cc.cardType || 'Visa Debit'; document.getElementById('qa-card-type').value = typeValue; document.getElementById('qa-card-mask-last4').checked = cc.cardMaskLast4 === true; document.getElementById('qa-card-mask-cvv').checked = cc.cardMaskCvv === true; };
+  const fillNameFields = (clientId) => { if (!clientId || !clients[clientId]) return; const cc = clients[clientId]; document.getElementById('qa-lastName').value = cc.lastName || ''; document.getElementById('qa-firstName').value = cc.firstName || ''; };
+  const fillEmailFields = (clientId) => { if (!clientId || !clients[clientId]) return; document.getElementById('qa-email').value = clients[clientId].email || ''; };
+  const fillPhoneFields = (clientId) => { if (!clientId || !clients[clientId]) return; document.getElementById('qa-phone').value = clients[clientId].phone || ''; };
+  const fillAddressFields = (clientId) => { if (!clientId || !clients[clientId]) return; document.getElementById('qa-address').value = clients[clientId].address || ''; };
+  const fillCountryFields = (clientId) => { if (!clientId || !clients[clientId]) return; document.getElementById('qa-country').value = clients[clientId].country || 'France'; };
+  const fillLanguageFields = (clientId) => { if (!clientId || !clients[clientId]) return; document.getElementById('qa-language').value = clients[clientId].language || 'fr'; };
+  const fillCurrencyFields = (clientId) => { if (!clientId || !clients[clientId]) return; document.getElementById('qa-currency').value = clients[clientId].currency || '€'; };
+  const fillStopPercentFields = (clientId) => { if (!clientId || !clients[clientId]) return; const cc = clients[clientId]; document.getElementById('qa-startPercent').value = cc.startPercent != null ? cc.startPercent : 0; document.getElementById('qa-stopPercent').value = cc.stopPercent != null ? cc.stopPercent : 100; };
+  const fillPinFields = (clientId) => { if (!clientId || !clients[clientId]) return; document.getElementById('qa-pin').value = clients[clientId].pin || ''; };
+  const fillActivationCodeFields = (clientId) => { if (!clientId || !clients[clientId]) return; document.getElementById('qa-activation-code').value = clients[clientId].activationCode || ''; };
+  const fillMessageFields = (clientId) => { if (!clientId || !clients[clientId]) return; document.getElementById('qa-message').value = clients[clientId].message || ''; };
+  const fillThemeFields = (clientId) => { if (!clientId || !clients[clientId]) return; const cc = clients[clientId]; const cur = cc.themeColor || '#1a73e8'; document.getElementById('qa-themeColor').value = cur; document.getElementById('qa-themeColorHex').value = cur; const pc = document.getElementById('qa-color-presets'); if (pc) { pc.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected')); pc.querySelectorAll('.color-preset').forEach(p => { if ((p.dataset.color || '').toLowerCase() === cur.toLowerCase()) p.classList.add('selected'); }); } };
 
   const qaPresets = ['#1a73e8', '#0ea5e9', '#06b6d4', '#14b8a6', '#22c55e', '#84cc16', '#eab308', '#f59e0b', '#ef4444', '#dc2626', '#ec4899', '#a855f7', '#6366f1', '#0f172a'];
   const qaPresetContainer = document.getElementById('qa-color-presets');
-  if (qaPresetContainer) {
-    qaPresets.forEach((col) => {
-      const div = document.createElement('div');
-      div.className = 'color-preset';
-      div.style.background = col;
-      div.dataset.color = col;
-      div.onclick = () => {
-        qaPresetContainer.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected'));
-        div.classList.add('selected');
-        document.getElementById('qa-themeColor').value = col;
-        document.getElementById('qa-themeColorHex').value = col;
-      };
-      qaPresetContainer.appendChild(div);
-    });
-  }
+  if (qaPresetContainer) { qaPresets.forEach((col) => { const div = document.createElement('div'); div.className = 'color-preset'; div.style.background = col; div.dataset.color = col; div.onclick = () => { qaPresetContainer.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected')); div.classList.add('selected'); document.getElementById('qa-themeColor').value = col; document.getElementById('qa-themeColorHex').value = col; }; qaPresetContainer.appendChild(div); }); }
   const qaThemeColorInput = document.getElementById('qa-themeColor');
-  if (qaThemeColorInput) {
-    qaThemeColorInput.addEventListener('input', (e) => {
-      document.getElementById('qa-themeColorHex').value = e.target.value;
-      if (qaPresetContainer) qaPresetContainer.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected'));
-    });
-  }
+  if (qaThemeColorInput) { qaThemeColorInput.addEventListener('input', (e) => { document.getElementById('qa-themeColorHex').value = e.target.value; if (qaPresetContainer) qaPresetContainer.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected')); }); }
 
-  const hideAllOptions = () => {
-    [resetFields, transferFields, ibanFields, cardFields, blockFields, unblockFields,
-     nameFields, emailFields, phoneFields, addressFields, countryFields, languageFields,
-     currencyFields, themeFields, stopPercentFields, pinFields, activationCodeFields, messageFields]
-      .forEach(el => { if (el) el.style.display = 'none'; });
-  };
-
-  const fillForAction = (v, clientId) => {
-    if (v === 'edit-iban') fillIbanFields(clientId);
-    else if (v === 'edit-card') fillCardFields(clientId);
-    else if (v === 'edit-name') fillNameFields(clientId);
-    else if (v === 'edit-email') fillEmailFields(clientId);
-    else if (v === 'edit-phone') fillPhoneFields(clientId);
-    else if (v === 'edit-address') fillAddressFields(clientId);
-    else if (v === 'edit-country') fillCountryFields(clientId);
-    else if (v === 'edit-language') fillLanguageFields(clientId);
-    else if (v === 'edit-currency') fillCurrencyFields(clientId);
-    else if (v === 'edit-theme') fillThemeFields(clientId);
-    else if (v === 'edit-stop-percent') fillStopPercentFields(clientId);
-    else if (v === 'edit-pin') fillPinFields(clientId);
-    else if (v === 'edit-activation-code') fillActivationCodeFields(clientId);
-    else if (v === 'edit-message') fillMessageFields(clientId);
-  };
+  const hideAllOptions = () => { [resetFields, transferFields, ibanFields, cardFields, blockFields, unblockFields, nameFields, emailFields, phoneFields, addressFields, countryFields, languageFields, currencyFields, themeFields, stopPercentFields, pinFields, activationCodeFields, messageFields].forEach(el => { if (el) el.style.display = 'none'; }); };
+  const fillForAction = (v, clientId) => { if (v === 'edit-iban') fillIbanFields(clientId); else if (v === 'edit-card') fillCardFields(clientId); else if (v === 'edit-name') fillNameFields(clientId); else if (v === 'edit-email') fillEmailFields(clientId); else if (v === 'edit-phone') fillPhoneFields(clientId); else if (v === 'edit-address') fillAddressFields(clientId); else if (v === 'edit-country') fillCountryFields(clientId); else if (v === 'edit-language') fillLanguageFields(clientId); else if (v === 'edit-currency') fillCurrencyFields(clientId); else if (v === 'edit-theme') fillThemeFields(clientId); else if (v === 'edit-stop-percent') fillStopPercentFields(clientId); else if (v === 'edit-pin') fillPinFields(clientId); else if (v === 'edit-activation-code') fillActivationCodeFields(clientId); else if (v === 'edit-message') fillMessageFields(clientId); };
 
   if (actionSelect) {
     actionSelect.addEventListener('change', (e) => {
-      const v = e.target.value;
-      hideAllOptions();
-      const clientId = document.getElementById('qa-client-select').value;
+      const v = e.target.value; hideAllOptions(); const clientId = document.getElementById('qa-client-select').value;
       if (v === 'reset') resetFields.style.display = 'block';
       else if (v === 'add-transfer') transferFields.style.display = 'block';
       else if (v === 'edit-iban') { ibanFields.style.display = 'block'; fillIbanFields(clientId); }
@@ -1165,76 +769,29 @@ async function renderAdminPage() {
   }
 
   const qaClientSelect = document.getElementById('qa-client-select');
-  if (qaClientSelect) {
-    qaClientSelect.addEventListener('change', () => {
-      const clientId = qaClientSelect.value;
-      if (actionSelect && actionSelect.value) fillForAction(actionSelect.value, clientId);
-    });
-  }
+  if (qaClientSelect) { qaClientSelect.addEventListener('change', () => { const clientId = qaClientSelect.value; if (actionSelect && actionSelect.value) fillForAction(actionSelect.value, clientId); }); }
 
   const presets = ['#1a73e8', '#0ea5e9', '#06b6d4', '#14b8a6', '#22c55e', '#84cc16', '#eab308', '#f59e0b', '#ef4444', '#dc2626', '#ec4899', '#a855f7', '#6366f1', '#0f172a'];
   const presetContainer = document.getElementById('color-presets');
-  if (presetContainer) {
-    presets.forEach((col) => {
-      const div = document.createElement('div');
-      div.className = 'color-preset' + (col === '#1a73e8' ? ' selected' : '');
-      div.style.background = col;
-      div.onclick = () => {
-        presetContainer.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected'));
-        div.classList.add('selected');
-        document.getElementById('themeColor').value = col;
-        document.getElementById('themeColorHex').value = col;
-      };
-      presetContainer.appendChild(div);
-    });
-  }
+  if (presetContainer) { presets.forEach((col) => { const div = document.createElement('div'); div.className = 'color-preset' + (col === '#1a73e8' ? ' selected' : ''); div.style.background = col; div.onclick = () => { presetContainer.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected')); div.classList.add('selected'); document.getElementById('themeColor').value = col; document.getElementById('themeColorHex').value = col; }; presetContainer.appendChild(div); }); }
   const themeColorInput = document.getElementById('themeColor');
-  if (themeColorInput) {
-    themeColorInput.addEventListener('input', (e) => {
-      document.getElementById('themeColorHex').value = e.target.value;
-      presetContainer.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected'));
-    });
-  }
+  if (themeColorInput) { themeColorInput.addEventListener('input', (e) => { document.getElementById('themeColorHex').value = e.target.value; presetContainer.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected')); }); }
 
   const adminForm = document.getElementById('admin-form');
   if (adminForm) {
     adminForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; }
-      let id;
-      do { id = generateShortId(); } while (await FireDB.getClient(id));
+      let id; do { id = generateShortId(); } while (await FireDB.getClient(id));
       const initialBalance = parseFloat(document.getElementById('balance').value) || 0;
       const currencyValue = document.getElementById('currency').value;
       const bankNameValue = document.getElementById('bankName').value.trim();
       const countryValue = document.getElementById('country').value;
-      const generatedIban = generateIban(countryValue);
-      const generatedBic = generateBic(countryValue);
-      const generatedCardNumber = generateCardNumber();
-      const generatedCardExpiry = generateCardExpiry();
-      const generatedCardCvv = generateCardCvv();
-      const now = new Date();
-      const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      const generatedIban = generateIban(countryValue); const generatedBic = generateBic(countryValue);
+      const generatedCardNumber = generateCardNumber(); const generatedCardExpiry = generateCardExpiry(); const generatedCardCvv = generateCardCvv();
+      const now = new Date(); const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
       const initialTransactions = initialBalance > 0 ? [{ type: 'in', subtitle: bankNameValue || 'Depot initial', amount: formatAmount(initialBalance, currencyValue), date: dateStr }] : [];
-      const clientData = {
-        adminUid: currentAdmin.uid, adminEmail: currentAdmin.email,
-        lastName: document.getElementById('lastName').value,
-        firstName: document.getElementById('firstName').value,
-        country: countryValue, phone: document.getElementById('phone').value,
-        email: document.getElementById('email').value, address: document.getElementById('address').value,
-        language: document.getElementById('language').value,
-        bankName: bankNameValue, iban: generatedIban, bic: generatedBic, ibanMasked: false,
-        cardHolder: '',
-        cardNumber: generatedCardNumber, cardExpiry: generatedCardExpiry, cardCvv: generatedCardCvv,
-        cardType: 'Visa Debit', cardMaskLast4: false, cardMaskCvv: false,
-        balance: initialBalance, currency: currencyValue,
-        startPercent: parseInt(document.getElementById('startPercent').value),
-        stopPercent: parseInt(document.getElementById('stopPercent').value),
-        pin: document.getElementById('pin').value,
-        activationCode: document.getElementById('activationCode').value,
-        message: document.getElementById('message').value,
-        themeColor: document.getElementById('themeColor').value,
-        blocked: false, transactions: initialTransactions
-      };
+      const clientData = { adminUid: currentAdmin.uid, adminEmail: currentAdmin.email, lastName: document.getElementById('lastName').value, firstName: document.getElementById('firstName').value, country: countryValue, phone: document.getElementById('phone').value, email: document.getElementById('email').value, address: document.getElementById('address').value, language: document.getElementById('language').value, bankName: bankNameValue, iban: generatedIban, bic: generatedBic, ibanMasked: false, cardHolder: '', cardNumber: generatedCardNumber, cardExpiry: generatedCardExpiry, cardCvv: generatedCardCvv, cardType: 'Visa Debit', cardMaskLast4: false, cardMaskCvv: false, balance: initialBalance, currency: currencyValue, startPercent: parseInt(document.getElementById('startPercent').value), stopPercent: parseInt(document.getElementById('stopPercent').value), pin: document.getElementById('pin').value, activationCode: document.getElementById('activationCode').value, message: document.getElementById('message').value, themeColor: document.getElementById('themeColor').value, blocked: false, transactions: initialTransactions };
       const ok = await FireDB.createClient(id, clientData);
       if (ok) { window.showNotif('Le client a ete cree avec succes.', 'success', 'Client cree'); renderAdminPage(); }
       else window.showNotif('Erreur lors de la creation du client.', 'error');
@@ -1249,106 +806,30 @@ window.openClientDetail = async function(id) {
   const c = await FireDB.getClient(id);
   if (!c) { window.showNotif('Client introuvable.', 'error'); return; }
   if (c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
-
-  const old = document.getElementById('client-detail-modal');
-  if (old) old.remove();
-
+  const old = document.getElementById('client-detail-modal'); if (old) old.remove();
   const balance = formatAmount(parseFloat(c.balance) || 0, c.currency || '€');
   const txCount = (c.transactions || []).length;
   const basePath = window.location.pathname.replace(/admin\.html$/, '');
   const clientLink = window.location.origin + basePath + '?id=' + id;
   const langNames = { pl: 'Polonais', fr: 'Francais', es: 'Espagnol', it: 'Italien', de: 'Allemand' };
   const cardHolder = getCardHolderName(c);
-
   const ov = document.createElement('div');
   ov.id = 'client-detail-modal';
   ov.style.cssText = 'position:fixed!important;inset:0!important;background:rgba(15,23,42,0.75)!important;display:block!important;z-index:2147483647!important;overflow-y:auto!important;padding:20px 12px 40px 12px!important;box-sizing:border-box!important;';
-
-  const row = (label, value, mono) => {
-    return '<div class="detail-row">' +
-      '<div class="detail-row-label">' + label + '</div>' +
-      '<div class="detail-row-value' + (mono ? ' mono' : '') + '">' + (value || '-') + '</div>' +
-    '</div>';
-  };
+  const row = (label, value, mono) => { return '<div class="detail-row"><div class="detail-row-label">' + label + '</div><div class="detail-row-value' + (mono ? ' mono' : '') + '">' + (value || '-') + '</div></div>'; };
   const sectionTitle = (title) => '<div class="detail-section-title">' + title + '</div>';
-
-  ov.innerHTML =
-    '<div style="background:#fff!important;border-radius:16px!important;width:100%!important;max-width:400px!important;margin:0 auto!important;box-shadow:0 20px 50px rgba(0,0,0,0.4)!important;">' +
-      '<div class="detail-header">' +
-        '<div class="detail-avatar">' + ((c.firstName || '').charAt(0) + (c.lastName || '').charAt(0)).toUpperCase() + '</div>' +
-        '<div style="flex:1!important;min-width:0!important;">' +
-          '<div class="detail-name">' + c.firstName + ' ' + c.lastName + '</div>' +
-          '<div class="detail-email">' + c.email + '</div>' +
-        '</div>' +
-        '<button class="detail-close" onclick="document.getElementById(\'client-detail-modal\').remove()" aria-label="Fermer">' +
-          '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>' +
-        '</button>' +
-      '</div>' +
-      '<div class="detail-body">' +
-
-        '<div class="detail-status-grid">' +
-          '<div class="detail-status-box ' + (c.blocked ? 'blocked' : 'active') + '">' +
-            '<div class="detail-status-label">Statut</div>' +
-            '<div class="detail-status-value">' + (c.blocked ? 'Suspendu' : 'Actif') + '</div>' +
-          '</div>' +
-          '<div class="detail-status-box balance">' +
-            '<div class="detail-status-label">Solde</div>' +
-            '<div class="detail-status-value">' + balance + '</div>' +
-          '</div>' +
-        '</div>' +
-
-        sectionTitle('Identite') +
-        row('Nom', c.lastName) +
-        row('Prenom', c.firstName) +
-        row('Pays', c.country) +
-        row('Langue', langNames[c.language] || c.language) +
-
-        sectionTitle('Contact') +
-        row('Email', c.email) +
-        row('Telephone', c.phone) +
-        row('Adresse', c.address) +
-
-        sectionTitle('Securite') +
-        row('Code PIN', c.pin, true) +
-        row('Code activation', c.activationCode, true) +
-
-        sectionTitle('Banque / IBAN') +
-        row('Banque', c.bankName) +
-        row('IBAN', c.iban, true) +
-        row('BIC / SWIFT', c.bic, true) +
-        row('IBAN masque', c.ibanMasked === true ? 'Oui' : 'Non') +
-
-        sectionTitle('Carte virtuelle') +
-        row('Titulaire', cardHolder) +
-        row('Numero', c.cardNumber, true) +
-        row('Expiration', c.cardExpiry) +
-        row('CVV', c.cardCvv, true) +
-        row('Type', c.cardType) +
-        row('Masquer 4 derniers', c.cardMaskLast4 === true ? 'Oui' : 'Non') +
-        row('Masquer CVV', c.cardMaskCvv === true ? 'Oui' : 'Non') +
-
-        sectionTitle('Parametres transfert') +
-        row('Depart %', (c.startPercent || 0) + '%') +
-        row('Arret %', (c.stopPercent || 100) + '%') +
-        row('Message de fin', c.message) +
-        row('Couleur du theme', c.themeColor || '#1a73e8') +
-
-        sectionTitle('Historique') +
-        row('Transactions', txCount + ' transaction(s)') +
-
-        sectionTitle('Lien client') +
-        '<div class="detail-link-box">' + clientLink + '</div>' +
-
-        '<div class="detail-footer">' +
-          '<button class="detail-footer-btn copy" onclick="window.copyToClipboard(\'' + clientLink + '\')">' +
-            '<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>' +
-            '<span>Copier le lien</span>' +
-          '</button>' +
-        '</div>' +
-
-      '</div>' +
-    '</div>';
-
+  ov.innerHTML = '<div style="background:#fff!important;border-radius:16px!important;width:100%!important;max-width:400px!important;margin:0 auto!important;box-shadow:0 20px 50px rgba(0,0,0,0.4)!important;">' +
+    '<div class="detail-header"><div class="detail-avatar">' + ((c.firstName || '').charAt(0) + (c.lastName || '').charAt(0)).toUpperCase() + '</div><div style="flex:1!important;min-width:0!important;"><div class="detail-name">' + c.firstName + ' ' + c.lastName + '</div><div class="detail-email">' + c.email + '</div></div><button class="detail-close" onclick="document.getElementById(\'client-detail-modal\').remove()" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>' +
+    '<div class="detail-body"><div class="detail-status-grid"><div class="detail-status-box ' + (c.blocked ? 'blocked' : 'active') + '"><div class="detail-status-label">Statut</div><div class="detail-status-value">' + (c.blocked ? 'Suspendu' : 'Actif') + '</div></div><div class="detail-status-box balance"><div class="detail-status-label">Solde</div><div class="detail-status-value">' + balance + '</div></div></div>' +
+      sectionTitle('Identite') + row('Nom', c.lastName) + row('Prenom', c.firstName) + row('Pays', c.country) + row('Langue', langNames[c.language] || c.language) +
+      sectionTitle('Contact') + row('Email', c.email) + row('Telephone', c.phone) + row('Adresse', c.address) +
+      sectionTitle('Securite') + row('Code PIN', c.pin, true) + row('Code activation', c.activationCode, true) +
+      sectionTitle('Banque / IBAN') + row('Banque', c.bankName) + row('IBAN', c.iban, true) + row('BIC / SWIFT', c.bic, true) + row('IBAN masque', c.ibanMasked === true ? 'Oui' : 'Non') +
+      sectionTitle('Carte virtuelle') + row('Titulaire', cardHolder) + row('Numero', c.cardNumber, true) + row('Expiration', c.cardExpiry) + row('CVV', c.cardCvv, true) + row('Type', c.cardType) + row('Masquer 4 derniers', c.cardMaskLast4 === true ? 'Oui' : 'Non') + row('Masquer CVV', c.cardMaskCvv === true ? 'Oui' : 'Non') +
+      sectionTitle('Parametres transfert') + row('Depart %', (c.startPercent || 0) + '%') + row('Arret %', (c.stopPercent || 100) + '%') + row('Message de fin', c.message) + row('Couleur du theme', c.themeColor || '#1a73e8') +
+      sectionTitle('Historique') + row('Transactions', txCount + ' transaction(s)') +
+      sectionTitle('Lien client') + '<div class="detail-link-box">' + clientLink + '</div>' +
+      '<div class="detail-footer"><button class="detail-footer-btn copy" onclick="window.copyToClipboard(\'' + clientLink + '\')"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span>Copier le lien</span></button></div></div></div>';
   ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
   document.body.appendChild(ov);
 };
@@ -1364,202 +845,36 @@ window.applyQuickAction = async function() {
   const client = await FireDB.getClient(clientId);
   if (!client) { window.showNotif('Client introuvable.', 'error'); return; }
   if (client.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
-
-  if (action === 'reset') {
-    window.showConfirm('Voulez-vous vraiment reinitialiser l\'historique et le solde de ce client ? Cette action est irreversible.', async () => {
-      await FireDB.updateClient(clientId, { balance: 0, transactions: [] });
-      window.showNotif('Le compte a ete reinitialise.', 'success', 'Reinitialisation');
-      renderAdminPage();
-    }, 'Reinitialiser le compte', 'warning');
-    return;
-  } else if (action === 'add-transfer') {
-    const amount = parseFloat(document.getElementById('qa-transfer-amount').value);
-    const type = document.getElementById('qa-transfer-type').value;
-    const label = document.getElementById('qa-transfer-label').value.trim();
-    if (!amount || amount <= 0) { window.showNotif('Montant invalide.', 'error'); return; }
-    const currency = client.currency || '€';
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    const newTx = { type: type, subtitle: label || (type === 'in' ? 'Virement recu' : 'Virement envoye'), amount: formatAmount(amount, currency), date: dateStr };
-    const transactions = client.transactions || []; transactions.unshift(newTx);
-    let newBalance = parseFloat(client.balance) || 0;
-    if (type === 'in') newBalance += amount; else newBalance = Math.max(0, newBalance - amount);
-    await FireDB.updateClient(clientId, { balance: newBalance, transactions: transactions });
-    window.showNotif('Le virement a ete ajoute avec succes.', 'success', 'Virement ajoute');
-  } else if (action === 'edit-iban') {
-    const newIban = document.getElementById('qa-iban-value').value.trim().replace(/\s+/g, '');
-    const newBic = document.getElementById('qa-bic-value').value.trim().toUpperCase();
-    const masked = document.getElementById('qa-iban-masked').checked;
-    if (!newIban || !newBic) { window.showNotif('Remplissez tous les champs.', 'warning'); return; }
-    await FireDB.updateClient(clientId, { iban: newIban, bic: newBic, ibanMasked: masked });
-    window.showNotif('IBAN et BIC mis a jour.', 'success', 'Banque mise a jour');
-  } else if (action === 'edit-card') {
-    const newHolder = document.getElementById('qa-card-holder').value.trim().toUpperCase();
-    const newNum = document.getElementById('qa-card-number').value.trim().replace(/\s+/g, '');
-    const newExpiry = document.getElementById('qa-card-expiry').value.trim();
-    const newCvv = document.getElementById('qa-card-cvv').value.trim();
-    const newType = document.getElementById('qa-card-type').value.trim() || 'Visa Debit';
-    const maskLast4 = document.getElementById('qa-card-mask-last4').checked;
-    const maskCvv = document.getElementById('qa-card-mask-cvv').checked;
-    if (!newNum || !newExpiry || !newCvv) { window.showNotif('Remplissez tous les champs.', 'warning'); return; }
-    await FireDB.updateClient(clientId, {
-      cardHolder: newHolder || ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase(),
-      cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv,
-      cardType: newType, cardMaskLast4: maskLast4, cardMaskCvv: maskCvv
-    });
-    window.showNotif('La carte virtuelle a ete mise a jour.', 'success', 'Carte mise a jour');
-  } else if (action === 'edit-name') {
-    const newLast = document.getElementById('qa-lastName').value.trim();
-    const newFirst = document.getElementById('qa-firstName').value.trim();
-    if (!newLast || !newFirst) { window.showNotif('Remplissez le nom et le prenom.', 'warning'); return; }
-    await FireDB.updateClient(clientId, { lastName: newLast, firstName: newFirst });
-    window.showNotif('Le nom et prenom ont ete mis a jour.', 'success', 'Identite mise a jour');
-  } else if (action === 'edit-email') {
-    const newEmail = document.getElementById('qa-email').value.trim();
-    if (!newEmail || !newEmail.includes('@')) { window.showNotif('Adresse e-mail invalide.', 'error'); return; }
-    await FireDB.updateClient(clientId, { email: newEmail });
-    window.showNotif('L\'adresse e-mail a ete mise a jour.', 'success', 'E-mail mis a jour');
-  } else if (action === 'edit-phone') {
-    const newPhone = document.getElementById('qa-phone').value.trim();
-    await FireDB.updateClient(clientId, { phone: newPhone });
-    window.showNotif('Le numero de telephone a ete mis a jour.', 'success', 'Telephone mis a jour');
-  } else if (action === 'edit-address') {
-    const newAddress = document.getElementById('qa-address').value.trim();
-    await FireDB.updateClient(clientId, { address: newAddress });
-    window.showNotif('L\'adresse a ete mise a jour.', 'success', 'Adresse mise a jour');
-  } else if (action === 'edit-country') {
-    const newCountry = document.getElementById('qa-country').value;
-    await FireDB.updateClient(clientId, { country: newCountry });
-    window.showNotif('Le pays a ete mis a jour.', 'success', 'Pays mis a jour');
-  } else if (action === 'edit-language') {
-    const newLang = document.getElementById('qa-language').value;
-    await FireDB.updateClient(clientId, { language: newLang });
-    window.showNotif('La langue a ete mise a jour.', 'success', 'Langue mise a jour');
-  } else if (action === 'edit-currency') {
-    const newCur = document.getElementById('qa-currency').value;
-    await FireDB.updateClient(clientId, { currency: newCur });
-    window.showNotif('La devise a ete mise a jour.', 'success', 'Devise mise a jour');
-  } else if (action === 'edit-theme') {
-    const newTheme = document.getElementById('qa-themeColor').value || '#1a73e8';
-    await FireDB.updateClient(clientId, { themeColor: newTheme });
-    window.showNotif('La couleur de l\'interface a ete mise a jour.', 'success', 'Theme mis a jour');
-  } else if (action === 'edit-stop-percent') {
-    const newStart = parseInt(document.getElementById('qa-startPercent').value, 10);
-    const newStop = parseInt(document.getElementById('qa-stopPercent').value, 10);
-    if (isNaN(newStart) || isNaN(newStop) || newStart < 0 || newStop < 0 || newStart > 100 || newStop > 100) {
-      window.showNotif('Valeurs invalides (0 a 100).', 'error'); return;
-    }
-    await FireDB.updateClient(clientId, { startPercent: newStart, stopPercent: newStop });
-    window.showNotif('Le pourcentage a ete mis a jour.', 'success', 'Pourcentage mis a jour');
-  } else if (action === 'edit-pin') {
-    const newPin = document.getElementById('qa-pin').value.trim();
-    if (!newPin) { window.showNotif('Le code PIN est requis.', 'warning'); return; }
-    await FireDB.updateClient(clientId, { pin: newPin });
-    window.showNotif('Le code PIN a ete mis a jour.', 'success', 'Code PIN mis a jour');
-  } else if (action === 'edit-activation-code') {
-    const newCode = document.getElementById('qa-activation-code').value.trim();
-    if (!newCode) { window.showNotif('Le code d\'activation est requis.', 'warning'); return; }
-    await FireDB.updateClient(clientId, { activationCode: newCode });
-    window.showNotif('Le code d\'activation a ete mis a jour.', 'success', 'Code d\'activation mis a jour');
-  } else if (action === 'edit-message') {
-    const newMsg = document.getElementById('qa-message').value;
-    await FireDB.updateClient(clientId, { message: newMsg });
-    window.showNotif('Le message de fin a ete mis a jour.', 'success', 'Message mis a jour');
-  } else if (action === 'block') {
-    await FireDB.updateClient(clientId, { blocked: true });
-    window.showNotif('Le compte a ete suspendu.', 'warning', 'Compte suspendu');
-  } else if (action === 'unblock') {
-    await FireDB.updateClient(clientId, { blocked: false });
-    window.showNotif('Le compte a ete active.', 'success', 'Compte active');
-  }
+  if (action === 'reset') { window.showConfirm('Voulez-vous vraiment reinitialiser l\'historique et le solde de ce client ? Cette action est irreversible.', async () => { await FireDB.updateClient(clientId, { balance: 0, transactions: [] }); window.showNotif('Le compte a ete reinitialise.', 'success', 'Reinitialisation'); renderAdminPage(); }, 'Reinitialiser le compte', 'warning'); return; }
+  else if (action === 'add-transfer') { const amount = parseFloat(document.getElementById('qa-transfer-amount').value); const type = document.getElementById('qa-transfer-type').value; const label = document.getElementById('qa-transfer-label').value.trim(); if (!amount || amount <= 0) { window.showNotif('Montant invalide.', 'error'); return; } const currency = client.currency || '€'; const now = new Date(); const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); const newTx = { type: type, subtitle: label || (type === 'in' ? 'Virement recu' : 'Virement envoye'), amount: formatAmount(amount, currency), date: dateStr }; const transactions = client.transactions || []; transactions.unshift(newTx); let newBalance = parseFloat(client.balance) || 0; if (type === 'in') newBalance += amount; else newBalance = Math.max(0, newBalance - amount); await FireDB.updateClient(clientId, { balance: newBalance, transactions: transactions }); window.showNotif('Le virement a ete ajoute avec succes.', 'success', 'Virement ajoute'); }
+  else if (action === 'edit-iban') { const newIban = document.getElementById('qa-iban-value').value.trim().replace(/\s+/g, ''); const newBic = document.getElementById('qa-bic-value').value.trim().toUpperCase(); const masked = document.getElementById('qa-iban-masked').checked; if (!newIban || !newBic) { window.showNotif('Remplissez tous les champs.', 'warning'); return; } await FireDB.updateClient(clientId, { iban: newIban, bic: newBic, ibanMasked: masked }); window.showNotif('IBAN et BIC mis a jour.', 'success', 'Banque mise a jour'); }
+  else if (action === 'edit-card') { const newHolder = document.getElementById('qa-card-holder').value.trim().toUpperCase(); const newNum = document.getElementById('qa-card-number').value.trim().replace(/\s+/g, ''); const newExpiry = document.getElementById('qa-card-expiry').value.trim(); const newCvv = document.getElementById('qa-card-cvv').value.trim(); const newType = document.getElementById('qa-card-type').value.trim() || 'Visa Debit'; const maskLast4 = document.getElementById('qa-card-mask-last4').checked; const maskCvv = document.getElementById('qa-card-mask-cvv').checked; if (!newNum || !newExpiry || !newCvv) { window.showNotif('Remplissez tous les champs.', 'warning'); return; } await FireDB.updateClient(clientId, { cardHolder: newHolder || ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase(), cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv, cardType: newType, cardMaskLast4: maskLast4, cardMaskCvv: maskCvv }); window.showNotif('La carte virtuelle a ete mise a jour.', 'success', 'Carte mise a jour'); }
+  else if (action === 'edit-name') { const newLast = document.getElementById('qa-lastName').value.trim(); const newFirst = document.getElementById('qa-firstName').value.trim(); if (!newLast || !newFirst) { window.showNotif('Remplissez le nom et le prenom.', 'warning'); return; } await FireDB.updateClient(clientId, { lastName: newLast, firstName: newFirst }); window.showNotif('Le nom et prenom ont ete mis a jour.', 'success', 'Identite mise a jour'); }
+  else if (action === 'edit-email') { const newEmail = document.getElementById('qa-email').value.trim(); if (!newEmail || !newEmail.includes('@')) { window.showNotif('Adresse e-mail invalide.', 'error'); return; } await FireDB.updateClient(clientId, { email: newEmail }); window.showNotif('L\'adresse e-mail a ete mise a jour.', 'success', 'E-mail mis a jour'); }
+  else if (action === 'edit-phone') { const newPhone = document.getElementById('qa-phone').value.trim(); await FireDB.updateClient(clientId, { phone: newPhone }); window.showNotif('Le numero de telephone a ete mis a jour.', 'success', 'Telephone mis a jour'); }
+  else if (action === 'edit-address') { const newAddress = document.getElementById('qa-address').value.trim(); await FireDB.updateClient(clientId, { address: newAddress }); window.showNotif('L\'adresse a ete mise a jour.', 'success', 'Adresse mise a jour'); }
+  else if (action === 'edit-country') { const newCountry = document.getElementById('qa-country').value; await FireDB.updateClient(clientId, { country: newCountry }); window.showNotif('Le pays a ete mis a jour.', 'success', 'Pays mis a jour'); }
+  else if (action === 'edit-language') { const newLang = document.getElementById('qa-language').value; await FireDB.updateClient(clientId, { language: newLang }); window.showNotif('La langue a ete mise a jour.', 'success', 'Langue mise a jour'); }
+  else if (action === 'edit-currency') { const newCur = document.getElementById('qa-currency').value; await FireDB.updateClient(clientId, { currency: newCur }); window.showNotif('La devise a ete mise a jour.', 'success', 'Devise mise a jour'); }
+  else if (action === 'edit-theme') { const newTheme = document.getElementById('qa-themeColor').value || '#1a73e8'; await FireDB.updateClient(clientId, { themeColor: newTheme }); window.showNotif('La couleur de l\'interface a ete mise a jour.', 'success', 'Theme mis a jour'); }
+  else if (action === 'edit-stop-percent') { const newStart = parseInt(document.getElementById('qa-startPercent').value, 10); const newStop = parseInt(document.getElementById('qa-stopPercent').value, 10); if (isNaN(newStart) || isNaN(newStop) || newStart < 0 || newStop < 0 || newStart > 100 || newStop > 100) { window.showNotif('Valeurs invalides (0 a 100).', 'error'); return; } await FireDB.updateClient(clientId, { startPercent: newStart, stopPercent: newStop }); window.showNotif('Le pourcentage a ete mis a jour.', 'success', 'Pourcentage mis a jour'); }
+  else if (action === 'edit-pin') { const newPin = document.getElementById('qa-pin').value.trim(); if (!newPin) { window.showNotif('Le code PIN est requis.', 'warning'); return; } await FireDB.updateClient(clientId, { pin: newPin }); window.showNotif('Le code PIN a ete mis a jour.', 'success', 'Code PIN mis a jour'); }
+  else if (action === 'edit-activation-code') { const newCode = document.getElementById('qa-activation-code').value.trim(); if (!newCode) { window.showNotif('Le code d\'activation est requis.', 'warning'); return; } await FireDB.updateClient(clientId, { activationCode: newCode }); window.showNotif('Le code d\'activation a ete mis a jour.', 'success', 'Code d\'activation mis a jour'); }
+  else if (action === 'edit-message') { const newMsg = document.getElementById('qa-message').value; await FireDB.updateClient(clientId, { message: newMsg }); window.showNotif('Le message de fin a ete mis a jour.', 'success', 'Message mis a jour'); }
+  else if (action === 'block') { await FireDB.updateClient(clientId, { blocked: true }); window.showNotif('Le compte a ete suspendu.', 'warning', 'Compte suspendu'); }
+  else if (action === 'unblock') { await FireDB.updateClient(clientId, { blocked: false }); window.showNotif('Le compte a ete active.', 'success', 'Compte active'); }
   renderAdminPage();
 };
 
-window.copyToClipboard = (text) => {
-  if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie')).catch(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie'));
-  else { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); window.showNotif('Le lien a ete copie.', 'success', 'Lien copie'); }
-};
-window.toggleBlock = async (id) => {
-  const c = await FireDB.getClient(id); if (!c) return;
-  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
-  await FireDB.updateClient(id, { blocked: !c.blocked });
-  if (!c.blocked && ClientSession.getActive() === id) ClientSession.clear();
-  renderAdminPage();
-};
-window.deleteClientConfirm = async (id) => {
-  const c = await FireDB.getClient(id); if (!c) return;
-  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
-  window.showConfirm('Voulez-vous vraiment supprimer le client <strong>' + c.firstName + ' ' + c.lastName + '</strong> ? Cette action est irreversible.', async () => {
-    await FireDB.deleteClient(id);
-    window.showNotif('Le client a ete supprime.', 'success', 'Client supprime');
-    renderAdminPage();
-  }, 'Supprimer le client', 'error');
-};
+window.copyToClipboard = (text) => { if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie')).catch(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie')); else { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); window.showNotif('Le lien a ete copie.', 'success', 'Lien copie'); } };
+window.toggleBlock = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } await FireDB.updateClient(id, { blocked: !c.blocked }); if (!c.blocked && ClientSession.getActive() === id) ClientSession.clear(); renderAdminPage(); };
+window.deleteClientConfirm = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } window.showConfirm('Voulez-vous vraiment supprimer le client <strong>' + c.firstName + ' ' + c.lastName + '</strong> ? Cette action est irreversible.', async () => { await FireDB.deleteClient(id); window.showNotif('Le client a ete supprime.', 'success', 'Client supprime'); renderAdminPage(); }, 'Supprimer le client', 'error'); };
 
-window.openEditModal = async (id) => {
-  const c = await FireDB.getClient(id); if (!c) return;
-  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
-  const body = document.getElementById('edit-form-body');
-  const presets = ['#1a73e8', '#0ea5e9', '#06b6d4', '#14b8a6', '#22c55e', '#84cc16', '#eab308', '#f59e0b', '#ef4444', '#dc2626', '#ec4899', '#a855f7', '#6366f1', '#0f172a'];
-  body.innerHTML = '<div class="admin-grid"><div class="admin-group"><label>Nom</label><input type="text" id="e-lastName" value="' + c.lastName + '"></div><div class="admin-group"><label>Prenom</label><input type="text" id="e-firstName" value="' + c.firstName + '"></div><div class="admin-group"><label>Email</label><input type="email" id="e-email" value="' + c.email + '"></div><div class="admin-group"><label>Telephone</label><input type="tel" id="e-phone" value="' + (c.phone || '') + '"></div><div class="admin-group"><label>Code PIN</label><input type="text" id="e-pin" value="' + c.pin + '"></div><div class="admin-group"><label>Code activation</label><input type="text" id="e-activationCode" value="' + c.activationCode + '"></div><div class="admin-group"><label>Depart %</label><input type="number" id="e-startPercent" value="' + c.startPercent + '" min="0" max="100"></div><div class="admin-group"><label>Arret %</label><input type="number" id="e-stopPercent" value="' + c.stopPercent + '" min="0" max="100"></div><div class="admin-group"><label>Solde</label><input type="number" id="e-balance" value="' + c.balance + '" step="0.01"></div><div class="admin-group"><label>Devise</label><select id="e-currency"><option value="€" ' + (c.currency==='€'?'selected':'') + '>EUR</option><option value="$" ' + (c.currency==='$'?'selected':'') + '>USD</option><option value="£" ' + (c.currency==='£'?'selected':'') + '>GBP</option><option value="zł" ' + (c.currency==='zł'?'selected':'') + '>PLN</option></select></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="e-message" rows="2">' + (c.message || '') + '</textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="e-presets"></div><div class="color-picker-row"><input type="color" id="e-themeColor" value="' + (c.themeColor || '#1a73e8') + '"><input type="text" id="e-themeColorHex" value="' + (c.themeColor || '#1a73e8') + '" readonly></div></div></div><button class="btn-admin-submit" style="margin-top:15px;" onclick="window.saveEdit(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Enregistrer</button>';
-  const pc = document.getElementById('e-presets');
-  presets.forEach((col) => {
-    const div = document.createElement('div');
-    div.className = 'color-preset' + ((c.themeColor || '#1a73e8') === col ? ' selected' : '');
-    div.style.background = col;
-    div.onclick = () => {
-      pc.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected'));
-      div.classList.add('selected');
-      document.getElementById('e-themeColor').value = col;
-      document.getElementById('e-themeColorHex').value = col;
-    };
-    pc.appendChild(div);
-  });
-  document.getElementById('e-themeColor').addEventListener('input', (e) => {
-    document.getElementById('e-themeColorHex').value = e.target.value;
-    pc.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected'));
-  });
-  document.getElementById('edit-modal').classList.add('active');
-};
+window.openEditModal = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } const body = document.getElementById('edit-form-body'); const presets = ['#1a73e8', '#0ea5e9', '#06b6d4', '#14b8a6', '#22c55e', '#84cc16', '#eab308', '#f59e0b', '#ef4444', '#dc2626', '#ec4899', '#a855f7', '#6366f1', '#0f172a']; body.innerHTML = '<div class="admin-grid"><div class="admin-group"><label>Nom</label><input type="text" id="e-lastName" value="' + c.lastName + '"></div><div class="admin-group"><label>Prenom</label><input type="text" id="e-firstName" value="' + c.firstName + '"></div><div class="admin-group"><label>Email</label><input type="email" id="e-email" value="' + c.email + '"></div><div class="admin-group"><label>Telephone</label><input type="tel" id="e-phone" value="' + (c.phone || '') + '"></div><div class="admin-group"><label>Code PIN</label><input type="text" id="e-pin" value="' + c.pin + '"></div><div class="admin-group"><label>Code activation</label><input type="text" id="e-activationCode" value="' + c.activationCode + '"></div><div class="admin-group"><label>Depart %</label><input type="number" id="e-startPercent" value="' + c.startPercent + '" min="0" max="100"></div><div class="admin-group"><label>Arret %</label><input type="number" id="e-stopPercent" value="' + c.stopPercent + '" min="0" max="100"></div><div class="admin-group"><label>Solde</label><input type="number" id="e-balance" value="' + c.balance + '" step="0.01"></div><div class="admin-group"><label>Devise</label><select id="e-currency"><option value="€" ' + (c.currency==='€'?'selected':'') + '>EUR</option><option value="$" ' + (c.currency==='$'?'selected':'') + '>USD</option><option value="£" ' + (c.currency==='£'?'selected':'') + '>GBP</option><option value="zł" ' + (c.currency==='zł'?'selected':'') + '>PLN</option></select></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="e-message" rows="2">' + (c.message || '') + '</textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="e-presets"></div><div class="color-picker-row"><input type="color" id="e-themeColor" value="' + (c.themeColor || '#1a73e8') + '"><input type="text" id="e-themeColorHex" value="' + (c.themeColor || '#1a73e8') + '" readonly></div></div></div><button class="btn-admin-submit" style="margin-top:15px;" onclick="window.saveEdit(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Enregistrer</button>'; const pc = document.getElementById('e-presets'); presets.forEach((col) => { const div = document.createElement('div'); div.className = 'color-preset' + ((c.themeColor || '#1a73e8') === col ? ' selected' : ''); div.style.background = col; div.onclick = () => { pc.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected')); div.classList.add('selected'); document.getElementById('e-themeColor').value = col; document.getElementById('e-themeColorHex').value = col; }; pc.appendChild(div); }); document.getElementById('e-themeColor').addEventListener('input', (e) => { document.getElementById('e-themeColorHex').value = e.target.value; pc.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected')); }); document.getElementById('edit-modal').classList.add('active'); };
 
-window.saveEdit = async (id) => {
-  const c = await FireDB.getClient(id); if (!c) return;
-  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
-  await FireDB.updateClient(id, {
-    lastName: document.getElementById('e-lastName').value,
-    firstName: document.getElementById('e-firstName').value,
-    email: document.getElementById('e-email').value,
-    phone: document.getElementById('e-phone').value,
-    pin: document.getElementById('e-pin').value,
-    activationCode: document.getElementById('e-activationCode').value,
-    startPercent: parseInt(document.getElementById('e-startPercent').value),
-    stopPercent: parseInt(document.getElementById('e-stopPercent').value),
-    balance: parseFloat(document.getElementById('e-balance').value),
-    currency: document.getElementById('e-currency').value,
-    message: document.getElementById('e-message').value,
-    themeColor: document.getElementById('e-themeColor').value
-  });
-  window.closeEditModal(); renderAdminPage();
-};
+window.saveEdit = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } await FireDB.updateClient(id, { lastName: document.getElementById('e-lastName').value, firstName: document.getElementById('e-firstName').value, email: document.getElementById('e-email').value, phone: document.getElementById('e-phone').value, pin: document.getElementById('e-pin').value, activationCode: document.getElementById('e-activationCode').value, startPercent: parseInt(document.getElementById('e-startPercent').value), stopPercent: parseInt(document.getElementById('e-stopPercent').value), balance: parseFloat(document.getElementById('e-balance').value), currency: document.getElementById('e-currency').value, message: document.getElementById('e-message').value, themeColor: document.getElementById('e-themeColor').value }); window.closeEditModal(); renderAdminPage(); };
 window.closeEditModal = () => { document.getElementById('edit-modal').classList.remove('active'); };
 
-window.openTxModal = async (id) => {
-  const c = await FireDB.getClient(id); if (!c) return;
-  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
-  const txs = c.transactions || [];
-  const body = document.getElementById('tx-modal-body');
-  let html = '<div style="font-size:11px;color:#64748b;margin-bottom:12px;font-weight:600;">Client : <strong style="color:#0f172a;">' + c.firstName + ' ' + c.lastName + '</strong></div>';
-  if (txs.length === 0) html += '<div style="text-align:center;padding:30px 15px;color:#94a3b8;font-size:12px;">Aucune transaction</div>';
-  else {
-    html += '<div class="tx-list">';
-    txs.forEach((tx) => {
-      const isIn = tx.type === 'in';
-      html += '<div class="tx-row"><div class="tx-ico ' + (isIn ? 'in' : 'out') + '"><svg viewBox="0 0 24 24">' + (isIn ? '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>' : '<path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>') + '</svg></div><div class="tx-info"><div class="tx-name">' + (tx.subtitle || (isIn ? 'Recu' : 'Envoye')) + '</div><div class="tx-date">' + tx.date + '</div></div><div class="tx-amt ' + (isIn ? 'pos' : 'neg') + '">' + (isIn ? '+' : '-') + tx.amount + '</div></div>';
-    });
-    html += '</div>';
-  }
-  body.innerHTML = html;
-  document.getElementById('tx-modal').classList.add('active');
-};
+window.openTxModal = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } const txs = c.transactions || []; const body = document.getElementById('tx-modal-body'); let html = '<div style="font-size:11px;color:#64748b;margin-bottom:12px;font-weight:600;">Client : <strong style="color:#0f172a;">' + c.firstName + ' ' + c.lastName + '</strong></div>'; if (txs.length === 0) html += '<div style="text-align:center;padding:30px 15px;color:#94a3b8;font-size:12px;">Aucune transaction</div>'; else { html += '<div class="tx-list">'; txs.forEach((tx) => { const isIn = tx.type === 'in'; html += '<div class="tx-row"><div class="tx-ico ' + (isIn ? 'in' : 'out') + '"><svg viewBox="0 0 24 24">' + (isIn ? '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>' : '<path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>') + '</svg></div><div class="tx-info"><div class="tx-name">' + (tx.subtitle || (isIn ? 'Recu' : 'Envoye')) + '</div><div class="tx-date">' + tx.date + '</div></div><div class="tx-amt ' + (isIn ? 'pos' : 'neg') + '">' + (isIn ? '+' : '-') + tx.amount + '</div></div>'; }); html += '</div>'; } body.innerHTML = html; document.getElementById('tx-modal').classList.add('active'); };
 
 window.addEventListener('error', () => {});
