@@ -226,11 +226,12 @@ function renderBalanceHero(client) {
     '<div class="dots-indicator"><span class="active"></span><span></span><span></span></div>';
 }
 
+/* ✅ MODIFIÉ : 3 nouvelles icônes réelles (IBAN=banque, Carte=vraie carte, Virement=double flèches) */
 function renderQuickActions() {
   return '<div class="quick-actions-block">' +
-    '<div class="quick-action" onclick="window.showIban()"><div class="quick-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div><span>' + t('seeIban') + '</span></div>' +
+    '<div class="quick-action" onclick="window.showIban()"><div class="quick-icon"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg></div><span>' + t('seeIban') + '</span></div>' +
     '<div class="quick-action" onclick="window.showVirtualCard()"><div class="quick-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div><span>' + t('virtualCard') + '</span></div>' +
-    '<div class="quick-action" onclick="window.navigateTo(\'screen-transfer\')"><div class="quick-icon"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></div><span>' + t('makeTransferShort') + '</span></div>' +
+    '<div class="quick-action" onclick="window.navigateTo(\'screen-transfer\')"><div class="quick-icon"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></div><span>' + t('makeTransferShort') + '</span></div>' +
   '</div>';
 }
 
