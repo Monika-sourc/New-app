@@ -450,55 +450,71 @@ function renderLoginPage(client) {
   applyTheme(client.themeColor);
   const root = document.getElementById('app-root');
 
-  const initials = (client.firstName || '').charAt(0).toUpperCase() +
-                   (client.lastName || '').charAt(0).toUpperCase();
-
   root.innerHTML =
     '<div class="view active">' +
       '<div class="login-page">' +
         '<div class="login-card">' +
-          '<div class="login-card-header">' +
-            '<div class="login-logo-circle">' +
-              '<svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>' +
-            '</div>' +
-            '<div class="login-brand-name">TRANSFERWIRE</div>' +
-            '<div class="login-brand-sub">SECURE BANKING PORTAL</div>' +
+
+          '<div class="login-logo">' +
+            '<svg class="login-logo-mark" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">' +
+              '<circle cx="14" cy="12" r="4" fill="#0d9488"/>' +
+              '<circle cx="24" cy="8" r="3" fill="#0d9488"/>' +
+              '<circle cx="34" cy="10" r="2.5" fill="#22c55e"/>' +
+              '<circle cx="43" cy="15" r="2.5" fill="#84cc16"/>' +
+              '<circle cx="7" cy="22" r="3.5" fill="#0d9488"/>' +
+              '<circle cx="6" cy="34" r="3.5" fill="#0d9488"/>' +
+              '<circle cx="10" cy="45" r="3" fill="#14b8a6"/>' +
+              '<circle cx="20" cy="52" r="2.5" fill="#14b8a6"/>' +
+              '<circle cx="32" cy="50" r="3" fill="#0d9488"/>' +
+              '<circle cx="43" cy="43" r="3" fill="#0d9488"/>' +
+              '<circle cx="50" cy="33" r="3" fill="#0d9488"/>' +
+              '<circle cx="49" cy="21" r="2.5" fill="#14b8a6"/>' +
+              '<circle cx="20" cy="22" r="2" fill="#5eead4"/>' +
+              '<circle cx="24" cy="32" r="2.5" fill="#5eead4"/>' +
+              '<circle cx="22" cy="42" r="2" fill="#5eead4"/>' +
+              '<circle cx="33" cy="22" r="1.5" fill="#84cc16"/>' +
+              '<circle cx="37" cy="30" r="2" fill="#84cc16"/>' +
+              '<circle cx="34" cy="40" r="1.5" fill="#14b8a6"/>' +
+            '</svg>' +
+            '<span class="login-logo-text">TRANSFERWIRE</span>' +
           '</div>' +
-          '<div class="login-card-body">' +
-            '<div class="login-welcome-title">' + t('loginTitle') + '</div>' +
-            '<div class="login-user-chip">' +
-              '<div class="login-user-avatar">' + initials + '</div>' +
-              '<div class="login-user-info">' +
-                '<div class="login-user-name">' + client.firstName + ' ' + client.lastName + '</div>' +
-                '<div class="login-user-role">' + t('personalAccount') + ' · ' + (client.currency || '€') + '</div>' +
-              '</div>' +
-            '</div>' +
-            '<form id="login-form" autocomplete="off">' +
-              '<div class="login-field">' +
-                '<label class="login-field-label">' + t('emailPh') + '</label>' +
-                '<div class="login-field-input">' +
-                  '<svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>' +
-                  '<input type="email" id="email" placeholder="vous@exemple.com" required>' +
-                '</div>' +
-              '</div>' +
-              '<div class="login-field">' +
-                '<label class="login-field-label">' + t('pinPh') + '</label>' +
-                '<div class="login-field-input">' +
-                  '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>' +
-                  '<input type="password" id="pin" placeholder="••••••••" required>' +
-                '</div>' +
-              '</div>' +
-              '<div class="login-error-msg" id="error-msg">' + t('loginErr') + '</div>' +
-              '<button type="submit" class="login-submit-btn">' +
-                '<span>' + t('loginBtn') + '</span>' +
-                '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>' +
-              '</button>' +
-            '</form>' +
-            '<div class="login-secure-note">' +
-              '<svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>' +
-              '<span>Connexion securisee SSL 256 bits</span>' +
-            '</div>' +
+
+          '<div class="login-title">' + t('loginTitle') + '</div>' +
+
+          '<div class="login-user-badge">' +
+            '<svg viewBox="0 0 24 24" fill="none">' +
+              '<path d="M8 3H6a3 3 0 0 0-3 3v2M16 3h2a3 3 0 0 1 3 3v2M8 21H6a3 3 0 0 1-3-3v-2M16 21h2a3 3 0 0 0 3-3v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>' +
+              '<circle cx="12" cy="10" r="2" fill="currentColor"/>' +
+              '<path d="M8.5 16c0-1.8 1.6-2.8 3.5-2.8s3.5 1 3.5 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/>' +
+            '</svg>' +
+            '<span>' + (client.firstName + ' ' + client.lastName).toUpperCase() + '</span>' +
           '</div>' +
+
+          '<form id="login-form" autocomplete="off">' +
+
+            '<div class="login-input-group">' +
+              '<div class="login-input-icon">' +
+                '<svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>' +
+              '</div>' +
+              '<input type="email" id="email" placeholder="' + t('emailPh') + '" required>' +
+            '</div>' +
+
+            '<div class="login-input-group">' +
+              '<div class="login-input-icon">' +
+                '<svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11zm0-6c-2.48 0-4.5 2.02-4.5 4.5S9.52 14 12 14s4.5-2.02 4.5-4.5S14.48 5 12 5z"/></svg>' +
+              '</div>' +
+              '<input type="password" id="pin" placeholder="' + t('pinPh') + '" required>' +
+            '</div>' +
+
+            '<div class="login-error-msg" id="error-msg">' + t('loginErr') + '</div>' +
+
+            '<button type="submit" class="login-btn">' +
+              '<span>' + t('loginBtn') + '</span>' +
+              '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>' +
+            '</button>' +
+
+          '</form>' +
+
         '</div>' +
       '</div>' +
     '</div>';
