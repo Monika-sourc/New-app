@@ -437,6 +437,9 @@ input, select, textarea { font-family: inherit; }
 }
 
 .option-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   font-size: 11px;
   font-weight: 800;
   color: #1a73e8;
@@ -446,6 +449,13 @@ input, select, textarea { font-family: inherit; }
   padding-bottom: 8px;
   border-bottom: 1.5px solid #e2e8f0;
 }
+.option-panel-title svg {
+  width: 14px;
+  height: 14px;
+  fill: #1a73e8;
+  flex-shrink: 0;
+}
+.option-panel-title span { flex: 1; min-width: 0; }
 
 .option-panel-desc {
   font-size: 11.5px;
