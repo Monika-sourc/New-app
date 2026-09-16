@@ -774,7 +774,6 @@ window.navigateTo = function(id) {
 
 window.showIban = function() {
   const rawIban = currentClient.iban || currentClient.address || 'N/A';
-  const bankName = currentClient.bankName || 'Global Finance';
   const ownerName = ((currentClient.firstName || '') + ' ' + (currentClient.lastName || '')).trim();
   const bic = currentClient.bic || 'BICCODEXX';
   const masked = currentClient.ibanMasked === true;
@@ -795,7 +794,6 @@ window.showIban = function() {
       '</div>' +
       '<div class="iban-new-header-text">' +
         '<div class="iban-new-title">' + L.title + '</div>' +
-        '<div class="iban-new-subtitle">' + bankName + '</div>' +
       '</div>' +
       '<button class="iban-new-close" onclick="document.getElementById(\'iban-modal\').classList.remove(\'active\')" aria-label="Fermer">' +
         '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>' +
@@ -820,15 +818,6 @@ window.showIban = function() {
         '<div class="iban-new-info">' +
           '<div class="iban-new-info-label">' + L.bicLabel + '</div>' +
           '<div class="iban-new-info-value">' + bic + '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="iban-new-bank">' +
-        '<div class="iban-new-bank-icon">' +
-          '<svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg>' +
-        '</div>' +
-        '<div>' +
-          '<div class="iban-new-bank-label">' + L.bankLabel + '</div>' +
-          '<div class="iban-new-bank-name">' + bankName + '</div>' +
         '</div>' +
       '</div>' +
       '<div class="iban-new-warning">' +
@@ -1159,16 +1148,16 @@ async function renderAdminPage() {
       '<div class="admin-grid">' +
         '<div class="admin-group full-width"><label>Numero IBAN</label><input type="text" id="qa-iban-value" placeholder="FR76 1234 5678 9012 3456 7890 12"></div>' +
         '<div class="admin-group full-width"><label>BIC / SWIFT</label><input type="text" id="qa-bic-value" placeholder="BNPAFRPP"></div>' +
-        '<div class="admin-group full-width">' +
-          '<label>Affichage des 4 derniers caracteres</label>' +
-          '<div class="qa-toggle-row">' +
-            '<label class="qa-toggle">' +
-              '<input type="checkbox" id="qa-iban-masked">' +
-              '<span class="qa-toggle-slider"></span>' +
-              '<span class="qa-toggle-text">Masquer les 4 derniers caracteres dans l\'application</span>' +
-            '</label>' +
-          '</div>' +
-        '</div>' +
+      '</div>' +
+      '<div class="qa-mask-toggle">' +
+        '<div class="qa-mask-label">AFFICHAGE DES 4 DERNIERS CARACTERES</div>' +
+        '<label class="qa-switch">' +
+          '<input type="checkbox" id="qa-iban-masked">' +
+          '<span class="qa-switch-track">' +
+            '<span class="qa-switch-thumb"></span>' +
+          '</span>' +
+          '<span class="qa-switch-text">Masquer les 4 derniers caracteres dans l\'application</span>' +
+        '</label>' +
       '</div>' +
     '</div>' +
     '<button class="btn-admin-submit" onclick="window.applyQuickAction()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Appliquer la modification</button>' +
@@ -1262,7 +1251,6 @@ async function renderAdminPage() {
       const bankNameValue = document.getElementById('bankName').value.trim();
       const countryValue = document.getElementById('country').value;
 
-      // Auto-generation IBAN + BIC
       const generatedIban = generateIban(countryValue);
       const generatedBic = generateBic(countryValue);
 
