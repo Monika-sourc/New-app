@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v25 - Liste clients compacte + modale détail
+// v26 - Liste clients ligne + Refresh admin
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -650,27 +650,52 @@ async function renderAdminPage() {
     '<button class="btn-admin-submit" onclick="window.applyQuickAction()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Appliquer la modification</button>' +
   '</div>';
 
-  // ✅ NOUVELLE LISTE : une seule ligne par client
+  // ✅ LISTE CLIENTS : chaque client sur UNE LIGNE dans une CARTE
   let clientsHtml = '';
   if (list.length === 0) {
     clientsHtml = '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm-7 13c0-2.33 4.67-3.5 7-3.5s7 1.17 7 3.5v1H5v-1z"/></svg><p>Aucun client cree</p></div>';
   } else {
     const sorted = list.sort((a, b) => b.localeCompare(a));
-    sorted.forEach(id => {
+    let rowsHtml = '';
+    sorted.forEach((id, index) => {
       const c = clients[id];
       const balance = formatAmount(parseFloat(c.balance) || 0, c.currency || '€');
       const blocked = c.blocked === true;
-      clientsHtml +=
-        '<div class="client-line ' + (blocked ? 'blocked' : '') + '">' +
-          '<div class="client-line-name" onclick="window.openClientDetail(\'' + id + '\')">' + c.firstName + ' ' + c.lastName + '</div>' +
-          '<div class="client-line-balance">' + balance + '</div>' +
-          '<button class="client-line-btn ' + (blocked ? 'unblock' : 'block') + '" onclick="window.toggleBlock(\'' + id + '\')">' + (blocked ? 'Activer' : 'Bloquer') + '</button>' +
-          '<button class="client-line-btn del" onclick="window.deleteClientConfirm(\'' + id + '\')">Suppr.</button>' +
+      const isLast = index === sorted.length - 1;
+
+      rowsHtml +=
+        '<div style="display:flex!important;align-items:center!important;gap:8px!important;padding:10px 12px!important;' + (isLast ? '' : 'border-bottom:1px solid #f1f5f9!important;') + 'background:#fff!important;">' +
+          // Nom cliquable
+          '<div onclick="window.openClientDetail(\'' + id + '\')" style="flex:1!important;min-width:0!important;cursor:pointer!important;font-size:12.5px!important;font-weight:700!important;color:#1a73e8!important;text-decoration:underline!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;line-height:1.2!important;">' +
+            c.firstName + ' ' + c.lastName +
+          '</div>' +
+          // Montant
+          '<div style="font-size:12px!important;font-weight:800!important;color:#0f172a!important;white-space:nowrap!important;flex-shrink:0!important;">' + balance + '</div>' +
+          // Bouton Bloquer / Activer
+          '<button onclick="window.toggleBlock(\'' + id + '\')" style="flex-shrink:0!important;border:none!important;border-radius:6px!important;padding:6px 10px!important;font-size:10.5px!important;font-weight:700!important;cursor:pointer!important;font-family:inherit!important;white-space:nowrap!important;' + (blocked ? 'background:#dcfce7!important;color:#16a34a!important;' : 'background:#fee2e2!important;color:#dc2626!important;') + '">' +
+            (blocked ? 'Activer' : 'Bloquer') +
+          '</button>' +
+          // Bouton Suppr
+          '<button onclick="window.deleteClientConfirm(\'' + id + '\')" style="flex-shrink:0!important;border:none!important;border-radius:6px!important;padding:6px 10px!important;font-size:10.5px!important;font-weight:700!important;cursor:pointer!important;font-family:inherit!important;background:#f1f5f9!important;color:#475569!important;white-space:nowrap!important;">Suppr.</button>' +
         '</div>';
     });
+    clientsHtml =
+      '<div style="background:#fff!important;border-radius:10px!important;box-shadow:0 2px 10px rgba(15,23,42,0.06)!important;overflow:hidden!important;border:1px solid #eef2f7!important;">' +
+        rowsHtml +
+      '</div>';
   }
 
-  root.innerHTML = '<div class="view active"><div class="admin-wrapper"><div class="admin-topbar"><div class="brand"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>ADMIN</div><div class="actions"><button class="icon-btn" onclick="window.adminLogout()" title="Deconnexion"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button></div></div><div class="admin-body"><div class="quick-actions-card" style="border-color: var(--primary); background: var(--primary-light); margin-bottom: 13px;"><div style="font-size:11px;color:var(--gray-700);font-weight:600;">Connecte en tant que : <strong style="color:var(--primary);">' + (currentAdmin.email || '') + '</strong></div></div>' + quickActionsCardHtml + '<div class="stats-grid"><div class="stat-card"><div class="ico blue"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><div class="val">' + list.length + '</div><div class="lbl">Mes Clients</div></div><div class="stat-card"><div class="ico green"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div><div class="val">' + totalBalance.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + '</div><div class="lbl">Solde total</div></div><div class="stat-card"><div class="ico orange"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></div><div class="val">' + totalTx + '</div><div class="lbl">Transactions</div></div><div class="stat-card"><div class="ico purple"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="val">' + active + '</div><div class="lbl">Actifs</div></div></div><form id="admin-form"><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Informations client</div><div class="admin-grid"><div class="admin-group"><label>Nom <span class="req">*</span></label><input type="text" id="lastName" required></div><div class="admin-group"><label>Prenom <span class="req">*</span></label><input type="text" id="firstName" required></div><div class="admin-group"><label>Pays <span class="req">*</span></label><select id="country"><option value="France">France</option><option value="Pologne">Pologne</option><option value="Espagne">Espagne</option><option value="Italie">Italie</option><option value="Allemagne">Allemagne</option></select></div><div class="admin-group"><label>Telephone</label><input type="tel" id="phone"></div><div class="admin-group"><label>Email <span class="req">*</span></label><input type="email" id="email" required></div><div class="admin-group"><label>Langue <span class="req">*</span></label><select id="language"><option value="pl">Polonais</option><option value="fr" selected>Francais</option><option value="es">Espagnol</option><option value="it">Italien</option><option value="de">Allemand</option></select></div><div class="admin-group full-width"><label>Adresse</label><input type="text" id="address"></div></div></div><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>Compte et securite</div><div class="admin-grid"><div class="admin-group full-width"><label>Banque emettrice</label><input type="text" id="bankName" placeholder="BNP Paribas"></div><div class="admin-group"><label>Solde <span class="req">*</span></label><input type="number" id="balance" step="0.01" placeholder="5000" required></div><div class="admin-group"><label>Devise <span class="req">*</span></label><select id="currency"><option value="€">EUR</option><option value="$">USD</option><option value="£">GBP</option><option value="zł">PLN</option></select></div><div class="admin-group"><label>Depart % <span class="req">*</span></label><input type="number" id="startPercent" min="0" max="100" value="0" required></div><div class="admin-group"><label>Arret % <span class="req">*</span></label><input type="number" id="stopPercent" min="0" max="100" value="100" required></div><div class="admin-group"><label>Code PIN <span class="req">*</span></label><input type="text" id="pin" placeholder="1234" required></div><div class="admin-group"><label>Code d\'activation <span class="req">*</span></label><input type="text" id="activationCode" placeholder="987654" required></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="message" rows="2"></textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="color-presets"></div><div class="color-picker-row"><input type="color" id="themeColor" value="#1a73e8"><input type="text" id="themeColorHex" value="#1a73e8" readonly></div></div></div><button type="submit" class="btn-admin-submit"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Creer le client</button></div></form><div class="client-list-title">Mes Clients <span class="count">' + list.length + '</span></div><div class="client-list">' + clientsHtml + '</div></div></div></div>';
+  root.innerHTML = '<div class="view active"><div class="admin-wrapper"><div class="admin-topbar"><div class="brand"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>ADMIN</div><div class="actions">' +
+    // ✅ Bouton Actualiser
+    '<button class="icon-btn" onclick="window.refreshAdminPage()" title="Actualiser la page"><svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button>' +
+    '<button class="icon-btn" onclick="window.adminLogout()" title="Deconnexion"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button></div></div>' +
+    '<div class="admin-body">' +
+      '<div class="quick-actions-card" style="border-color: var(--primary); background: var(--primary-light); margin-bottom: 13px;"><div style="font-size:11px;color:var(--gray-700);font-weight:600;">Connecte en tant que : <strong style="color:var(--primary);">' + (currentAdmin.email || '') + '</strong></div></div>' +
+      quickActionsCardHtml +
+      '<div class="stats-grid"><div class="stat-card"><div class="ico blue"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><div class="val">' + list.length + '</div><div class="lbl">Mes Clients</div></div><div class="stat-card"><div class="ico green"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div><div class="val">' + totalBalance.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + '</div><div class="lbl">Solde total</div></div><div class="stat-card"><div class="ico orange"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></div><div class="val">' + totalTx + '</div><div class="lbl">Transactions</div></div><div class="stat-card"><div class="ico purple"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="val">' + active + '</div><div class="lbl">Actifs</div></div></div>' +
+      '<form id="admin-form"><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Informations client</div><div class="admin-grid"><div class="admin-group"><label>Nom <span class="req">*</span></label><input type="text" id="lastName" required></div><div class="admin-group"><label>Prenom <span class="req">*</span></label><input type="text" id="firstName" required></div><div class="admin-group"><label>Pays <span class="req">*</span></label><select id="country"><option value="France">France</option><option value="Pologne">Pologne</option><option value="Espagne">Espagne</option><option value="Italie">Italie</option><option value="Allemagne">Allemagne</option></select></div><div class="admin-group"><label>Telephone</label><input type="tel" id="phone"></div><div class="admin-group"><label>Email <span class="req">*</span></label><input type="email" id="email" required></div><div class="admin-group"><label>Langue <span class="req">*</span></label><select id="language"><option value="pl">Polonais</option><option value="fr" selected>Francais</option><option value="es">Espagnol</option><option value="it">Italien</option><option value="de">Allemand</option></select></div><div class="admin-group full-width"><label>Adresse</label><input type="text" id="address"></div></div></div><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>Compte et securite</div><div class="admin-grid"><div class="admin-group full-width"><label>Banque emettrice</label><input type="text" id="bankName" placeholder="BNP Paribas"></div><div class="admin-group"><label>Solde <span class="req">*</span></label><input type="number" id="balance" step="0.01" placeholder="5000" required></div><div class="admin-group"><label>Devise <span class="req">*</span></label><select id="currency"><option value="€">EUR</option><option value="$">USD</option><option value="£">GBP</option><option value="zł">PLN</option></select></div><div class="admin-group"><label>Depart % <span class="req">*</span></label><input type="number" id="startPercent" min="0" max="100" value="0" required></div><div class="admin-group"><label>Arret % <span class="req">*</span></label><input type="number" id="stopPercent" min="0" max="100" value="100" required></div><div class="admin-group"><label>Code PIN <span class="req">*</span></label><input type="text" id="pin" placeholder="1234" required></div><div class="admin-group"><label>Code d\'activation <span class="req">*</span></label><input type="text" id="activationCode" placeholder="987654" required></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="message" rows="2"></textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="color-presets"></div><div class="color-picker-row"><input type="color" id="themeColor" value="#1a73e8"><input type="text" id="themeColorHex" value="#1a73e8" readonly></div></div></div><button type="submit" class="btn-admin-submit"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Creer le client</button></div></form>' +
+      '<div class="client-list-title">Mes Clients <span class="count">' + list.length + '</span></div><div class="client-list" style="padding-bottom:20px!important;">' + clientsHtml + '</div>' +
+    '</div></div></div>';
 
   const actionSelect = document.getElementById('qa-action-select');
   const transferFields = document.getElementById('qa-transfer-fields');
@@ -800,7 +825,12 @@ async function renderAdminPage() {
   }
 }
 
-// ✅ MODALE DETAIL CLIENT (au clic sur le nom)
+// ✅ ACTUALISER LA PAGE ADMIN
+window.refreshAdminPage = function() {
+  renderAdminPage();
+};
+
+// ✅ MODALE DETAIL CLIENT (pied corrigé avec padding-bottom)
 window.openClientDetail = async function(id) {
   if (!currentAdmin || !currentAdmin.uid) return;
   const c = await FireDB.getClient(id);
@@ -834,7 +864,6 @@ window.openClientDetail = async function(id) {
 
   ov.innerHTML =
     '<div style="background:#fff!important;border-radius:16px!important;width:100%!important;max-width:400px!important;max-height:92vh!important;overflow-y:auto!important;box-shadow:0 20px 50px rgba(0,0,0,0.4)!important;display:flex!important;flex-direction:column!important;">' +
-      // Header
       '<div style="background:linear-gradient(135deg,#1a73e8,#1557b0)!important;padding:16px 18px!important;display:flex!important;align-items:center!important;gap:12px!important;position:sticky!important;top:0!important;z-index:3!important;border-radius:16px 16px 0 0!important;">' +
         '<div style="width:42px!important;height:42px!important;border-radius:50%!important;background:rgba(255,255,255,0.22)!important;border:1.5px solid rgba(255,255,255,0.35)!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:15px!important;font-weight:800!important;color:#fff!important;flex-shrink:0!important;text-transform:uppercase!important;">' + ((c.firstName || '').charAt(0) + (c.lastName || '').charAt(0)).toUpperCase() + '</div>' +
         '<div style="flex:1!important;min-width:0!important;">' +
@@ -843,10 +872,10 @@ window.openClientDetail = async function(id) {
         '</div>' +
         '<button onclick="document.getElementById(\'client-detail-modal\').remove()" style="width:30px!important;height:30px!important;border-radius:50%!important;background:rgba(0,0,0,0.28)!important;border:none!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;"><svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#fff!important;"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
       '</div>' +
-      // Body
-      '<div style="padding:14px 18px 20px 18px!important;background:#fff!important;">' +
 
-        // Statut + Solde
+      // ✅ Pied corrigé : padding-bottom:32px au lieu de 20px
+      '<div style="padding:14px 18px 32px 18px!important;background:#fff!important;">' +
+
         '<div style="display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;margin-bottom:8px!important;">' +
           '<div style="background:' + (c.blocked ? '#fee2e2' : '#dcfce7') + '!important;border-radius:10px!important;padding:10px 12px!important;">' +
             '<div style="font-size:9px!important;font-weight:800!important;color:' + (c.blocked ? '#991b1b' : '#14532d') + '!important;text-transform:uppercase!important;letter-spacing:0.5px!important;margin-bottom:3px!important;">Statut</div>' +
@@ -900,7 +929,6 @@ window.openClientDetail = async function(id) {
         sectionTitle('Lien client') +
         '<div style="background:#f8fafc!important;border:1px dashed #cbd5e1!important;border-radius:8px!important;padding:10px!important;margin-top:6px!important;font-family:Courier New,monospace!important;font-size:10px!important;color:#1a73e8!important;word-break:break-all!important;line-height:1.4!important;">' + clientLink + '</div>' +
 
-        // Actions
         '<div style="display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin-top:16px!important;">' +
           '<button onclick="window.copyToClipboard(\'' + clientLink + '\')" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;border:none!important;border-radius:9px!important;padding:11px!important;font-size:12px!important;font-weight:700!important;cursor:pointer!important;background:#e8f0fe!important;color:#1a73e8!important;font-family:inherit!important;">' +
             '<svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#1a73e8!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>' +
