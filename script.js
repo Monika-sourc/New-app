@@ -80,14 +80,41 @@ function generateBic(country) {
   return bank + cc + loc;
 }
 
+// =====================================================
+// GENERATEURS CARTE VIRTUELLE
+// =====================================================
+function generateCardNumber() {
+  let num = '4';
+  for (let i = 0; i < 15; i++) num += Math.floor(Math.random() * 10);
+  return num;
+}
+function generateCardExpiry() {
+  const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+  const year = String(Math.floor(Math.random() * 5) + 26);
+  return month + '/' + year;
+}
+function generateCardCvv() {
+  return String(Math.floor(Math.random() * 900) + 100);
+}
+
 function formatIban(iban) {
   if (!iban) return '';
   return iban.replace(/(.{4})/g, '$1 ').trim();
 }
 
+function formatCardNumber(num) {
+  if (!num) return '';
+  return num.replace(/(.{4})/g, '$1 ').trim();
+}
+
 function maskIban(iban) {
   if (!iban || iban.length < 4) return iban;
   return iban.slice(0, -4) + '••••';
+}
+
+function maskCardNumber(num) {
+  if (!num || num.length < 4) return num;
+  return num.slice(0, -4) + 'XXXX';
 }
 
 // =====================================================
@@ -323,48 +350,59 @@ const i18n = {
 };
 
 // =====================================================
-// LIBELLES IBAN (modale détaillée)
+// LIBELLES IBAN
 // =====================================================
 const ibanLabels = {
+  pl: { title: "Dane konta", numberLabel: "NUMER IBAN", ownerLabel: "WLASCICIEL", bicLabel: "BIC / SWIFT", warning: "Ze wzgledow bezpieczenstwa niektore znaki IBAN zostaly zamaskowane." },
+  fr: { title: "Details du compte", numberLabel: "NUMERO IBAN", ownerLabel: "TITULAIRE", bicLabel: "BIC / SWIFT", warning: "Pour des raisons de securite, certains caracteres de l'IBAN ont ete masques." },
+  es: { title: "Detalles de la cuenta", numberLabel: "NUMERO IBAN", ownerLabel: "TITULAR", bicLabel: "BIC / SWIFT", warning: "Por razones de seguridad, algunos caracteres del IBAN han sido enmascarados." },
+  it: { title: "Dettagli del conto", numberLabel: "NUMERO IBAN", ownerLabel: "TITOLARE", bicLabel: "BIC / SWIFT", warning: "Per motivi di sicurezza, alcuni caratteri dell'IBAN sono stati mascherati." },
+  de: { title: "Kontodetails", numberLabel: "IBAN-NUMMER", ownerLabel: "INHABER", bicLabel: "BIC / SWIFT", warning: "Aus Sicherheitsgrunden wurden einige IBAN-Zeichen maskiert." }
+};
+
+// =====================================================
+// LIBELLES CARTE VIRTUELLE
+// =====================================================
+const cardLabels = {
   pl: {
-    title: "Dane konta",
-    numberLabel: "NUMER IBAN",
-    ownerLabel: "WLASCICIEL",
-    bicLabel: "BIC / SWIFT",
-    bankLabel: "BANK",
-    warning: "Ze wzgledow bezpieczenstwa niektore znaki IBAN zostaly zamaskowane."
+    title: "Karta wirtualna", holderLabel: "POSIADACZ", expiryLabel: "WAZNA DO", cvvLabel: "CVV",
+    numberLabel: "NUMER KARTY", typeLabel: "TYP", typeValue: "Visa Debit",
+    copyBtn: "Kopiuj numer", showBtn: "Pokaz", hideBtn: "Ukryj",
+    warningMasked: "Ostatnie 4 cyfry ukryte. Kliknij \"Pokaz\", aby ujawnic pelny numer.",
+    warningCvvMasked: "CVV jest ukryty.",
+    warningFull: "Karta w pelni widoczna."
   },
   fr: {
-    title: "Details du compte",
-    numberLabel: "NUMERO IBAN",
-    ownerLabel: "TITULAIRE",
-    bicLabel: "BIC / SWIFT",
-    bankLabel: "BANQUE",
-    warning: "Pour des raisons de securite, certains caracteres de l'IBAN ont ete masques."
+    title: "Carte virtuelle", holderLabel: "TITULAIRE", expiryLabel: "VALABLE JUSQU'AU", cvvLabel: "CVV",
+    numberLabel: "NUMERO DE CARTE", typeLabel: "TYPE", typeValue: "Visa Debit",
+    copyBtn: "Copier le numero", showBtn: "Afficher", hideBtn: "Masquer",
+    warningMasked: "Les 4 derniers chiffres sont caches. Cliquez sur \"Afficher\" pour reveler le numero complet.",
+    warningCvvMasked: "Le CVV est masque.",
+    warningFull: "Carte completement visible."
   },
   es: {
-    title: "Detalles de la cuenta",
-    numberLabel: "NUMERO IBAN",
-    ownerLabel: "TITULAR",
-    bicLabel: "BIC / SWIFT",
-    bankLabel: "BANCO",
-    warning: "Por razones de seguridad, algunos caracteres del IBAN han sido enmascarados."
+    title: "Tarjeta virtual", holderLabel: "TITULAR", expiryLabel: "VALIDA HASTA", cvvLabel: "CVV",
+    numberLabel: "NUMERO DE TARJETA", typeLabel: "TIPO", typeValue: "Visa Debit",
+    copyBtn: "Copiar numero", showBtn: "Mostrar", hideBtn: "Ocultar",
+    warningMasked: "Los ultimos 4 digitos estan ocultos. Pulse \"Mostrar\" para revelar el numero completo.",
+    warningCvvMasked: "El CVV esta oculto.",
+    warningFull: "Tarjeta completamente visible."
   },
   it: {
-    title: "Dettagli del conto",
-    numberLabel: "NUMERO IBAN",
-    ownerLabel: "TITOLARE",
-    bicLabel: "BIC / SWIFT",
-    bankLabel: "BANCA",
-    warning: "Per motivi di sicurezza, alcuni caratteri dell'IBAN sono stati mascherati."
+    title: "Carta virtuale", holderLabel: "TITOLARE", expiryLabel: "VALIDA FINO AL", cvvLabel: "CVV",
+    numberLabel: "NUMERO CARTA", typeLabel: "TIPO", typeValue: "Visa Debit",
+    copyBtn: "Copia numero", showBtn: "Mostra", hideBtn: "Nascondi",
+    warningMasked: "Le ultime 4 cifre sono nascoste. Clicca \"Mostra\" per rivelare il numero completo.",
+    warningCvvMasked: "Il CVV e nascosto.",
+    warningFull: "Carta completamente visibile."
   },
   de: {
-    title: "Kontodetails",
-    numberLabel: "IBAN-NUMMER",
-    ownerLabel: "INHABER",
-    bicLabel: "BIC / SWIFT",
-    bankLabel: "BANK",
-    warning: "Aus Sicherheitsgrunden wurden einige IBAN-Zeichen maskiert."
+    title: "Virtuelle Karte", holderLabel: "INHABER", expiryLabel: "GULTIG BIS", cvvLabel: "CVV",
+    numberLabel: "KARTENNUMMER", typeLabel: "TYP", typeValue: "Visa Debit",
+    copyBtn: "Nummer kopieren", showBtn: "Anzeigen", hideBtn: "Verbergen",
+    warningMasked: "Die letzten 4 Ziffern sind ausgeblendet. Klicken Sie auf \"Anzeigen\", um die vollstandige Nummer zu sehen.",
+    warningCvvMasked: "CVV ist ausgeblendet.",
+    warningFull: "Karte vollstandig sichtbar."
   }
 };
 
@@ -373,6 +411,7 @@ let currentClient = null;
 let progressInterval = null;
 let clientUnsubscribe = null;
 let pendingTransferAmount = 0;
+let virtualCardRevealed = false;
 
 const t = function(k) {
   const d = i18n[currentLang] || i18n.fr;
@@ -435,7 +474,7 @@ function renderQuickActions() {
       '<div class="quick-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>' +
       '<span>' + t('seeIban') + '</span>' +
     '</div>' +
-    '<div class="quick-action" onclick="window.navigateTo(\'screen-card\')">' +
+    '<div class="quick-action" onclick="window.showVirtualCard()">' +
       '<div class="quick-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div>' +
       '<span>' + t('virtualCard') + '</span>' +
     '</div>' +
@@ -535,7 +574,6 @@ function renderLoginPage(client) {
     '<div class="view active">' +
       '<div class="login-page">' +
         '<div class="login-card">' +
-
           '<div class="login-logo">' +
             '<svg class="login-logo-mark" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">' +
               '<circle cx="14" cy="12" r="4" fill="#0d9488"/>' +
@@ -559,9 +597,7 @@ function renderLoginPage(client) {
             '</svg>' +
             '<span class="login-logo-text">TRANSFERWIRE</span>' +
           '</div>' +
-
           '<div class="login-title">' + t('loginTitle') + '</div>' +
-
           '<div class="login-user-badge">' +
             '<svg viewBox="0 0 24 24" fill="none">' +
               '<path d="M8 3H6a3 3 0 0 0-3 3v2M16 3h2a3 3 0 0 1 3 3v2M8 21H6a3 3 0 0 1-3-3v-2M16 21h2a3 3 0 0 0 3-3v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>' +
@@ -570,32 +606,25 @@ function renderLoginPage(client) {
             '</svg>' +
             '<span>' + (client.firstName + ' ' + client.lastName).toUpperCase() + '</span>' +
           '</div>' +
-
           '<form id="login-form" autocomplete="off">' +
-
             '<div class="login-input-group">' +
               '<div class="login-input-icon">' +
                 '<svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>' +
               '</div>' +
               '<input type="email" id="email" placeholder="' + t('emailPh') + '" required>' +
             '</div>' +
-
             '<div class="login-input-group">' +
               '<div class="login-input-icon">' +
                 '<svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11zm0-6c-2.48 0-4.5 2.02-4.5 4.5S9.52 14 12 14s4.5-2.02 4.5-4.5S14.48 5 12 5z"/></svg>' +
               '</div>' +
               '<input type="password" id="pin" placeholder="' + t('pinPh') + '" required>' +
             '</div>' +
-
             '<div class="login-error-msg" id="error-msg">' + t('loginErr') + '</div>' +
-
             '<button type="submit" class="login-btn">' +
               '<span>' + t('loginBtn') + '</span>' +
               '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>' +
             '</button>' +
-
           '</form>' +
-
         '</div>' +
       '</div>' +
     '</div>';
@@ -732,7 +761,7 @@ function renderBankingApp(client) {
       '<div class="bottom-nav-inner">' +
         '<div class="nav-item active" id="nav-dashboard" onclick="window.navigateTo(\'screen-dashboard\')"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>' + t('navBalance') + '</span></div>' +
         '<div class="nav-item" id="nav-transfer" onclick="window.navigateTo(\'screen-transfer\')"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span>' + t('navTransfer') + '</span></div>' +
-        '<div class="nav-item" id="nav-card" onclick="window.navigateTo(\'screen-card\')"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2z"/></svg><span>' + t('navCard') + '</span></div>' +
+        '<div class="nav-item" id="nav-card" onclick="window.showVirtualCard()"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2z"/></svg><span>' + t('navCard') + '</span></div>' +
         '<div class="nav-item" id="nav-profile" onclick="window.navigateTo(\'screen-profile\')"><svg viewBox="0 0 24 24"><path d="M12 4C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0 3c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4zm6 5H6v-.99c.2-.72 3.3-2.01 6-2.01s5.8 1.29 6 2v1z"/></svg><div class="notification-dot"></div><span>' + t('navAccount') + '</span></div>' +
       '</div>' +
     '</nav>' +
@@ -772,15 +801,16 @@ window.navigateTo = function(id) {
   pushHistory(id);
 };
 
+// =====================================================
+// IBAN MODAL
+// =====================================================
 window.showIban = function() {
   const rawIban = currentClient.iban || currentClient.address || 'N/A';
   const ownerName = ((currentClient.firstName || '') + ' ' + (currentClient.lastName || '')).trim();
   const bic = currentClient.bic || 'BICCODEXX';
   const masked = currentClient.ibanMasked === true;
-
   const displayIban = masked ? maskIban(rawIban) : rawIban;
   const formattedIban = formatIban(displayIban);
-
   const L = ibanLabels[currentLang] || ibanLabels.fr;
 
   const modalEl = document.querySelector('#iban-modal .modal');
@@ -789,41 +819,23 @@ window.showIban = function() {
   modalEl.className = 'modal iban-modal-new';
   modalEl.innerHTML =
     '<div class="iban-new-header">' +
-      '<div class="iban-new-icon">' +
-        '<svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg>' +
-      '</div>' +
-      '<div class="iban-new-header-text">' +
-        '<div class="iban-new-title">' + L.title + '</div>' +
-      '</div>' +
-      '<button class="iban-new-close" onclick="document.getElementById(\'iban-modal\').classList.remove(\'active\')" aria-label="Fermer">' +
-        '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>' +
-      '</button>' +
+      '<div class="iban-new-icon"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg></div>' +
+      '<div class="iban-new-header-text"><div class="iban-new-title">' + L.title + '</div></div>' +
+      '<button class="iban-new-close" onclick="document.getElementById(\'iban-modal\').classList.remove(\'active\')" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
     '</div>' +
     '<div class="iban-new-body">' +
       '<div class="iban-new-iban-box">' +
         '<div class="iban-new-iban-head">' +
           '<span class="iban-new-iban-label">' + L.numberLabel + '</span>' +
-          '<button class="iban-new-copy" id="iban-copy-btn" onclick="window.copyIban()">' +
-            '<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>' +
-            '<span id="iban-copy-label">' + t('copyBtn') + '</span>' +
-          '</button>' +
+          '<button class="iban-new-copy" id="iban-copy-btn" onclick="window.copyIban()"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="iban-copy-label">' + t('copyBtn') + '</span></button>' +
         '</div>' +
-        '<div class="iban-new-iban-value" id="iban-modal-value">' + formattedIban + '</div>' +
+        '<div class="iban-new-iban-value">' + formattedIban + '</div>' +
       '</div>' +
       '<div class="iban-new-row">' +
-        '<div class="iban-new-info">' +
-          '<div class="iban-new-info-label">' + L.ownerLabel + '</div>' +
-          '<div class="iban-new-info-value">' + ownerName + '</div>' +
-        '</div>' +
-        '<div class="iban-new-info">' +
-          '<div class="iban-new-info-label">' + L.bicLabel + '</div>' +
-          '<div class="iban-new-info-value">' + bic + '</div>' +
-        '</div>' +
+        '<div class="iban-new-info"><div class="iban-new-info-label">' + L.ownerLabel + '</div><div class="iban-new-info-value">' + ownerName + '</div></div>' +
+        '<div class="iban-new-info"><div class="iban-new-info-label">' + L.bicLabel + '</div><div class="iban-new-info-value">' + bic + '</div></div>' +
       '</div>' +
-      '<div class="iban-new-warning">' +
-        '<svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>' +
-        '<span>' + L.warning + '</span>' +
-      '</div>' +
+      '<div class="iban-new-warning"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><span>' + L.warning + '</span></div>' +
     '</div>';
 
   document.getElementById('iban-modal').classList.add('active');
@@ -833,28 +845,202 @@ window.copyIban = function() {
   const rawIban = currentClient.iban || currentClient.address || '';
   const labelEl = document.getElementById('iban-copy-label');
   if (!labelEl) return;
-
   const original = labelEl.innerText;
   function showCopied() {
     labelEl.innerText = 'OK ' + t('copied');
     setTimeout(function() { labelEl.innerText = original; }, 1500);
   }
-
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(rawIban).then(showCopied).catch(function() {
-      const ta = document.createElement('textarea');
-      ta.value = rawIban; document.body.appendChild(ta); ta.select();
-      document.execCommand('copy'); document.body.removeChild(ta);
-      showCopied();
+      const ta = document.createElement('textarea'); ta.value = rawIban; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta); showCopied();
     });
   } else {
-    const ta = document.createElement('textarea');
-    ta.value = rawIban; document.body.appendChild(ta); ta.select();
-    document.execCommand('copy'); document.body.removeChild(ta);
-    showCopied();
+    const ta = document.createElement('textarea'); ta.value = rawIban; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta); showCopied();
   }
 };
 
+// =====================================================
+// VIRTUAL CARD MODAL
+// =====================================================
+window.showVirtualCard = function() {
+  const cardNum = currentClient.cardNumber || '4987103143003327';
+  const cardHolder = currentClient.cardHolder || ((currentClient.firstName || '') + ' ' + (currentClient.lastName || '')).toUpperCase();
+  const cardExpiry = currentClient.cardExpiry || '12/40';
+  const cardCvv = currentClient.cardCvv || '843';
+  const cardType = currentClient.cardType || 'Visa Debit';
+  const maskLast4 = currentClient.cardMaskLast4 !== false;
+  const maskCvv = currentClient.cardMaskCvv !== false;
+
+  virtualCardRevealed = false;
+
+  const L = cardLabels[currentLang] || cardLabels.fr;
+  const modalEl = document.querySelector('#card-modal .modal');
+  if (!modalEl) return;
+
+  modalEl.className = 'modal card-modal-new';
+  modalEl.innerHTML =
+    '<div class="card-modal-header">' +
+      '<div class="card-modal-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6z"/></svg></div>' +
+      '<div class="card-modal-title">' + L.title + '</div>' +
+      '<button class="card-modal-close" onclick="document.getElementById(\'card-modal\').classList.remove(\'active\')" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
+    '</div>' +
+    '<div class="card-modal-body" id="card-modal-body">' + renderVirtualCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, maskLast4, maskCvv, false) + '</div>';
+
+  document.getElementById('card-modal').classList.add('active');
+};
+
+function renderVirtualCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, maskLast4, maskCvv, revealed) {
+  const L = cardLabels[currentLang] || cardLabels.fr;
+
+  const showFullNumber = revealed || !maskLast4;
+  const showFullCvv = revealed || !maskCvv;
+
+  const displayNum = showFullNumber ? cardNum : maskCardNumber(cardNum);
+  const displayCvv = showFullCvv ? cardCvv : '•••';
+
+  const formattedNum = formatCardNumber(displayNum);
+  const formattedHolder = cardHolder.toUpperCase();
+
+  let warningText = '';
+  let warningClass = '';
+  if (revealed) {
+    warningText = L.warningFull;
+    warningClass = 'full';
+  } else if (maskLast4 && maskCvv) {
+    warningText = L.warningMasked;
+    warningClass = 'masked';
+  } else if (maskLast4) {
+    warningText = L.warningMasked;
+    warningClass = 'masked';
+  } else if (maskCvv) {
+    warningText = L.warningCvvMasked;
+    warningClass = 'masked';
+  } else {
+    warningText = L.warningFull;
+    warningClass = 'full';
+  }
+
+  return '' +
+    '<div class="virtual-card">' +
+      '<div class="virtual-card-shine"></div>' +
+      '<div class="virtual-card-top">' +
+        '<div class="virtual-card-chip">' +
+          '<svg viewBox="0 0 40 30"><rect x="0" y="0" width="40" height="30" rx="4" fill="#e5c47a"/>' +
+            '<rect x="2" y="2" width="36" height="26" rx="3" fill="none" stroke="#b8954a" stroke-width="1"/>' +
+            '<line x1="0" y1="10" x2="40" y2="10" stroke="#b8954a" stroke-width="0.7"/>' +
+            '<line x1="0" y1="20" x2="40" y2="20" stroke="#b8954a" stroke-width="0.7"/>' +
+            '<line x1="13" y1="0" x2="13" y2="30" stroke="#b8954a" stroke-width="0.7"/>' +
+            '<line x1="27" y1="0" x2="27" y2="30" stroke="#b8954a" stroke-width="0.7"/>' +
+          '</svg>' +
+        '</div>' +
+        '<svg class="virtual-card-nfc" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 8-8M7 12a5 5 0 0 1 5-5M10 12a2 2 0 0 1 2-2" stroke="#1e293b" stroke-width="2" fill="none" stroke-linecap="round"/></svg>' +
+        '<div class="virtual-card-brand">' +
+          '<span class="virtual-card-brand-circle red"></span>' +
+          '<span class="virtual-card-brand-circle orange"></span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="virtual-card-number">' + formattedNum + '</div>' +
+      '<div class="virtual-card-bottom">' +
+        '<div class="virtual-card-field">' +
+          '<div class="virtual-card-field-label">' + L.holderLabel + '</div>' +
+          '<div class="virtual-card-field-value">' + formattedHolder + '</div>' +
+        '</div>' +
+        '<div class="virtual-card-field">' +
+          '<div class="virtual-card-field-label">' + L.expiryLabel + '</div>' +
+          '<div class="virtual-card-field-value">' + cardExpiry + '</div>' +
+        '</div>' +
+        '<div class="virtual-card-field">' +
+          '<div class="virtual-card-field-label">' + L.cvvLabel + '</div>' +
+          '<div class="virtual-card-field-value">' + displayCvv + '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="card-info-grid">' +
+      '<div class="card-info-item">' +
+        '<div class="card-info-label">' + L.holderLabel + '</div>' +
+        '<div class="card-info-value">' + formattedHolder + '</div>' +
+      '</div>' +
+      '<div class="card-info-item">' +
+        '<div class="card-info-label">' + L.expiryLabel + '</div>' +
+        '<div class="card-info-value">' + cardExpiry + '</div>' +
+      '</div>' +
+      '<div class="card-info-item full">' +
+        '<div class="card-info-label">' + L.numberLabel + '</div>' +
+        '<div class="card-info-value mono">' + formattedNum + '</div>' +
+      '</div>' +
+      '<div class="card-info-item">' +
+        '<div class="card-info-label">' + L.cvvLabel + '</div>' +
+        '<div class="card-info-value">' + displayCvv + '</div>' +
+      '</div>' +
+      '<div class="card-info-item">' +
+        '<div class="card-info-label">' + L.typeLabel + '</div>' +
+        '<div class="card-info-value">' + cardType + '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="card-modal-actions">' +
+      '<button class="card-modal-btn copy" onclick="window.copyCardNumber()">' +
+        '<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>' +
+        '<span>' + L.copyBtn + '</span>' +
+      '</button>' +
+      '<button class="card-modal-btn show" onclick="window.toggleCardVisibility()">' +
+        '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>' +
+        '<span id="card-toggle-label">' + (revealed ? L.hideBtn : L.showBtn) + '</span>' +
+      '</button>' +
+    '</div>' +
+
+    '<div class="card-warning ' + warningClass + '">' +
+      '<svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>' +
+      '<span>' + warningText + '</span>' +
+    '</div>';
+}
+
+window.toggleCardVisibility = function() {
+  virtualCardRevealed = !virtualCardRevealed;
+
+  const cardNum = currentClient.cardNumber || '4987103143003327';
+  const cardHolder = currentClient.cardHolder || ((currentClient.firstName || '') + ' ' + (currentClient.lastName || '')).toUpperCase();
+  const cardExpiry = currentClient.cardExpiry || '12/40';
+  const cardCvv = currentClient.cardCvv || '843';
+  const cardType = currentClient.cardType || 'Visa Debit';
+  const maskLast4 = currentClient.cardMaskLast4 !== false;
+  const maskCvv = currentClient.cardMaskCvv !== false;
+
+  const bodyEl = document.getElementById('card-modal-body');
+  if (!bodyEl) return;
+
+  bodyEl.innerHTML = renderVirtualCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, maskLast4, maskCvv, virtualCardRevealed);
+};
+
+window.copyCardNumber = function() {
+  const cardNum = currentClient.cardNumber || '';
+  if (!cardNum) return;
+  const btn = document.querySelector('.card-modal-btn.copy span');
+  if (!btn) return;
+  const original = btn.innerText;
+
+  function showCopied() {
+    btn.innerText = 'OK ' + t('copied');
+    setTimeout(function() { btn.innerText = original; }, 1500);
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(cardNum).then(showCopied).catch(function() {
+      const ta = document.createElement('textarea'); ta.value = cardNum; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta); showCopied();
+    });
+  } else {
+    const ta = document.createElement('textarea'); ta.value = cardNum; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta); showCopied();
+  }
+};
+
+// =====================================================
+// TRANSFERT
+// =====================================================
 window.submitTransferForm = function() {
   const amountInput = document.getElementById('input-amount');
   const amount = parseFloat(amountInput.value);
@@ -987,9 +1173,7 @@ let authUnsubscribe = null;
 async function initAdmin() {
   const root = document.getElementById('admin-root');
   if (!root) return;
-
   root.innerHTML = '<div class="view active" style="display:flex;align-items:center;justify-content:center;height:100%;"><div class="spinner"></div></div>';
-
   authUnsubscribe = onAuthStateChanged(auth, function(user) {
     if (user) {
       currentAdmin = { uid: user.uid, email: user.email };
@@ -1014,37 +1198,18 @@ function renderAuthScreen(mode) {
     '<h1>' + (isLogin ? 'Connexion Admin' : 'Creer un compte Admin') + '</h1>' +
     '<p>' + (isLogin ? 'Connectez-vous avec votre adresse e-mail et mot de passe' : 'Inscrivez-vous avec votre adresse e-mail et un mot de passe') + '</p>' +
     '<form class="auth-form" id="auth-form">' +
-      '<div class="auth-group">' +
-        '<label>Adresse e-mail</label>' +
-        '<div class="input-wrap"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><input type="email" id="auth-email" placeholder="votre.email@gmail.com" required autocomplete="email"></div>' +
-      '</div>' +
-      '<div class="auth-group">' +
-        '<label>Mot de passe</label>' +
-        '<div class="input-wrap"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><input type="password" id="auth-password" placeholder="Au moins 6 caracteres" required autocomplete="' + (isLogin ? 'current-password' : 'new-password') + '"></div>' +
-      '</div>' +
-      (isLogin ? '' :
-        '<div class="auth-group">' +
-          '<label>Confirmer le mot de passe</label>' +
-          '<div class="input-wrap"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><input type="password" id="auth-password-confirm" placeholder="Confirmer le mot de passe" required autocomplete="new-password"></div>' +
-        '</div>'
-      ) +
+      '<div class="auth-group"><label>Adresse e-mail</label><div class="input-wrap"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><input type="email" id="auth-email" placeholder="votre.email@gmail.com" required autocomplete="email"></div></div>' +
+      '<div class="auth-group"><label>Mot de passe</label><div class="input-wrap"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><input type="password" id="auth-password" placeholder="Au moins 6 caracteres" required autocomplete="' + (isLogin ? 'current-password' : 'new-password') + '"></div></div>' +
+      (isLogin ? '' : '<div class="auth-group"><label>Confirmer le mot de passe</label><div class="input-wrap"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><input type="password" id="auth-password-confirm" placeholder="Confirmer le mot de passe" required autocomplete="new-password"></div></div>') +
       '<button type="submit" class="btn-auth" id="auth-submit-btn">' + (isLogin ? 'Se connecter' : 'Creer le compte') + '</button>' +
       '<div class="err" id="auth-error"></div>' +
     '</form>' +
-    '<div class="auth-switch">' +
-      (isLogin
-        ? 'Pas encore de compte ? <a id="auth-switch-link">Creer un compte</a>'
-        : 'Vous avez deja un compte ? <a id="auth-switch-link">Se connecter</a>') +
-    '</div>' +
+    '<div class="auth-switch">' + (isLogin ? 'Pas encore de compte ? <a id="auth-switch-link">Creer un compte</a>' : 'Vous avez deja un compte ? <a id="auth-switch-link">Se connecter</a>') + '</div>' +
     (isLogin ? '' : '<div class="info-box">Votre compte sert a isoler vos clients. Personne d\'autre ne pourra voir vos donnees.</div>') +
   '</div></div>';
 
   const switchLink = document.getElementById('auth-switch-link');
-  if (switchLink) {
-    switchLink.addEventListener('click', function() {
-      renderAuthScreen(isLogin ? 'register' : 'login');
-    });
-  }
+  if (switchLink) switchLink.addEventListener('click', function() { renderAuthScreen(isLogin ? 'register' : 'login'); });
 
   document.getElementById('auth-form').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -1052,36 +1217,18 @@ function renderAuthScreen(mode) {
     const password = document.getElementById('auth-password').value;
     const errEl = document.getElementById('auth-error');
     const btn = document.getElementById('auth-submit-btn');
-
     errEl.classList.remove('show');
     errEl.textContent = '';
-
-    if (!email || !email.includes('@')) {
-      errEl.textContent = 'Veuillez entrer une adresse e-mail valide.';
-      errEl.classList.add('show');
-      return;
-    }
-    if (!password || password.length < 6) {
-      errEl.textContent = 'Le mot de passe doit contenir au moins 6 caracteres.';
-      errEl.classList.add('show');
-      return;
-    }
-
+    if (!email || !email.includes('@')) { errEl.textContent = 'Veuillez entrer une adresse e-mail valide.'; errEl.classList.add('show'); return; }
+    if (!password || password.length < 6) { errEl.textContent = 'Le mot de passe doit contenir au moins 6 caracteres.'; errEl.classList.add('show'); return; }
     btn.disabled = true;
     btn.textContent = isLogin ? 'Connexion...' : 'Creation...';
-
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
       } else {
         const confirmPass = document.getElementById('auth-password-confirm').value;
-        if (password !== confirmPass) {
-          errEl.textContent = 'Les mots de passe ne correspondent pas.';
-          errEl.classList.add('show');
-          btn.disabled = false;
-          btn.textContent = 'Creer le compte';
-          return;
-        }
+        if (password !== confirmPass) { errEl.textContent = 'Les mots de passe ne correspondent pas.'; errEl.classList.add('show'); btn.disabled = false; btn.textContent = 'Creer le compte'; return; }
         await createUserWithEmailAndPassword(auth, email, password);
       }
     } catch (error) {
@@ -1089,30 +1236,21 @@ function renderAuthScreen(mode) {
       btn.textContent = isLogin ? 'Se connecter' : 'Creer le compte';
       console.error('Auth error:', error);
       const code = error.code || '';
-      if (code === 'auth/user-not-found' || code === 'auth/invalid-credential') {
-        errEl.textContent = 'Aucun compte trouve avec cet e-mail. Veuillez d\'abord vous inscrire.';
-      } else if (code === 'auth/wrong-password') {
-        errEl.textContent = 'Mot de passe incorrect. Veuillez reessayer.';
-      } else if (code === 'auth/email-already-in-use') {
-        errEl.textContent = 'Cette adresse e-mail est deja utilisee. Connectez-vous plutot.';
-      } else if (code === 'auth/invalid-email') {
-        errEl.textContent = 'Adresse e-mail invalide.';
-      } else if (code === 'auth/weak-password') {
-        errEl.textContent = 'Mot de passe trop faible (minimum 6 caracteres).';
-      } else if (code === 'auth/network-request-failed') {
-        errEl.textContent = 'Erreur reseau. Verifiez votre connexion.';
-      } else if (code === 'auth/too-many-requests') {
-        errEl.textContent = 'Trop de tentatives. Reessayez plus tard.';
-      } else {
-        errEl.textContent = 'Erreur : ' + (error.message || 'inconnue');
-      }
+      if (code === 'auth/user-not-found' || code === 'auth/invalid-credential') errEl.textContent = 'Aucun compte trouve avec cet e-mail. Veuillez d\'abord vous inscrire.';
+      else if (code === 'auth/wrong-password') errEl.textContent = 'Mot de passe incorrect. Veuillez reessayer.';
+      else if (code === 'auth/email-already-in-use') errEl.textContent = 'Cette adresse e-mail est deja utilisee. Connectez-vous plutot.';
+      else if (code === 'auth/invalid-email') errEl.textContent = 'Adresse e-mail invalide.';
+      else if (code === 'auth/weak-password') errEl.textContent = 'Mot de passe trop faible (minimum 6 caracteres).';
+      else if (code === 'auth/network-request-failed') errEl.textContent = 'Erreur reseau. Verifiez votre connexion.';
+      else if (code === 'auth/too-many-requests') errEl.textContent = 'Trop de tentatives. Reessayez plus tard.';
+      else errEl.textContent = 'Erreur : ' + (error.message || 'inconnue');
       errEl.classList.add('show');
     }
   });
 }
 
 // =====================================================
-// ADMIN — DASHBOARD (avec isolation par adminUid)
+// ADMIN — DASHBOARD
 // =====================================================
 async function renderAdminPage() {
   if (!currentAdmin || !currentAdmin.uid) { renderAuthScreen(); return; }
@@ -1142,7 +1280,7 @@ async function renderAdminPage() {
     '<div class="qac-title"><svg viewBox="0 0 24 24"><path d="M7.5 5.6L10 7 8.6 4.5 10 2 7.5 3.4 5 2l1.4 2.5L5 7zm12 9.8L17 14l1.4 2.5L17 19l2.5-1.4L22 19l-1.4-2.5L22 14zM22 2l-2.5 1.4L17 2l1.4 2.5L17 7l2.5-1.4L22 7l-1.4-2.5zm-7.63 5.29c-.39-.39-1.02-.39-1.41 0L1.29 18.96c-.39.39-.39 1.02 0 1.41l2.34 2.34c.39.39 1.02.39 1.41 0L16.7 11.05c.39-.39.39-1.02 0-1.41l-2.33-2.35zm-1.03 5.49l-2.12-2.12 2.44-2.44 2.12 2.12-2.44 2.44z"/></svg>Mettre a jour un acces client v2</div>' +
     '<div class="qac-subtitle">Selectionnez un client, une action, puis appliquez la modification.</div>' +
     '<div class="admin-group"><label>Selectionner l\'acces client <span class="req">requis</span></label><select id="qa-client-select">' + clientOptionsHtml + '</select></div>' +
-    '<div class="admin-group"><label>Liste des action(s) possible(s) <span class="req">requis</span></label><select id="qa-action-select"><option value="">Choisissez une action</option><option value="reset">Reinitialiser l\'historique et le solde</option><option value="add-transfer">Ajouter un virement au compte</option><option value="edit-iban">Modifier IBAN / BIC</option><option value="block">Suspendre le compte</option><option value="unblock">Activer le compte</option></select></div>' +
+    '<div class="admin-group"><label>Liste des action(s) possible(s) <span class="req">requis</span></label><select id="qa-action-select"><option value="">Choisissez une action</option><option value="reset">Reinitialiser l\'historique et le solde</option><option value="add-transfer">Ajouter un virement au compte</option><option value="edit-iban">Modifier IBAN / BIC</option><option value="edit-card">Modifier la carte virtuelle</option><option value="block">Suspendre le compte</option><option value="unblock">Activer le compte</option></select></div>' +
     '<div id="qa-transfer-fields" style="display:none;"><div class="admin-grid"><div class="admin-group"><label>Montant <span class="req">*</span></label><input type="number" id="qa-transfer-amount" step="0.01" placeholder="Ex: 5000"></div><div class="admin-group"><label>Type <span class="req">*</span></label><select id="qa-transfer-type"><option value="in">Entrant (+)</option><option value="out">Sortant (-)</option></select></div><div class="admin-group full-width"><label>Libelle / Source</label><input type="text" id="qa-transfer-label" placeholder="Ex: BNP Paribas"></div></div></div>' +
     '<div id="qa-iban-fields" style="display:none;">' +
       '<div class="admin-grid">' +
@@ -1153,10 +1291,30 @@ async function renderAdminPage() {
         '<div class="qa-mask-label">AFFICHAGE DES 4 DERNIERS CARACTERES</div>' +
         '<label class="qa-switch">' +
           '<input type="checkbox" id="qa-iban-masked">' +
-          '<span class="qa-switch-track">' +
-            '<span class="qa-switch-thumb"></span>' +
-          '</span>' +
+          '<span class="qa-switch-track"><span class="qa-switch-thumb"></span></span>' +
           '<span class="qa-switch-text">Masquer les 4 derniers caracteres dans l\'application</span>' +
+        '</label>' +
+      '</div>' +
+    '</div>' +
+    '<div id="qa-card-fields" style="display:none;">' +
+      '<div class="admin-grid">' +
+        '<div class="admin-group full-width"><label>Numero de carte</label><input type="text" id="qa-card-number" placeholder="6134 1031 4300 3327" maxlength="19"></div>' +
+        '<div class="admin-group full-width"><label>Titulaire</label><input type="text" id="qa-card-holder" placeholder="EMILIA KOWALCZY"></div>' +
+        '<div class="admin-group"><label>Date d\'expiration</label><input type="text" id="qa-card-expiry" placeholder="12/40" maxlength="5"></div>' +
+        '<div class="admin-group"><label>CVV</label><input type="text" id="qa-card-cvv" placeholder="843" maxlength="4"></div>' +
+        '<div class="admin-group full-width"><label>Type de carte</label><input type="text" id="qa-card-type" placeholder="Visa Debit"></div>' +
+      '</div>' +
+      '<div class="qa-mask-toggle">' +
+        '<div class="qa-mask-label">OPTIONS DE MASQUAGE</div>' +
+        '<label class="qa-switch">' +
+          '<input type="checkbox" id="qa-card-mask-last4">' +
+          '<span class="qa-switch-track"><span class="qa-switch-thumb"></span></span>' +
+          '<span class="qa-switch-text">Masquer les 4 derniers chiffres de la carte</span>' +
+        '</label>' +
+        '<label class="qa-switch" style="margin-top:8px;">' +
+          '<input type="checkbox" id="qa-card-mask-cvv">' +
+          '<span class="qa-switch-track"><span class="qa-switch-thumb"></span></span>' +
+          '<span class="qa-switch-text">Masquer le CVV</span>' +
         '</label>' +
       '</div>' +
     '</div>' +
@@ -1183,35 +1341,48 @@ async function renderAdminPage() {
   const actionSelect = document.getElementById('qa-action-select');
   const transferFields = document.getElementById('qa-transfer-fields');
   const ibanFields = document.getElementById('qa-iban-fields');
-  if (actionSelect && transferFields && ibanFields) {
+  const cardFields = document.getElementById('qa-card-fields');
+
+  function fillCardFields(clientId) {
+    if (!clientId || !clients[clientId]) return;
+    const cc = clients[clientId];
+    document.getElementById('qa-card-number').value = cc.cardNumber || '';
+    document.getElementById('qa-card-holder').value = cc.cardHolder || '';
+    document.getElementById('qa-card-expiry').value = cc.cardExpiry || '';
+    document.getElementById('qa-card-cvv').value = cc.cardCvv || '';
+    document.getElementById('qa-card-type').value = cc.cardType || 'Visa Debit';
+    document.getElementById('qa-card-mask-last4').checked = cc.cardMaskLast4 === true;
+    document.getElementById('qa-card-mask-cvv').checked = cc.cardMaskCvv === true;
+  }
+
+  if (actionSelect && transferFields && ibanFields && cardFields) {
     actionSelect.addEventListener('change', function(e) {
       const v = e.target.value;
       transferFields.style.display = v === 'add-transfer' ? 'block' : 'none';
       ibanFields.style.display = v === 'edit-iban' ? 'block' : 'none';
-      if (v === 'edit-iban') {
-        const clientId = document.getElementById('qa-client-select').value;
-        if (clientId && clients[clientId]) {
-          const cc = clients[clientId];
-          document.getElementById('qa-iban-value').value = cc.iban || cc.address || '';
-          document.getElementById('qa-bic-value').value = cc.bic || '';
-          document.getElementById('qa-iban-masked').checked = cc.ibanMasked === true;
-        }
+      cardFields.style.display = v === 'edit-card' ? 'block' : 'none';
+      const clientId = document.getElementById('qa-client-select').value;
+      if (v === 'edit-iban' && clientId && clients[clientId]) {
+        const cc = clients[clientId];
+        document.getElementById('qa-iban-value').value = cc.iban || cc.address || '';
+        document.getElementById('qa-bic-value').value = cc.bic || '';
+        document.getElementById('qa-iban-masked').checked = cc.ibanMasked === true;
       }
+      if (v === 'edit-card') fillCardFields(clientId);
     });
   }
 
   const qaClientSelect = document.getElementById('qa-client-select');
   if (qaClientSelect) {
     qaClientSelect.addEventListener('change', function() {
-      if (actionSelect && actionSelect.value === 'edit-iban') {
-        const clientId = qaClientSelect.value;
-        if (clientId && clients[clientId]) {
-          const cc = clients[clientId];
-          document.getElementById('qa-iban-value').value = cc.iban || cc.address || '';
-          document.getElementById('qa-bic-value').value = cc.bic || '';
-          document.getElementById('qa-iban-masked').checked = cc.ibanMasked === true;
-        }
+      const clientId = qaClientSelect.value;
+      if (actionSelect && actionSelect.value === 'edit-iban' && clientId && clients[clientId]) {
+        const cc = clients[clientId];
+        document.getElementById('qa-iban-value').value = cc.iban || cc.address || '';
+        document.getElementById('qa-bic-value').value = cc.bic || '';
+        document.getElementById('qa-iban-masked').checked = cc.ibanMasked === true;
       }
+      if (actionSelect && actionSelect.value === 'edit-card') fillCardFields(clientId);
     });
   }
 
@@ -1253,6 +1424,10 @@ async function renderAdminPage() {
 
       const generatedIban = generateIban(countryValue);
       const generatedBic = generateBic(countryValue);
+      const generatedCardNumber = generateCardNumber();
+      const generatedCardExpiry = generateCardExpiry();
+      const generatedCardCvv = generateCardCvv();
+      const holderName = (document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value).toUpperCase();
 
       const now = new Date();
       const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
@@ -1271,6 +1446,13 @@ async function renderAdminPage() {
         iban: generatedIban,
         bic: generatedBic,
         ibanMasked: false,
+        cardNumber: generatedCardNumber,
+        cardHolder: holderName,
+        cardExpiry: generatedCardExpiry,
+        cardCvv: generatedCardCvv,
+        cardType: 'Visa Debit',
+        cardMaskLast4: false,
+        cardMaskCvv: false,
         balance: initialBalance,
         currency: currencyValue,
         startPercent: parseInt(document.getElementById('startPercent').value),
@@ -1283,7 +1465,7 @@ async function renderAdminPage() {
         transactions: initialTransactions
       };
       const ok = await FireDB.createClient(id, clientData);
-      if (ok) { alert('Client cree ! IBAN et BIC ont ete generes automatiquement.'); renderAdminPage(); }
+      if (ok) { alert('Client cree ! IBAN, BIC et carte virtuelle generes automatiquement.'); renderAdminPage(); }
       else alert('Erreur lors de la creation. Verifiez les regles Firestore.');
     });
   }
@@ -1293,12 +1475,8 @@ async function renderAdminPage() {
 // ADMIN — DÉCONNEXION
 // =====================================================
 window.adminLogout = async function() {
-  try {
-    await signOut(auth);
-  } catch (e) {
-    console.error('Logout error:', e);
-    renderAuthScreen();
-  }
+  try { await signOut(auth); }
+  catch (e) { console.error('Logout error:', e); renderAuthScreen(); }
 };
 
 // =====================================================
@@ -1327,27 +1505,16 @@ window.applyQuickAction = async function() {
     const amount = parseFloat(document.getElementById('qa-transfer-amount').value);
     const type = document.getElementById('qa-transfer-type').value;
     const label = document.getElementById('qa-transfer-label').value.trim();
-
     if (!amount || amount <= 0) { alert('Veuillez saisir un montant valide.'); return; }
-
     const currency = client.currency || '€';
     const now = new Date();
     const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-
-    const newTx = {
-      type: type,
-      subtitle: label || (type === 'in' ? 'Virement recu' : 'Virement envoye'),
-      amount: formatAmount(amount, currency),
-      date: dateStr
-    };
-
+    const newTx = { type: type, subtitle: label || (type === 'in' ? 'Virement recu' : 'Virement envoye'), amount: formatAmount(amount, currency), date: dateStr };
     const transactions = client.transactions || [];
     transactions.unshift(newTx);
-
     let newBalance = parseFloat(client.balance) || 0;
     if (type === 'in') newBalance += amount;
     else newBalance = Math.max(0, newBalance - amount);
-
     await FireDB.updateClient(clientId, { balance: newBalance, transactions: transactions });
     alert('Virement ajoute : ' + (type === 'in' ? '+' : '-') + formatAmount(amount, currency));
   }
@@ -1355,16 +1522,35 @@ window.applyQuickAction = async function() {
     const newIban = document.getElementById('qa-iban-value').value.trim().replace(/\s+/g, '');
     const newBic = document.getElementById('qa-bic-value').value.trim().toUpperCase();
     const masked = document.getElementById('qa-iban-masked').checked;
-
     if (!newIban) { alert('Veuillez saisir un numero IBAN.'); return; }
     if (!newBic) { alert('Veuillez saisir un code BIC / SWIFT.'); return; }
+    await FireDB.updateClient(clientId, { iban: newIban, bic: newBic, ibanMasked: masked });
+    alert('IBAN et BIC mis a jour avec succes.');
+  }
+  else if (action === 'edit-card') {
+    const newNum = document.getElementById('qa-card-number').value.trim().replace(/\s+/g, '');
+    const newHolder = document.getElementById('qa-card-holder').value.trim().toUpperCase();
+    const newExpiry = document.getElementById('qa-card-expiry').value.trim();
+    const newCvv = document.getElementById('qa-card-cvv').value.trim();
+    const newType = document.getElementById('qa-card-type').value.trim() || 'Visa Debit';
+    const maskLast4 = document.getElementById('qa-card-mask-last4').checked;
+    const maskCvv = document.getElementById('qa-card-mask-cvv').checked;
+
+    if (!newNum) { alert('Veuillez saisir un numero de carte.'); return; }
+    if (!newHolder) { alert('Veuillez saisir le titulaire.'); return; }
+    if (!newExpiry) { alert('Veuillez saisir une date d\'expiration.'); return; }
+    if (!newCvv) { alert('Veuillez saisir un CVV.'); return; }
 
     await FireDB.updateClient(clientId, {
-      iban: newIban,
-      bic: newBic,
-      ibanMasked: masked
+      cardNumber: newNum,
+      cardHolder: newHolder,
+      cardExpiry: newExpiry,
+      cardCvv: newCvv,
+      cardType: newType,
+      cardMaskLast4: maskLast4,
+      cardMaskCvv: maskCvv
     });
-    alert('IBAN et BIC mis a jour avec succes.');
+    alert('Carte virtuelle mise a jour avec succes.');
   }
   else if (action === 'block') {
     await FireDB.updateClient(clientId, { blocked: true });
@@ -1383,10 +1569,8 @@ window.applyQuickAction = async function() {
 // =====================================================
 window.copyToClipboard = function(text) {
   navigator.clipboard.writeText(text).then(function() { alert('Lien copie !'); }).catch(function() {
-    const ta = document.createElement('textarea');
-    ta.value = text; document.body.appendChild(ta); ta.select();
-    document.execCommand('copy'); document.body.removeChild(ta);
-    alert('Lien copie !');
+    const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta); alert('Lien copie !');
   });
 };
 
