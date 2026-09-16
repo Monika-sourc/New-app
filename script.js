@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v10 - Auth admin + Isolation par adminUid
+// v11 - Virtual card robust
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -56,7 +56,7 @@ const ClientSession = {
 };
 
 // =====================================================
-// GENERATEURS IBAN / BIC
+// GENERATEURS
 // =====================================================
 function generateIban(country) {
   const prefixMap = { 'France': 'FR', 'Pologne': 'PL', 'Espagne': 'ES', 'Italie': 'IT', 'Allemagne': 'DE' };
@@ -67,7 +67,6 @@ function generateIban(country) {
   for (let i = 0; i < len; i++) body += Math.floor(Math.random() * 10);
   return prefix + body;
 }
-
 function generateBic(country) {
   const prefixMap = { 'France': 'FR', 'Pologne': 'PL', 'Espagne': 'ES', 'Italie': 'IT', 'Allemagne': 'DE' };
   const cc = prefixMap[country] || 'FR';
@@ -79,10 +78,6 @@ function generateBic(country) {
   for (let i = 0; i < 2; i++) loc += alnum.charAt(Math.floor(Math.random() * alnum.length));
   return bank + cc + loc;
 }
-
-// =====================================================
-// GENERATEURS CARTE VIRTUELLE
-// =====================================================
 function generateCardNumber() {
   let num = '4';
   for (let i = 0; i < 15; i++) num += Math.floor(Math.random() * 10);
@@ -93,60 +88,29 @@ function generateCardExpiry() {
   const year = String(Math.floor(Math.random() * 5) + 26);
   return month + '/' + year;
 }
-function generateCardCvv() {
-  return String(Math.floor(Math.random() * 900) + 100);
-}
+function generateCardCvv() { return String(Math.floor(Math.random() * 900) + 100); }
 
-// Titulaire toujours dérivé du nom et prénom du client
 function getCardHolderName(client) {
   if (!client) return '';
   return ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase();
 }
-
-function formatIban(iban) {
-  if (!iban) return '';
-  return iban.replace(/(.{4})/g, '$1 ').trim();
-}
-
-function formatCardNumber(num) {
-  if (!num) return '';
-  return num.replace(/(.{4})/g, '$1 ').trim();
-}
-
-function maskIban(iban) {
-  if (!iban || iban.length < 4) return iban;
-  return iban.slice(0, -4) + '••••';
-}
-
-function maskCardNumber(num) {
-  if (!num || num.length < 4) return num;
-  return num.slice(0, -4) + 'XXXX';
-}
+function formatIban(iban) { return iban ? iban.replace(/(.{4})/g, '$1 ').trim() : ''; }
+function formatCardNumber(num) { return num ? num.replace(/(.{4})/g, '$1 ').trim() : ''; }
+function maskIban(iban) { return (iban && iban.length >= 4) ? iban.slice(0, -4) + '••••' : iban; }
+function maskCardNumber(num) { return (num && num.length >= 4) ? num.slice(0, -4) + 'XXXX' : num; }
 
 // =====================================================
-// GESTION HISTORIQUE (BOUTON RETOUR)
+// GESTION HISTORIQUE
 // =====================================================
 let isHandlingPop = false;
-
-function pushHistory(screenId) {
-  if (isHandlingPop) return;
-  try { history.pushState({ tw: true, screen: screenId }, '', '#' + screenId); }
-  catch (e) { console.warn(e); }
-}
-function replaceHistory(screenId) {
-  try { history.replaceState({ tw: true, screen: screenId }, '', '#' + screenId); }
-  catch (e) { console.warn(e); }
-}
-function replaceLoginHistory() {
-  try { history.replaceState({ tw: true, screen: 'login' }, '', '#login'); }
-  catch (e) { console.warn(e); }
-}
+function pushHistory(screenId) { if (isHandlingPop) return; try { history.pushState({ tw: true, screen: screenId }, '', '#' + screenId); } catch (e) {} }
+function replaceHistory(screenId) { try { history.replaceState({ tw: true, screen: screenId }, '', '#' + screenId); } catch (e) {} }
+function replaceLoginHistory() { try { history.replaceState({ tw: true, screen: 'login' }, '', '#login'); } catch (e) {} }
 
 window.addEventListener('popstate', async (event) => {
   const state = event.state;
   if (!state || !state.tw) return;
   isHandlingPop = true;
-
   if (state.screen === 'login') {
     ClientSession.clear();
     if (clientUnsubscribe) { try { clientUnsubscribe(); } catch(e) {} clientUnsubscribe = null; }
@@ -154,18 +118,15 @@ window.addEventListener('popstate', async (event) => {
     setTimeout(() => { isHandlingPop = false; }, 150);
     return;
   }
-
   const target = document.getElementById(state.screen);
   if (target) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     target.classList.add('active');
-
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     const map = { 'screen-dashboard': 'nav-dashboard', 'screen-card': 'nav-card', 'screen-profile': 'nav-profile' };
     let navId = map[state.screen];
     if (['screen-transfer', 'screen-verification', 'screen-processing'].indexOf(state.screen) !== -1) navId = 'nav-transfer';
     if (navId) { const n = document.getElementById(navId); if (n) n.classList.add('active'); }
-
     if (state.screen === 'screen-dashboard' && currentClient) {
       try {
         const fresh = await FireDB.getClient(currentClient.id);
@@ -176,7 +137,7 @@ window.addEventListener('popstate', async (event) => {
           const hero = document.getElementById('balance-hero');
           if (hero) hero.innerHTML = renderBalanceHero(fresh);
         }
-      } catch (e) { console.error(e); }
+      } catch (e) {}
     }
     const container = document.querySelector('.screens-container');
     if (container) container.scrollTop = 0;
@@ -188,176 +149,13 @@ window.addEventListener('popstate', async (event) => {
 // TRADUCTIONS
 // =====================================================
 const i18n = {
-  pl: {
-    loginTitle: "Zaloguj sie na swoje konto", emailPh: "Twoj adres e-mail", pinPh: "Twoj kod dostepu",
-    loginBtn: "Zaloguj sie", loginErr: "Nieprawidlowy e-mail lub PIN.",
-    greeting: "Witam", personalAccount: "Osobiste", accounts: "Konta",
-    seeIban: "Zobacz moj IBAN", virtualCard: "Karta wirtualna", makeTransferShort: "Wykonaj przelew",
-    myIbanTitle: "Moj IBAN", copyBtn: "Kopiuj", copied: "Skopiowano!",
-    balanceLabel: "Saldo konta :", transactionHistory: "Historia transakcji", noTransactions: "Brak historii transakcji.",
-    sendOutgoingTransfer: "Wyslij przelew wychodzacy", transferDetails: "Szczegoly przelewu",
-    amountToDebit: "KWOTA DO OBCIAZENIA", labelIban: "IBAN / NUMER KONTA",
-    labelSwift: "KOD BANKU (BIC/SWIFT)", labelBank: "NAZWA BANKU",
-    labelBeneficiary: "NAZWA BENEFICJENTA", labelReason: "POWOD PRZENIESIENIA",
-    processingWarning: "Realizacja w ciagu 1-3 minut po weryfikacji koncowej.",
-    nextBtn: "Nastepny", transferSummary: "Podsumowanie transferu",
-    transferAmountLabel: "Kwota przelewu:", ibanLabel: "IBAN/numer", ibanLabelLine2: "konta:",
-    swiftLabel: "Kod banku:", bankLabel: "Bank odbiorczy:",
-    beneficiaryLabel: "Nazwa beneficjenta:", reasonLabel: "Powod przeniesienia:",
-    identityVerification: "Weryfikacja tozsamosci", verificationDesc: "Wprowadz kod zabezpieczajacy:",
-    sendBtn: "Wyslij", wellDone: "Dobrze zrobiony!", processingDesc: "Weryfikacja zakonczona pomyslnie.",
-    amountToReceive: "Kwota do otrzymania:", processingText: "Transfer w toku...",
-    cardWelcome: "Gratulacje, karta jest dostepna.", activateCardBtn: "Aktywuj", blockCardBtn: "Zablokuj",
-    cardTransactions: "Transakcje kartowe", validUntil: "WAZNE DO:",
-    personalData: "Dane osobowe", accountOwner: "Wlasciciel:", emailLabel: "E-mail:",
-    phoneLabel: "Telefon:", countryLabel: "Kraj:", addressLabel: "Adres:",
-    accountAndTransfer: "Konto i przelew", balanceProfile: "Saldo:", accountType: "Typ:",
-    accountStatus: "Stan:", statusActive: "Aktywny", supportedTransfer: "Transfer:",
-    beneficiaryIban: "IBAN:", accountTypeValue: "Profesjonalny", transferTypeValue: "Klasyczny",
-    profileBanner: "Skontaktuj sie z pomoca.", logoutBtn: "Rozlacz",
-    modalSuccess: "Przeniesienie {amount} wyslane", modalFailure: "Transfer nie powiodl sie",
-    sendTime: "Czas:", closeBtn: "Zamknij",
-    navBalance: "Pulpit", navCard: "Karta", navTransfer: "Platnosci", navAccount: "Profil",
-    txTransferSent: "Przelew wyslany", txTransferReceived: "Przelew otrzymany",
-    invalidAmount: "Wpisz prawidlowa kwote.", amountExceedsBalance: "Kwota przekracza saldo."
-  },
-  fr: {
-    loginTitle: "Connectez-vous a votre compte", emailPh: "Votre adresse e-mail", pinPh: "Votre code d'acces",
-    loginBtn: "Se connecter", loginErr: "Adresse e-mail ou code PIN incorrect.",
-    greeting: "Bonjour", personalAccount: "Personnel", accounts: "Comptes",
-    seeIban: "Voir mon IBAN", virtualCard: "Carte virtuelle", makeTransferShort: "Faire un virement",
-    myIbanTitle: "Mon IBAN", copyBtn: "Copier", copied: "Copie !",
-    balanceLabel: "Solde du compte :", transactionHistory: "Historique des transactions", noTransactions: "Aucun historique.",
-    sendOutgoingTransfer: "Envoyer un virement sortant", transferDetails: "Details du virement",
-    amountToDebit: "MONTANT A DEBITER", labelIban: "IBAN / NUMERO DE COMPTE",
-    labelSwift: "CODE BANQUE (BIC/SWIFT)", labelBank: "NOM DE LA BANQUE",
-    labelBeneficiary: "NOM DU BENEFICIAIRE", labelReason: "MOTIF DU VIREMENT",
-    processingWarning: "Realisation sous 1 a 3 minutes apres verification finale.",
-    nextBtn: "Suivant", transferSummary: "Recapitulatif",
-    transferAmountLabel: "Montant :", ibanLabel: "IBAN/numero", ibanLabelLine2: "de compte :",
-    swiftLabel: "Code banque :", bankLabel: "Banque destinataire :",
-    beneficiaryLabel: "Nom du beneficiaire :", reasonLabel: "Motif :",
-    identityVerification: "Verification d'identite", verificationDesc: "Saisissez le code de securite :",
-    sendBtn: "Envoyer", wellDone: "Bien joue !", processingDesc: "Verification reussie.",
-    amountToReceive: "Montant a recevoir :", processingText: "Virement en cours...",
-    cardWelcome: "Felicitations, votre carte est disponible.", activateCardBtn: "Activer ma carte", blockCardBtn: "Bloquer ma carte",
-    cardTransactions: "Transactions par carte", validUntil: "VALABLE JUSQU'AU :",
-    personalData: "Donnees personnelles", accountOwner: "Titulaire :", emailLabel: "E-mail :",
-    phoneLabel: "Telephone :", countryLabel: "Pays :", addressLabel: "Adresse :",
-    accountAndTransfer: "Compte et virement", balanceProfile: "Solde :", accountType: "Type :",
-    accountStatus: "Statut :", statusActive: "Actif", supportedTransfer: "Virement supporte :",
-    beneficiaryIban: "IBAN du beneficiaire :", accountTypeValue: "Professionnel", transferTypeValue: "Classique",
-    profileBanner: "Contactez notre equipe d'assistance.", logoutBtn: "Se deconnecter",
-    modalSuccess: "Virement de {amount} envoye", modalFailure: "Echec du transfert",
-    sendTime: "Heure d'envoi :", closeBtn: "Fermer",
-    navBalance: "Accueil", navCard: "Carte virtuelle", navTransfer: "Paiements", navAccount: "Profil",
-    txTransferSent: "Virement envoye", txTransferReceived: "Virement recu",
-    invalidAmount: "Veuillez saisir un montant valide.", amountExceedsBalance: "Le montant depasse votre solde disponible."
-  },
-  es: {
-    loginTitle: "Inicia sesion", emailPh: "Tu correo", pinPh: "Tu codigo",
-    loginBtn: "Iniciar", loginErr: "Correo o PIN incorrecto.",
-    greeting: "Hola", personalAccount: "Personal", accounts: "Cuentas",
-    seeIban: "Ver mi IBAN", virtualCard: "Tarjeta virtual", makeTransferShort: "Hacer transferencia",
-    myIbanTitle: "Mi IBAN", copyBtn: "Copiar", copied: "Copiado!",
-    balanceLabel: "Saldo :", transactionHistory: "Historial", noTransactions: "Sin historial.",
-    sendOutgoingTransfer: "Enviar transferencia", transferDetails: "Detalles",
-    amountToDebit: "IMPORTE A DEBITAR", labelIban: "IBAN / NUMERO DE CUENTA",
-    labelSwift: "CODIGO BANCO (BIC/SWIFT)", labelBank: "NOMBRE DEL BANCO",
-    labelBeneficiary: "NOMBRE DEL BENEFICIARIO", labelReason: "MOTIVO",
-    processingWarning: "Realizacion en 1-3 minutos tras verificacion final.",
-    nextBtn: "Siguiente", transferSummary: "Resumen",
-    transferAmountLabel: "Importe:", ibanLabel: "IBAN", ibanLabelLine2: "de cuenta:",
-    swiftLabel: "BIC:", bankLabel: "Banco:",
-    beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:",
-    identityVerification: "Verificacion", verificationDesc: "Introduzca el codigo:",
-    sendBtn: "Enviar", wellDone: "Bien hecho!", processingDesc: "Verificacion exitosa.",
-    amountToReceive: "Importe:", processingText: "En curso...",
-    cardWelcome: "Tarjeta disponible.", activateCardBtn: "Activar", blockCardBtn: "Bloquear",
-    cardTransactions: "Transacciones", validUntil: "VALIDA HASTA:",
-    personalData: "Datos personales", accountOwner: "Titular:", emailLabel: "Correo:",
-    phoneLabel: "Telefono:", countryLabel: "Pais:", addressLabel: "Direccion:",
-    accountAndTransfer: "Cuenta", balanceProfile: "Saldo:", accountType: "Tipo:",
-    accountStatus: "Estado:", statusActive: "Activo", supportedTransfer: "Soporte:",
-    beneficiaryIban: "IBAN:", accountTypeValue: "Profesional", transferTypeValue: "Clasico",
-    profileBanner: "Contacte con soporte.", logoutBtn: "Salir",
-    modalSuccess: "Transferencia de {amount} enviada", modalFailure: "Fallida",
-    sendTime: "Hora:", closeBtn: "Cerrar",
-    navBalance: "Inicio", navCard: "Tarjeta virtual", navTransfer: "Pagos", navAccount: "Perfil",
-    txTransferSent: "Enviada", txTransferReceived: "Recibida",
-    invalidAmount: "Ingrese un importe valido.", amountExceedsBalance: "El importe supera su saldo."
-  },
-  it: {
-    loginTitle: "Accedi", emailPh: "Email", pinPh: "Codice",
-    loginBtn: "Accedi", loginErr: "Email o PIN errato.",
-    greeting: "Ciao", personalAccount: "Personale", accounts: "Conti",
-    seeIban: "Vedi il mio IBAN", virtualCard: "Carta virtuale", makeTransferShort: "Fai un bonifico",
-    myIbanTitle: "Il mio IBAN", copyBtn: "Copia", copied: "Copiato!",
-    balanceLabel: "Saldo :", transactionHistory: "Cronologia", noTransactions: "Nessuna cronologia.",
-    sendOutgoingTransfer: "Invia bonifico", transferDetails: "Dettagli",
-    amountToDebit: "IMPORTO DA ADDEBITARE", labelIban: "IBAN / NUMERO DI CONTO",
-    labelSwift: "CODICE BANCA (BIC/SWIFT)", labelBank: "NOME DELLA BANCA",
-    labelBeneficiary: "NOME DEL BENEFICIARIO", labelReason: "MOTIVO",
-    processingWarning: "Esecuzione entro 1-3 minuti dopo verifica finale.",
-    nextBtn: "Avanti", transferSummary: "Riepilogo",
-    transferAmountLabel: "Importo:", ibanLabel: "IBAN", ibanLabelLine2: "conto:",
-    swiftLabel: "BIC:", bankLabel: "Banca:",
-    beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:",
-    identityVerification: "Verifica", verificationDesc: "Inserisci il codice:",
-    sendBtn: "Invia", wellDone: "Ben fatto!", processingDesc: "Verifica riuscita.",
-    amountToReceive: "Importo:", processingText: "In corso...",
-    cardWelcome: "Carta disponibile.", activateCardBtn: "Attiva", blockCardBtn: "Blocca",
-    cardTransactions: "Transazioni", validUntil: "VALIDA FINO AL:",
-    personalData: "Dati personali", accountOwner: "Titolare:", emailLabel: "Email:",
-    phoneLabel: "Telefono:", countryLabel: "Paese:", addressLabel: "Indirizzo:",
-    accountAndTransfer: "Conto", balanceProfile: "Saldo:", accountType: "Tipo:",
-    accountStatus: "Stato:", statusActive: "Attivo", supportedTransfer: "Supporto:",
-    beneficiaryIban: "IBAN:", accountTypeValue: "Professionale", transferTypeValue: "Classico",
-    profileBanner: "Contatta il supporto.", logoutBtn: "Esci",
-    modalSuccess: "Bonifico di {amount} inviato", modalFailure: "Fallito",
-    sendTime: "Ora:", closeBtn: "Chiudi",
-    navBalance: "Home", navCard: "Carta virtuale", navTransfer: "Pagamenti", navAccount: "Profilo",
-    txTransferSent: "Inviato", txTransferReceived: "Ricevuto",
-    invalidAmount: "Inserisci un importo valido.", amountExceedsBalance: "L'importo supera il saldo."
-  },
-  de: {
-    loginTitle: "Anmelden", emailPh: "E-Mail", pinPh: "Zugangscode",
-    loginBtn: "Anmelden", loginErr: "Falsche E-Mail oder PIN.",
-    greeting: "Hallo", personalAccount: "Personlich", accounts: "Konten",
-    seeIban: "Meine IBAN anzeigen", virtualCard: "Virtuelle Karte", makeTransferShort: "Uberweisung",
-    myIbanTitle: "Meine IBAN", copyBtn: "Kopieren", copied: "Kopiert!",
-    balanceLabel: "Kontostand :", transactionHistory: "Verlauf", noTransactions: "Kein Verlauf.",
-    sendOutgoingTransfer: "Uberweisung senden", transferDetails: "Details",
-    amountToDebit: "ZU BELASTENDER BETRAG", labelIban: "IBAN / KONTONUMMER",
-    labelSwift: "BANKCODE (BIC/SWIFT)", labelBank: "NAME DER BANK",
-    labelBeneficiary: "NAME DES BEGUNSTIGTEN", labelReason: "GRUND",
-    processingWarning: "Ausfuhrung in 1-3 Minuten nach finaler Uberprufung.",
-    nextBtn: "Weiter", transferSummary: "Ubersicht",
-    transferAmountLabel: "Betrag:", ibanLabel: "IBAN", ibanLabelLine2: "des Kontos:",
-    swiftLabel: "BIC:", bankLabel: "Empfanger:",
-    beneficiaryLabel: "Begunstigter:", reasonLabel: "Grund:",
-    identityVerification: "Prufung", verificationDesc: "Code eingeben:",
-    sendBtn: "Senden", wellDone: "Gut gemacht!", processingDesc: "Erfolgreich.",
-    amountToReceive: "Betrag:", processingText: "In Bearbeitung...",
-    cardWelcome: "Karte verfugbar.", activateCardBtn: "Aktivieren", blockCardBtn: "Sperren",
-    cardTransactions: "Transaktionen", validUntil: "GULTIG BIS:",
-    personalData: "Personliche Daten", accountOwner: "Kontoinhaber:", emailLabel: "E-Mail:",
-    phoneLabel: "Telefon:", countryLabel: "Land:", addressLabel: "Adresse:",
-    accountAndTransfer: "Konto", balanceProfile: "Kontostand:", accountType: "Typ:",
-    accountStatus: "Status:", statusActive: "Aktiv", supportedTransfer: "Support:",
-    beneficiaryIban: "IBAN:", accountTypeValue: "Professionell", transferTypeValue: "Klassisch",
-    profileBanner: "Support kontaktieren.", logoutBtn: "Abmelden",
-    modalSuccess: "Uberweisung von {amount} gesendet", modalFailure: "Fehlgeschlagen",
-    sendTime: "Zeit:", closeBtn: "Schliessen",
-    navBalance: "Start", navCard: "Virtuelle Karte", navTransfer: "Zahlungen", navAccount: "Profil",
-    txTransferSent: "Gesendet", txTransferReceived: "Erhalten",
-    invalidAmount: "Bitte gultigen Betrag eingeben.", amountExceedsBalance: "Der Betrag ubersteigt das Guthaben."
-  }
+  pl: { loginTitle: "Zaloguj sie na swoje konto", emailPh: "Twoj adres e-mail", pinPh: "Twoj kod dostepu", loginBtn: "Zaloguj sie", loginErr: "Nieprawidlowy e-mail lub PIN.", greeting: "Witam", personalAccount: "Osobiste", accounts: "Konta", seeIban: "Zobacz moj IBAN", virtualCard: "Karta wirtualna", makeTransferShort: "Wykonaj przelew", myIbanTitle: "Moj IBAN", copyBtn: "Kopiuj", copied: "Skopiowano!", balanceLabel: "Saldo konta :", transactionHistory: "Historia transakcji", noTransactions: "Brak historii transakcji.", sendOutgoingTransfer: "Wyslij przelew wychodzacy", transferDetails: "Szczegoly przelewu", amountToDebit: "KWOTA DO OBCIAZENIA", labelIban: "IBAN / NUMER KONTA", labelSwift: "KOD BANKU (BIC/SWIFT)", labelBank: "NAZWA BANKU", labelBeneficiary: "NAZWA BENEFICJENTA", labelReason: "POWOD PRZENIESIENIA", processingWarning: "Realizacja w ciagu 1-3 minut po weryfikacji koncowej.", nextBtn: "Nastepny", transferSummary: "Podsumowanie transferu", transferAmountLabel: "Kwota przelewu:", ibanLabel: "IBAN/numer", ibanLabelLine2: "konta:", swiftLabel: "Kod banku:", bankLabel: "Bank odbiorczy:", beneficiaryLabel: "Nazwa beneficjenta:", reasonLabel: "Powod przeniesienia:", identityVerification: "Weryfikacja tozsamosci", verificationDesc: "Wprowadz kod zabezpieczajacy:", sendBtn: "Wyslij", wellDone: "Dobrze zrobiony!", processingDesc: "Weryfikacja zakonczona pomyslnie.", amountToReceive: "Kwota do otrzymania:", processingText: "Transfer w toku...", cardWelcome: "Gratulacje, karta jest dostepna.", activateCardBtn: "Aktywuj", blockCardBtn: "Zablokuj", cardTransactions: "Transakcje kartowe", validUntil: "WAZNE DO:", personalData: "Dane osobowe", accountOwner: "Wlasciciel:", emailLabel: "E-mail:", phoneLabel: "Telefon:", countryLabel: "Kraj:", addressLabel: "Adres:", accountAndTransfer: "Konto i przelew", balanceProfile: "Saldo:", accountType: "Typ:", accountStatus: "Stan:", statusActive: "Aktywny", supportedTransfer: "Transfer:", beneficiaryIban: "IBAN:", accountTypeValue: "Profesjonalny", transferTypeValue: "Klasyczny", profileBanner: "Skontaktuj sie z pomoca.", logoutBtn: "Rozlacz", modalSuccess: "Przeniesienie {amount} wyslane", modalFailure: "Transfer nie powiodl sie", sendTime: "Czas:", closeBtn: "Zamknij", navBalance: "Pulpit", navCard: "Karta", navTransfer: "Platnosci", navAccount: "Profil", txTransferSent: "Przelew wyslany", txTransferReceived: "Przelew otrzymany", invalidAmount: "Wpisz prawidlowa kwote.", amountExceedsBalance: "Kwota przekracza saldo." },
+  fr: { loginTitle: "Connectez-vous a votre compte", emailPh: "Votre adresse e-mail", pinPh: "Votre code d'acces", loginBtn: "Se connecter", loginErr: "Adresse e-mail ou code PIN incorrect.", greeting: "Bonjour", personalAccount: "Personnel", accounts: "Comptes", seeIban: "Voir mon IBAN", virtualCard: "Carte virtuelle", makeTransferShort: "Faire un virement", myIbanTitle: "Mon IBAN", copyBtn: "Copier", copied: "Copie !", balanceLabel: "Solde du compte :", transactionHistory: "Historique des transactions", noTransactions: "Aucun historique.", sendOutgoingTransfer: "Envoyer un virement sortant", transferDetails: "Details du virement", amountToDebit: "MONTANT A DEBITER", labelIban: "IBAN / NUMERO DE COMPTE", labelSwift: "CODE BANQUE (BIC/SWIFT)", labelBank: "NOM DE LA BANQUE", labelBeneficiary: "NOM DU BENEFICIAIRE", labelReason: "MOTIF DU VIREMENT", processingWarning: "Realisation sous 1 a 3 minutes apres verification finale.", nextBtn: "Suivant", transferSummary: "Recapitulatif", transferAmountLabel: "Montant :", ibanLabel: "IBAN/numero", ibanLabelLine2: "de compte :", swiftLabel: "Code banque :", bankLabel: "Banque destinataire :", beneficiaryLabel: "Nom du beneficiaire :", reasonLabel: "Motif :", identityVerification: "Verification d'identite", verificationDesc: "Saisissez le code de securite :", sendBtn: "Envoyer", wellDone: "Bien joue !", processingDesc: "Verification reussie.", amountToReceive: "Montant a recevoir :", processingText: "Virement en cours...", cardWelcome: "Felicitations, votre carte est disponible.", activateCardBtn: "Activer ma carte", blockCardBtn: "Bloquer ma carte", cardTransactions: "Transactions par carte", validUntil: "VALABLE JUSQU'AU :", personalData: "Donnees personnelles", accountOwner: "Titulaire :", emailLabel: "E-mail :", phoneLabel: "Telephone :", countryLabel: "Pays :", addressLabel: "Adresse :", accountAndTransfer: "Compte et virement", balanceProfile: "Solde :", accountType: "Type :", accountStatus: "Statut :", statusActive: "Actif", supportedTransfer: "Virement supporte :", beneficiaryIban: "IBAN du beneficiaire :", accountTypeValue: "Professionnel", transferTypeValue: "Classique", profileBanner: "Contactez notre equipe d'assistance.", logoutBtn: "Se deconnecter", modalSuccess: "Virement de {amount} envoye", modalFailure: "Echec du transfert", sendTime: "Heure d'envoi :", closeBtn: "Fermer", navBalance: "Accueil", navCard: "Carte virtuelle", navTransfer: "Paiements", navAccount: "Profil", txTransferSent: "Virement envoye", txTransferReceived: "Virement recu", invalidAmount: "Veuillez saisir un montant valide.", amountExceedsBalance: "Le montant depasse votre solde disponible." },
+  es: { loginTitle: "Inicia sesion", emailPh: "Tu correo", pinPh: "Tu codigo", loginBtn: "Iniciar", loginErr: "Correo o PIN incorrecto.", greeting: "Hola", personalAccount: "Personal", accounts: "Cuentas", seeIban: "Ver mi IBAN", virtualCard: "Tarjeta virtual", makeTransferShort: "Hacer transferencia", myIbanTitle: "Mi IBAN", copyBtn: "Copiar", copied: "Copiado!", balanceLabel: "Saldo :", transactionHistory: "Historial", noTransactions: "Sin historial.", sendOutgoingTransfer: "Enviar transferencia", transferDetails: "Detalles", amountToDebit: "IMPORTE A DEBITAR", labelIban: "IBAN / NUMERO DE CUENTA", labelSwift: "CODIGO BANCO (BIC/SWIFT)", labelBank: "NOMBRE DEL BANCO", labelBeneficiary: "NOMBRE DEL BENEFICIARIO", labelReason: "MOTIVO", processingWarning: "Realizacion en 1-3 minutos tras verificacion final.", nextBtn: "Siguiente", transferSummary: "Resumen", transferAmountLabel: "Importe:", ibanLabel: "IBAN", ibanLabelLine2: "de cuenta:", swiftLabel: "BIC:", bankLabel: "Banco:", beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:", identityVerification: "Verificacion", verificationDesc: "Introduzca el codigo:", sendBtn: "Enviar", wellDone: "Bien hecho!", processingDesc: "Verificacion exitosa.", amountToReceive: "Importe:", processingText: "En curso...", cardWelcome: "Tarjeta disponible.", activateCardBtn: "Activar", blockCardBtn: "Bloquear", cardTransactions: "Transacciones", validUntil: "VALIDA HASTA:", personalData: "Datos personales", accountOwner: "Titular:", emailLabel: "Correo:", phoneLabel: "Telefono:", countryLabel: "Pais:", addressLabel: "Direccion:", accountAndTransfer: "Cuenta", balanceProfile: "Saldo:", accountType: "Tipo:", accountStatus: "Estado:", statusActive: "Activo", supportedTransfer: "Soporte:", beneficiaryIban: "IBAN:", accountTypeValue: "Profesional", transferTypeValue: "Clasico", profileBanner: "Contacte con soporte.", logoutBtn: "Salir", modalSuccess: "Transferencia de {amount} enviada", modalFailure: "Fallida", sendTime: "Hora:", closeBtn: "Cerrar", navBalance: "Inicio", navCard: "Tarjeta virtual", navTransfer: "Pagos", navAccount: "Perfil", txTransferSent: "Enviada", txTransferReceived: "Recibida", invalidAmount: "Ingrese un importe valido.", amountExceedsBalance: "El importe supera su saldo." },
+  it: { loginTitle: "Accedi", emailPh: "Email", pinPh: "Codice", loginBtn: "Accedi", loginErr: "Email o PIN errato.", greeting: "Ciao", personalAccount: "Personale", accounts: "Conti", seeIban: "Vedi il mio IBAN", virtualCard: "Carta virtuale", makeTransferShort: "Fai un bonifico", myIbanTitle: "Il mio IBAN", copyBtn: "Copia", copied: "Copiato!", balanceLabel: "Saldo :", transactionHistory: "Cronologia", noTransactions: "Nessuna cronologia.", sendOutgoingTransfer: "Invia bonifico", transferDetails: "Dettagli", amountToDebit: "IMPORTO DA ADDEBITARE", labelIban: "IBAN / NUMERO DI CONTO", labelSwift: "CODICE BANCA (BIC/SWIFT)", labelBank: "NOME DELLA BANCA", labelBeneficiary: "NOME DEL BENEFICIARIO", labelReason: "MOTIVO", processingWarning: "Esecuzione entro 1-3 minuti dopo verifica finale.", nextBtn: "Avanti", transferSummary: "Riepilogo", transferAmountLabel: "Importo:", ibanLabel: "IBAN", ibanLabelLine2: "conto:", swiftLabel: "BIC:", bankLabel: "Banca:", beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:", identityVerification: "Verifica", verificationDesc: "Inserisci il codice:", sendBtn: "Invia", wellDone: "Ben fatto!", processingDesc: "Verifica riuscita.", amountToReceive: "Importo:", processingText: "In corso...", cardWelcome: "Carta disponibile.", activateCardBtn: "Attiva", blockCardBtn: "Blocca", cardTransactions: "Transazioni", validUntil: "VALIDA FINO AL:", personalData: "Dati personali", accountOwner: "Titolare:", emailLabel: "Email:", phoneLabel: "Telefono:", countryLabel: "Paese:", addressLabel: "Indirizzo:", accountAndTransfer: "Conto", balanceProfile: "Saldo:", accountType: "Tipo:", accountStatus: "Stato:", statusActive: "Attivo", supportedTransfer: "Supporto:", beneficiaryIban: "IBAN:", accountTypeValue: "Professionale", transferTypeValue: "Classico", profileBanner: "Contatta il supporto.", logoutBtn: "Esci", modalSuccess: "Bonifico di {amount} inviato", modalFailure: "Fallito", sendTime: "Ora:", closeBtn: "Chiudi", navBalance: "Home", navCard: "Carta virtuale", navTransfer: "Pagamenti", navAccount: "Profilo", txTransferSent: "Inviato", txTransferReceived: "Ricevuto", invalidAmount: "Inserisci un importo valido.", amountExceedsBalance: "L'importo supera il saldo." },
+  de: { loginTitle: "Anmelden", emailPh: "E-Mail", pinPh: "Zugangscode", loginBtn: "Anmelden", loginErr: "Falsche E-Mail oder PIN.", greeting: "Hallo", personalAccount: "Personlich", accounts: "Konten", seeIban: "Meine IBAN anzeigen", virtualCard: "Virtuelle Karte", makeTransferShort: "Uberweisung", myIbanTitle: "Meine IBAN", copyBtn: "Kopieren", copied: "Kopiert!", balanceLabel: "Kontostand :", transactionHistory: "Verlauf", noTransactions: "Kein Verlauf.", sendOutgoingTransfer: "Uberweisung senden", transferDetails: "Details", amountToDebit: "ZU BELASTENDER BETRAG", labelIban: "IBAN / KONTONUMMER", labelSwift: "BANKCODE (BIC/SWIFT)", labelBank: "NAME DER BANK", labelBeneficiary: "NAME DES BEGUNSTIGTEN", labelReason: "GRUND", processingWarning: "Ausfuhrung in 1-3 Minuten nach finaler Uberprufung.", nextBtn: "Weiter", transferSummary: "Ubersicht", transferAmountLabel: "Betrag:", ibanLabel: "IBAN", ibanLabelLine2: "des Kontos:", swiftLabel: "BIC:", bankLabel: "Empfanger:", beneficiaryLabel: "Begunstigter:", reasonLabel: "Grund:", identityVerification: "Prufung", verificationDesc: "Code eingeben:", sendBtn: "Senden", wellDone: "Gut gemacht!", processingDesc: "Erfolgreich.", amountToReceive: "Betrag:", processingText: "In Bearbeitung...", cardWelcome: "Karte verfugbar.", activateCardBtn: "Aktivieren", blockCardBtn: "Sperren", cardTransactions: "Transaktionen", validUntil: "GULTIG BIS:", personalData: "Personliche Daten", accountOwner: "Kontoinhaber:", emailLabel: "E-Mail:", phoneLabel: "Telefon:", countryLabel: "Land:", addressLabel: "Adresse:", accountAndTransfer: "Konto", balanceProfile: "Kontostand:", accountType: "Typ:", accountStatus: "Status:", statusActive: "Aktiv", supportedTransfer: "Support:", beneficiaryIban: "IBAN:", accountTypeValue: "Professionell", transferTypeValue: "Klassisch", profileBanner: "Support kontaktieren.", logoutBtn: "Abmelden", modalSuccess: "Uberweisung von {amount} gesendet", modalFailure: "Fehlgeschlagen", sendTime: "Zeit:", closeBtn: "Schliessen", navBalance: "Start", navCard: "Virtuelle Karte", navTransfer: "Zahlungen", navAccount: "Profil", txTransferSent: "Gesendet", txTransferReceived: "Erhalten", invalidAmount: "Bitte gultigen Betrag eingeben.", amountExceedsBalance: "Der Betrag ubersteigt das Guthaben." }
 };
 
-// =====================================================
-// LIBELLES IBAN
-// =====================================================
 const ibanLabels = {
   pl: { title: "Dane konta", numberLabel: "NUMER IBAN", ownerLabel: "WLASCICIEL", bicLabel: "BIC / SWIFT", warning: "Ze wzgledow bezpieczenstwa niektore znaki IBAN zostaly zamaskowane." },
   fr: { title: "Details du compte", numberLabel: "NUMERO IBAN", ownerLabel: "TITULAIRE", bicLabel: "BIC / SWIFT", warning: "Pour des raisons de securite, certains caracteres de l'IBAN ont ete masques." },
@@ -366,50 +164,12 @@ const ibanLabels = {
   de: { title: "Kontodetails", numberLabel: "IBAN-NUMMER", ownerLabel: "INHABER", bicLabel: "BIC / SWIFT", warning: "Aus Sicherheitsgrunden wurden einige IBAN-Zeichen maskiert." }
 };
 
-// =====================================================
-// LIBELLES CARTE VIRTUELLE
-// =====================================================
 const cardLabels = {
-  pl: {
-    title: "Karta wirtualna", holderLabel: "POSIADACZ", expiryLabel: "WAZNA DO", cvvLabel: "CVV",
-    numberLabel: "NUMER KARTY", typeLabel: "TYP", typeValue: "Visa Debit",
-    copyBtn: "Kopiuj numer", showBtn: "Pokaz", hideBtn: "Ukryj",
-    warningMasked: "Ostatnie 4 cyfry ukryte. Kliknij \"Pokaz\", aby ujawnic pelny numer.",
-    warningCvvMasked: "CVV jest ukryty.",
-    warningFull: "Karta w pelni widoczna."
-  },
-  fr: {
-    title: "Carte virtuelle", holderLabel: "TITULAIRE", expiryLabel: "VALABLE JUSQU'AU", cvvLabel: "CVV",
-    numberLabel: "NUMERO DE CARTE", typeLabel: "TYPE", typeValue: "Visa Debit",
-    copyBtn: "Copier le numero", showBtn: "Afficher", hideBtn: "Masquer",
-    warningMasked: "Les 4 derniers chiffres sont caches. Cliquez sur \"Afficher\" pour reveler le numero complet.",
-    warningCvvMasked: "Le CVV est masque.",
-    warningFull: "Carte completement visible."
-  },
-  es: {
-    title: "Tarjeta virtual", holderLabel: "TITULAR", expiryLabel: "VALIDA HASTA", cvvLabel: "CVV",
-    numberLabel: "NUMERO DE TARJETA", typeLabel: "TIPO", typeValue: "Visa Debit",
-    copyBtn: "Copiar numero", showBtn: "Mostrar", hideBtn: "Ocultar",
-    warningMasked: "Los ultimos 4 digitos estan ocultos. Pulse \"Mostrar\" para revelar el numero completo.",
-    warningCvvMasked: "El CVV esta oculto.",
-    warningFull: "Tarjeta completamente visible."
-  },
-  it: {
-    title: "Carta virtuale", holderLabel: "TITOLARE", expiryLabel: "VALIDA FINO AL", cvvLabel: "CVV",
-    numberLabel: "NUMERO CARTA", typeLabel: "TIPO", typeValue: "Visa Debit",
-    copyBtn: "Copia numero", showBtn: "Mostra", hideBtn: "Nascondi",
-    warningMasked: "Le ultime 4 cifre sono nascoste. Clicca \"Mostra\" per rivelare il numero completo.",
-    warningCvvMasked: "Il CVV e nascosto.",
-    warningFull: "Carta completamente visibile."
-  },
-  de: {
-    title: "Virtuelle Karte", holderLabel: "INHABER", expiryLabel: "GULTIG BIS", cvvLabel: "CVV",
-    numberLabel: "KARTENNUMMER", typeLabel: "TYP", typeValue: "Visa Debit",
-    copyBtn: "Nummer kopieren", showBtn: "Anzeigen", hideBtn: "Verbergen",
-    warningMasked: "Die letzten 4 Ziffern sind ausgeblendet. Klicken Sie auf \"Anzeigen\", um die vollstandige Nummer zu sehen.",
-    warningCvvMasked: "CVV ist ausgeblendet.",
-    warningFull: "Karte vollstandig sichtbar."
-  }
+  pl: { title: "Karta wirtualna", holderLabel: "POSIADACZ", expiryLabel: "WAZNA DO", cvvLabel: "CVV", numberLabel: "NUMER KARTY", typeLabel: "TYP", typeValue: "Visa Debit", copyBtn: "Kopiuj numer", showBtn: "Pokaz", hideBtn: "Ukryj", warningMasked: "Ostatnie 4 cyfry ukryte. Kliknij \"Pokaz\", aby ujawnic pelny numer.", warningCvvMasked: "CVV jest ukryty.", warningFull: "Karta w pelni widoczna." },
+  fr: { title: "Carte virtuelle", holderLabel: "TITULAIRE", expiryLabel: "VALABLE JUSQU'AU", cvvLabel: "CVV", numberLabel: "NUMERO DE CARTE", typeLabel: "TYPE", typeValue: "Visa Debit", copyBtn: "Copier le numero", showBtn: "Afficher", hideBtn: "Masquer", warningMasked: "Les 4 derniers chiffres sont caches. Cliquez sur \"Afficher\" pour reveler le numero complet.", warningCvvMasked: "Le CVV est masque.", warningFull: "Carte completement visible." },
+  es: { title: "Tarjeta virtual", holderLabel: "TITULAR", expiryLabel: "VALIDA HASTA", cvvLabel: "CVV", numberLabel: "NUMERO DE TARJETA", typeLabel: "TIPO", typeValue: "Visa Debit", copyBtn: "Copiar numero", showBtn: "Mostrar", hideBtn: "Ocultar", warningMasked: "Los ultimos 4 digitos estan ocultos. Pulse \"Mostrar\" para revelar el numero completo.", warningCvvMasked: "El CVV esta oculto.", warningFull: "Tarjeta completamente visible." },
+  it: { title: "Carta virtuale", holderLabel: "TITOLARE", expiryLabel: "VALIDA FINO AL", cvvLabel: "CVV", numberLabel: "NUMERO CARTA", typeLabel: "TIPO", typeValue: "Visa Debit", copyBtn: "Copia numero", showBtn: "Mostra", hideBtn: "Nascondi", warningMasked: "Le ultime 4 cifre sono nascoste. Clicca \"Mostra\" per rivelare il numero completo.", warningCvvMasked: "Il CVV e nascosto.", warningFull: "Carta completamente visibile." },
+  de: { title: "Virtuelle Karte", holderLabel: "INHABER", expiryLabel: "GULTIG BIS", cvvLabel: "CVV", numberLabel: "KARTENNUMMER", typeLabel: "TYP", typeValue: "Visa Debit", copyBtn: "Nummer kopieren", showBtn: "Anzeigen", hideBtn: "Verbergen", warningMasked: "Die letzten 4 Ziffern sind ausgeblendet. Klicken Sie auf \"Anzeigen\", um die vollstandige Nummer zu sehen.", warningCvvMasked: "CVV ist ausgeblendet.", warningFull: "Karte vollstandig sichtbar." }
 };
 
 let currentLang = 'fr';
@@ -419,62 +179,51 @@ let clientUnsubscribe = null;
 let pendingTransferAmount = 0;
 let virtualCardRevealed = false;
 
-const t = function(k) {
-  const d = i18n[currentLang] || i18n.fr;
-  return d[k] !== undefined ? d[k] : (i18n.fr[k] || k);
-};
-
-const formatAmount = function(a, c) {
-  return a.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + c;
-};
-
-const generateShortId = function() {
-  const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let r = '';
-  for (let i = 0; i < 6; i++) r += c.charAt(Math.floor(Math.random() * c.length));
-  return r;
-};
-
-const darken = function(hex, pct) {
-  const n = parseInt(hex.replace('#', ''), 16);
-  const r = Math.max(0, ((n >> 16) & 255) - pct);
-  const g = Math.max(0, ((n >> 8) & 255) - pct);
-  const b = Math.max(0, (n & 255) - pct);
-  return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
-};
-
-const applyTheme = function(color) {
-  color = color || '#1a73e8';
-  document.documentElement.style.setProperty('--primary', color);
-  document.documentElement.style.setProperty('--primary-dark', darken(color, 40));
-};
-
+const t = function(k) { const d = i18n[currentLang] || i18n.fr; return d[k] !== undefined ? d[k] : (i18n.fr[k] || k); };
+const formatAmount = function(a, c) { return a.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + c; };
+const generateShortId = function() { const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let r = ''; for (let i = 0; i < 6; i++) r += c.charAt(Math.floor(Math.random() * c.length)); return r; };
+const darken = function(hex, pct) { const n = parseInt(hex.replace('#', ''), 16); const r = Math.max(0, ((n >> 16) & 255) - pct); const g = Math.max(0, ((n >> 8) & 255) - pct); const b = Math.max(0, (n & 255) - pct); return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0'); };
+const applyTheme = function(color) { color = color || '#1a73e8'; document.documentElement.style.setProperty('--primary', color); document.documentElement.style.setProperty('--primary-dark', darken(color, 40)); };
 const splitBalance = function(amount, currency) {
   const formatted = (amount || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const lastComma = formatted.lastIndexOf(',');
   if (lastComma === -1) return { intPart: formatted, decPart: ' ' + currency };
-  return {
-    intPart: formatted.substring(0, lastComma + 1),
-    decPart: formatted.substring(lastComma + 1) + ' ' + currency
-  };
+  return { intPart: formatted.substring(0, lastComma + 1), decPart: formatted.substring(lastComma + 1) + ' ' + currency };
 };
 
 // =====================================================
-// GESTION DES MODALES DYNAMIQUES
+// MODAL MANAGER — Version 100% robuste avec styles inline
 // =====================================================
-function ensureModal(modalId, innerModalClass) {
+function ensureModal(modalId) {
   let overlay = document.getElementById(modalId);
   if (!overlay) {
     overlay = document.createElement('div');
-    overlay.className = 'overlay';
     overlay.id = modalId;
-    overlay.innerHTML = '<div class="modal ' + (innerModalClass || '') + '"></div>';
+    // Styles inline forcés pour garantir la visibilité
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(15,23,42,0.75);display:none;justify-content:center;align-items:center;z-index:99999;padding:12px;box-sizing:border-box;overflow-y:auto;';
     document.body.appendChild(overlay);
     overlay.addEventListener('click', function(e) {
-      if (e.target === overlay) overlay.classList.remove('active');
+      if (e.target === overlay) {
+        overlay.classList.remove('active');
+        overlay.style.display = 'none';
+      }
     });
   }
   return overlay;
+}
+
+function openModal(modalId) {
+  const o = ensureModal(modalId);
+  o.classList.add('active');
+  o.style.display = 'flex';
+}
+
+function closeModal(modalId) {
+  const o = document.getElementById(modalId);
+  if (o) {
+    o.classList.remove('active');
+    o.style.display = 'none';
+  }
 }
 
 // =====================================================
@@ -528,19 +277,9 @@ function subscribeToClient(clientId) {
   if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
   try {
     clientUnsubscribe = onSnapshot(doc(db, 'clients', clientId), function(snap) {
-      if (!snap.exists()) {
-        ClientSession.clear();
-        if (clientUnsubscribe) { try { clientUnsubscribe(); } catch(e) {} clientUnsubscribe = null; }
-        initClient();
-        return;
-      }
+      if (!snap.exists()) { ClientSession.clear(); if (clientUnsubscribe) { try { clientUnsubscribe(); } catch(e) {} clientUnsubscribe = null; } initClient(); return; }
       const fresh = Object.assign({ id: snap.id }, snap.data());
-      if (fresh.blocked) {
-        ClientSession.clear();
-        if (clientUnsubscribe) { try { clientUnsubscribe(); } catch(e) {} clientUnsubscribe = null; }
-        initClient();
-        return;
-      }
+      if (fresh.blocked) { ClientSession.clear(); if (clientUnsubscribe) { try { clientUnsubscribe(); } catch(e) {} clientUnsubscribe = null; } initClient(); return; }
       currentClient = fresh;
       currentLang = fresh.language || 'fr';
       applyTheme(fresh.themeColor);
@@ -600,54 +339,28 @@ function renderLoginPage(client) {
         '<div class="login-card">' +
           '<div class="login-logo">' +
             '<svg class="login-logo-mark" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">' +
-              '<circle cx="14" cy="12" r="4" fill="#0d9488"/>' +
-              '<circle cx="24" cy="8" r="3" fill="#0d9488"/>' +
-              '<circle cx="34" cy="10" r="2.5" fill="#22c55e"/>' +
-              '<circle cx="43" cy="15" r="2.5" fill="#84cc16"/>' +
-              '<circle cx="7" cy="22" r="3.5" fill="#0d9488"/>' +
-              '<circle cx="6" cy="34" r="3.5" fill="#0d9488"/>' +
-              '<circle cx="10" cy="45" r="3" fill="#14b8a6"/>' +
-              '<circle cx="20" cy="52" r="2.5" fill="#14b8a6"/>' +
-              '<circle cx="32" cy="50" r="3" fill="#0d9488"/>' +
-              '<circle cx="43" cy="43" r="3" fill="#0d9488"/>' +
-              '<circle cx="50" cy="33" r="3" fill="#0d9488"/>' +
-              '<circle cx="49" cy="21" r="2.5" fill="#14b8a6"/>' +
-              '<circle cx="20" cy="22" r="2" fill="#5eead4"/>' +
-              '<circle cx="24" cy="32" r="2.5" fill="#5eead4"/>' +
-              '<circle cx="22" cy="42" r="2" fill="#5eead4"/>' +
-              '<circle cx="33" cy="22" r="1.5" fill="#84cc16"/>' +
-              '<circle cx="37" cy="30" r="2" fill="#84cc16"/>' +
-              '<circle cx="34" cy="40" r="1.5" fill="#14b8a6"/>' +
+              '<circle cx="14" cy="12" r="4" fill="#0d9488"/><circle cx="24" cy="8" r="3" fill="#0d9488"/>' +
+              '<circle cx="34" cy="10" r="2.5" fill="#22c55e"/><circle cx="43" cy="15" r="2.5" fill="#84cc16"/>' +
+              '<circle cx="7" cy="22" r="3.5" fill="#0d9488"/><circle cx="6" cy="34" r="3.5" fill="#0d9488"/>' +
+              '<circle cx="10" cy="45" r="3" fill="#14b8a6"/><circle cx="20" cy="52" r="2.5" fill="#14b8a6"/>' +
+              '<circle cx="32" cy="50" r="3" fill="#0d9488"/><circle cx="43" cy="43" r="3" fill="#0d9488"/>' +
+              '<circle cx="50" cy="33" r="3" fill="#0d9488"/><circle cx="49" cy="21" r="2.5" fill="#14b8a6"/>' +
+              '<circle cx="20" cy="22" r="2" fill="#5eead4"/><circle cx="24" cy="32" r="2.5" fill="#5eead4"/>' +
+              '<circle cx="22" cy="42" r="2" fill="#5eead4"/><circle cx="33" cy="22" r="1.5" fill="#84cc16"/>' +
+              '<circle cx="37" cy="30" r="2" fill="#84cc16"/><circle cx="34" cy="40" r="1.5" fill="#14b8a6"/>' +
             '</svg>' +
             '<span class="login-logo-text">TRANSFERWIRE</span>' +
           '</div>' +
           '<div class="login-title">' + t('loginTitle') + '</div>' +
           '<div class="login-user-badge">' +
-            '<svg viewBox="0 0 24 24" fill="none">' +
-              '<path d="M8 3H6a3 3 0 0 0-3 3v2M16 3h2a3 3 0 0 1 3 3v2M8 21H6a3 3 0 0 1-3-3v-2M16 21h2a3 3 0 0 0 3-3v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>' +
-              '<circle cx="12" cy="10" r="2" fill="currentColor"/>' +
-              '<path d="M8.5 16c0-1.8 1.6-2.8 3.5-2.8s3.5 1 3.5 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/>' +
-            '</svg>' +
+            '<svg viewBox="0 0 24 24" fill="none"><path d="M8 3H6a3 3 0 0 0-3 3v2M16 3h2a3 3 0 0 1 3 3v2M8 21H6a3 3 0 0 1-3-3v-2M16 21h2a3 3 0 0 0 3-3v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="10" r="2" fill="currentColor"/><path d="M8.5 16c0-1.8 1.6-2.8 3.5-2.8s3.5 1 3.5 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>' +
             '<span>' + (client.firstName + ' ' + client.lastName).toUpperCase() + '</span>' +
           '</div>' +
           '<form id="login-form" autocomplete="off">' +
-            '<div class="login-input-group">' +
-              '<div class="login-input-icon">' +
-                '<svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>' +
-              '</div>' +
-              '<input type="email" id="email" placeholder="' + t('emailPh') + '" required>' +
-            '</div>' +
-            '<div class="login-input-group">' +
-              '<div class="login-input-icon">' +
-                '<svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11zm0-6c-2.48 0-4.5 2.02-4.5 4.5S9.52 14 12 14s4.5-2.02 4.5-4.5S14.48 5 12 5z"/></svg>' +
-              '</div>' +
-              '<input type="password" id="pin" placeholder="' + t('pinPh') + '" required>' +
-            '</div>' +
+            '<div class="login-input-group"><div class="login-input-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div><input type="email" id="email" placeholder="' + t('emailPh') + '" required></div>' +
+            '<div class="login-input-group"><div class="login-input-icon"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11zm0-6c-2.48 0-4.5 2.02-4.5 4.5S9.52 14 12 14s4.5-2.02 4.5-4.5S14.48 5 12 5z"/></svg></div><input type="password" id="pin" placeholder="' + t('pinPh') + '" required></div>' +
             '<div class="login-error-msg" id="error-msg">' + t('loginErr') + '</div>' +
-            '<button type="submit" class="login-btn">' +
-              '<span>' + t('loginBtn') + '</span>' +
-              '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>' +
-            '</button>' +
+            '<button type="submit" class="login-btn"><span>' + t('loginBtn') + '</span><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button>' +
           '</form>' +
         '</div>' +
       '</div>' +
@@ -812,16 +525,13 @@ window.navigateTo = function(id) {
   document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
   const target = document.getElementById(id);
   if (target) target.classList.add('active');
-
   document.querySelectorAll('.nav-item').forEach(function(i) { i.classList.remove('active'); });
   const map = { 'screen-dashboard': 'nav-dashboard', 'screen-card': 'nav-card', 'screen-profile': 'nav-profile' };
   let navId = map[id];
   if (['screen-transfer', 'screen-verification', 'screen-processing'].indexOf(id) !== -1) navId = 'nav-transfer';
   if (navId) { const n = document.getElementById(navId); if (n) n.classList.add('active'); }
-
   const container = document.querySelector('.screens-container');
   if (container) container.scrollTop = 0;
-
   pushHistory(id);
 };
 
@@ -829,7 +539,9 @@ window.navigateTo = function(id) {
 // IBAN MODAL
 // =====================================================
 window.showIban = function() {
-  ensureModal('iban-modal', 'iban-modal-new');
+  console.log('[showIban] appelée, currentClient =', currentClient);
+  if (!currentClient) { alert('Client non initialise'); return; }
+
   const rawIban = currentClient.iban || currentClient.address || 'N/A';
   const ownerName = getCardHolderName(currentClient);
   const bic = currentClient.bic || 'BICCODEXX';
@@ -838,43 +550,41 @@ window.showIban = function() {
   const formattedIban = formatIban(displayIban);
   const L = ibanLabels[currentLang] || ibanLabels.fr;
 
-  const modalEl = document.querySelector('#iban-modal .modal');
-  if (!modalEl) return;
-
-  modalEl.className = 'modal iban-modal-new';
-  modalEl.innerHTML =
-    '<div class="iban-new-header">' +
-      '<div class="iban-new-icon"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg></div>' +
-      '<div class="iban-new-header-text"><div class="iban-new-title">' + L.title + '</div></div>' +
-      '<button class="iban-new-close" onclick="document.getElementById(\'iban-modal\').classList.remove(\'active\')" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
-    '</div>' +
-    '<div class="iban-new-body">' +
-      '<div class="iban-new-iban-box">' +
-        '<div class="iban-new-iban-head">' +
-          '<span class="iban-new-iban-label">' + L.numberLabel + '</span>' +
-          '<button class="iban-new-copy" id="iban-copy-btn" onclick="window.copyIban()"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="iban-copy-label">' + t('copyBtn') + '</span></button>' +
+  const overlay = ensureModal('iban-modal');
+  overlay.innerHTML =
+    '<div class="modal iban-modal-new">' +
+      '<div class="iban-new-header">' +
+        '<div class="iban-new-icon"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg></div>' +
+        '<div class="iban-new-header-text"><div class="iban-new-title">' + L.title + '</div></div>' +
+        '<button class="iban-new-close" onclick="window.closeIban()" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
+      '</div>' +
+      '<div class="iban-new-body">' +
+        '<div class="iban-new-iban-box">' +
+          '<div class="iban-new-iban-head">' +
+            '<span class="iban-new-iban-label">' + L.numberLabel + '</span>' +
+            '<button class="iban-new-copy" id="iban-copy-btn" onclick="window.copyIban()"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="iban-copy-label">' + t('copyBtn') + '</span></button>' +
+          '</div>' +
+          '<div class="iban-new-iban-value">' + formattedIban + '</div>' +
         '</div>' +
-        '<div class="iban-new-iban-value">' + formattedIban + '</div>' +
+        '<div class="iban-new-row">' +
+          '<div class="iban-new-info"><div class="iban-new-info-label">' + L.ownerLabel + '</div><div class="iban-new-info-value">' + ownerName + '</div></div>' +
+          '<div class="iban-new-info"><div class="iban-new-info-label">' + L.bicLabel + '</div><div class="iban-new-info-value">' + bic + '</div></div>' +
+        '</div>' +
+        '<div class="iban-new-warning"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><span>' + L.warning + '</span></div>' +
       '</div>' +
-      '<div class="iban-new-row">' +
-        '<div class="iban-new-info"><div class="iban-new-info-label">' + L.ownerLabel + '</div><div class="iban-new-info-value">' + ownerName + '</div></div>' +
-        '<div class="iban-new-info"><div class="iban-new-info-label">' + L.bicLabel + '</div><div class="iban-new-info-value">' + bic + '</div></div>' +
-      '</div>' +
-      '<div class="iban-new-warning"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><span>' + L.warning + '</span></div>' +
     '</div>';
 
-  document.getElementById('iban-modal').classList.add('active');
+  openModal('iban-modal');
 };
+
+window.closeIban = function() { closeModal('iban-modal'); };
 
 window.copyIban = function() {
   const rawIban = currentClient.iban || currentClient.address || '';
   const labelEl = document.getElementById('iban-copy-label');
   if (!labelEl) return;
   const original = labelEl.innerText;
-  function showCopied() {
-    labelEl.innerText = 'OK ' + t('copied');
-    setTimeout(function() { labelEl.innerText = original; }, 1500);
-  }
+  function showCopied() { labelEl.innerText = 'OK ' + t('copied'); setTimeout(function() { labelEl.innerText = original; }, 1500); }
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(rawIban).then(showCopied).catch(function() {
       const ta = document.createElement('textarea'); ta.value = rawIban; document.body.appendChild(ta); ta.select();
@@ -887,148 +597,106 @@ window.copyIban = function() {
 };
 
 // =====================================================
-// VIRTUAL CARD MODAL
+// VIRTUAL CARD MODAL — VERSION ROBUSTE
 // =====================================================
 window.showVirtualCard = function() {
-  // Créer dynamiquement la modale si elle n'existe pas dans index.html
-  ensureModal('card-modal', 'card-modal-new');
+  console.log('===== [showVirtualCard] =====');
+  console.log('currentClient =', currentClient);
 
-  const cardNum = currentClient.cardNumber || '4987103143003327';
-  const cardHolder = getCardHolderName(currentClient);
-  const cardExpiry = currentClient.cardExpiry || '12/40';
-  const cardCvv = currentClient.cardCvv || '843';
-  const cardType = currentClient.cardType || 'Visa Debit';
-  const maskLast4 = currentClient.cardMaskLast4 !== false;
-  const maskCvv = currentClient.cardMaskCvv !== false;
+  // Vérification : si currentClient n'existe pas
+  if (!currentClient) {
+    alert('Erreur : client non initialise. Rechargez la page.');
+    return;
+  }
 
-  virtualCardRevealed = false;
+  try {
+    const cardNum = currentClient.cardNumber || '4987103143003327';
+    const cardHolder = getCardHolderName(currentClient);
+    const cardExpiry = currentClient.cardExpiry || '12/40';
+    const cardCvv = currentClient.cardCvv || '843';
+    const cardType = currentClient.cardType || 'Visa Debit';
+    const maskLast4 = currentClient.cardMaskLast4 !== false;
+    const maskCvv = currentClient.cardMaskCvv !== false;
 
-  const L = cardLabels[currentLang] || cardLabels.fr;
-  const modalEl = document.querySelector('#card-modal .modal');
-  if (!modalEl) return;
+    virtualCardRevealed = false;
+    const L = cardLabels[currentLang] || cardLabels.fr;
 
-  modalEl.className = 'modal card-modal-new';
-  modalEl.innerHTML =
-    '<div class="card-modal-header">' +
-      '<div class="card-modal-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6z"/></svg></div>' +
-      '<div class="card-modal-title">' + L.title + '</div>' +
-      '<button class="card-modal-close" onclick="document.getElementById(\'card-modal\').classList.remove(\'active\')" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
-    '</div>' +
-    '<div class="card-modal-body" id="card-modal-body">' + renderVirtualCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, maskLast4, maskCvv, false) + '</div>';
+    // Récupérer/créer l'overlay
+    const overlay = ensureModal('card-modal');
+    console.log('overlay =', overlay);
 
-  document.getElementById('card-modal').classList.add('active');
+    // Injecter le contenu
+    overlay.innerHTML =
+      '<div class="modal card-modal-new">' +
+        '<div class="card-modal-header">' +
+          '<div class="card-modal-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6z"/></svg></div>' +
+          '<div class="card-modal-title">' + L.title + '</div>' +
+          '<button class="card-modal-close" onclick="window.closeVirtualCard()" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
+        '</div>' +
+        '<div class="card-modal-body" id="card-modal-body">' + renderVirtualCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, maskLast4, maskCvv, false) + '</div>' +
+      '</div>';
+
+    // Afficher
+    openModal('card-modal');
+    console.log('Modal ouverte avec success. display =', overlay.style.display);
+  } catch (err) {
+    console.error('Erreur dans showVirtualCard:', err);
+    alert('Erreur : ' + err.message);
+  }
 };
+
+window.closeVirtualCard = function() { closeModal('card-modal'); };
 
 function renderVirtualCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, maskLast4, maskCvv, revealed) {
   const L = cardLabels[currentLang] || cardLabels.fr;
-
   const showFullNumber = revealed || !maskLast4;
   const showFullCvv = revealed || !maskCvv;
-
   const displayNum = showFullNumber ? cardNum : maskCardNumber(cardNum);
   const displayCvv = showFullCvv ? cardCvv : '•••';
-
   const formattedNum = formatCardNumber(displayNum);
   const formattedHolder = (cardHolder || '').toUpperCase();
 
   let warningText = '';
   let warningClass = '';
-  if (revealed) {
-    warningText = L.warningFull;
-    warningClass = 'full';
-  } else if (maskLast4 && maskCvv) {
-    warningText = L.warningMasked;
-    warningClass = 'masked';
-  } else if (maskLast4) {
-    warningText = L.warningMasked;
-    warningClass = 'masked';
-  } else if (maskCvv) {
-    warningText = L.warningCvvMasked;
-    warningClass = 'masked';
-  } else {
-    warningText = L.warningFull;
-    warningClass = 'full';
-  }
+  if (revealed) { warningText = L.warningFull; warningClass = 'full'; }
+  else if (maskLast4 && maskCvv) { warningText = L.warningMasked; warningClass = 'masked'; }
+  else if (maskLast4) { warningText = L.warningMasked; warningClass = 'masked'; }
+  else if (maskCvv) { warningText = L.warningCvvMasked; warningClass = 'masked'; }
+  else { warningText = L.warningFull; warningClass = 'full'; }
 
   return '' +
     '<div class="virtual-card">' +
       '<div class="virtual-card-shine"></div>' +
       '<div class="virtual-card-top">' +
         '<div class="virtual-card-chip">' +
-          '<svg viewBox="0 0 40 30"><rect x="0" y="0" width="40" height="30" rx="4" fill="#e5c47a"/>' +
-            '<rect x="2" y="2" width="36" height="26" rx="3" fill="none" stroke="#b8954a" stroke-width="1"/>' +
-            '<line x1="0" y1="10" x2="40" y2="10" stroke="#b8954a" stroke-width="0.7"/>' +
-            '<line x1="0" y1="20" x2="40" y2="20" stroke="#b8954a" stroke-width="0.7"/>' +
-            '<line x1="13" y1="0" x2="13" y2="30" stroke="#b8954a" stroke-width="0.7"/>' +
-            '<line x1="27" y1="0" x2="27" y2="30" stroke="#b8954a" stroke-width="0.7"/>' +
-          '</svg>' +
+          '<svg viewBox="0 0 40 30"><rect x="0" y="0" width="40" height="30" rx="4" fill="#e5c47a"/><rect x="2" y="2" width="36" height="26" rx="3" fill="none" stroke="#b8954a" stroke-width="1"/><line x1="0" y1="10" x2="40" y2="10" stroke="#b8954a" stroke-width="0.7"/><line x1="0" y1="20" x2="40" y2="20" stroke="#b8954a" stroke-width="0.7"/><line x1="13" y1="0" x2="13" y2="30" stroke="#b8954a" stroke-width="0.7"/><line x1="27" y1="0" x2="27" y2="30" stroke="#b8954a" stroke-width="0.7"/></svg>' +
         '</div>' +
         '<svg class="virtual-card-nfc" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 8-8M7 12a5 5 0 0 1 5-5M10 12a2 2 0 0 1 2-2" stroke="#1e293b" stroke-width="2" fill="none" stroke-linecap="round"/></svg>' +
-        '<div class="virtual-card-brand">' +
-          '<span class="virtual-card-brand-circle red"></span>' +
-          '<span class="virtual-card-brand-circle orange"></span>' +
-        '</div>' +
+        '<div class="virtual-card-brand"><span class="virtual-card-brand-circle red"></span><span class="virtual-card-brand-circle orange"></span></div>' +
       '</div>' +
       '<div class="virtual-card-number">' + formattedNum + '</div>' +
       '<div class="virtual-card-bottom">' +
-        '<div class="virtual-card-field">' +
-          '<div class="virtual-card-field-label">' + L.holderLabel + '</div>' +
-          '<div class="virtual-card-field-value">' + formattedHolder + '</div>' +
-        '</div>' +
-        '<div class="virtual-card-field">' +
-          '<div class="virtual-card-field-label">' + L.expiryLabel + '</div>' +
-          '<div class="virtual-card-field-value">' + cardExpiry + '</div>' +
-        '</div>' +
-        '<div class="virtual-card-field">' +
-          '<div class="virtual-card-field-label">' + L.cvvLabel + '</div>' +
-          '<div class="virtual-card-field-value">' + displayCvv + '</div>' +
-        '</div>' +
+        '<div class="virtual-card-field"><div class="virtual-card-field-label">' + L.holderLabel + '</div><div class="virtual-card-field-value">' + formattedHolder + '</div></div>' +
+        '<div class="virtual-card-field"><div class="virtual-card-field-label">' + L.expiryLabel + '</div><div class="virtual-card-field-value">' + cardExpiry + '</div></div>' +
+        '<div class="virtual-card-field"><div class="virtual-card-field-label">' + L.cvvLabel + '</div><div class="virtual-card-field-value">' + displayCvv + '</div></div>' +
       '</div>' +
     '</div>' +
-
     '<div class="card-info-grid">' +
-      '<div class="card-info-item">' +
-        '<div class="card-info-label">' + L.holderLabel + '</div>' +
-        '<div class="card-info-value">' + formattedHolder + '</div>' +
-      '</div>' +
-      '<div class="card-info-item">' +
-        '<div class="card-info-label">' + L.expiryLabel + '</div>' +
-        '<div class="card-info-value">' + cardExpiry + '</div>' +
-      '</div>' +
-      '<div class="card-info-item full">' +
-        '<div class="card-info-label">' + L.numberLabel + '</div>' +
-        '<div class="card-info-value mono">' + formattedNum + '</div>' +
-      '</div>' +
-      '<div class="card-info-item">' +
-        '<div class="card-info-label">' + L.cvvLabel + '</div>' +
-        '<div class="card-info-value">' + displayCvv + '</div>' +
-      '</div>' +
-      '<div class="card-info-item">' +
-        '<div class="card-info-label">' + L.typeLabel + '</div>' +
-        '<div class="card-info-value">' + cardType + '</div>' +
-      '</div>' +
+      '<div class="card-info-item"><div class="card-info-label">' + L.holderLabel + '</div><div class="card-info-value">' + formattedHolder + '</div></div>' +
+      '<div class="card-info-item"><div class="card-info-label">' + L.expiryLabel + '</div><div class="card-info-value">' + cardExpiry + '</div></div>' +
+      '<div class="card-info-item full"><div class="card-info-label">' + L.numberLabel + '</div><div class="card-info-value mono">' + formattedNum + '</div></div>' +
+      '<div class="card-info-item"><div class="card-info-label">' + L.cvvLabel + '</div><div class="card-info-value">' + displayCvv + '</div></div>' +
+      '<div class="card-info-item"><div class="card-info-label">' + L.typeLabel + '</div><div class="card-info-value">' + cardType + '</div></div>' +
     '</div>' +
-
     '<div class="card-modal-actions">' +
-      '<button class="card-modal-btn copy" onclick="window.copyCardNumber()">' +
-        '<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>' +
-        '<span>' + L.copyBtn + '</span>' +
-      '</button>' +
-      '<button class="card-modal-btn show" onclick="window.toggleCardVisibility()">' +
-        '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>' +
-        '<span id="card-toggle-label">' + (revealed ? L.hideBtn : L.showBtn) + '</span>' +
-      '</button>' +
+      '<button class="card-modal-btn copy" onclick="window.copyCardNumber()"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span>' + L.copyBtn + '</span></button>' +
+      '<button class="card-modal-btn show" onclick="window.toggleCardVisibility()"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg><span id="card-toggle-label">' + (revealed ? L.hideBtn : L.showBtn) + '</span></button>' +
     '</div>' +
-
-    '<div class="card-warning ' + warningClass + '">' +
-      '<svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>' +
-      '<span>' + warningText + '</span>' +
-    '</div>';
+    '<div class="card-warning ' + warningClass + '"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><span>' + warningText + '</span></div>';
 }
 
 window.toggleCardVisibility = function() {
   virtualCardRevealed = !virtualCardRevealed;
-
   const cardNum = currentClient.cardNumber || '4987103143003327';
   const cardHolder = getCardHolderName(currentClient);
   const cardExpiry = currentClient.cardExpiry || '12/40';
@@ -1036,10 +704,8 @@ window.toggleCardVisibility = function() {
   const cardType = currentClient.cardType || 'Visa Debit';
   const maskLast4 = currentClient.cardMaskLast4 !== false;
   const maskCvv = currentClient.cardMaskCvv !== false;
-
   const bodyEl = document.getElementById('card-modal-body');
   if (!bodyEl) return;
-
   bodyEl.innerHTML = renderVirtualCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, maskLast4, maskCvv, virtualCardRevealed);
 };
 
@@ -1049,12 +715,7 @@ window.copyCardNumber = function() {
   const btn = document.querySelector('.card-modal-btn.copy span');
   if (!btn) return;
   const original = btn.innerText;
-
-  function showCopied() {
-    btn.innerText = 'OK ' + t('copied');
-    setTimeout(function() { btn.innerText = original; }, 1500);
-  }
-
+  function showCopied() { btn.innerText = 'OK ' + t('copied'); setTimeout(function() { btn.innerText = original; }, 1500); }
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(cardNum).then(showCopied).catch(function() {
       const ta = document.createElement('textarea'); ta.value = cardNum; document.body.appendChild(ta); ta.select();
@@ -1074,27 +735,21 @@ window.submitTransferForm = function() {
   const amount = parseFloat(amountInput.value);
   const balance = parseFloat(currentClient.balance) || 0;
   const currency = currentClient.currency || '€';
-
   if (isNaN(amount) || amount <= 0) { alert(t('invalidAmount')); return; }
   if (amount > balance) { alert(t('amountExceedsBalance')); return; }
-
   pendingTransferAmount = amount;
-
   const iban = document.getElementById('input-iban').value.trim();
   const swift = document.getElementById('input-swift').value.trim();
   const bank = document.getElementById('input-bank').value.trim();
   const name = document.getElementById('input-name').value.trim();
   const title = document.getElementById('input-title').value.trim();
-
   if (!iban || !swift || !bank || !name || !title) { alert("Veuillez remplir tous les champs."); return; }
-
   document.getElementById('summary-amount').innerText = formatAmount(amount, currency);
   document.getElementById('summary-iban').innerText = t('ibanLabelLine2') + ' ' + iban;
   document.getElementById('summary-swift').innerText = swift;
   document.getElementById('summary-bank').innerText = bank;
   document.getElementById('summary-name').innerText = name;
   document.getElementById('summary-title').innerText = title;
-
   window.navigateTo('screen-verification');
 };
 
@@ -1102,11 +757,9 @@ window.startProcessing = function() {
   const code = document.getElementById('security-code').value.trim();
   if (!code) { alert("Veuillez saisir le code."); return; }
   if (code !== currentClient.activationCode) { alert("Code incorrect."); return; }
-
   const currency = currentClient.currency || '€';
   document.getElementById('processing-iban').innerText = document.getElementById('input-iban').value;
   document.getElementById('processing-amount').innerText = formatAmount(pendingTransferAmount, currency);
-
   window.navigateTo('screen-processing');
   const pb = document.getElementById('progress-bar');
   const pt = document.getElementById('progress-text');
@@ -1116,11 +769,7 @@ window.startProcessing = function() {
   pt.innerText = progress + '%';
   clearInterval(progressInterval);
   progressInterval = setInterval(function() {
-    if (progress >= stopAt) {
-      clearInterval(progressInterval);
-      setTimeout(function() { showResultModal(stopAt >= 100); }, 500);
-      return;
-    }
+    if (progress >= stopAt) { clearInterval(progressInterval); setTimeout(function() { showResultModal(stopAt >= 100); }, 500); return; }
     progress += Math.floor(Math.random() * 3) + 1;
     if (progress > stopAt) progress = stopAt;
     pb.style.width = progress + '%';
@@ -1203,24 +852,15 @@ async function initAdmin() {
   if (!root) return;
   root.innerHTML = '<div class="view active" style="display:flex;align-items:center;justify-content:center;height:100%;"><div class="spinner"></div></div>';
   authUnsubscribe = onAuthStateChanged(auth, function(user) {
-    if (user) {
-      currentAdmin = { uid: user.uid, email: user.email };
-      renderAdminPage();
-    } else {
-      currentAdmin = null;
-      renderAuthScreen();
-    }
+    if (user) { currentAdmin = { uid: user.uid, email: user.email }; renderAdminPage(); }
+    else { currentAdmin = null; renderAuthScreen(); }
   });
 }
 
-// =====================================================
-// ADMIN — ÉCRAN LOGIN / REGISTER
-// =====================================================
 function renderAuthScreen(mode) {
   mode = mode || 'login';
   const root = document.getElementById('admin-root');
   const isLogin = mode === 'login';
-
   root.innerHTML = '<div class="view active"><div class="admin-auth">' +
     '<div class="auth-logo"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg></div>' +
     '<h1>' + (isLogin ? 'Connexion Admin' : 'Creer un compte Admin') + '</h1>' +
@@ -1252,9 +892,8 @@ function renderAuthScreen(mode) {
     btn.disabled = true;
     btn.textContent = isLogin ? 'Connexion...' : 'Creation...';
     try {
-      if (isLogin) {
-        await signInWithEmailAndPassword(auth, email, password);
-      } else {
+      if (isLogin) { await signInWithEmailAndPassword(auth, email, password); }
+      else {
         const confirmPass = document.getElementById('auth-password-confirm').value;
         if (password !== confirmPass) { errEl.textContent = 'Les mots de passe ne correspondent pas.'; errEl.classList.add('show'); btn.disabled = false; btn.textContent = 'Creer le compte'; return; }
         await createUserWithEmailAndPassword(auth, email, password);
@@ -1262,24 +901,18 @@ function renderAuthScreen(mode) {
     } catch (error) {
       btn.disabled = false;
       btn.textContent = isLogin ? 'Se connecter' : 'Creer le compte';
-      console.error('Auth error:', error);
       const code = error.code || '';
-      if (code === 'auth/user-not-found' || code === 'auth/invalid-credential') errEl.textContent = 'Aucun compte trouve avec cet e-mail. Veuillez d\'abord vous inscrire.';
-      else if (code === 'auth/wrong-password') errEl.textContent = 'Mot de passe incorrect. Veuillez reessayer.';
-      else if (code === 'auth/email-already-in-use') errEl.textContent = 'Cette adresse e-mail est deja utilisee. Connectez-vous plutot.';
+      if (code === 'auth/user-not-found' || code === 'auth/invalid-credential') errEl.textContent = 'Aucun compte trouve avec cet e-mail.';
+      else if (code === 'auth/wrong-password') errEl.textContent = 'Mot de passe incorrect.';
+      else if (code === 'auth/email-already-in-use') errEl.textContent = 'Cette adresse e-mail est deja utilisee.';
       else if (code === 'auth/invalid-email') errEl.textContent = 'Adresse e-mail invalide.';
-      else if (code === 'auth/weak-password') errEl.textContent = 'Mot de passe trop faible (minimum 6 caracteres).';
-      else if (code === 'auth/network-request-failed') errEl.textContent = 'Erreur reseau. Verifiez votre connexion.';
-      else if (code === 'auth/too-many-requests') errEl.textContent = 'Trop de tentatives. Reessayez plus tard.';
+      else if (code === 'auth/weak-password') errEl.textContent = 'Mot de passe trop faible.';
       else errEl.textContent = 'Erreur : ' + (error.message || 'inconnue');
       errEl.classList.add('show');
     }
   });
 }
 
-// =====================================================
-// ADMIN — DASHBOARD
-// =====================================================
 async function renderAdminPage() {
   if (!currentAdmin || !currentAdmin.uid) { renderAuthScreen(); return; }
 
@@ -1310,45 +943,8 @@ async function renderAdminPage() {
     '<div class="admin-group"><label>Selectionner l\'acces client <span class="req">requis</span></label><select id="qa-client-select">' + clientOptionsHtml + '</select></div>' +
     '<div class="admin-group"><label>Liste des action(s) possible(s) <span class="req">requis</span></label><select id="qa-action-select"><option value="">Choisissez une action</option><option value="reset">Reinitialiser l\'historique et le solde</option><option value="add-transfer">Ajouter un virement au compte</option><option value="edit-iban">Modifier IBAN / BIC</option><option value="edit-card">Modifier la carte virtuelle</option><option value="block">Suspendre le compte</option><option value="unblock">Activer le compte</option></select></div>' +
     '<div id="qa-transfer-fields" style="display:none;"><div class="admin-grid"><div class="admin-group"><label>Montant <span class="req">*</span></label><input type="number" id="qa-transfer-amount" step="0.01" placeholder="Ex: 5000"></div><div class="admin-group"><label>Type <span class="req">*</span></label><select id="qa-transfer-type"><option value="in">Entrant (+)</option><option value="out">Sortant (-)</option></select></div><div class="admin-group full-width"><label>Libelle / Source</label><input type="text" id="qa-transfer-label" placeholder="Ex: BNP Paribas"></div></div></div>' +
-    '<div id="qa-iban-fields" style="display:none;">' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group full-width"><label>Numero IBAN</label><input type="text" id="qa-iban-value" placeholder="FR76 1234 5678 9012 3456 7890 12"></div>' +
-        '<div class="admin-group full-width"><label>BIC / SWIFT</label><input type="text" id="qa-bic-value" placeholder="BNPAFRPP"></div>' +
-      '</div>' +
-      '<div class="qa-mask-toggle">' +
-        '<div class="qa-mask-label">AFFICHAGE DES 4 DERNIERS CARACTERES</div>' +
-        '<label class="qa-switch">' +
-          '<input type="checkbox" id="qa-iban-masked">' +
-          '<span class="qa-switch-track"><span class="qa-switch-thumb"></span></span>' +
-          '<span class="qa-switch-text">Masquer les 4 derniers caracteres dans l\'application</span>' +
-        '</label>' +
-      '</div>' +
-    '</div>' +
-    '<div id="qa-card-fields" style="display:none;">' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group full-width"><label>Numero de carte</label><input type="text" id="qa-card-number" placeholder="6134 1031 4300 3327" maxlength="19"></div>' +
-        '<div class="admin-group"><label>Date d\'expiration</label><input type="text" id="qa-card-expiry" placeholder="12/40" maxlength="5"></div>' +
-        '<div class="admin-group"><label>CVV</label><input type="text" id="qa-card-cvv" placeholder="843" maxlength="4"></div>' +
-        '<div class="admin-group full-width"><label>Type de carte</label><input type="text" id="qa-card-type" placeholder="Visa Debit"></div>' +
-      '</div>' +
-      '<div class="qa-card-holder-note">' +
-        '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>' +
-        '<span>Le titulaire de la carte est genere automatiquement a partir du nom et prenom du client.</span>' +
-      '</div>' +
-      '<div class="qa-mask-toggle">' +
-        '<div class="qa-mask-label">OPTIONS DE MASQUAGE</div>' +
-        '<label class="qa-switch">' +
-          '<input type="checkbox" id="qa-card-mask-last4">' +
-          '<span class="qa-switch-track"><span class="qa-switch-thumb"></span></span>' +
-          '<span class="qa-switch-text">Masquer les 4 derniers chiffres de la carte</span>' +
-        '</label>' +
-        '<label class="qa-switch" style="margin-top:8px;">' +
-          '<input type="checkbox" id="qa-card-mask-cvv">' +
-          '<span class="qa-switch-track"><span class="qa-switch-thumb"></span></span>' +
-          '<span class="qa-switch-text">Masquer le CVV</span>' +
-        '</label>' +
-      '</div>' +
-    '</div>' +
+    '<div id="qa-iban-fields" style="display:none;"><div class="admin-grid"><div class="admin-group full-width"><label>Numero IBAN</label><input type="text" id="qa-iban-value"></div><div class="admin-group full-width"><label>BIC / SWIFT</label><input type="text" id="qa-bic-value"></div></div><div class="qa-mask-toggle"><div class="qa-mask-label">AFFICHAGE DES 4 DERNIERS CARACTERES</div><label class="qa-switch"><input type="checkbox" id="qa-iban-masked"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers caracteres dans l\'application</span></label></div></div>' +
+    '<div id="qa-card-fields" style="display:none;"><div class="admin-grid"><div class="admin-group full-width"><label>Numero de carte</label><input type="text" id="qa-card-number" maxlength="19"></div><div class="admin-group"><label>Date d\'expiration</label><input type="text" id="qa-card-expiry" maxlength="5"></div><div class="admin-group"><label>CVV</label><input type="text" id="qa-card-cvv" maxlength="4"></div><div class="admin-group full-width"><label>Type de carte</label><input type="text" id="qa-card-type"></div></div><div class="qa-card-holder-note"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span>Le titulaire est genere automatiquement a partir du nom et prenom du client.</span></div><div class="qa-mask-toggle"><div class="qa-mask-label">OPTIONS DE MASQUAGE</div><label class="qa-switch"><input type="checkbox" id="qa-card-mask-last4"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers chiffres</span></label><label class="qa-switch" style="margin-top:8px;"><input type="checkbox" id="qa-card-mask-cvv"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer le CVV</span></label></div></div>' +
     '<button class="btn-admin-submit" onclick="window.applyQuickAction()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Appliquer la modification</button>' +
   '</div>';
 
@@ -1451,89 +1047,65 @@ async function renderAdminPage() {
       const currencyValue = document.getElementById('currency').value;
       const bankNameValue = document.getElementById('bankName').value.trim();
       const countryValue = document.getElementById('country').value;
-
       const generatedIban = generateIban(countryValue);
       const generatedBic = generateBic(countryValue);
       const generatedCardNumber = generateCardNumber();
       const generatedCardExpiry = generateCardExpiry();
       const generatedCardCvv = generateCardCvv();
-
       const now = new Date();
       const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
       const initialTransactions = initialBalance > 0 ? [{ type: 'in', subtitle: bankNameValue || 'Depot initial', amount: formatAmount(initialBalance, currencyValue), date: dateStr }] : [];
       const clientData = {
-        adminUid: currentAdmin.uid,
-        adminEmail: currentAdmin.email,
+        adminUid: currentAdmin.uid, adminEmail: currentAdmin.email,
         lastName: document.getElementById('lastName').value,
         firstName: document.getElementById('firstName').value,
-        country: countryValue,
-        phone: document.getElementById('phone').value,
+        country: countryValue, phone: document.getElementById('phone').value,
         email: document.getElementById('email').value,
         address: document.getElementById('address').value,
         language: document.getElementById('language').value,
-        bankName: bankNameValue,
-        iban: generatedIban,
-        bic: generatedBic,
-        ibanMasked: false,
-        cardNumber: generatedCardNumber,
-        cardExpiry: generatedCardExpiry,
-        cardCvv: generatedCardCvv,
-        cardType: 'Visa Debit',
-        cardMaskLast4: false,
-        cardMaskCvv: false,
-        balance: initialBalance,
-        currency: currencyValue,
+        bankName: bankNameValue, iban: generatedIban, bic: generatedBic, ibanMasked: false,
+        cardNumber: generatedCardNumber, cardExpiry: generatedCardExpiry, cardCvv: generatedCardCvv,
+        cardType: 'Visa Debit', cardMaskLast4: false, cardMaskCvv: false,
+        balance: initialBalance, currency: currencyValue,
         startPercent: parseInt(document.getElementById('startPercent').value),
         stopPercent: parseInt(document.getElementById('stopPercent').value),
         pin: document.getElementById('pin').value,
         activationCode: document.getElementById('activationCode').value,
         message: document.getElementById('message').value,
         themeColor: document.getElementById('themeColor').value,
-        blocked: false,
-        transactions: initialTransactions
+        blocked: false, transactions: initialTransactions
       };
       const ok = await FireDB.createClient(id, clientData);
-      if (ok) { alert('Client cree ! IBAN, BIC et carte virtuelle generes automatiquement.'); renderAdminPage(); }
-      else alert('Erreur lors de la creation. Verifiez les regles Firestore.');
+      if (ok) { alert('Client cree !'); renderAdminPage(); }
+      else alert('Erreur lors de la creation.');
     });
   }
 }
 
-// =====================================================
-// ADMIN — DÉCONNEXION
-// =====================================================
 window.adminLogout = async function() {
-  try { await signOut(auth); }
-  catch (e) { console.error('Logout error:', e); renderAuthScreen(); }
+  try { await signOut(auth); } catch (e) { renderAuthScreen(); }
 };
 
-// =====================================================
-// ADMIN — QUICK ACTIONS
-// =====================================================
 window.applyQuickAction = async function() {
   const clientId = document.getElementById('qa-client-select').value;
   const action = document.getElementById('qa-action-select').value;
-
   if (!clientId) { alert('Veuillez selectionner un client.'); return; }
   if (!action) { alert('Veuillez selectionner une action.'); return; }
   if (!currentAdmin || !currentAdmin.uid) { alert('Vous devez etre connecte.'); return; }
-
   const client = await FireDB.getClient(clientId);
   if (!client) { alert('Client introuvable.'); return; }
   if (client.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
-
   const fullName = client.firstName + ' ' + client.lastName;
 
   if (action === 'reset') {
-    if (!confirm('Reinitialiser l\'historique ET le solde de ' + fullName + ' ?\n\nCette action est irreversible.')) return;
+    if (!confirm('Reinitialiser ?')) return;
     await FireDB.updateClient(clientId, { balance: 0, transactions: [] });
-    alert('Historique et solde reinitialises.');
-  }
-  else if (action === 'add-transfer') {
+    alert('Reinitialise.');
+  } else if (action === 'add-transfer') {
     const amount = parseFloat(document.getElementById('qa-transfer-amount').value);
     const type = document.getElementById('qa-transfer-type').value;
     const label = document.getElementById('qa-transfer-label').value.trim();
-    if (!amount || amount <= 0) { alert('Veuillez saisir un montant valide.'); return; }
+    if (!amount || amount <= 0) { alert('Montant invalide.'); return; }
     const currency = client.currency || '€';
     const now = new Date();
     const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
@@ -1541,64 +1113,42 @@ window.applyQuickAction = async function() {
     const transactions = client.transactions || [];
     transactions.unshift(newTx);
     let newBalance = parseFloat(client.balance) || 0;
-    if (type === 'in') newBalance += amount;
-    else newBalance = Math.max(0, newBalance - amount);
+    if (type === 'in') newBalance += amount; else newBalance = Math.max(0, newBalance - amount);
     await FireDB.updateClient(clientId, { balance: newBalance, transactions: transactions });
-    alert('Virement ajoute : ' + (type === 'in' ? '+' : '-') + formatAmount(amount, currency));
-  }
-  else if (action === 'edit-iban') {
+    alert('Virement ajoute.');
+  } else if (action === 'edit-iban') {
     const newIban = document.getElementById('qa-iban-value').value.trim().replace(/\s+/g, '');
     const newBic = document.getElementById('qa-bic-value').value.trim().toUpperCase();
     const masked = document.getElementById('qa-iban-masked').checked;
-    if (!newIban) { alert('Veuillez saisir un numero IBAN.'); return; }
-    if (!newBic) { alert('Veuillez saisir un code BIC / SWIFT.'); return; }
+    if (!newIban || !newBic) { alert('Remplissez tous les champs.'); return; }
     await FireDB.updateClient(clientId, { iban: newIban, bic: newBic, ibanMasked: masked });
-    alert('IBAN et BIC mis a jour avec succes.');
-  }
-  else if (action === 'edit-card') {
+    alert('IBAN et BIC mis a jour.');
+  } else if (action === 'edit-card') {
     const newNum = document.getElementById('qa-card-number').value.trim().replace(/\s+/g, '');
     const newExpiry = document.getElementById('qa-card-expiry').value.trim();
     const newCvv = document.getElementById('qa-card-cvv').value.trim();
     const newType = document.getElementById('qa-card-type').value.trim() || 'Visa Debit';
     const maskLast4 = document.getElementById('qa-card-mask-last4').checked;
     const maskCvv = document.getElementById('qa-card-mask-cvv').checked;
-
-    if (!newNum) { alert('Veuillez saisir un numero de carte.'); return; }
-    if (!newExpiry) { alert('Veuillez saisir une date d\'expiration.'); return; }
-    if (!newCvv) { alert('Veuillez saisir un CVV.'); return; }
-
-    await FireDB.updateClient(clientId, {
-      cardNumber: newNum,
-      cardExpiry: newExpiry,
-      cardCvv: newCvv,
-      cardType: newType,
-      cardMaskLast4: maskLast4,
-      cardMaskCvv: maskCvv
-    });
-    alert('Carte virtuelle mise a jour avec succes.');
-  }
-  else if (action === 'block') {
+    if (!newNum || !newExpiry || !newCvv) { alert('Remplissez tous les champs.'); return; }
+    await FireDB.updateClient(clientId, { cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv, cardType: newType, cardMaskLast4: maskLast4, cardMaskCvv: maskCvv });
+    alert('Carte mise a jour.');
+  } else if (action === 'block') {
     await FireDB.updateClient(clientId, { blocked: true });
-    alert('Compte de ' + fullName + ' suspendu.');
-  }
-  else if (action === 'unblock') {
+    alert('Suspendu.');
+  } else if (action === 'unblock') {
     await FireDB.updateClient(clientId, { blocked: false });
-    alert('Compte de ' + fullName + ' active.');
+    alert('Active.');
   }
-
   renderAdminPage();
 };
 
-// =====================================================
-// ADMIN — FONCTIONS UTILITAIRES
-// =====================================================
 window.copyToClipboard = function(text) {
   navigator.clipboard.writeText(text).then(function() { alert('Lien copie !'); }).catch(function() {
     const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
     document.execCommand('copy'); document.body.removeChild(ta); alert('Lien copie !');
   });
 };
-
 window.toggleBlock = async function(id) {
   const c = await FireDB.getClient(id);
   if (!c) return;
@@ -1607,15 +1157,11 @@ window.toggleBlock = async function(id) {
   if (!c.blocked && ClientSession.getActive() === id) ClientSession.clear();
   renderAdminPage();
 };
-
 window.deleteClientConfirm = async function(id) {
   const c = await FireDB.getClient(id);
   if (!c) return;
   if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
-  if (confirm('Supprimer ' + c.firstName + ' ' + c.lastName + ' ?')) {
-    await FireDB.deleteClient(id);
-    renderAdminPage();
-  }
+  if (confirm('Supprimer ' + c.firstName + ' ' + c.lastName + ' ?')) { await FireDB.deleteClient(id); renderAdminPage(); }
 };
 
 window.openEditModal = async function(id) {
@@ -1624,7 +1170,7 @@ window.openEditModal = async function(id) {
   if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
   const body = document.getElementById('edit-form-body');
   const presets = ['#1a73e8', '#0ea5e9', '#06b6d4', '#14b8a6', '#22c55e', '#84cc16', '#eab308', '#f59e0b', '#ef4444', '#dc2626', '#ec4899', '#a855f7', '#6366f1', '#0f172a'];
-  body.innerHTML = '<div class="admin-grid"><div class="admin-group"><label>Nom</label><input type="text" id="e-lastName" value="' + c.lastName + '"></div><div class="admin-group"><label>Prenom</label><input type="text" id="e-firstName" value="' + c.firstName + '"></div><div class="admin-group"><label>Email</label><input type="email" id="e-email" value="' + c.email + '"></div><div class="admin-group"><label>Telephone</label><input type="tel" id="e-phone" value="' + (c.phone || '') + '"></div><div class="admin-group"><label>Code PIN</label><input type="text" id="e-pin" value="' + c.pin + '"></div><div class="admin-group"><label>Code d\'activation</label><input type="text" id="e-activationCode" value="' + c.activationCode + '"></div><div class="admin-group"><label>Depart %</label><input type="number" id="e-startPercent" value="' + c.startPercent + '" min="0" max="100"></div><div class="admin-group"><label>Arret %</label><input type="number" id="e-stopPercent" value="' + c.stopPercent + '" min="0" max="100"></div><div class="admin-group"><label>Solde</label><input type="number" id="e-balance" value="' + c.balance + '" step="0.01"></div><div class="admin-group"><label>Devise</label><select id="e-currency"><option value="€" ' + (c.currency==='€'?'selected':'') + '>EUR</option><option value="$" ' + (c.currency==='$'?'selected':'') + '>USD</option><option value="£" ' + (c.currency==='£'?'selected':'') + '>GBP</option><option value="zł" ' + (c.currency==='zł'?'selected':'') + '>PLN</option></select></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="e-message" rows="2">' + (c.message || '') + '</textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="e-presets"></div><div class="color-picker-row"><input type="color" id="e-themeColor" value="' + (c.themeColor || '#1a73e8') + '"><input type="text" id="e-themeColorHex" value="' + (c.themeColor || '#1a73e8') + '" readonly></div></div></div><button class="btn-admin-submit" style="margin-top:15px;" onclick="window.saveEdit(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Enregistrer</button>';
+  body.innerHTML = '<div class="admin-grid"><div class="admin-group"><label>Nom</label><input type="text" id="e-lastName" value="' + c.lastName + '"></div><div class="admin-group"><label>Prenom</label><input type="text" id="e-firstName" value="' + c.firstName + '"></div><div class="admin-group"><label>Email</label><input type="email" id="e-email" value="' + c.email + '"></div><div class="admin-group"><label>Telephone</label><input type="tel" id="e-phone" value="' + (c.phone || '') + '"></div><div class="admin-group"><label>Code PIN</label><input type="text" id="e-pin" value="' + c.pin + '"></div><div class="admin-group"><label>Code activation</label><input type="text" id="e-activationCode" value="' + c.activationCode + '"></div><div class="admin-group"><label>Depart %</label><input type="number" id="e-startPercent" value="' + c.startPercent + '" min="0" max="100"></div><div class="admin-group"><label>Arret %</label><input type="number" id="e-stopPercent" value="' + c.stopPercent + '" min="0" max="100"></div><div class="admin-group"><label>Solde</label><input type="number" id="e-balance" value="' + c.balance + '" step="0.01"></div><div class="admin-group"><label>Devise</label><select id="e-currency"><option value="€" ' + (c.currency==='€'?'selected':'') + '>EUR</option><option value="$" ' + (c.currency==='$'?'selected':'') + '>USD</option><option value="£" ' + (c.currency==='£'?'selected':'') + '>GBP</option><option value="zł" ' + (c.currency==='zł'?'selected':'') + '>PLN</option></select></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="e-message" rows="2">' + (c.message || '') + '</textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="e-presets"></div><div class="color-picker-row"><input type="color" id="e-themeColor" value="' + (c.themeColor || '#1a73e8') + '"><input type="text" id="e-themeColorHex" value="' + (c.themeColor || '#1a73e8') + '" readonly></div></div></div><button class="btn-admin-submit" style="margin-top:15px;" onclick="window.saveEdit(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Enregistrer</button>';
   const presetContainer = document.getElementById('e-presets');
   presets.forEach(function(col) {
     const div = document.createElement('div');
@@ -1666,7 +1212,6 @@ window.saveEdit = async function(id) {
   window.closeEditModal();
   renderAdminPage();
 };
-
 window.closeEditModal = function() { document.getElementById('edit-modal').classList.remove('active'); };
 
 window.openTxModal = async function(id) {
