@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v24 - Titulaire carte pré-rempli
+// v25 - Liste clients compacte + modale détail
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -650,18 +650,23 @@ async function renderAdminPage() {
     '<button class="btn-admin-submit" onclick="window.applyQuickAction()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Appliquer la modification</button>' +
   '</div>';
 
+  // ✅ NOUVELLE LISTE : une seule ligne par client
   let clientsHtml = '';
   if (list.length === 0) {
     clientsHtml = '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm-7 13c0-2.33 4.67-3.5 7-3.5s7 1.17 7 3.5v1H5v-1z"/></svg><p>Aucun client cree</p></div>';
   } else {
     const sorted = list.sort((a, b) => b.localeCompare(a));
-    const basePath = window.location.pathname.replace(/admin\.html$/, '');
     sorted.forEach(id => {
       const c = clients[id];
-      const link = window.location.origin + basePath + '?id=' + id;
       const balance = formatAmount(parseFloat(c.balance) || 0, c.currency || '€');
-      const txCount = (c.transactions || []).length;
-      clientsHtml += '<div class="client-card ' + (c.blocked ? 'blocked' : '') + '"><div class="cc-header"><div class="cc-name">' + c.firstName + ' ' + c.lastName + '</div><div class="cc-badges"><span class="cc-badge ' + (c.blocked ? 'blocked' : 'active') + '">' + (c.blocked ? 'Suspendu' : 'Actif') + '</span><span class="cc-badge lang">' + (langNames[c.language] || c.language) + '</span></div></div><div class="cc-info"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><strong>' + c.email + '</strong></div><div class="cc-info"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>' + (c.phone || '-') + '</div><div class="cc-info"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg><strong>Solde : ' + balance + '</strong></div><div class="cc-codes"><div class="cc-code"><span>PIN</span>' + c.pin + '</div><div class="cc-code"><span>CODE</span>' + c.activationCode + '</div><div class="cc-code"><span>ARRET</span>' + c.stopPercent + '%</div><div class="cc-code" style="background:' + (c.themeColor || '#1a73e8') + ';color:#fff"><span style="color:rgba(255,255,255,.7)">THEME</span>*</div></div><div class="cc-link"><svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg><a href="' + link + '" target="_blank">' + link + '</a></div><div class="cc-actions"><button class="cc-btn edit" onclick="window.openEditModal(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>Editer</button><button class="cc-btn copy" onclick="window.copyToClipboard(\'' + link + '\')"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>Copier</button><button class="cc-btn tx" onclick="window.openTxModal(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>Tx (' + txCount + ')</button><button class="cc-btn ' + (c.blocked ? 'unblock' : 'block') + '" onclick="window.toggleBlock(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="' + (c.blocked ? 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z' : 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8z') + '"/></svg>' + (c.blocked ? 'Activer' : 'Bloquer') + '</button><button class="cc-btn del" onclick="window.deleteClientConfirm(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>Suppr.</button></div></div>';
+      const blocked = c.blocked === true;
+      clientsHtml +=
+        '<div class="client-line ' + (blocked ? 'blocked' : '') + '">' +
+          '<div class="client-line-name" onclick="window.openClientDetail(\'' + id + '\')">' + c.firstName + ' ' + c.lastName + '</div>' +
+          '<div class="client-line-balance">' + balance + '</div>' +
+          '<button class="client-line-btn ' + (blocked ? 'unblock' : 'block') + '" onclick="window.toggleBlock(\'' + id + '\')">' + (blocked ? 'Activer' : 'Bloquer') + '</button>' +
+          '<button class="client-line-btn del" onclick="window.deleteClientConfirm(\'' + id + '\')">Suppr.</button>' +
+        '</div>';
     });
   }
 
@@ -684,29 +689,22 @@ async function renderAdminPage() {
     document.getElementById('qa-iban-masked').checked = cc.ibanMasked === true;
   };
 
-  // ✅ Titulaire pré-rempli automatiquement avec le nom+prénom si vide
   const fillCardFields = (clientId) => {
     if (!clientId || !clients[clientId]) return;
     const cc = clients[clientId];
-
     let holderValue = (cc.cardHolder && cc.cardHolder.trim()) ? cc.cardHolder : ((cc.firstName || '') + ' ' + (cc.lastName || '')).trim();
     document.getElementById('qa-card-holder').value = holderValue.toUpperCase();
-
     let numValue = cc.cardNumber || '';
     if (!numValue) numValue = generateCardNumber();
     document.getElementById('qa-card-number').value = numValue;
-
     let expValue = cc.cardExpiry || '';
     if (!expValue) expValue = generateCardExpiry();
     document.getElementById('qa-card-expiry').value = expValue;
-
     let cvvValue = cc.cardCvv || '';
     if (!cvvValue) cvvValue = generateCardCvv();
     document.getElementById('qa-card-cvv').value = cvvValue;
-
     let typeValue = cc.cardType || 'Visa Debit';
     document.getElementById('qa-card-type').value = typeValue;
-
     document.getElementById('qa-card-mask-last4').checked = cc.cardMaskLast4 === true;
     document.getElementById('qa-card-mask-cvv').checked = cc.cardMaskCvv === true;
   };
@@ -802,6 +800,125 @@ async function renderAdminPage() {
   }
 }
 
+// ✅ MODALE DETAIL CLIENT (au clic sur le nom)
+window.openClientDetail = async function(id) {
+  if (!currentAdmin || !currentAdmin.uid) return;
+  const c = await FireDB.getClient(id);
+  if (!c) { alert('Client introuvable.'); return; }
+  if (c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
+
+  const old = document.getElementById('client-detail-modal');
+  if (old) old.remove();
+
+  const balance = formatAmount(parseFloat(c.balance) || 0, c.currency || '€');
+  const txCount = (c.transactions || []).length;
+  const basePath = window.location.pathname.replace(/admin\.html$/, '');
+  const clientLink = window.location.origin + basePath + '?id=' + id;
+  const langNames = { pl: 'Polonais', fr: 'Francais', es: 'Espagnol', it: 'Italien', de: 'Allemand' };
+  const cardHolder = getCardHolderName(c);
+
+  const ov = document.createElement('div');
+  ov.id = 'client-detail-modal';
+  ov.style.cssText = 'position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100vh!important;background:rgba(15,23,42,0.75)!important;display:flex!important;justify-content:center!important;align-items:center!important;z-index:2147483647!important;padding:12px!important;box-sizing:border-box!important;overflow-y:auto!important;';
+
+  const row = (label, value, mono) => {
+    return '<div style="display:flex!important;align-items:flex-start!important;gap:8px!important;padding:7px 0!important;border-bottom:1px solid #f1f5f9!important;">' +
+      '<div style="width:110px!important;flex-shrink:0!important;font-size:9.5px!important;font-weight:800!important;color:#64748b!important;text-transform:uppercase!important;letter-spacing:0.3px!important;padding-top:2px!important;">' + label + '</div>' +
+      '<div style="flex:1!important;font-size:12px!important;font-weight:600!important;color:#0f172a!important;word-break:break-word!important;' + (mono ? 'font-family:Courier New,monospace!important;letter-spacing:0.5px!important;' : '') + '">' + (value || '-') + '</div>' +
+    '</div>';
+  };
+
+  const sectionTitle = (title, color) => {
+    return '<div style="font-size:10px!important;font-weight:800!important;color:' + (color || '#1a73e8') + '!important;text-transform:uppercase!important;letter-spacing:0.5px!important;margin:14px 0 6px 0!important;padding-bottom:6px!important;border-bottom:1.5px solid #f1f5f9!important;">' + title + '</div>';
+  };
+
+  ov.innerHTML =
+    '<div style="background:#fff!important;border-radius:16px!important;width:100%!important;max-width:400px!important;max-height:92vh!important;overflow-y:auto!important;box-shadow:0 20px 50px rgba(0,0,0,0.4)!important;display:flex!important;flex-direction:column!important;">' +
+      // Header
+      '<div style="background:linear-gradient(135deg,#1a73e8,#1557b0)!important;padding:16px 18px!important;display:flex!important;align-items:center!important;gap:12px!important;position:sticky!important;top:0!important;z-index:3!important;border-radius:16px 16px 0 0!important;">' +
+        '<div style="width:42px!important;height:42px!important;border-radius:50%!important;background:rgba(255,255,255,0.22)!important;border:1.5px solid rgba(255,255,255,0.35)!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:15px!important;font-weight:800!important;color:#fff!important;flex-shrink:0!important;text-transform:uppercase!important;">' + ((c.firstName || '').charAt(0) + (c.lastName || '').charAt(0)).toUpperCase() + '</div>' +
+        '<div style="flex:1!important;min-width:0!important;">' +
+          '<div style="font-size:15px!important;font-weight:800!important;color:#fff!important;line-height:1.2!important;text-transform:capitalize!important;">' + c.firstName + ' ' + c.lastName + '</div>' +
+          '<div style="font-size:10.5px!important;color:rgba(255,255,255,0.85)!important;margin-top:2px!important;word-break:break-all!important;">' + c.email + '</div>' +
+        '</div>' +
+        '<button onclick="document.getElementById(\'client-detail-modal\').remove()" style="width:30px!important;height:30px!important;border-radius:50%!important;background:rgba(0,0,0,0.28)!important;border:none!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;"><svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#fff!important;"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
+      '</div>' +
+      // Body
+      '<div style="padding:14px 18px 20px 18px!important;background:#fff!important;">' +
+
+        // Statut + Solde
+        '<div style="display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;margin-bottom:8px!important;">' +
+          '<div style="background:' + (c.blocked ? '#fee2e2' : '#dcfce7') + '!important;border-radius:10px!important;padding:10px 12px!important;">' +
+            '<div style="font-size:9px!important;font-weight:800!important;color:' + (c.blocked ? '#991b1b' : '#14532d') + '!important;text-transform:uppercase!important;letter-spacing:0.5px!important;margin-bottom:3px!important;">Statut</div>' +
+            '<div style="font-size:13px!important;font-weight:800!important;color:' + (c.blocked ? '#dc2626' : '#16a34a') + '!important;">' + (c.blocked ? 'Suspendu' : 'Actif') + '</div>' +
+          '</div>' +
+          '<div style="background:#e8f0fe!important;border-radius:10px!important;padding:10px 12px!important;">' +
+            '<div style="font-size:9px!important;font-weight:800!important;color:#1e40af!important;text-transform:uppercase!important;letter-spacing:0.5px!important;margin-bottom:3px!important;">Solde</div>' +
+            '<div style="font-size:13px!important;font-weight:800!important;color:#1a73e8!important;">' + balance + '</div>' +
+          '</div>' +
+        '</div>' +
+
+        sectionTitle('Identite') +
+        row('Nom', c.lastName) +
+        row('Prenom', c.firstName) +
+        row('Pays', c.country) +
+        row('Langue', langNames[c.language] || c.language) +
+
+        sectionTitle('Contact') +
+        row('Email', '<span style="color:#1a73e8!important;">' + c.email + '</span>') +
+        row('Telephone', c.phone) +
+        row('Adresse', c.address) +
+
+        sectionTitle('Securite') +
+        row('Code PIN', c.pin, true) +
+        row('Code activation', c.activationCode, true) +
+
+        sectionTitle('Banque / IBAN') +
+        row('Banque', c.bankName) +
+        row('IBAN', c.iban, true) +
+        row('BIC / SWIFT', c.bic, true) +
+        row('IBAN masque', c.ibanMasked === true ? 'Oui' : 'Non') +
+
+        sectionTitle('Carte virtuelle') +
+        row('Titulaire', cardHolder) +
+        row('Numero', c.cardNumber, true) +
+        row('Expiration', c.cardExpiry) +
+        row('CVV', c.cardCvv, true) +
+        row('Type', c.cardType) +
+        row('Masquer 4 derniers', c.cardMaskLast4 === true ? 'Oui' : 'Non') +
+        row('Masquer CVV', c.cardMaskCvv === true ? 'Oui' : 'Non') +
+
+        sectionTitle('Parametres transfert') +
+        row('Depart %', (c.startPercent || 0) + '%') +
+        row('Arret %', (c.stopPercent || 100) + '%') +
+        row('Message de fin', c.message) +
+        row('Couleur du theme', '<span style="display:inline-block!important;width:14px!important;height:14px!important;border-radius:4px!important;background:' + (c.themeColor || '#1a73e8') + '!important;border:1.5px solid #cbd5e1!important;vertical-align:middle!important;margin-right:6px!important;"></span>' + (c.themeColor || '#1a73e8')) +
+
+        sectionTitle('Historique') +
+        row('Transactions', txCount + ' transaction(s)') +
+
+        sectionTitle('Lien client') +
+        '<div style="background:#f8fafc!important;border:1px dashed #cbd5e1!important;border-radius:8px!important;padding:10px!important;margin-top:6px!important;font-family:Courier New,monospace!important;font-size:10px!important;color:#1a73e8!important;word-break:break-all!important;line-height:1.4!important;">' + clientLink + '</div>' +
+
+        // Actions
+        '<div style="display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin-top:16px!important;">' +
+          '<button onclick="window.copyToClipboard(\'' + clientLink + '\')" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;border:none!important;border-radius:9px!important;padding:11px!important;font-size:12px!important;font-weight:700!important;cursor:pointer!important;background:#e8f0fe!important;color:#1a73e8!important;font-family:inherit!important;">' +
+            '<svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#1a73e8!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>' +
+            'Copier le lien' +
+          '</button>' +
+          '<button onclick="document.getElementById(\'client-detail-modal\').remove(); window.openEditModal(\'' + id + '\')" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;border:none!important;border-radius:9px!important;padding:11px!important;font-size:12px!important;font-weight:700!important;cursor:pointer!important;background:linear-gradient(135deg,#1a73e8,#1557b0)!important;color:#fff!important;font-family:inherit!important;">' +
+            '<svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#fff!important;"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>' +
+            'Modifier' +
+          '</button>' +
+        '</div>' +
+
+      '</div>' +
+    '</div>';
+
+  ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
+  document.body.appendChild(ov);
+};
+
 window.adminLogout = async () => { try { await signOut(auth); } catch (e) { renderAuthScreen(); } };
 
 window.applyQuickAction = async function() {
@@ -848,7 +965,6 @@ window.applyQuickAction = async function() {
     const maskLast4 = document.getElementById('qa-card-mask-last4').checked;
     const maskCvv = document.getElementById('qa-card-mask-cvv').checked;
     if (!newNum || !newExpiry || !newCvv) { alert('Remplissez tous les champs.'); return; }
-    // ✅ Sauvegarde : si le champ est vide, on retombe sur Prenom Nom
     await FireDB.updateClient(clientId, {
       cardHolder: newHolder || ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase(),
       cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv,
