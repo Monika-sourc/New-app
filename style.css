@@ -431,27 +431,53 @@ input, select, textarea { font-family: inherit; }
 }
 .quick-actions-card .btn-admin-submit { margin-top: 4px; }
 
-/* --- Toggle switch --- */
-.qa-toggle-row { margin-top: 4px; }
-.qa-toggle {
+/* --- Toggle switch (masquer IBAN) --- */
+.qa-mask-toggle {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--gray-300);
+}
+.qa-mask-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--gray-700);
+  letter-spacing: 0.3px;
+  margin-bottom: 10px;
+}
+.quick-actions-card .qa-switch {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   cursor: pointer;
   user-select: none;
+  margin-bottom: 0;
+  padding: 8px 10px;
+  background: #fff;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  transition: border-color 0.2s ease;
 }
-.qa-toggle input[type=checkbox] { display: none; }
-.qa-toggle-slider {
+.quick-actions-card .qa-switch:hover {
+  border-color: var(--primary);
+}
+.qa-switch input[type=checkbox] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+.qa-switch-track {
   position: relative;
-  width: 38px;
+  display: inline-block;
+  width: 40px;
   height: 22px;
   background: #cbd5e1;
   border-radius: 22px;
   flex-shrink: 0;
-  transition: background 0.2s ease;
+  transition: background 0.25s ease;
 }
-.qa-toggle-slider::before {
-  content: '';
+.qa-switch-thumb {
   position: absolute;
   top: 2px;
   left: 2px;
@@ -459,20 +485,24 @@ input, select, textarea { font-family: inherit; }
   height: 18px;
   background: #fff;
   border-radius: 50%;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.3);
-  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.35);
+  transition: transform 0.25s ease;
 }
-.qa-toggle input[type=checkbox]:checked + .qa-toggle-slider {
+.qa-switch input[type=checkbox]:checked ~ .qa-switch-track {
   background: var(--primary);
 }
-.qa-toggle input[type=checkbox]:checked + .qa-toggle-slider::before {
-  transform: translateX(16px);
+.qa-switch input[type=checkbox]:checked ~ .qa-switch-track .qa-switch-thumb {
+  transform: translateX(18px);
 }
-.qa-toggle-text {
+.qa-switch-text {
   font-size: 11px;
   color: var(--gray-700);
   font-weight: 600;
   line-height: 1.35;
+  text-transform: none;
+  letter-spacing: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 /* ========== STATS GRID ========== */
@@ -2103,12 +2133,6 @@ input, select, textarea { font-family: inherit; }
   line-height: 1.2;
   letter-spacing: -0.2px;
 }
-.iban-new-subtitle {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.85);
-  margin-top: 2px;
-  font-weight: 500;
-}
 .iban-new-close {
   position: absolute;
   top: 10px;
@@ -2192,10 +2216,11 @@ input, select, textarea { font-family: inherit; }
   color: #fff;
 }
 
+/* 2 colonnes : TITULAIRE / BIC (toujours sur la même ligne) */
 .iban-new-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 12px;
 }
 .iban-new-info {
   background: #f1f5f9;
@@ -2219,46 +2244,6 @@ input, select, textarea { font-family: inherit; }
   line-height: 1.25;
 }
 
-.iban-new-bank {
-  background: #dcfce7;
-  border: 1px solid #bbf7d0;
-  border-radius: 10px;
-  padding: 9px 11px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.iban-new-bank-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 9px;
-  background: #16a34a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 3px 8px rgba(22, 163, 74, 0.3);
-}
-.iban-new-bank-icon svg {
-  width: 15px;
-  height: 15px;
-  fill: #fff;
-}
-.iban-new-bank-label {
-  font-size: 8.5px;
-  font-weight: 700;
-  color: #16a34a;
-  letter-spacing: 1.1px;
-  margin-bottom: 1px;
-  text-transform: uppercase;
-}
-.iban-new-bank-name {
-  font-size: 12px;
-  font-weight: 800;
-  color: #14532d;
-  line-height: 1.2;
-}
-
 .iban-new-warning {
   background: #fef3c7;
   border: 1px solid #fde68a;
@@ -2278,11 +2263,6 @@ input, select, textarea { font-family: inherit; }
   fill: #d97706;
   flex-shrink: 0;
   margin-top: 1px;
-}
-
-@media (max-width: 360px) {
-  .iban-new-row { grid-template-columns: 1fr; }
-  .iban-new-iban-value { font-size: 12px; letter-spacing: 1px; }
 }
 
 @media (max-height: 640px) {
