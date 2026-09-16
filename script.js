@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v21 - Pre-remplissage carte virtuelle admin
+// v22 - Masquage forcé par admin (impossible à révéler)
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -125,11 +125,11 @@ const ibanLabels = {
 };
 
 const cardLabels = {
-  pl: { title: "Karta wirtualna", holderLabel: "POSIADACZ", expiryLabel: "WAZNA DO", cvvLabel: "CVV", numberLabel: "NUMER KARTY", typeLabel: "TYP", copyBtn: "Kopiuj numer", showBtn: "Pokaz", hideBtn: "Ukryj", warningMasked: "Ostatnie 4 cyfry ukryte. Kliknij \"Pokaz\".", warningCvvMasked: "CVV jest ukryty.", warningFull: "Karta w pelni widoczna." },
-  fr: { title: "Carte virtuelle", holderLabel: "TITULAIRE", expiryLabel: "VALABLE JUSQU'AU", cvvLabel: "CVV", numberLabel: "NUMERO DE CARTE", typeLabel: "TYPE", copyBtn: "Copier le numero", showBtn: "Afficher", hideBtn: "Masquer", warningMasked: "Les 4 derniers chiffres sont caches. Cliquez sur \"Afficher\".", warningCvvMasked: "Le CVV est masque.", warningFull: "Carte completement visible." },
-  es: { title: "Tarjeta virtual", holderLabel: "TITULAR", expiryLabel: "VALIDA HASTA", cvvLabel: "CVV", numberLabel: "NUMERO DE TARJETA", typeLabel: "TIPO", copyBtn: "Copiar numero", showBtn: "Mostrar", hideBtn: "Ocultar", warningMasked: "Los ultimos 4 digitos estan ocultos.", warningCvvMasked: "El CVV esta oculto.", warningFull: "Tarjeta completamente visible." },
-  it: { title: "Carta virtuale", holderLabel: "TITOLARE", expiryLabel: "VALIDA FINO AL", cvvLabel: "CVV", numberLabel: "NUMERO CARTA", typeLabel: "TIPO", copyBtn: "Copia numero", showBtn: "Mostra", hideBtn: "Nascondi", warningMasked: "Le ultime 4 cifre sono nascoste.", warningCvvMasked: "Il CVV e nascosto.", warningFull: "Carta completamente visibile." },
-  de: { title: "Virtuelle Karte", holderLabel: "INHABER", expiryLabel: "GULTIG BIS", cvvLabel: "CVV", numberLabel: "KARTENNUMMER", typeLabel: "TYP", copyBtn: "Nummer kopieren", showBtn: "Anzeigen", hideBtn: "Verbergen", warningMasked: "Die letzten 4 Ziffern sind ausgeblendet.", warningCvvMasked: "CVV ist ausgeblendet.", warningFull: "Karte vollstandig sichtbar." }
+  pl: { title: "Karta wirtualna", holderLabel: "POSIADACZ", expiryLabel: "WAZNA DO", cvvLabel: "CVV", numberLabel: "NUMER KARTY", typeLabel: "TYP", copyBtn: "Kopiuj numer", showBtn: "Pokaz", hideBtn: "Ukryj", warningMasked: "Ostatnie 4 cyfry sa ukryte przez administratora.", warningCvvMasked: "CVV jest ukryty przez administratora.", warningFull: "Karta w pelni widoczna.", warningAdminMasked: "Ostatnie 4 cyfry i CVV sa ukryte przez administratora." },
+  fr: { title: "Carte virtuelle", holderLabel: "TITULAIRE", expiryLabel: "VALABLE JUSQU'AU", cvvLabel: "CVV", numberLabel: "NUMERO DE CARTE", typeLabel: "TYPE", copyBtn: "Copier le numero", showBtn: "Afficher", hideBtn: "Masquer", warningMasked: "Les 4 derniers chiffres sont masques par l'administrateur.", warningCvvMasked: "Le CVV est masque par l'administrateur.", warningFull: "Carte completement visible.", warningAdminMasked: "Les 4 derniers chiffres et le CVV sont masques par l'administrateur." },
+  es: { title: "Tarjeta virtual", holderLabel: "TITULAR", expiryLabel: "VALIDA HASTA", cvvLabel: "CVV", numberLabel: "NUMERO DE TARJETA", typeLabel: "TIPO", copyBtn: "Copiar numero", showBtn: "Mostrar", hideBtn: "Ocultar", warningMasked: "Los ultimos 4 digitos estan ocultos por el administrador.", warningCvvMasked: "El CVV esta oculto por el administrador.", warningFull: "Tarjeta completamente visible.", warningAdminMasked: "Los ultimos 4 digitos y el CVV estan ocultos por el administrador." },
+  it: { title: "Carta virtuale", holderLabel: "TITOLARE", expiryLabel: "VALIDA FINO AL", cvvLabel: "CVV", numberLabel: "NUMERO CARTA", typeLabel: "TIPO", copyBtn: "Copia numero", showBtn: "Mostra", hideBtn: "Nascondi", warningMasked: "Le ultime 4 cifre sono nascoste dall'amministratore.", warningCvvMasked: "Il CVV e nascosto dall'amministratore.", warningFull: "Carta completamente visibile.", warningAdminMasked: "Le ultime 4 cifre e il CVV sono nascosti dall'amministratore." },
+  de: { title: "Virtuelle Karte", holderLabel: "INHABER", expiryLabel: "GULTIG BIS", cvvLabel: "CVV", numberLabel: "KARTENNUMMER", typeLabel: "TYP", copyBtn: "Nummer kopieren", showBtn: "Anzeigen", hideBtn: "Verbergen", warningMasked: "Die letzten 4 Ziffern sind vom Administrator ausgeblendet.", warningCvvMasked: "CVV ist vom Administrator ausgeblendet.", warningFull: "Karte vollstandig sichtbar.", warningAdminMasked: "Die letzten 4 Ziffern und der CVV sind vom Administrator ausgeblendet." }
 };
 
 let currentLang = 'fr';
@@ -191,6 +191,19 @@ function subscribeToClient(clientId) {
       currentClient = fresh; currentLang = fresh.language || 'fr'; applyTheme(fresh.themeColor);
       const hero = document.getElementById('balance-hero'); if (hero) hero.innerHTML = renderBalanceHero(fresh);
       const list = document.getElementById('transaction-list'); if (list) list.innerHTML = renderTransactions(fresh.transactions);
+      // Si la modale carte est ouverte, on la re-render avec les nouvelles données admin
+      const cardBody = document.getElementById('card-modal-body-content');
+      if (cardBody) {
+        virtualCardRevealed = false; // reset le toggle client
+        const cardNum = fresh.cardNumber || '4987103143003327';
+        const cardHolder = getCardHolderName(fresh);
+        const cardExpiry = fresh.cardExpiry || '12/40';
+        const cardCvv = fresh.cardCvv || '843';
+        const cardType = fresh.cardType || 'Visa Debit';
+        const mskL = fresh.cardMaskLast4 === true;
+        const mskC = fresh.cardMaskCvv === true;
+        cardBody.innerHTML = renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, mskL, mskC, false);
+      }
     }, () => {});
   } catch (e) {}
 }
@@ -282,7 +295,7 @@ window.navigateTo = function(id) {
 };
 
 // =====================================================
-// IBAN MODAL (client)
+// IBAN MODAL (client) — masquage forcé si admin a activé
 // =====================================================
 window.showIban = function() {
   if (!currentClient) return;
@@ -290,9 +303,12 @@ window.showIban = function() {
   const rawIban = currentClient.iban || currentClient.address || 'N/A';
   const ownerName = getCardHolderName(currentClient);
   const bic = currentClient.bic || 'BICCODEXX';
-  const displayIban = currentClient.ibanMasked === true ? maskIban(rawIban) : rawIban;
+  // Si l'admin a activé le masquage, on masque TOUJOURS, aucune exception
+  const adminForcedMask = currentClient.ibanMasked === true;
+  const displayIban = adminForcedMask ? maskIban(rawIban) : rawIban;
   const formattedIban = formatIban(displayIban);
   const L = ibanLabels[currentLang] || ibanLabels.fr;
+  const warningText = adminForcedMask ? L.warning : L.warning;
   const ov = document.createElement('div');
   ov.id = 'iban-modal-dynamic';
   ov.style.cssText = 'position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100vh!important;background:rgba(15,23,42,0.7)!important;display:flex!important;justify-content:center!important;align-items:center!important;z-index:2147483647!important;padding:16px!important;box-sizing:border-box!important;overflow-y:auto!important;';
@@ -300,25 +316,28 @@ window.showIban = function() {
     '<div class="iban-new-header"><div class="iban-new-icon"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg></div><div class="iban-new-header-text"><div class="iban-new-title">' + L.title + '</div></div><button class="iban-new-close" onclick="document.getElementById(\'iban-modal-dynamic\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>' +
     '<div class="iban-new-body"><div class="iban-new-iban-box"><div class="iban-new-iban-head"><span class="iban-new-iban-label">' + L.numberLabel + '</span><button class="iban-new-copy" id="iban-copy-label" onclick="window.copyIban()"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span>' + t('copyBtn') + '</span></button></div><div class="iban-new-iban-value">' + formattedIban + '</div></div>' +
     '<div class="iban-new-row"><div class="iban-new-info"><div class="iban-new-info-label">' + L.ownerLabel + '</div><div class="iban-new-info-value">' + ownerName + '</div></div><div class="iban-new-info"><div class="iban-new-info-label">' + L.bicLabel + '</div><div class="iban-new-info-value">' + bic + '</div></div></div>' +
-    '<div class="iban-new-warning"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><span>' + L.warning + '</span></div></div>' +
-  '</div>';
+    (adminForcedMask ? '<div class="iban-new-warning"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><span>' + warningText + '</span></div>' : '') +
+    '</div></div>';
   ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
   document.body.appendChild(ov);
 };
 
 window.copyIban = function() {
+  // Si l'admin a masqué, on copie la version MASQUÉE (pour empêcher la récupération du vrai numéro)
+  const adminForcedMask = currentClient.ibanMasked === true;
   const rawIban = currentClient.iban || currentClient.address || '';
+  const toCopy = adminForcedMask ? maskIban(rawIban) : rawIban;
   const labelEl = document.getElementById('iban-copy-label');
   if (!labelEl) return;
   const span = labelEl.querySelector('span') || labelEl;
   const orig = span.innerText;
   const show = () => { span.innerText = 'OK ' + t('copied'); setTimeout(() => { span.innerText = orig; }, 1500); };
-  if (navigator.clipboard) { navigator.clipboard.writeText(rawIban).then(show).catch(show); }
-  else { const ta = document.createElement('textarea'); ta.value = rawIban; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); show(); }
+  if (navigator.clipboard) { navigator.clipboard.writeText(toCopy).then(show).catch(show); }
+  else { const ta = document.createElement('textarea'); ta.value = toCopy; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); show(); }
 };
 
 // =====================================================
-// VIRTUAL CARD MODAL (client)
+// VIRTUAL CARD MODAL (client) — masquage forcé par admin
 // =====================================================
 window.showVirtualCard = function() {
   if (!currentClient) { alert('Erreur : client non initialise'); return; }
@@ -349,16 +368,51 @@ window.showVirtualCard = function() {
 
 function renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, maskLast4, maskCvv, revealed) {
   const L = cardLabels[currentLang] || cardLabels.fr;
-  const showFullNumber = revealed || !maskLast4;
-  const showFullCvv = revealed || !maskCvv;
+
+  // ✅ RÈGLE MÉTIER : si l'admin a activé un masquage, le client ne peut JAMAIS le révéler
+  const adminForcedNumber = maskLast4 === true;
+  const adminForcedCvv = maskCvv === true;
+  const anyAdminForced = adminForcedNumber || adminForcedCvv;
+
+  // Le toggle client (revealed) ne fonctionne QUE si l'admin n'a rien forcé
+  const showFullNumber = adminForcedNumber ? false : (anyAdminForced ? true : revealed);
+  const showFullCvv = adminForcedCvv ? false : (anyAdminForced ? true : revealed);
+
   const displayNum = showFullNumber ? cardNum : maskCardNumber(cardNum);
   const displayCvv = showFullCvv ? cardCvv : '•••';
   const formattedNum = formatCardNumber(displayNum);
   const formattedHolder = (cardHolder || '').toUpperCase();
-  let warningText = '', warningBg = '', warningColor = '', warningBorder = '';
-  if (revealed || (!maskLast4 && !maskCvv)) { warningText = L.warningFull; warningBg = '#dcfce7'; warningColor = '#14532d'; warningBorder = '1px solid #bbf7d0'; }
-  else if (maskLast4) { warningText = L.warningMasked; warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a'; }
-  else { warningText = L.warningCvvMasked; warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a'; }
+
+  // Warning
+  let warningText, warningBg, warningColor, warningBorder;
+  if (adminForcedNumber && adminForcedCvv) {
+    warningText = L.warningAdminMasked;
+    warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a';
+  } else if (adminForcedNumber) {
+    warningText = L.warningMasked;
+    warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a';
+  } else if (adminForcedCvv) {
+    warningText = L.warningCvvMasked;
+    warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a';
+  } else if (revealed) {
+    warningText = L.warningFull;
+    warningBg = '#dcfce7'; warningColor = '#14532d'; warningBorder = '1px solid #bbf7d0';
+  } else {
+    warningText = L.warningMasked;
+    warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a';
+  }
+
+  // Cache le bouton toggle si l'admin a forcé QUELQUE CHOSE
+  const hideToggleButton = anyAdminForced;
+  const actionsHtml = hideToggleButton
+    ? '<div style="display:grid!important;grid-template-columns:1fr!important;gap:10px!important;margin-top:4px!important;">' +
+        '<button onclick="window.copyCardNumber()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;border:none!important;border-radius:11px!important;padding:14px 12px!important;font-size:13px!important;font-weight:700!important;cursor:pointer!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;box-shadow:0 6px 16px rgba(124,58,237,0.35)!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:15px!important;height:15px!important;fill:#fff!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="card-copy-label">' + L.copyBtn + '</span></button>' +
+      '</div>'
+    : '<div style="display:grid!important;grid-template-columns:1.4fr 1fr!important;gap:10px!important;margin-top:4px!important;">' +
+        '<button onclick="window.copyCardNumber()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;border:none!important;border-radius:11px!important;padding:14px 12px!important;font-size:13px!important;font-weight:700!important;cursor:pointer!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;box-shadow:0 6px 16px rgba(124,58,237,0.35)!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:15px!important;height:15px!important;fill:#fff!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="card-copy-label">' + L.copyBtn + '</span></button>' +
+        '<button onclick="window.toggleCardVisibility()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;border:none!important;border-radius:11px!important;padding:14px 12px!important;font-size:13px!important;font-weight:700!important;cursor:pointer!important;background:#e2e8f0!important;color:#1e293b!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:15px!important;height:15px!important;fill:#475569!important;"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg><span>' + (revealed ? L.hideBtn : L.showBtn) + '</span></button>' +
+      '</div>';
+
   return '' +
     '<div style="position:relative!important;width:100%!important;aspect-ratio:1.586/1!important;max-height:200px!important;border-radius:16px!important;padding:16px 18px!important;background:linear-gradient(135deg,#fce8a0 0%,#f5d670 35%,#e8b923 70%,#c69a0e 100%)!important;overflow:hidden!important;box-shadow:0 12px 30px rgba(218,165,32,0.35),0 4px 12px rgba(0,0,0,0.1)!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;color:#1a2332!important;box-sizing:border-box!important;">' +
       '<div style="position:absolute!important;top:0!important;left:-100%!important;width:60%!important;height:100%!important;background:linear-gradient(115deg,transparent 0%,rgba(255,255,255,0.5) 50%,transparent 100%)!important;animation:cardShine 4s ease-in-out infinite!important;pointer-events:none!important;z-index:2!important;"></div>' +
@@ -380,14 +434,17 @@ function renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, mask
       '<div style="background:#eef2f7!important;border-radius:10px!important;padding:10px 12px!important;"><div style="font-size:9px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:1px!important;margin-bottom:4px!important;">' + L.cvvLabel + '</div><div style="font-size:12.5px!important;font-weight:800!important;color:#0f172a!important;">' + displayCvv + '</div></div>' +
       '<div style="background:#eef2f7!important;border-radius:10px!important;padding:10px 12px!important;"><div style="font-size:9px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:1px!important;margin-bottom:4px!important;">' + L.typeLabel + '</div><div style="font-size:12.5px!important;font-weight:800!important;color:#0f172a!important;">' + cardType + '</div></div>' +
     '</div>' +
-    '<div style="display:grid!important;grid-template-columns:1.4fr 1fr!important;gap:10px!important;margin-top:4px!important;">' +
-      '<button onclick="window.copyCardNumber()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;border:none!important;border-radius:11px!important;padding:14px 12px!important;font-size:13px!important;font-weight:700!important;cursor:pointer!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;box-shadow:0 6px 16px rgba(124,58,237,0.35)!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:15px!important;height:15px!important;fill:#fff!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="card-copy-label">' + L.copyBtn + '</span></button>' +
-      '<button onclick="window.toggleCardVisibility()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;border:none!important;border-radius:11px!important;padding:14px 12px!important;font-size:13px!important;font-weight:700!important;cursor:pointer!important;background:#e2e8f0!important;color:#1e293b!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:15px!important;height:15px!important;fill:#475569!important;"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg><span>' + (revealed ? L.hideBtn : L.showBtn) + '</span></button>' +
-    '</div>' +
+    actionsHtml +
     '<div style="display:flex!important;align-items:flex-start!important;gap:9px!important;padding:11px 13px!important;border-radius:11px!important;font-size:11px!important;line-height:1.5!important;font-weight:600!important;background:' + warningBg + '!important;color:' + warningColor + '!important;border:' + warningBorder + '!important;"><svg viewBox="0 0 24 24" style="width:14px!important;height:14px!important;flex-shrink:0!important;margin-top:1px!important;fill:currentColor!important;"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><span>' + warningText + '</span></div>';
 }
 
 window.toggleCardVisibility = function() {
+  // ✅ SÉCURITÉ : si l'admin a forcé un masquage, on ne peut PAS toggle
+  if (!currentClient) return;
+  if (currentClient.cardMaskLast4 === true || currentClient.cardMaskCvv === true) {
+    // On ne fait rien. Le bouton ne devrait même pas apparaître dans ce cas.
+    return;
+  }
   virtualCardRevealed = !virtualCardRevealed;
   const cardNum = currentClient.cardNumber || '4987103143003327';
   const cardHolder = getCardHolderName(currentClient);
@@ -402,14 +459,17 @@ window.toggleCardVisibility = function() {
 };
 
 window.copyCardNumber = function() {
-  const cardNum = currentClient.cardNumber || '';
-  if (!cardNum) return;
+  // Si l'admin a masqué, on copie la version MASQUÉE
+  const adminForcedNumber = currentClient.cardMaskLast4 === true;
+  const raw = currentClient.cardNumber || '';
+  const toCopy = adminForcedNumber ? maskCardNumber(raw) : raw;
+  if (!toCopy) return;
   const btn = document.getElementById('card-copy-label');
   if (!btn) return;
   const orig = btn.innerText;
   const show = () => { btn.innerText = 'OK ' + t('copied'); setTimeout(() => { btn.innerText = orig; }, 1500); };
-  if (navigator.clipboard) { navigator.clipboard.writeText(cardNum).then(show).catch(show); }
-  else { const ta = document.createElement('textarea'); ta.value = cardNum; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); show(); }
+  if (navigator.clipboard) { navigator.clipboard.writeText(toCopy).then(show).catch(show); }
+  else { const ta = document.createElement('textarea'); ta.value = toCopy; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); show(); }
 };
 
 window.submitTransferForm = function() {
@@ -611,7 +671,7 @@ async function renderAdminPage() {
         '<div class="admin-group full-width"><label>Type de carte</label><input type="text" id="qa-card-type"></div>' +
       '</div>' +
       '<div class="qa-card-holder-note"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span>Le titulaire est genere automatiquement a partir du nom et prenom du client.</span></div>' +
-      '<div class="qa-mask-toggle"><div class="qa-mask-label">OPTIONS DE MASQUAGE</div><label class="qa-switch"><input type="checkbox" id="qa-card-mask-last4"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers chiffres</span></label><label class="qa-switch" style="margin-top:8px;"><input type="checkbox" id="qa-card-mask-cvv"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer le CVV</span></label></div>' +
+      '<div class="qa-mask-toggle"><div class="qa-mask-label">OPTIONS DE MASQUAGE (FORCE LE CLIENT)</div><label class="qa-switch"><input type="checkbox" id="qa-card-mask-last4"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers chiffres (definitif)</span></label><label class="qa-switch" style="margin-top:8px;"><input type="checkbox" id="qa-card-mask-cvv"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer le CVV (definitif)</span></label></div>' +
     '</div>' +
     '<button class="btn-admin-submit" onclick="window.applyQuickAction()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Appliquer la modification</button>' +
   '</div>';
@@ -638,15 +698,12 @@ async function renderAdminPage() {
   const ibanFields = document.getElementById('qa-iban-fields');
   const cardFields = document.getElementById('qa-card-fields');
 
-  // ✅ FONCTION DE REMPLISSAGE AVEC GENERATION AUTOMATIQUE SI VIDE
   const fillIbanFields = (clientId) => {
     if (!clientId || !clients[clientId]) return;
     const cc = clients[clientId];
-    // IBAN
     let ibanValue = cc.iban || cc.address || '';
     if (!ibanValue) ibanValue = generateIban(cc.country || 'France');
     document.getElementById('qa-iban-value').value = ibanValue;
-    // BIC
     let bicValue = cc.bic || '';
     if (!bicValue) bicValue = generateBic(cc.country || 'France');
     document.getElementById('qa-bic-value').value = bicValue;
@@ -656,25 +713,18 @@ async function renderAdminPage() {
   const fillCardFields = (clientId) => {
     if (!clientId || !clients[clientId]) return;
     const cc = clients[clientId];
-    // Titulaire (lecture seule, dérivé du nom+prénom)
     document.getElementById('qa-card-holder').value = getCardHolderName(cc);
-    // Numéro de carte
     let numValue = cc.cardNumber || '';
     if (!numValue) numValue = generateCardNumber();
     document.getElementById('qa-card-number').value = numValue;
-    // Date d'expiration
     let expValue = cc.cardExpiry || '';
     if (!expValue) expValue = generateCardExpiry();
     document.getElementById('qa-card-expiry').value = expValue;
-    // CVV
     let cvvValue = cc.cardCvv || '';
     if (!cvvValue) cvvValue = generateCardCvv();
     document.getElementById('qa-card-cvv').value = cvvValue;
-    // Type
-    let typeValue = cc.cardType || '';
-    if (!typeValue) typeValue = 'Visa Debit';
+    let typeValue = cc.cardType || 'Visa Debit';
     document.getElementById('qa-card-type').value = typeValue;
-    // Masquage
     document.getElementById('qa-card-mask-last4').checked = cc.cardMaskLast4 === true;
     document.getElementById('qa-card-mask-cvv').checked = cc.cardMaskCvv === true;
   };
@@ -815,7 +865,7 @@ window.applyQuickAction = async function() {
     const maskCvv = document.getElementById('qa-card-mask-cvv').checked;
     if (!newNum || !newExpiry || !newCvv) { alert('Remplissez tous les champs.'); return; }
     await FireDB.updateClient(clientId, { cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv, cardType: newType, cardMaskLast4: maskLast4, cardMaskCvv: maskCvv });
-    alert('Carte mise a jour.');
+    alert('Carte mise a jour. Le masquage est desormais ' + (maskLast4 || maskCvv ? 'ACTIF et definitif cote client.' : 'desactive.'));
   } else if (action === 'block') {
     await FireDB.updateClient(clientId, { blocked: true });
     alert('Suspendu.');
