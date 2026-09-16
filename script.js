@@ -71,6 +71,10 @@ const FireDB = {
 
 const ClientSession = { getActive: () => localStorage.getItem('tw_active_client'), setActive: (id) => localStorage.setItem('tw_active_client', id), clear: () => localStorage.removeItem('tw_active_client') };
 
+/* ✅ NOUVEAU : Mapping symbole -> nom complet de la devise */
+const CURRENCY_NAMES = { '€': 'EURO', '$': 'USD', '£': 'GBP', 'zł': 'PLN' };
+function getCurrencyName(symbol) { return CURRENCY_NAMES[symbol] || 'EURO'; }
+
 function generateIban(country) {
   const prefixMap = { 'France': 'FR', 'Pologne': 'PL', 'Espagne': 'ES', 'Italie': 'IT', 'Allemagne': 'DE' };
   const prefix = prefixMap[country] || 'FR';
@@ -203,6 +207,8 @@ const splitBalance = (amount, currency) => {
 
 function renderBalanceHero(client) {
   const currency = client.currency || '€';
+  /* ✅ MODIFIÉ : le label affiche le nom complet (EURO, USD, GBP, PLN) mais le montant garde le symbole */
+  const currencyLabel = getCurrencyName(currency);
   const parts = splitBalance(client.balance || 0, currency);
   return '<div class="hero-bubbles">' +
       '<span class="hero-bubble b1"></span>' +
@@ -214,7 +220,7 @@ function renderBalanceHero(client) {
       '<span class="hero-bubble b7"></span>' +
       '<span class="hero-bubble b8"></span>' +
     '</div>' +
-    '<div class="balance-label">' + t('personalAccount') + ' · ' + currency + '</div>' +
+    '<div class="balance-label">' + t('personalAccount') + ' · ' + currencyLabel + '</div>' +
     '<div class="balance-big"><span class="balance-int">' + parts.intPart + '</span><span class="balance-dec">' + parts.decPart + '</span></div>' +
     '<button class="account-pill" onclick="window.navigateTo(\'screen-profile\')">' + t('accounts') + '</button>' +
     '<div class="dots-indicator"><span class="active"></span><span></span><span></span></div>';
