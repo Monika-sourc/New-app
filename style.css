@@ -1,6 +1,6 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
-   v37 - Boules animées + reçus + profil pro
+   v38 - Boules dorées + reçus + profil pro v2
    ===================================================== */
 
 :root {
@@ -294,7 +294,7 @@ input, select, textarea { font-family: inherit; }
 
 .greeting { padding: 14px 12px 6px 12px; font-size: 16px; color: var(--gray-900); font-weight: 600; letter-spacing: -0.2px; }
 
-/* ========== CARTE DE SOLDE AVEC BOULES ANIMÉES ========== */
+/* ========== CARTE DE SOLDE AVEC BOULES DORÉES ========== */
 .dashboard-hero {
   background: linear-gradient(160deg, var(--primary) 0%, var(--primary-dark) 100%);
   margin: 8px 12px 0 12px;
@@ -306,11 +306,8 @@ input, select, textarea { font-family: inherit; }
   box-shadow: 0 8px 24px rgba(26, 115, 232, 0.3);
   text-align: center;
 }
-
-/* Anciennes pseudo-décorations retirées au profit des boules animées */
 .dashboard-hero::before, .dashboard-hero::after { display: none; }
 
-/* Conteneur des boules animées */
 .hero-bubbles {
   position: absolute;
   inset: 0;
@@ -319,33 +316,40 @@ input, select, textarea { font-family: inherit; }
   z-index: 0;
 }
 
-/* Style général des boules */
+/* ✅ BOULES DORÉES / AMBRE - contraste fort avec toutes les couleurs de thème */
 .hero-bubble {
   position: absolute;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.05) 70%);
-  box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.15);
+  background: radial-gradient(circle at 32% 30%,
+    rgba(255, 235, 130, 0.98) 0%,
+    rgba(255, 200, 60, 0.75) 25%,
+    rgba(255, 170, 20, 0.35) 55%,
+    rgba(255, 150, 0, 0.05) 100%);
+  box-shadow:
+    0 0 18px rgba(255, 200, 60, 0.65),
+    0 0 42px rgba(255, 180, 30, 0.35),
+    inset 0 0 12px rgba(255, 255, 255, 0.55);
   opacity: 0;
   will-change: transform, opacity;
   animation-name: bubbleFloat;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
+  mix-blend-mode: screen;
 }
 
-/* Chaque boule a sa taille, sa position et sa durée */
-.hero-bubble.b1 { width: 55px; height: 55px; left: -15px; bottom: -15px; animation-duration: 12s; animation-delay: 0s; }
-.hero-bubble.b2 { width: 28px; height: 28px; left: 55%; bottom: -10px; animation-duration: 15s; animation-delay: -3s; }
-.hero-bubble.b3 { width: 75px; height: 75px; right: -25px; top: 15%; animation-duration: 18s; animation-delay: -6s; }
-.hero-bubble.b4 { width: 22px; height: 22px; left: 28%; top: 20%; animation-duration: 10s; animation-delay: -1s; }
-.hero-bubble.b5 { width: 40px; height: 40px; right: 20%; top: 55%; animation-duration: 14s; animation-delay: -8s; }
-.hero-bubble.b6 { width: 34px; height: 34px; left: 65%; top: 8%; animation-duration: 16s; animation-delay: -11s; }
+.hero-bubble.b1 { width: 62px; height: 62px; left: -18px; bottom: -18px; animation-duration: 12s; animation-delay: 0s; }
+.hero-bubble.b2 { width: 30px; height: 30px; left: 55%; bottom: -10px; animation-duration: 15s; animation-delay: -3s; }
+.hero-bubble.b3 { width: 82px; height: 82px; right: -28px; top: 12%; animation-duration: 18s; animation-delay: -6s; }
+.hero-bubble.b4 { width: 26px; height: 26px; left: 28%; top: 20%; animation-duration: 10s; animation-delay: -1s; }
+.hero-bubble.b5 { width: 44px; height: 44px; right: 18%; top: 58%; animation-duration: 14s; animation-delay: -8s; }
+.hero-bubble.b6 { width: 38px; height: 38px; left: 65%; top: 6%; animation-duration: 16s; animation-delay: -11s; }
 
 @keyframes bubbleFloat {
   0%   { transform: translate(0, 0) scale(0.85); opacity: 0; }
-  15%  { opacity: 0.7; }
-  35%  { transform: translate(15px, -45px) scale(1.05); opacity: 0.65; }
-  55%  { transform: translate(-12px, -85px) scale(0.95); opacity: 0.5; }
-  75%  { transform: translate(18px, -125px) scale(1.1); opacity: 0.35; }
+  15%  { opacity: 0.95; }
+  35%  { transform: translate(15px, -45px) scale(1.08); opacity: 0.9; }
+  55%  { transform: translate(-12px, -85px) scale(0.98); opacity: 0.75; }
+  75%  { transform: translate(18px, -125px) scale(1.15); opacity: 0.5; }
   100% { transform: translate(0, -170px) scale(0.9); opacity: 0; }
 }
 
@@ -514,76 +518,76 @@ input, select, textarea { font-family: inherit; }
 .receipt-btn-close { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff; border: none; border-radius: 9px; padding: 12px 32px; font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit; letter-spacing: 0.3px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35); transition: transform 0.1s ease; }
 .receipt-btn-close:active { transform: scale(0.97); }
 
-/* ========== PAGE PROFIL PROFESSIONNELLE ========== */
+/* ========== PAGE PROFIL PROFESSIONNELLE v2 ========== */
 .profile-top-card {
   background: linear-gradient(160deg, var(--primary) 0%, var(--primary-dark) 100%);
-  border-radius: 16px;
-  margin: 12px 12px 14px 12px;
-  padding: 24px 18px 22px 18px;
+  border-radius: 18px;
+  margin: 12px 12px 16px 12px;
+  padding: 26px 18px 24px 18px;
   display: flex;
   flex-direction: column;
   align-items: center;
   color: #fff;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(26, 115, 232, 0.25);
+  box-shadow: 0 10px 28px rgba(26, 115, 232, 0.3);
 }
 .profile-top-card::before {
   content: '';
   position: absolute;
-  top: -50%;
-  right: -20%;
-  width: 180px;
-  height: 180px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.14), transparent 70%);
+  top: -55%;
+  right: -25%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.16), transparent 70%);
   border-radius: 50%;
   pointer-events: none;
 }
 .profile-top-card::after {
   content: '';
   position: absolute;
-  bottom: -40%;
-  left: -20%;
-  width: 150px;
-  height: 150px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.08), transparent 70%);
+  bottom: -45%;
+  left: -25%;
+  width: 170px;
+  height: 170px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.09), transparent 70%);
   border-radius: 50%;
   pointer-events: none;
 }
 .profile-top-avatar {
-  width: 68px;
-  height: 68px;
+  width: 74px;
+  height: 74px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.22);
-  border: 2px solid rgba(255, 255, 255, 0.35);
+  border: 2.5px solid rgba(255, 255, 255, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
   letter-spacing: 0.5px;
   color: #fff;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   position: relative;
   z-index: 1;
   text-transform: uppercase;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 .profile-top-name {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 800;
-  letter-spacing: -0.3px;
-  margin-bottom: 4px;
+  letter-spacing: -0.4px;
+  margin-bottom: 5px;
   position: relative;
   z-index: 1;
   text-align: center;
   text-transform: capitalize;
 }
 .profile-top-email {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 14px;
+  color: rgba(255, 255, 255, 0.88);
+  margin-bottom: 16px;
   position: relative;
   z-index: 1;
   text-align: center;
@@ -592,33 +596,119 @@ input, select, textarea { font-family: inherit; }
 .profile-top-badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 10.5px;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 6px 14px;
+  border-radius: 22px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
   position: relative;
   z-index: 1;
+  backdrop-filter: blur(4px);
 }
-.profile-top-badge svg { width: 12px; height: 12px; fill: #fff; }
+.profile-top-badge svg { width: 13px; height: 13px; fill: #fff; }
+
+/* ===== CARTES BLANCHES PROFESSIONNELLES v2 ===== */
+.profile-section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 0;
+  margin: 0 12px 14px 12px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.07), 0 1px 3px rgba(15, 23, 42, 0.04);
+  border: 1px solid #eef2f7;
+  overflow: hidden;
+}
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+  border-bottom: 1px solid #eef2f7;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.1px;
+}
+.profile-header-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(26, 115, 232, 0.28);
+  flex-shrink: 0;
+}
+.profile-header-icon svg { width: 16px; height: 16px; fill: #fff; }
+.profile-header span { flex: 1; min-width: 0; }
+
+.profile-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 4px 0;
+}
+.profile-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 12px;
+  gap: 14px;
+}
+.profile-item:last-child { border-bottom: none; }
+.profile-label {
+  font-weight: 700;
+  color: #94a3b8;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  flex-shrink: 0;
+  width: auto;
+  padding-top: 0;
+}
+.profile-value {
+  font-weight: 700;
+  color: #0f172a;
+  text-align: right;
+  word-break: break-word;
+  flex: 1;
+  min-width: 0;
+  font-size: 12.5px;
+}
+.status-active {
+  color: #10b981;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+.status-active svg { width: 13px; height: 13px; fill: #10b981; }
+.iban-link { color: var(--primary); text-decoration: underline; font-weight: 600; word-break: break-all; }
 
 .profile-value-balance {
   font-weight: 800 !important;
   color: var(--primary) !important;
-  font-size: 13px !important;
+  font-size: 14px !important;
+  letter-spacing: -0.2px;
 }
+
 .profile-logout-btn {
   display: flex !important;
   width: calc(100% - 24px) !important;
-  margin: 16px 12px 20px 12px !important;
-  padding: 13px 16px !important;
-  font-size: 12.5px !important;
+  margin: 4px 12px 20px 12px !important;
+  padding: 14px 16px !important;
+  font-size: 13px !important;
   justify-content: center !important;
-  border-radius: 10px !important;
+  border-radius: 12px !important;
+  letter-spacing: 0.2px !important;
 }
 
 .info-card { background: #ffffff; border-radius: 12px; padding: 20px 16px; margin: 14px 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08); }
@@ -679,16 +769,6 @@ input, select, textarea { font-family: inherit; }
 .card-actions .btn { flex: 1; justify-content: center; padding: 8px; font-size: 10.5px; }
 .card-transactions-title { padding: 14px 14px 9px 14px; font-size: 12px; font-weight: 800; color: var(--gray-900); background: #ffffff; border-radius: 12px 12px 0 0; margin: 0 12px; border-bottom: none; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06); }
 
-.profile-section { background: #ffffff; border-radius: 12px; padding: 14px; margin: 8px 12px; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08); }
-.profile-header { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; color: var(--gray-900); margin-bottom: 9px; }
-.profile-header svg { width: 13px; height: 13px; fill: var(--primary); flex-shrink: 0; }
-.profile-list { display: flex; flex-direction: column; gap: 8px; }
-.profile-item { display: flex; font-size: 11px; color: var(--gray-900); flex-wrap: wrap; }
-.profile-label { font-weight: 800; width: 100px; flex-shrink: 0; color: var(--gray-500); font-size: 9.5px; text-transform: uppercase; padding-top: 1px; }
-.profile-value { font-weight: 500; word-break: break-all; flex: 1; min-width: 0; }
-.status-active { color: var(--success); font-weight: 800; display: flex; align-items: center; gap: 3px; }
-.status-active svg { width: 11px; height: 11px; fill: var(--success); }
-.iban-link { color: var(--primary); text-decoration: underline; font-weight: 600; word-break: break-all; }
 .logout-btn { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; border: none; border-radius: 7px; padding: 9px 16px; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; margin: 12px; width: fit-content; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); }
 .logout-btn svg { width: 12px; height: 12px; fill: #fff; }
 
