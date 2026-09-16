@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v28 - 12 nouvelles options admin
+// v29 - Notifications professionnelles (remplace alert/confirm)
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -18,6 +18,91 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+// =====================================================
+// NOTIFICATION MODAL PROFESSIONNELLE
+// =====================================================
+window.showNotif = function(message, type, title) {
+  type = type || 'info';
+  const titles = { success: 'Succes', error: 'Erreur', warning: 'Attention', info: 'Information' };
+  const subs = {
+    success: 'Operation reussie',
+    error: 'Une erreur est survenue',
+    warning: 'Verification requise',
+    info: 'Notification'
+  };
+  const icons = {
+    success: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',
+    error: '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>',
+    warning: '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>',
+    info: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>'
+  };
+  const displayTitle = title || titles[type];
+  const old = document.getElementById('notif-modal-dynamic');
+  if (old) old.remove();
+  const ov = document.createElement('div');
+  ov.id = 'notif-modal-dynamic';
+  ov.className = 'notif-overlay';
+  ov.innerHTML =
+    '<div class="notif-modal">' +
+      '<div class="notif-header ' + type + '">' +
+        '<div class="notif-icon-wrap"><svg viewBox="0 0 24 24">' + (icons[type] || icons.info) + '</svg></div>' +
+        '<div class="notif-header-text">' +
+          '<div class="notif-title">' + displayTitle + '</div>' +
+          '<div class="notif-subtitle">' + (subs[type] || subs.info) + '</div>' +
+        '</div>' +
+        '<button class="notif-close" onclick="document.getElementById(\'notif-modal-dynamic\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
+      '</div>' +
+      '<div class="notif-body">' + message + '</div>' +
+      '<div class="notif-footer">' +
+        '<button class="notif-btn ' + type + '" onclick="document.getElementById(\'notif-modal-dynamic\').remove()">OK</button>' +
+      '</div>' +
+    '</div>';
+  ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
+  document.body.appendChild(ov);
+  if (type === 'success') {
+    setTimeout(() => { const el = document.getElementById('notif-modal-dynamic'); if (el) el.remove(); }, 3500);
+  }
+};
+
+window.showConfirm = function(message, onConfirm, title, type) {
+  type = type || 'warning';
+  title = title || 'Confirmation';
+  const icons = {
+    success: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',
+    error: '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>',
+    warning: '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>',
+    info: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>'
+  };
+  const old = document.getElementById('notif-modal-dynamic');
+  if (old) old.remove();
+  const ov = document.createElement('div');
+  ov.id = 'notif-modal-dynamic';
+  ov.className = 'notif-overlay';
+  ov.innerHTML =
+    '<div class="notif-modal">' +
+      '<div class="notif-header ' + type + '">' +
+        '<div class="notif-icon-wrap"><svg viewBox="0 0 24 24">' + (icons[type] || icons.warning) + '</svg></div>' +
+        '<div class="notif-header-text">' +
+          '<div class="notif-title">' + title + '</div>' +
+          '<div class="notif-subtitle">Action requise</div>' +
+        '</div>' +
+        '<button class="notif-close" onclick="document.getElementById(\'notif-modal-dynamic\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
+      '</div>' +
+      '<div class="notif-body">' + message + '</div>' +
+      '<div class="notif-footer two-buttons">' +
+        '<button class="notif-btn cancel" id="notif-cancel-btn">Annuler</button>' +
+        '<button class="notif-btn ' + type + '" id="notif-confirm-btn">Confirmer</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(ov);
+  document.getElementById('notif-cancel-btn').onclick = () => ov.remove();
+  document.getElementById('notif-confirm-btn').onclick = () => { ov.remove(); if (onConfirm) onConfirm(); };
+  ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
+};
+
+// =====================================================
+// FIRESTORE
+// =====================================================
 const FireDB = {
   async getClient(id) {
     try { const s = await getDoc(doc(db, 'clients', id)); return s.exists() ? { id, ...s.data() } : null; }
@@ -248,8 +333,8 @@ function renderLoginPage(client) {
     const pin = document.getElementById('pin').value.trim();
     if (email === client.email && pin === client.pin) {
       const fresh = await FireDB.getClient(client.id);
-      if (!fresh) { alert('Lien invalide'); return; }
-      if (fresh.blocked) { alert('Compte suspendu'); return; }
+      if (!fresh) { window.showNotif('Lien invalide.', 'error'); return; }
+      if (fresh.blocked) { window.showNotif('Compte suspendu.', 'error'); return; }
       ClientSession.setActive(client.id);
       replaceHistory('screen-dashboard');
       initClient();
@@ -271,7 +356,7 @@ function renderBankingApp(client) {
       '<div id="screen-transfer" class="screen"><div class="page-title-bar"><div class="page-title-icon"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div><span>' + t('sendOutgoingTransfer') + '</span></div><div class="transfer-amount">' + balanceFormatted + '</div><div class="details-header"><div class="details-icon">i</div><span>' + t('transferDetails') + '</span></div><form id="transfer-form"><div class="form-group"><label class="form-label">' + t('amountToDebit') + '</label><input type="number" class="form-input amount-input" id="input-amount" step="0.01" min="0.01" required></div><div class="form-group"><label class="form-label">' + t('labelIban') + '</label><input type="text" class="form-input" id="input-iban" required></div><div class="form-group"><label class="form-label">' + t('labelSwift') + '</label><input type="text" class="form-input" id="input-swift" required></div><div class="form-group"><label class="form-label">' + t('labelBank') + '</label><input type="text" class="form-input" id="input-bank" required></div><div class="form-group"><label class="form-label">' + t('labelBeneficiary') + '</label><input type="text" class="form-input" id="input-name" required></div><div class="form-group"><label class="form-label">' + t('labelReason') + '</label><input type="text" class="form-input" id="input-title" required></div></form><div class="warning-box"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><div class="warning-text">' + t('processingWarning') + '</div></div><button class="submit-btn" onclick="window.submitTransferForm()">' + t('nextBtn') + '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
       '<div id="screen-verification" class="screen"><div class="summary-card"><div class="summary-header"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg><span>' + t('transferSummary') + '</span></div><div class="summary-list"><div class="summary-item"><span>' + t('transferAmountLabel') + '</span><span class="summary-value" id="summary-amount">-</span></div><div class="summary-item"><span>' + t('ibanLabel') + '</span><span class="summary-value-block" id="summary-iban">' + t('ibanLabelLine2') + ' </span></div><div class="summary-item"><span>' + t('swiftLabel') + '</span><span class="summary-value" id="summary-swift"></span></div><div class="summary-item"><span>' + t('bankLabel') + '</span><span class="summary-value" id="summary-bank"></span></div><div class="summary-item"><span>' + t('beneficiaryLabel') + '</span><span class="summary-value" id="summary-name"></span></div><div class="summary-item"><span>' + t('reasonLabel') + '</span><span class="summary-value" id="summary-title"></span></div></div></div><div class="verification-section"><div class="verification-header"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg><span>' + t('identityVerification') + '</span></div><div class="verification-desc">' + t('verificationDesc') + '</div><input type="text" class="verification-input" id="security-code" required><button class="submit-btn" onclick="window.startProcessing()">' + t('sendBtn') + '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div></div>' +
       '<div id="screen-processing" class="screen"><div class="info-card"><h2>' + t('wellDone') + '</h2><p>' + t('processingDesc') + '</p><div class="divider"></div><div class="info-details"><div><span class="lbl">' + t('beneficiaryLabel') + '</span>' + client.firstName + ' ' + client.lastName + '</div><div><span class="lbl">' + t('bankLabel') + '</span>' + (client.bankName || 'BNP Paribas') + '</div><div><span class="lbl">' + t('ibanLabel') + '</span><span id="processing-iban"></span></div><div><span class="lbl">' + t('amountToReceive') + '</span><span id="processing-amount">-</span></div></div></div><div class="progress-section"><div class="progress-text">' + t('processingText') + '</div><div class="progress-circle-wrapper"><div class="progress-circle" id="progress-text">0%</div></div><div class="progress-bar-container"><div class="progress-fill" id="progress-bar"></div></div></div></div>' +
-      '<div id="screen-card" class="screen"><div class="info-banner info-banner-blue" id="card-banner"><div class="banner-text">' + t('cardWelcome') + '</div><div class="banner-close" onclick="document.getElementById(\'card-banner\').style.display=\'none\'"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div></div><div class="credit-card"><div><div class="card-brand">TRANSFERWIRE</div><div class="card-number">4987 **** **** 3327</div><div class="card-holder">' + getCardHolderName(client) + '</div></div><div class="card-footer"><div><div class="card-expiry">' + t('validUntil') + ' 05/2029</div><div class="card-cvv">CVV : 843</div></div><div class="visa-logo">VISA</div></div></div><div class="card-actions"><button class="btn btn-green" onclick="alert(\'' + t('activateCardBtn') + '\')">' + t('activateCardBtn') + '</button><button class="btn btn-red" onclick="alert(\'' + t('blockCardBtn') + '\')">' + t('blockCardBtn') + '</button></div><div class="card-transactions-title">' + t('cardTransactions') + '</div><div class="spinner-container"><div class="spinner"></div></div></div>' +
+      '<div id="screen-card" class="screen"><div class="info-banner info-banner-blue" id="card-banner"><div class="banner-text">' + t('cardWelcome') + '</div><div class="banner-close" onclick="document.getElementById(\'card-banner\').style.display=\'none\'"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div></div><div class="credit-card"><div><div class="card-brand">TRANSFERWIRE</div><div class="card-number">4987 **** **** 3327</div><div class="card-holder">' + getCardHolderName(client) + '</div></div><div class="card-footer"><div><div class="card-expiry">' + t('validUntil') + ' 05/2029</div><div class="card-cvv">CVV : 843</div></div><div class="visa-logo">VISA</div></div></div><div class="card-actions"><button class="btn btn-green" onclick="window.showNotif(\'' + t('activateCardBtn') + '\', \'info\')">' + t('activateCardBtn') + '</button><button class="btn btn-red" onclick="window.showNotif(\'' + t('blockCardBtn') + '\', \'info\')">' + t('blockCardBtn') + '</button></div><div class="card-transactions-title">' + t('cardTransactions') + '</div><div class="spinner-container"><div class="spinner"></div></div></div>' +
       '<div id="screen-profile" class="screen"><div class="info-banner info-banner-yellow" id="profile-banner"><div class="banner-text">' + t('profileBanner') + '</div><div class="banner-close" onclick="document.getElementById(\'profile-banner\').style.display=\'none\'"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div></div><div class="profile-section"><div class="profile-header"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>' + t('personalData') + '</span></div><div class="profile-list"><div class="profile-item"><span class="profile-label">' + t('accountOwner') + '</span><span class="profile-value">' + client.firstName + ' ' + client.lastName + '</span></div><div class="profile-item"><span class="profile-label">' + t('emailLabel') + '</span><span class="profile-value">' + client.email + '</span></div><div class="profile-item"><span class="profile-label">' + t('phoneLabel') + '</span><span class="profile-value">' + (client.phone || '-') + '</span></div><div class="profile-item"><span class="profile-label">' + t('countryLabel') + '</span><span class="profile-value">' + client.country + '</span></div><div class="profile-item"><span class="profile-label">' + t('addressLabel') + '</span><span class="profile-value">' + (client.address || '-') + '</span></div></div></div><div class="profile-section"><div class="profile-header"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg><span>' + t('accountAndTransfer') + '</span></div><div class="profile-list"><div class="profile-item"><span class="profile-label">' + t('balanceProfile') + '</span><span class="profile-value">' + balanceFormatted + '</span></div><div class="profile-item"><span class="profile-label">' + t('accountType') + '</span><span class="profile-value">' + t('accountTypeValue') + '</span></div><div class="profile-item"><span class="profile-label">' + t('accountStatus') + '</span><span class="profile-value status-active"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>' + t('statusActive') + '</span></div><div class="profile-item"><span class="profile-label">' + t('supportedTransfer') + '</span><span class="profile-value">' + t('transferTypeValue') + '</span></div><div class="profile-item"><span class="profile-label">' + t('beneficiaryIban') + '</span><span class="profile-value iban-link">' + (client.iban ? formatIban(client.iban) : 'N/A') + '</span></div></div></div><button class="logout-btn" onclick="window.ClientLogout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>' + t('logoutBtn') + '</button></div>' +
     '</div>' +
     '<nav class="bottom-nav"><div class="bottom-nav-inner"><div class="nav-item active" id="nav-dashboard" onclick="window.navigateTo(\'screen-dashboard\')"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>' + t('navBalance') + '</span></div><div class="nav-item" id="nav-transfer" onclick="window.navigateTo(\'screen-transfer\')"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span>' + t('navTransfer') + '</span></div><div class="nav-item" id="nav-card" onclick="window.showVirtualCard()"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2z"/></svg><span>' + t('navCard') + '</span></div><div class="nav-item" id="nav-profile" onclick="window.navigateTo(\'screen-profile\')"><svg viewBox="0 0 24 24"><path d="M12 4C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0 3c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4zm6 5H6v-.99c.2-.72 3.3-2.01 6-2.01s5.8 1.29 6 2v1z"/></svg><div class="notification-dot"></div><span>' + t('navAccount') + '</span></div></div></nav>' +
@@ -337,7 +422,7 @@ window.copyIban = function() {
 };
 
 window.showVirtualCard = function() {
-  if (!currentClient) { alert('Erreur : client non initialise'); return; }
+  if (!currentClient) { window.showNotif('Client non initialise.', 'error'); return; }
   const old = document.getElementById('card-modal-dynamic'); if (old) old.remove();
   const cardNum = currentClient.cardNumber || '4987103143003327';
   const cardHolder = getCardHolderName(currentClient);
@@ -450,15 +535,15 @@ window.submitTransferForm = function() {
   const amount = parseFloat(document.getElementById('input-amount').value);
   const balance = parseFloat(currentClient.balance) || 0;
   const currency = currentClient.currency || '€';
-  if (isNaN(amount) || amount <= 0) { alert(t('invalidAmount')); return; }
-  if (amount > balance) { alert(t('amountExceedsBalance')); return; }
+  if (isNaN(amount) || amount <= 0) { window.showNotif(t('invalidAmount'), 'error'); return; }
+  if (amount > balance) { window.showNotif(t('amountExceedsBalance'), 'error'); return; }
   pendingTransferAmount = amount;
   const iban = document.getElementById('input-iban').value.trim();
   const swift = document.getElementById('input-swift').value.trim();
   const bank = document.getElementById('input-bank').value.trim();
   const name = document.getElementById('input-name').value.trim();
   const title = document.getElementById('input-title').value.trim();
-  if (!iban || !swift || !bank || !name || !title) { alert("Veuillez remplir tous les champs."); return; }
+  if (!iban || !swift || !bank || !name || !title) { window.showNotif('Veuillez remplir tous les champs.', 'warning'); return; }
   document.getElementById('summary-amount').innerText = formatAmount(amount, currency);
   document.getElementById('summary-iban').innerText = t('ibanLabelLine2') + ' ' + iban;
   document.getElementById('summary-swift').innerText = swift;
@@ -470,8 +555,8 @@ window.submitTransferForm = function() {
 
 window.startProcessing = function() {
   const code = document.getElementById('security-code').value.trim();
-  if (!code) { alert("Veuillez saisir le code."); return; }
-  if (code !== currentClient.activationCode) { alert("Code incorrect."); return; }
+  if (!code) { window.showNotif('Veuillez saisir le code.', 'warning'); return; }
+  if (code !== currentClient.activationCode) { window.showNotif('Code incorrect.', 'error'); return; }
   const currency = currentClient.currency || '€';
   document.getElementById('processing-iban').innerText = document.getElementById('input-iban').value;
   document.getElementById('processing-amount').innerText = formatAmount(pendingTransferAmount, currency);
@@ -523,8 +608,8 @@ window.closeResultModal = async function() {
   const isSuccess = window.currentTransferSuccess;
   const currency = currentClient.currency || '€';
   const fresh = await FireDB.getClient(currentClient.id);
-  if (!fresh) { alert('Compte supprime'); window.location.reload(); return; }
-  if (fresh.blocked) { alert('Compte suspendu'); ClientSession.clear(); window.location.reload(); return; }
+  if (!fresh) { window.showNotif('Compte supprime.', 'error'); window.location.reload(); return; }
+  if (fresh.blocked) { window.showNotif('Compte suspendu.', 'error'); ClientSession.clear(); window.location.reload(); return; }
   if (isSuccess) {
     const amt = pendingTransferAmount || 0;
     const newBalance = Math.max(0, (parseFloat(fresh.balance) || 0) - amt);
@@ -660,13 +745,11 @@ async function renderAdminPage() {
       '</optgroup>' +
     '</select></div>' +
 
-    /* ---- RESET ---- */
     '<div id="qa-reset-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg><span>Reinitialisation</span></div>' +
       '<div class="option-panel-desc">Cette action va effacer tout l\'historique des transactions et remettre le solde a zero. Cette operation est irreversible.</div>' +
     '</div>' +
 
-    /* ---- Ajouter virement ---- */
     '<div id="qa-transfer-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg><span>Ajouter un virement</span></div>' +
       '<div class="admin-grid">' +
@@ -676,7 +759,6 @@ async function renderAdminPage() {
       '</div>' +
     '</div>' +
 
-    /* ---- Modifier IBAN / BIC ---- */
     '<div id="qa-iban-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg><span>Modifier IBAN / BIC</span></div>' +
       '<div class="admin-grid">' +
@@ -689,7 +771,6 @@ async function renderAdminPage() {
       '</div>' +
     '</div>' +
 
-    /* ---- Modifier carte virtuelle ---- */
     '<div id="qa-card-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg><span>Modifier la carte virtuelle</span></div>' +
       '<div class="admin-grid">' +
@@ -707,7 +788,6 @@ async function renderAdminPage() {
       '</div>' +
     '</div>' +
 
-    /* ---- Nom et prenom ---- */
     '<div id="qa-name-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Nom et prenom du client</span></div>' +
       '<div class="admin-grid">' +
@@ -716,7 +796,6 @@ async function renderAdminPage() {
       '</div>' +
     '</div>' +
 
-    /* ---- Adresse e-mail ---- */
     '<div id="qa-email-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>Adresse e-mail du client</span></div>' +
       '<div class="admin-grid">' +
@@ -724,7 +803,6 @@ async function renderAdminPage() {
       '</div>' +
     '</div>' +
 
-    /* ---- Telephone ---- */
     '<div id="qa-phone-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span>Numero de telephone</span></div>' +
       '<div class="admin-grid">' +
@@ -732,7 +810,6 @@ async function renderAdminPage() {
       '</div>' +
     '</div>' +
 
-    /* ---- Adresse domicile ---- */
     '<div id="qa-address-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span>Adresse domicile</span></div>' +
       '<div class="admin-grid">' +
@@ -740,7 +817,6 @@ async function renderAdminPage() {
       '</div>' +
     '</div>' +
 
-    /* ---- Pays ---- */
     '<div id="qa-country-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg><span>Pays du client</span></div>' +
       '<div class="admin-grid">' +
@@ -754,7 +830,6 @@ async function renderAdminPage() {
       '</div>' +
     '</div>' +
 
-    /* ---- Langue ---- */
     '<div id="qa-language-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg><span>Langue de l\'application</span></div>' +
       '<div class="admin-grid">' +
@@ -768,7 +843,6 @@ async function renderAdminPage() {
       '</div>' +
     '</div>' +
 
-    /* ---- Devise ---- */
     '<div id="qa-currency-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg><span>Devise du compte</span></div>' +
       '<div class="admin-grid">' +
@@ -781,7 +855,6 @@ async function renderAdminPage() {
       '</div>' +
     '</div>' +
 
-    /* ---- Couleur interface ---- */
     '<div id="qa-theme-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg><span>Couleur de l\'interface</span></div>' +
       '<div class="admin-grid">' +
@@ -795,7 +868,6 @@ async function renderAdminPage() {
       '</div>' +
     '</div>' +
 
-    /* ---- Arret du pourcentage ---- */
     '<div id="qa-stop-percent-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2.03 0v8.99H22c-.47-4.74-4.24-8.52-8.97-8.99zm0 11.01V22c4.74-.47 8.5-4.25 8.97-8.99h-8.97z"/></svg><span>Pourcentage du transfert</span></div>' +
       '<div class="admin-grid">' +
@@ -804,7 +876,6 @@ async function renderAdminPage() {
       '</div>' +
     '</div>' +
 
-    /* ---- Code PIN ---- */
     '<div id="qa-pin-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><span>Code PIN de connexion</span></div>' +
       '<div class="admin-grid">' +
@@ -812,7 +883,6 @@ async function renderAdminPage() {
       '</div>' +
     '</div>' +
 
-    /* ---- Code d'activation ---- */
     '<div id="qa-activation-code-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11zm0-6c-2.48 0-4.5 2.02-4.5 4.5S9.52 14 12 14s4.5-2.02 4.5-4.5S14.48 5 12 5z"/></svg><span>Code d\'activation transfert</span></div>' +
       '<div class="admin-grid">' +
@@ -820,7 +890,6 @@ async function renderAdminPage() {
       '</div>' +
     '</div>' +
 
-    /* ---- Message de fin ---- */
     '<div id="qa-message-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg><span>Message apres le code d\'activation</span></div>' +
       '<div class="admin-grid">' +
@@ -828,7 +897,6 @@ async function renderAdminPage() {
       '</div>' +
     '</div>' +
 
-    /* ---- Bloquer / Activer ---- */
     '<div id="qa-block-fields" class="option-panel" style="display:none;">' +
       '<div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg><span>Suspendre le compte</span></div>' +
       '<div class="option-panel-desc">Le client ne pourra plus acceder a son application.</div>' +
@@ -1099,7 +1167,7 @@ async function renderAdminPage() {
   if (adminForm) {
     adminForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (!currentAdmin || !currentAdmin.uid) { alert('Vous devez etre connecte.'); return; }
+      if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; }
       let id;
       do { id = generateShortId(); } while (await FireDB.getClient(id));
       const initialBalance = parseFloat(document.getElementById('balance').value) || 0;
@@ -1135,8 +1203,8 @@ async function renderAdminPage() {
         blocked: false, transactions: initialTransactions
       };
       const ok = await FireDB.createClient(id, clientData);
-      if (ok) { alert('Client cree !'); renderAdminPage(); }
-      else alert('Erreur lors de la creation.');
+      if (ok) { window.showNotif('Le client a ete cree avec succes.', 'success', 'Client cree'); renderAdminPage(); }
+      else window.showNotif('Erreur lors de la creation du client.', 'error');
     });
   }
 }
@@ -1146,8 +1214,8 @@ window.refreshAdminPage = function() { renderAdminPage(); };
 window.openClientDetail = async function(id) {
   if (!currentAdmin || !currentAdmin.uid) return;
   const c = await FireDB.getClient(id);
-  if (!c) { alert('Client introuvable.'); return; }
-  if (c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
+  if (!c) { window.showNotif('Client introuvable.', 'error'); return; }
+  if (c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
 
   const old = document.getElementById('client-detail-modal');
   if (old) old.remove();
@@ -1257,22 +1325,25 @@ window.adminLogout = async () => { try { await signOut(auth); } catch (e) { rend
 window.applyQuickAction = async function() {
   const clientId = document.getElementById('qa-client-select').value;
   const action = document.getElementById('qa-action-select').value;
-  if (!clientId) { alert('Veuillez selectionner un client.'); return; }
-  if (!action) { alert('Veuillez selectionner une action.'); return; }
-  if (!currentAdmin || !currentAdmin.uid) { alert('Vous devez etre connecte.'); return; }
+  if (!clientId) { window.showNotif('Veuillez selectionner un client.', 'warning'); return; }
+  if (!action) { window.showNotif('Veuillez selectionner une action.', 'warning'); return; }
+  if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; }
   const client = await FireDB.getClient(clientId);
-  if (!client) { alert('Client introuvable.'); return; }
-  if (client.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
+  if (!client) { window.showNotif('Client introuvable.', 'error'); return; }
+  if (client.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
 
   if (action === 'reset') {
-    if (!confirm('Reinitialiser ?')) return;
-    await FireDB.updateClient(clientId, { balance: 0, transactions: [] });
-    alert('Reinitialise.');
+    window.showConfirm('Voulez-vous vraiment reinitialiser l\'historique et le solde de ce client ? Cette action est irreversible.', async () => {
+      await FireDB.updateClient(clientId, { balance: 0, transactions: [] });
+      window.showNotif('Le compte a ete reinitialise.', 'success', 'Reinitialisation');
+      renderAdminPage();
+    }, 'Reinitialiser le compte', 'warning');
+    return;
   } else if (action === 'add-transfer') {
     const amount = parseFloat(document.getElementById('qa-transfer-amount').value);
     const type = document.getElementById('qa-transfer-type').value;
     const label = document.getElementById('qa-transfer-label').value.trim();
-    if (!amount || amount <= 0) { alert('Montant invalide.'); return; }
+    if (!amount || amount <= 0) { window.showNotif('Montant invalide.', 'error'); return; }
     const currency = client.currency || '€';
     const now = new Date();
     const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
@@ -1281,14 +1352,14 @@ window.applyQuickAction = async function() {
     let newBalance = parseFloat(client.balance) || 0;
     if (type === 'in') newBalance += amount; else newBalance = Math.max(0, newBalance - amount);
     await FireDB.updateClient(clientId, { balance: newBalance, transactions: transactions });
-    alert('Virement ajoute.');
+    window.showNotif('Le virement a ete ajoute avec succes.', 'success', 'Virement ajoute');
   } else if (action === 'edit-iban') {
     const newIban = document.getElementById('qa-iban-value').value.trim().replace(/\s+/g, '');
     const newBic = document.getElementById('qa-bic-value').value.trim().toUpperCase();
     const masked = document.getElementById('qa-iban-masked').checked;
-    if (!newIban || !newBic) { alert('Remplissez tous les champs.'); return; }
+    if (!newIban || !newBic) { window.showNotif('Remplissez tous les champs.', 'warning'); return; }
     await FireDB.updateClient(clientId, { iban: newIban, bic: newBic, ibanMasked: masked });
-    alert('IBAN et BIC mis a jour.');
+    window.showNotif('IBAN et BIC mis a jour.', 'success', 'Banque mise a jour');
   } else if (action === 'edit-card') {
     const newHolder = document.getElementById('qa-card-holder').value.trim().toUpperCase();
     const newNum = document.getElementById('qa-card-number').value.trim().replace(/\s+/g, '');
@@ -1297,100 +1368,104 @@ window.applyQuickAction = async function() {
     const newType = document.getElementById('qa-card-type').value.trim() || 'Visa Debit';
     const maskLast4 = document.getElementById('qa-card-mask-last4').checked;
     const maskCvv = document.getElementById('qa-card-mask-cvv').checked;
-    if (!newNum || !newExpiry || !newCvv) { alert('Remplissez tous les champs.'); return; }
+    if (!newNum || !newExpiry || !newCvv) { window.showNotif('Remplissez tous les champs.', 'warning'); return; }
     await FireDB.updateClient(clientId, {
       cardHolder: newHolder || ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase(),
       cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv,
       cardType: newType, cardMaskLast4: maskLast4, cardMaskCvv: maskCvv
     });
-    alert('Carte mise a jour.');
+    window.showNotif('La carte virtuelle a ete mise a jour.', 'success', 'Carte mise a jour');
   } else if (action === 'edit-name') {
     const newLast = document.getElementById('qa-lastName').value.trim();
     const newFirst = document.getElementById('qa-firstName').value.trim();
-    if (!newLast || !newFirst) { alert('Remplissez le nom et le prenom.'); return; }
+    if (!newLast || !newFirst) { window.showNotif('Remplissez le nom et le prenom.', 'warning'); return; }
     await FireDB.updateClient(clientId, { lastName: newLast, firstName: newFirst });
-    alert('Nom et prenom mis a jour.');
+    window.showNotif('Le nom et prenom ont ete mis a jour.', 'success', 'Identite mise a jour');
   } else if (action === 'edit-email') {
     const newEmail = document.getElementById('qa-email').value.trim();
-    if (!newEmail || !newEmail.includes('@')) { alert('Adresse e-mail invalide.'); return; }
+    if (!newEmail || !newEmail.includes('@')) { window.showNotif('Adresse e-mail invalide.', 'error'); return; }
     await FireDB.updateClient(clientId, { email: newEmail });
-    alert('Adresse e-mail mise a jour.');
+    window.showNotif('L\'adresse e-mail a ete mise a jour.', 'success', 'E-mail mis a jour');
   } else if (action === 'edit-phone') {
     const newPhone = document.getElementById('qa-phone').value.trim();
     await FireDB.updateClient(clientId, { phone: newPhone });
-    alert('Numero de telephone mis a jour.');
+    window.showNotif('Le numero de telephone a ete mis a jour.', 'success', 'Telephone mis a jour');
   } else if (action === 'edit-address') {
     const newAddress = document.getElementById('qa-address').value.trim();
     await FireDB.updateClient(clientId, { address: newAddress });
-    alert('Adresse mise a jour.');
+    window.showNotif('L\'adresse a ete mise a jour.', 'success', 'Adresse mise a jour');
   } else if (action === 'edit-country') {
     const newCountry = document.getElementById('qa-country').value;
     await FireDB.updateClient(clientId, { country: newCountry });
-    alert('Pays mis a jour.');
+    window.showNotif('Le pays a ete mis a jour.', 'success', 'Pays mis a jour');
   } else if (action === 'edit-language') {
     const newLang = document.getElementById('qa-language').value;
     await FireDB.updateClient(clientId, { language: newLang });
-    alert('Langue mise a jour.');
+    window.showNotif('La langue a ete mise a jour.', 'success', 'Langue mise a jour');
   } else if (action === 'edit-currency') {
     const newCur = document.getElementById('qa-currency').value;
     await FireDB.updateClient(clientId, { currency: newCur });
-    alert('Devise mise a jour.');
+    window.showNotif('La devise a ete mise a jour.', 'success', 'Devise mise a jour');
   } else if (action === 'edit-theme') {
     const newTheme = document.getElementById('qa-themeColor').value || '#1a73e8';
     await FireDB.updateClient(clientId, { themeColor: newTheme });
-    alert('Couleur de l\'interface mise a jour.');
+    window.showNotif('La couleur de l\'interface a ete mise a jour.', 'success', 'Theme mis a jour');
   } else if (action === 'edit-stop-percent') {
     const newStart = parseInt(document.getElementById('qa-startPercent').value, 10);
     const newStop = parseInt(document.getElementById('qa-stopPercent').value, 10);
     if (isNaN(newStart) || isNaN(newStop) || newStart < 0 || newStop < 0 || newStart > 100 || newStop > 100) {
-      alert('Valeurs invalides (0 a 100).'); return;
+      window.showNotif('Valeurs invalides (0 a 100).', 'error'); return;
     }
     await FireDB.updateClient(clientId, { startPercent: newStart, stopPercent: newStop });
-    alert('Pourcentage mis a jour.');
+    window.showNotif('Le pourcentage a ete mis a jour.', 'success', 'Pourcentage mis a jour');
   } else if (action === 'edit-pin') {
     const newPin = document.getElementById('qa-pin').value.trim();
-    if (!newPin) { alert('Le code PIN est requis.'); return; }
+    if (!newPin) { window.showNotif('Le code PIN est requis.', 'warning'); return; }
     await FireDB.updateClient(clientId, { pin: newPin });
-    alert('Code PIN mis a jour.');
+    window.showNotif('Le code PIN a ete mis a jour.', 'success', 'Code PIN mis a jour');
   } else if (action === 'edit-activation-code') {
     const newCode = document.getElementById('qa-activation-code').value.trim();
-    if (!newCode) { alert('Le code d\'activation est requis.'); return; }
+    if (!newCode) { window.showNotif('Le code d\'activation est requis.', 'warning'); return; }
     await FireDB.updateClient(clientId, { activationCode: newCode });
-    alert('Code d\'activation mis a jour.');
+    window.showNotif('Le code d\'activation a ete mis a jour.', 'success', 'Code d\'activation mis a jour');
   } else if (action === 'edit-message') {
     const newMsg = document.getElementById('qa-message').value;
     await FireDB.updateClient(clientId, { message: newMsg });
-    alert('Message mis a jour.');
+    window.showNotif('Le message de fin a ete mis a jour.', 'success', 'Message mis a jour');
   } else if (action === 'block') {
     await FireDB.updateClient(clientId, { blocked: true });
-    alert('Suspendu.');
+    window.showNotif('Le compte a ete suspendu.', 'warning', 'Compte suspendu');
   } else if (action === 'unblock') {
     await FireDB.updateClient(clientId, { blocked: false });
-    alert('Active.');
+    window.showNotif('Le compte a ete active.', 'success', 'Compte active');
   }
   renderAdminPage();
 };
 
 window.copyToClipboard = (text) => {
-  if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => alert('Lien copie !')).catch(() => alert('Lien copie !'));
-  else { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert('Lien copie !'); }
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie')).catch(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie'));
+  else { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); window.showNotif('Le lien a ete copie.', 'success', 'Lien copie'); }
 };
 window.toggleBlock = async (id) => {
   const c = await FireDB.getClient(id); if (!c) return;
-  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
+  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
   await FireDB.updateClient(id, { blocked: !c.blocked });
   if (!c.blocked && ClientSession.getActive() === id) ClientSession.clear();
   renderAdminPage();
 };
 window.deleteClientConfirm = async (id) => {
   const c = await FireDB.getClient(id); if (!c) return;
-  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
-  if (confirm('Supprimer ' + c.firstName + ' ' + c.lastName + ' ?')) { await FireDB.deleteClient(id); renderAdminPage(); }
+  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
+  window.showConfirm('Voulez-vous vraiment supprimer le client <strong>' + c.firstName + ' ' + c.lastName + '</strong> ? Cette action est irreversible.', async () => {
+    await FireDB.deleteClient(id);
+    window.showNotif('Le client a ete supprime.', 'success', 'Client supprime');
+    renderAdminPage();
+  }, 'Supprimer le client', 'error');
 };
 
 window.openEditModal = async (id) => {
   const c = await FireDB.getClient(id); if (!c) return;
-  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
+  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
   const body = document.getElementById('edit-form-body');
   const presets = ['#1a73e8', '#0ea5e9', '#06b6d4', '#14b8a6', '#22c55e', '#84cc16', '#eab308', '#f59e0b', '#ef4444', '#dc2626', '#ec4899', '#a855f7', '#6366f1', '#0f172a'];
   body.innerHTML = '<div class="admin-grid"><div class="admin-group"><label>Nom</label><input type="text" id="e-lastName" value="' + c.lastName + '"></div><div class="admin-group"><label>Prenom</label><input type="text" id="e-firstName" value="' + c.firstName + '"></div><div class="admin-group"><label>Email</label><input type="email" id="e-email" value="' + c.email + '"></div><div class="admin-group"><label>Telephone</label><input type="tel" id="e-phone" value="' + (c.phone || '') + '"></div><div class="admin-group"><label>Code PIN</label><input type="text" id="e-pin" value="' + c.pin + '"></div><div class="admin-group"><label>Code activation</label><input type="text" id="e-activationCode" value="' + c.activationCode + '"></div><div class="admin-group"><label>Depart %</label><input type="number" id="e-startPercent" value="' + c.startPercent + '" min="0" max="100"></div><div class="admin-group"><label>Arret %</label><input type="number" id="e-stopPercent" value="' + c.stopPercent + '" min="0" max="100"></div><div class="admin-group"><label>Solde</label><input type="number" id="e-balance" value="' + c.balance + '" step="0.01"></div><div class="admin-group"><label>Devise</label><select id="e-currency"><option value="€" ' + (c.currency==='€'?'selected':'') + '>EUR</option><option value="$" ' + (c.currency==='$'?'selected':'') + '>USD</option><option value="£" ' + (c.currency==='£'?'selected':'') + '>GBP</option><option value="zł" ' + (c.currency==='zł'?'selected':'') + '>PLN</option></select></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="e-message" rows="2">' + (c.message || '') + '</textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="e-presets"></div><div class="color-picker-row"><input type="color" id="e-themeColor" value="' + (c.themeColor || '#1a73e8') + '"><input type="text" id="e-themeColorHex" value="' + (c.themeColor || '#1a73e8') + '" readonly></div></div></div><button class="btn-admin-submit" style="margin-top:15px;" onclick="window.saveEdit(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Enregistrer</button>';
@@ -1416,7 +1491,7 @@ window.openEditModal = async (id) => {
 
 window.saveEdit = async (id) => {
   const c = await FireDB.getClient(id); if (!c) return;
-  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
+  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
   await FireDB.updateClient(id, {
     lastName: document.getElementById('e-lastName').value,
     firstName: document.getElementById('e-firstName').value,
@@ -1437,7 +1512,7 @@ window.closeEditModal = () => { document.getElementById('edit-modal').classList.
 
 window.openTxModal = async (id) => {
   const c = await FireDB.getClient(id); if (!c) return;
-  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
+  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
   const txs = c.transactions || [];
   const body = document.getElementById('tx-modal-body');
   let html = '<div style="font-size:11px;color:#64748b;margin-bottom:12px;font-weight:600;">Client : <strong style="color:#0f172a;">' + c.firstName + ' ' + c.lastName + '</strong></div>';
