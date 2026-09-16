@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v33 - Cercle de progression + padding + écran traitement
+// v34 - Page confirmation + padding + gris plus foncé
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -103,7 +103,7 @@ window.addEventListener('popstate', async (event) => {
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     const map = { 'screen-dashboard': 'nav-dashboard', 'screen-card': 'nav-card', 'screen-profile': 'nav-profile' };
     let navId = map[state.screen];
-    if (['screen-transfer', 'screen-verification', 'screen-processing'].indexOf(state.screen) !== -1) navId = 'nav-transfer';
+    if (['screen-transfer', 'screen-verification', 'screen-processing', 'screen-result'].indexOf(state.screen) !== -1) navId = 'nav-transfer';
     if (navId) { const n = document.getElementById(navId); if (n) n.classList.add('active'); }
     const container = document.querySelector('.screens-container'); if (container) container.scrollTop = 0;
   }
@@ -265,8 +265,6 @@ function renderBankingApp(client) {
     '<div class="screens-container">' +
       '<div id="screen-dashboard" class="screen active"><div class="greeting">' + t('greeting') + ' ' + client.firstName + ' ' + client.lastName + ' ,</div><div class="dashboard-hero" id="balance-hero">' + renderBalanceHero(client) + '</div>' + renderQuickActions() + '<div class="section-title">' + t('transactionHistory') + '</div><div class="transaction-list" id="transaction-list">' + renderTransactions(client.transactions) + '</div></div>' +
       '<div id="screen-transfer" class="screen"><div class="page-title-bar"><div class="page-title-icon"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div><span>' + t('sendOutgoingTransfer') + '</span></div><div class="transfer-amount">' + balanceFormatted + '</div><div class="transfer-card"><div class="details-header"><div class="details-icon">i</div><span>' + t('transferDetails') + '</span></div><form id="transfer-form"><div class="form-group"><label class="form-label">' + t('amountToDebit') + '</label><input type="number" class="form-input amount-input" id="input-amount" step="0.01" min="0.01" required></div><div class="form-group"><label class="form-label">' + t('labelIban') + '</label><input type="text" class="form-input" id="input-iban" required></div><div class="form-group"><label class="form-label">' + t('labelSwift') + '</label><input type="text" class="form-input" id="input-swift" required></div><div class="form-group"><label class="form-label">' + t('labelBank') + '</label><input type="text" class="form-input" id="input-bank" required></div><div class="form-group"><label class="form-label">' + t('labelBeneficiary') + '</label><input type="text" class="form-input" id="input-name" required></div><div class="form-group"><label class="form-label">' + t('labelReason') + '</label><input type="text" class="form-input" id="input-title" required></div></form><div class="warning-box"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><div class="warning-text">' + t('processingWarning') + '</div></div></div><button class="submit-btn" onclick="window.submitTransferForm()">' + t('nextBtn') + '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
-
-      /* ===== ÉCRAN VÉRIFICATION ===== */
       '<div id="screen-verification" class="screen"><div class="verify-card">' +
         '<div class="verify-header">' +
           '<div class="verify-header-icon"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg></div>' +
@@ -292,26 +290,17 @@ function renderBankingApp(client) {
       '<button class="submit-btn verify-submit-btn" onclick="window.startProcessing()">' + t('validateTransferBtn') + ' <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button>' +
       '</div>' +
 
-      /* ===== ÉCRAN TRAITEMENT (nouveau design) ===== */
       '<div id="screen-processing" class="screen"><div class="processing-page-title">' + t('processingPageTitle') + '</div><div class="verify-card">' +
-        '<div class="processing-status-row">' +
-          '<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>' +
-          '<span>' + t('processingStatus') + '</span>' +
-        '</div>' +
+        '<div class="processing-status-row"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>' + t('processingStatus') + '</span></div>' +
         '<div class="processing-desc-text">' + t('processingDescLong') + '</div>' +
-        '<div class="processing-circle-wrapper">' +
-          '<div class="processing-circle">' +
-            '<svg viewBox="0 0 120 120">' +
-              '<circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="9"/>' +
-              '<circle cx="60" cy="60" r="50" fill="none" stroke="#f59e0b" stroke-width="9" stroke-dasharray="314.159" stroke-dashoffset="314.159" stroke-linecap="round" transform="rotate(-90 60 60)" id="progress-ring"/>' +
-            '</svg>' +
-            '<div class="processing-circle-label" id="progress-text">0%</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="processing-details-header">' +
-          '<svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg>' +
-          '<span>' + t('processingDetailsTitle') + '</span>' +
-        '</div>' +
+        '<div class="processing-circle-wrapper"><div class="processing-circle">' +
+          '<svg viewBox="0 0 120 120">' +
+            '<circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="9"/>' +
+            '<circle cx="60" cy="60" r="50" fill="none" stroke="#f59e0b" stroke-width="9" stroke-dasharray="314.159" stroke-dashoffset="314.159" stroke-linecap="round" transform="rotate(-90 60 60)" id="progress-ring"/>' +
+          '</svg>' +
+          '<div class="processing-circle-label" id="progress-text">0%</div>' +
+        '</div></div>' +
+        '<div class="processing-details-header"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg><span>' + t('processingDetailsTitle') + '</span></div>' +
         '<div class="verify-data-block">' +
           '<div class="verify-list">' +
             '<div class="verify-row"><div class="verify-row-label">' + t('processingAmountLabel') + '</div><div class="verify-row-value" id="processing-amount">-</div></div>' +
@@ -319,6 +308,20 @@ function renderBankingApp(client) {
             '<div class="verify-row"><div class="verify-row-label">' + t('processingIbanLabel') + '</div><div class="verify-row-value" id="processing-iban">-</div></div>' +
             '<div class="verify-row"><div class="verify-row-label">' + t('processingBankLabel') + '</div><div class="verify-row-value">' + (client.bankName || 'BNP Paribas') + '</div></div>' +
           '</div>' +
+        '</div>' +
+      '</div></div>' +
+
+      /* ===== NOUVELLE PAGE RÉSULTAT ===== */
+      '<div id="screen-result" class="screen"><div class="result-page-wrapper">' +
+        '<div class="result-header-block success" id="result-header-block">' +
+          '<button class="result-close-btn" onclick="window.closeResultModal()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
+          '<div class="result-check-circle success" id="result-check-circle"><svg viewBox="0 0 24 24" id="result-check-svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>' +
+        '</div>' +
+        '<div class="result-body-block">' +
+          '<div class="result-title-text success" id="result-title-text"></div>' +
+          '<div class="result-details-list" id="result-details-list"></div>' +
+          '<div class="result-info-box"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span id="result-info-text"></span></div>' +
+          '<div class="result-footer-block"><button class="result-close-action" id="result-close-action" onclick="window.closeResultModal()"></button></div>' +
         '</div>' +
       '</div></div>' +
 
@@ -344,7 +347,7 @@ window.navigateTo = function(id) {
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
   const map = { 'screen-dashboard': 'nav-dashboard', 'screen-card': 'nav-card', 'screen-profile': 'nav-profile' };
   let navId = map[id];
-  if (['screen-transfer', 'screen-verification', 'screen-processing'].indexOf(id) !== -1) navId = 'nav-transfer';
+  if (['screen-transfer', 'screen-verification', 'screen-processing', 'screen-result'].indexOf(id) !== -1) navId = 'nav-transfer';
   if (navId) { const n = document.getElementById(navId); if (n) n.classList.add('active'); }
   const container = document.querySelector('.screens-container'); if (container) container.scrollTop = 0;
   pushHistory(id);
@@ -538,14 +541,14 @@ window.startProcessing = function() {
   updateRing(progress);
   clearInterval(progressInterval);
   progressInterval = setInterval(() => {
-    if (progress >= stopAt) { clearInterval(progressInterval); setTimeout(() => { showResultModal(stopAt >= 100); }, 500); return; }
+    if (progress >= stopAt) { clearInterval(progressInterval); setTimeout(() => { showResultPage(stopAt >= 100); }, 500); return; }
     progress += Math.floor(Math.random() * 3) + 1;
     if (progress > stopAt) progress = stopAt;
     updateRing(progress);
   }, 150);
 };
 
-function showResultModal(isSuccess) {
+function showResultPage(isSuccess) {
   const now = new Date();
   const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
   const currency = currentClient.currency || '€';
@@ -555,27 +558,40 @@ function showResultModal(isSuccess) {
   const bank = document.getElementById('input-bank').value;
   const name = document.getElementById('input-name').value;
   const reason = document.getElementById('input-title').value;
-  const mh = document.getElementById('modal-header'); const mc = document.getElementById('modal-icon-circle'); const ms = document.getElementById('modal-icon-svg'); const mt = document.getElementById('modal-title'); const mi = document.getElementById('modal-info-icon');
+  const headerBlock = document.getElementById('result-header-block');
+  const checkCircle = document.getElementById('result-check-circle');
+  const checkSvg = document.getElementById('result-check-svg');
+  const titleText = document.getElementById('result-title-text');
+  const detailsList = document.getElementById('result-details-list');
+  const infoText = document.getElementById('result-info-text');
+  const closeBtn = document.getElementById('result-close-action');
   if (isSuccess) {
-    mh.className = 'modal-header success'; mc.className = 'check-icon-circle success';
-    ms.innerHTML = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
-    mt.className = 'modal-title success'; mt.innerText = t('modalSuccess').replace('{amount}', amountFormatted);
-    mi.innerHTML = '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>'; mi.style.fill = '#334155';
+    headerBlock.className = 'result-header-block success';
+    checkCircle.className = 'result-check-circle success';
+    checkSvg.innerHTML = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
+    titleText.className = 'result-title-text success';
+    titleText.innerText = t('modalSuccess').replace('{amount}', amountFormatted);
   } else {
-    mh.className = 'modal-header failure'; mc.className = 'check-icon-circle failure';
-    ms.innerHTML = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
-    mt.className = 'modal-title failure'; mt.innerText = t('modalFailure');
-    mi.innerHTML = '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>'; mi.style.fill = '#dc2626';
+    headerBlock.className = 'result-header-block failure';
+    checkCircle.className = 'result-check-circle failure';
+    checkSvg.innerHTML = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
+    titleText.className = 'result-title-text failure';
+    titleText.innerText = t('modalFailure');
   }
-  document.getElementById('modal-details').innerHTML = '<div><span class="lbl">' + t('beneficiaryLabel') + '</span>' + name + '</div><div><span class="lbl">' + t('bankLabel') + '</span>' + bank + '</div><div><span class="lbl">' + t('ibanLabel') + '</span>' + iban + '</div><div><span class="lbl">' + t('swiftLabel') + '</span>' + swift + '</div><div><span class="lbl">' + t('reasonLabel') + '</span>' + reason + '</div><div><span class="lbl">' + t('sendTime') + '</span>' + dateStr + '</div>';
-  document.getElementById('modal-message').innerText = currentClient.message || '...';
-  document.getElementById('modal-close-btn').innerText = t('closeBtn');
-  document.getElementById('result-modal').classList.add('active');
+  detailsList.innerHTML =
+    '<div class="result-detail-row"><span class="result-detail-label">' + t('beneficiaryLabel') + '</span><span class="result-detail-value">' + name + '</span></div>' +
+    '<div class="result-detail-row"><span class="result-detail-label">' + t('bankLabel') + '</span><span class="result-detail-value">' + bank + '</span></div>' +
+    '<div class="result-detail-row"><span class="result-detail-label">' + t('ibanLabel') + '</span><span class="result-detail-value">' + iban + '</span></div>' +
+    '<div class="result-detail-row"><span class="result-detail-label">' + t('swiftLabel') + '</span><span class="result-detail-value">' + swift + '</span></div>' +
+    '<div class="result-detail-row"><span class="result-detail-label">' + t('reasonLabel') + '</span><span class="result-detail-value">' + reason + '</span></div>' +
+    '<div class="result-detail-row"><span class="result-detail-label">' + t('sendTime') + '</span><span class="result-detail-value">' + dateStr + '</span></div>';
+  infoText.innerText = currentClient.message || '...';
+  closeBtn.innerText = t('closeBtn');
   window.currentTransferSuccess = isSuccess;
+  window.navigateTo('screen-result');
 }
 
 window.closeResultModal = async function() {
-  document.getElementById('result-modal').classList.remove('active');
   const isSuccess = window.currentTransferSuccess;
   const currency = currentClient.currency || '€';
   const fresh = await FireDB.getClient(currentClient.id);
