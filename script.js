@@ -97,6 +97,12 @@ function generateCardCvv() {
   return String(Math.floor(Math.random() * 900) + 100);
 }
 
+// Titulaire toujours dérivé du nom et prénom du client
+function getCardHolderName(client) {
+  if (!client) return '';
+  return ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase();
+}
+
 function formatIban(iban) {
   if (!iban) return '';
   return iban.replace(/(.{4})/g, '$1 ').trim();
@@ -722,7 +728,7 @@ function renderBankingApp(client) {
       '<div id="screen-card" class="screen">' +
         '<div class="info-banner info-banner-blue" id="card-banner"><div class="banner-text">' + t('cardWelcome') + '</div><div class="banner-close" onclick="document.getElementById(\'card-banner\').style.display=\'none\'"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div></div>' +
         '<div class="credit-card">' +
-          '<div><div class="card-brand">TRANSFERWIRE</div><div class="card-number">4987 **** **** 3327</div><div class="card-holder">' + client.firstName + ' ' + client.lastName + '</div></div>' +
+          '<div><div class="card-brand">TRANSFERWIRE</div><div class="card-number">4987 **** **** 3327</div><div class="card-holder">' + getCardHolderName(client) + '</div></div>' +
           '<div class="card-footer"><div><div class="card-expiry">' + t('validUntil') + ' 05/2029</div><div class="card-cvv">CVV : 843</div></div><div class="visa-logo">VISA</div></div>' +
         '</div>' +
         '<div class="card-actions">' +
@@ -806,7 +812,7 @@ window.navigateTo = function(id) {
 // =====================================================
 window.showIban = function() {
   const rawIban = currentClient.iban || currentClient.address || 'N/A';
-  const ownerName = ((currentClient.firstName || '') + ' ' + (currentClient.lastName || '')).trim();
+  const ownerName = getCardHolderName(currentClient);
   const bic = currentClient.bic || 'BICCODEXX';
   const masked = currentClient.ibanMasked === true;
   const displayIban = masked ? maskIban(rawIban) : rawIban;
@@ -866,7 +872,8 @@ window.copyIban = function() {
 // =====================================================
 window.showVirtualCard = function() {
   const cardNum = currentClient.cardNumber || '4987103143003327';
-  const cardHolder = currentClient.cardHolder || ((currentClient.firstName || '') + ' ' + (currentClient.lastName || '')).toUpperCase();
+  // Titulaire toujours dérivé du nom + prénom du client
+  const cardHolder = getCardHolderName(currentClient);
   const cardExpiry = currentClient.cardExpiry || '12/40';
   const cardCvv = currentClient.cardCvv || '843';
   const cardType = currentClient.cardType || 'Visa Debit';
@@ -901,7 +908,7 @@ function renderVirtualCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardTyp
   const displayCvv = showFullCvv ? cardCvv : '•••';
 
   const formattedNum = formatCardNumber(displayNum);
-  const formattedHolder = cardHolder.toUpperCase();
+  const formattedHolder = (cardHolder || '').toUpperCase();
 
   let warningText = '';
   let warningClass = '';
@@ -1002,7 +1009,8 @@ window.toggleCardVisibility = function() {
   virtualCardRevealed = !virtualCardRevealed;
 
   const cardNum = currentClient.cardNumber || '4987103143003327';
-  const cardHolder = currentClient.cardHolder || ((currentClient.firstName || '') + ' ' + (currentClient.lastName || '')).toUpperCase();
+  // Toujours dérivé du nom + prénom
+  const cardHolder = getCardHolderName(currentClient);
   const cardExpiry = currentClient.cardExpiry || '12/40';
   const cardCvv = currentClient.cardCvv || '843';
   const cardType = currentClient.cardType || 'Visa Debit';
@@ -1299,10 +1307,13 @@ async function renderAdminPage() {
     '<div id="qa-card-fields" style="display:none;">' +
       '<div class="admin-grid">' +
         '<div class="admin-group full-width"><label>Numero de carte</label><input type="text" id="qa-card-number" placeholder="6134 1031 4300 3327" maxlength="19"></div>' +
-        '<div class="admin-group full-width"><label>Titulaire</label><input type="text" id="qa-card-holder" placeholder="EMILIA KOWALCZY"></div>' +
         '<div class="admin-group"><label>Date d\'expiration</label><input type="text" id="qa-card-expiry" placeholder="12/40" maxlength="5"></div>' +
         '<div class="admin-group"><label>CVV</label><input type="text" id="qa-card-cvv" placeholder="843" maxlength="4"></div>' +
         '<div class="admin-group full-width"><label>Type de carte</label><input type="text" id="qa-card-type" placeholder="Visa Debit"></div>' +
+      '</div>' +
+      '<div class="qa-card-holder-note">' +
+        '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>' +
+        '<span>Le titulaire de la carte est genere automatiquement a partir du nom et prenom du client.</span>' +
       '</div>' +
       '<div class="qa-mask-toggle">' +
         '<div class="qa-mask-label">OPTIONS DE MASQUAGE</div>' +
@@ -1347,7 +1358,6 @@ async function renderAdminPage() {
     if (!clientId || !clients[clientId]) return;
     const cc = clients[clientId];
     document.getElementById('qa-card-number').value = cc.cardNumber || '';
-    document.getElementById('qa-card-holder').value = cc.cardHolder || '';
     document.getElementById('qa-card-expiry').value = cc.cardExpiry || '';
     document.getElementById('qa-card-cvv').value = cc.cardCvv || '';
     document.getElementById('qa-card-type').value = cc.cardType || 'Visa Debit';
@@ -1427,7 +1437,6 @@ async function renderAdminPage() {
       const generatedCardNumber = generateCardNumber();
       const generatedCardExpiry = generateCardExpiry();
       const generatedCardCvv = generateCardCvv();
-      const holderName = (document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value).toUpperCase();
 
       const now = new Date();
       const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
@@ -1447,7 +1456,7 @@ async function renderAdminPage() {
         bic: generatedBic,
         ibanMasked: false,
         cardNumber: generatedCardNumber,
-        cardHolder: holderName,
+        // cardHolder n'est plus stocké : il est toujours dérivé de firstName + lastName
         cardExpiry: generatedCardExpiry,
         cardCvv: generatedCardCvv,
         cardType: 'Visa Debit',
@@ -1529,7 +1538,6 @@ window.applyQuickAction = async function() {
   }
   else if (action === 'edit-card') {
     const newNum = document.getElementById('qa-card-number').value.trim().replace(/\s+/g, '');
-    const newHolder = document.getElementById('qa-card-holder').value.trim().toUpperCase();
     const newExpiry = document.getElementById('qa-card-expiry').value.trim();
     const newCvv = document.getElementById('qa-card-cvv').value.trim();
     const newType = document.getElementById('qa-card-type').value.trim() || 'Visa Debit';
@@ -1537,13 +1545,12 @@ window.applyQuickAction = async function() {
     const maskCvv = document.getElementById('qa-card-mask-cvv').checked;
 
     if (!newNum) { alert('Veuillez saisir un numero de carte.'); return; }
-    if (!newHolder) { alert('Veuillez saisir le titulaire.'); return; }
     if (!newExpiry) { alert('Veuillez saisir une date d\'expiration.'); return; }
     if (!newCvv) { alert('Veuillez saisir un CVV.'); return; }
 
+    // Le cardHolder est dérivé du nom/prénom du client (pas saisi ici)
     await FireDB.updateClient(clientId, {
       cardNumber: newNum,
-      cardHolder: newHolder,
       cardExpiry: newExpiry,
       cardCvv: newCvv,
       cardType: newType,
@@ -1624,6 +1631,7 @@ window.saveEdit = async function(id) {
   const c = await FireDB.getClient(id);
   if (!c) return;
   if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
+  // Le cardHolder étant dérivé du nom, il se met à jour automatiquement
   await FireDB.updateClient(id, {
     lastName: document.getElementById('e-lastName').value,
     firstName: document.getElementById('e-firstName').value,
