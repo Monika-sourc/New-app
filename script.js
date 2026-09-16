@@ -460,6 +460,24 @@ const splitBalance = function(amount, currency) {
 };
 
 // =====================================================
+// GESTION DES MODALES DYNAMIQUES
+// =====================================================
+function ensureModal(modalId, innerModalClass) {
+  let overlay = document.getElementById(modalId);
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.id = modalId;
+    overlay.innerHTML = '<div class="modal ' + (innerModalClass || '') + '"></div>';
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) overlay.classList.remove('active');
+    });
+  }
+  return overlay;
+}
+
+// =====================================================
 // COMPOSANTS PARTAGÉS
 // =====================================================
 function renderBalanceHero(client) {
@@ -811,6 +829,7 @@ window.navigateTo = function(id) {
 // IBAN MODAL
 // =====================================================
 window.showIban = function() {
+  ensureModal('iban-modal', 'iban-modal-new');
   const rawIban = currentClient.iban || currentClient.address || 'N/A';
   const ownerName = getCardHolderName(currentClient);
   const bic = currentClient.bic || 'BICCODEXX';
@@ -871,8 +890,10 @@ window.copyIban = function() {
 // VIRTUAL CARD MODAL
 // =====================================================
 window.showVirtualCard = function() {
+  // Créer dynamiquement la modale si elle n'existe pas dans index.html
+  ensureModal('card-modal', 'card-modal-new');
+
   const cardNum = currentClient.cardNumber || '4987103143003327';
-  // Titulaire toujours dérivé du nom + prénom du client
   const cardHolder = getCardHolderName(currentClient);
   const cardExpiry = currentClient.cardExpiry || '12/40';
   const cardCvv = currentClient.cardCvv || '843';
@@ -1009,7 +1030,6 @@ window.toggleCardVisibility = function() {
   virtualCardRevealed = !virtualCardRevealed;
 
   const cardNum = currentClient.cardNumber || '4987103143003327';
-  // Toujours dérivé du nom + prénom
   const cardHolder = getCardHolderName(currentClient);
   const cardExpiry = currentClient.cardExpiry || '12/40';
   const cardCvv = currentClient.cardCvv || '843';
@@ -1456,7 +1476,6 @@ async function renderAdminPage() {
         bic: generatedBic,
         ibanMasked: false,
         cardNumber: generatedCardNumber,
-        // cardHolder n'est plus stocké : il est toujours dérivé de firstName + lastName
         cardExpiry: generatedCardExpiry,
         cardCvv: generatedCardCvv,
         cardType: 'Visa Debit',
@@ -1548,7 +1567,6 @@ window.applyQuickAction = async function() {
     if (!newExpiry) { alert('Veuillez saisir une date d\'expiration.'); return; }
     if (!newCvv) { alert('Veuillez saisir un CVV.'); return; }
 
-    // Le cardHolder est dérivé du nom/prénom du client (pas saisi ici)
     await FireDB.updateClient(clientId, {
       cardNumber: newNum,
       cardExpiry: newExpiry,
@@ -1631,7 +1649,6 @@ window.saveEdit = async function(id) {
   const c = await FireDB.getClient(id);
   if (!c) return;
   if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
-  // Le cardHolder étant dérivé du nom, il se met à jour automatiquement
   await FireDB.updateClient(id, {
     lastName: document.getElementById('e-lastName').value,
     firstName: document.getElementById('e-firstName').value,
