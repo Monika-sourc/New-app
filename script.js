@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v23 - Carte plus compacte + Titulaire personnalisable
+// v24 - Titulaire carte pré-rempli
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -72,7 +72,6 @@ function generateCardNumber() { let n = '4'; for (let i = 0; i < 15; i++) n += M
 function generateCardExpiry() { return String(Math.floor(Math.random() * 12) + 1).padStart(2, '0') + '/' + String(Math.floor(Math.random() * 5) + 26); }
 function generateCardCvv() { return String(Math.floor(Math.random() * 900) + 100); }
 
-// ✅ NOUVEAU : le titulaire utilise d'abord cardHolder custom, sinon firstName + lastName
 function getCardHolderName(client) {
   if (!client) return '';
   if (client.cardHolder && client.cardHolder.trim()) return client.cardHolder.trim().toUpperCase();
@@ -337,9 +336,6 @@ window.copyIban = function() {
   else { const ta = document.createElement('textarea'); ta.value = toCopy; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); show(); }
 };
 
-// =====================================================
-// VIRTUAL CARD MODAL (client) — version COMPACTE
-// =====================================================
 window.showVirtualCard = function() {
   if (!currentClient) { alert('Erreur : client non initialise'); return; }
   const old = document.getElementById('card-modal-dynamic'); if (old) old.remove();
@@ -355,8 +351,6 @@ window.showVirtualCard = function() {
   const ov = document.createElement('div');
   ov.id = 'card-modal-dynamic';
   ov.style.cssText = 'position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100vh!important;background:rgba(15,23,42,0.75)!important;display:flex!important;justify-content:center!important;align-items:center!important;z-index:2147483647!important;padding:12px!important;box-sizing:border-box!important;overflow-y:auto!important;';
-
-  // ✅ Container réduit : 290px au lieu de 340px, gaps réduits
   ov.innerHTML = '<div style="background:#f8fafc!important;border-radius:14px!important;width:100%!important;max-width:290px!important;max-height:92vh!important;overflow-y:auto!important;box-shadow:0 20px 50px rgba(0,0,0,0.4)!important;display:flex!important;flex-direction:column!important;">' +
     '<div style="background:#fff!important;padding:12px 14px!important;display:flex!important;align-items:center!important;gap:10px!important;position:sticky!important;top:0!important;z-index:3!important;border-bottom:1px solid #eef2f7!important;border-radius:14px 14px 0 0!important;">' +
       '<div style="width:28px!important;height:28px!important;border-radius:9px!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;"><svg viewBox="0 0 24 24" style="width:14px!important;height:14px!important;fill:#fff!important;"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6z"/></svg></div>' +
@@ -399,7 +393,6 @@ function renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, mask
       '</div>';
 
   return '' +
-    // CARTE JAUNE - réduite
     '<div style="position:relative!important;width:100%!important;aspect-ratio:1.586/1!important;max-height:160px!important;border-radius:14px!important;padding:13px 15px!important;background:linear-gradient(135deg,#fce8a0 0%,#f5d670 35%,#e8b923 70%,#c69a0e 100%)!important;overflow:hidden!important;box-shadow:0 10px 24px rgba(218,165,32,0.32),0 3px 10px rgba(0,0,0,0.08)!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;color:#1a2332!important;box-sizing:border-box!important;">' +
       '<div style="position:absolute!important;top:0!important;left:-100%!important;width:60%!important;height:100%!important;background:linear-gradient(115deg,transparent 0%,rgba(255,255,255,0.5) 50%,transparent 100%)!important;animation:cardShine 4s ease-in-out infinite!important;pointer-events:none!important;z-index:2!important;"></div>' +
       '<div style="display:flex!important;align-items:flex-start!important;justify-content:space-between!important;position:relative!important;z-index:3!important;">' +
@@ -413,7 +406,6 @@ function renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, mask
         '<div><div style="font-size:7px!important;font-weight:700!important;color:rgba(26,35,50,0.6)!important;letter-spacing:1px!important;margin-bottom:2px!important;">' + L.cvvLabel + '</div><div style="font-size:9.5px!important;font-weight:800!important;color:#1a2332!important;letter-spacing:0.3px!important;">' + displayCvv + '</div></div>' +
       '</div>' +
     '</div>' +
-    // INFO GRID - réduite
     '<div style="display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;">' +
       '<div style="background:#eef2f7!important;border-radius:8px!important;padding:8px 10px!important;"><div style="font-size:8px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:0.8px!important;margin-bottom:3px!important;">' + L.holderLabel + '</div><div style="font-size:11px!important;font-weight:800!important;color:#0f172a!important;text-transform:uppercase!important;word-break:break-word!important;line-height:1.2!important;">' + formattedHolder + '</div></div>' +
       '<div style="background:#eef2f7!important;border-radius:8px!important;padding:8px 10px!important;"><div style="font-size:8px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:0.8px!important;margin-bottom:3px!important;">' + L.expiryLabel + '</div><div style="font-size:11px!important;font-weight:800!important;color:#0f172a!important;">' + cardExpiry + '</div></div>' +
@@ -422,7 +414,6 @@ function renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, mask
       '<div style="background:#eef2f7!important;border-radius:8px!important;padding:8px 10px!important;"><div style="font-size:8px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:0.8px!important;margin-bottom:3px!important;">' + L.typeLabel + '</div><div style="font-size:11px!important;font-weight:800!important;color:#0f172a!important;">' + cardType + '</div></div>' +
     '</div>' +
     actionsHtml +
-    // WARNING - réduit
     '<div style="display:flex!important;align-items:flex-start!important;gap:7px!important;padding:9px 11px!important;border-radius:9px!important;font-size:9.5px!important;line-height:1.45!important;font-weight:600!important;background:' + warningBg + '!important;color:' + warningColor + '!important;border:' + warningBorder + '!important;"><svg viewBox="0 0 24 24" style="width:12px!important;height:12px!important;flex-shrink:0!important;margin-top:1px!important;fill:currentColor!important;"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><span>' + warningText + '</span></div>';
 }
 
@@ -647,14 +638,13 @@ async function renderAdminPage() {
     '<div id="qa-iban-fields" style="display:none;"><div class="admin-grid"><div class="admin-group full-width"><label>Numero IBAN</label><input type="text" id="qa-iban-value"></div><div class="admin-group full-width"><label>BIC / SWIFT</label><input type="text" id="qa-bic-value"></div></div><div class="qa-mask-toggle"><div class="qa-mask-label">AFFICHAGE DES 4 DERNIERS CARACTERES</div><label class="qa-switch"><input type="checkbox" id="qa-iban-masked"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers caracteres dans l\'application</span></label></div></div>' +
     '<div id="qa-card-fields" style="display:none;">' +
       '<div class="admin-grid">' +
-        // ✅ Titulaire ÉDITABLE maintenant
-        '<div class="admin-group full-width"><label>Titulaire de la carte</label><input type="text" id="qa-card-holder" placeholder="Laissez vide pour utiliser Prenom Nom" style="font-weight:700;"></div>' +
+        '<div class="admin-group full-width"><label>Titulaire de la carte</label><input type="text" id="qa-card-holder" placeholder="Prenom Nom" style="font-weight:700;text-transform:uppercase;"></div>' +
         '<div class="admin-group full-width"><label>Numero de carte</label><input type="text" id="qa-card-number" maxlength="19"></div>' +
         '<div class="admin-group"><label>Date d\'expiration</label><input type="text" id="qa-card-expiry" maxlength="5" placeholder="MM/YY"></div>' +
         '<div class="admin-group"><label>CVV</label><input type="text" id="qa-card-cvv" maxlength="4"></div>' +
         '<div class="admin-group full-width"><label>Type de carte</label><input type="text" id="qa-card-type"></div>' +
       '</div>' +
-      '<div class="qa-card-holder-note"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span>Si le champ Titulaire est vide, le nom et prenom du client seront utilises automatiquement.</span></div>' +
+      '<div class="qa-card-holder-note"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span>Le titulaire est affiche par defaut avec le nom et prenom du client. Modifiez-le librement.</span></div>' +
       '<div class="qa-mask-toggle"><div class="qa-mask-label">OPTIONS DE MASQUAGE (FORCE LE CLIENT)</div><label class="qa-switch"><input type="checkbox" id="qa-card-mask-last4"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers chiffres (definitif)</span></label><label class="qa-switch" style="margin-top:8px;"><input type="checkbox" id="qa-card-mask-cvv"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer le CVV (definitif)</span></label></div>' +
     '</div>' +
     '<button class="btn-admin-submit" onclick="window.applyQuickAction()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Appliquer la modification</button>' +
@@ -694,22 +684,29 @@ async function renderAdminPage() {
     document.getElementById('qa-iban-masked').checked = cc.ibanMasked === true;
   };
 
+  // ✅ Titulaire pré-rempli automatiquement avec le nom+prénom si vide
   const fillCardFields = (clientId) => {
     if (!clientId || !clients[clientId]) return;
     const cc = clients[clientId];
-    // ✅ Titulaire : on affiche la valeur custom si elle existe, sinon vide (placeholder visible)
-    document.getElementById('qa-card-holder').value = cc.cardHolder || '';
+
+    let holderValue = (cc.cardHolder && cc.cardHolder.trim()) ? cc.cardHolder : ((cc.firstName || '') + ' ' + (cc.lastName || '')).trim();
+    document.getElementById('qa-card-holder').value = holderValue.toUpperCase();
+
     let numValue = cc.cardNumber || '';
     if (!numValue) numValue = generateCardNumber();
     document.getElementById('qa-card-number').value = numValue;
+
     let expValue = cc.cardExpiry || '';
     if (!expValue) expValue = generateCardExpiry();
     document.getElementById('qa-card-expiry').value = expValue;
+
     let cvvValue = cc.cardCvv || '';
     if (!cvvValue) cvvValue = generateCardCvv();
     document.getElementById('qa-card-cvv').value = cvvValue;
+
     let typeValue = cc.cardType || 'Visa Debit';
     document.getElementById('qa-card-type').value = typeValue;
+
     document.getElementById('qa-card-mask-last4').checked = cc.cardMaskLast4 === true;
     document.getElementById('qa-card-mask-cvv').checked = cc.cardMaskCvv === true;
   };
@@ -786,7 +783,7 @@ async function renderAdminPage() {
         email: document.getElementById('email').value, address: document.getElementById('address').value,
         language: document.getElementById('language').value,
         bankName: bankNameValue, iban: generatedIban, bic: generatedBic, ibanMasked: false,
-        cardHolder: '', // vide par defaut = utilise Prenom Nom
+        cardHolder: '',
         cardNumber: generatedCardNumber, cardExpiry: generatedCardExpiry, cardCvv: generatedCardCvv,
         cardType: 'Visa Debit', cardMaskLast4: false, cardMaskCvv: false,
         balance: initialBalance, currency: currencyValue,
@@ -851,9 +848,9 @@ window.applyQuickAction = async function() {
     const maskLast4 = document.getElementById('qa-card-mask-last4').checked;
     const maskCvv = document.getElementById('qa-card-mask-cvv').checked;
     if (!newNum || !newExpiry || !newCvv) { alert('Remplissez tous les champs.'); return; }
-    // ✅ Si newHolder est vide → on supprime le cardHolder custom (utilisation du nom du client)
+    // ✅ Sauvegarde : si le champ est vide, on retombe sur Prenom Nom
     await FireDB.updateClient(clientId, {
-      cardHolder: newHolder, // chaîne vide = utilise Prenom Nom
+      cardHolder: newHolder || ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase(),
       cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv,
       cardType: newType, cardMaskLast4: maskLast4, cardMaskCvv: maskCvv
     });
