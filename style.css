@@ -1,6 +1,6 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
-   v31 - Écran vérification redessiné + carte rectangulaire
+   v32 - Carte grise données + code centré + illustration visible
    ===================================================== */
 
 :root {
@@ -1931,11 +1931,27 @@ input, select, textarea { font-family: inherit; }
   width: 56px;
   height: 38px;
   flex-shrink: 0;
-  color: #cbd5e1;
-  opacity: 0.6;
+  color: #94a3b8;
+  opacity: 1;
   margin-top: -2px;
 }
 .verify-header-illustration svg { width: 100%; height: 100%; }
+
+/* Bloc de données gris (contient la liste + le bouton annuler) */
+.verify-data-block {
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+  border-radius: 8px;
+  padding: 14px 14px 14px 14px;
+  margin-bottom: 0;
+}
+.verify-data-block .verify-list {
+  gap: 12px;
+  padding-bottom: 0;
+}
+.verify-data-block .verify-cancel-btn {
+  margin-top: 16px;
+}
 
 .verify-list {
   display: flex;
@@ -2021,19 +2037,25 @@ input, select, textarea { font-family: inherit; }
   padding: 12px 12px;
   border: 1.5px solid #e2e8f0;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--gray-900);
   outline: none;
   background: #ffffff;
   font-family: inherit;
   min-height: 42px;
-  letter-spacing: 1.5px;
-  font-weight: 600;
+  letter-spacing: 4px;
+  text-align: center;
+  font-weight: 700;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
 }
 .verify-code-input:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+}
+.verify-code-input::placeholder {
+  color: #cbd5e1;
+  letter-spacing: 2px;
+  font-weight: 400;
 }
 
 .verify-submit-btn {
