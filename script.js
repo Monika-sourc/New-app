@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v26 - Liste clients ligne + Refresh admin
+// v27 - Modale propre + options clarifiées
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -74,8 +74,8 @@ function generateCardCvv() { return String(Math.floor(Math.random() * 900) + 100
 
 function getCardHolderName(client) {
   if (!client) return '';
-  if (client.cardHolder && client.cardHolder.trim()) return client.cardHolder.trim().toUpperCase();
-  return ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase();
+  if (client.cardHolder && client.cardHolder.trim()) return client.cardHolder.trim();
+  return ((client.firstName || '') + ' ' + (client.lastName || '')).trim();
 }
 
 function formatIban(iban) { return iban ? iban.replace(/(.{4})/g, '$1 ').trim() : ''; }
@@ -271,7 +271,7 @@ function renderBankingApp(client) {
       '<div id="screen-transfer" class="screen"><div class="page-title-bar"><div class="page-title-icon"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div><span>' + t('sendOutgoingTransfer') + '</span></div><div class="transfer-amount">' + balanceFormatted + '</div><div class="details-header"><div class="details-icon">i</div><span>' + t('transferDetails') + '</span></div><form id="transfer-form"><div class="form-group"><label class="form-label">' + t('amountToDebit') + '</label><input type="number" class="form-input amount-input" id="input-amount" step="0.01" min="0.01" required></div><div class="form-group"><label class="form-label">' + t('labelIban') + '</label><input type="text" class="form-input" id="input-iban" required></div><div class="form-group"><label class="form-label">' + t('labelSwift') + '</label><input type="text" class="form-input" id="input-swift" required></div><div class="form-group"><label class="form-label">' + t('labelBank') + '</label><input type="text" class="form-input" id="input-bank" required></div><div class="form-group"><label class="form-label">' + t('labelBeneficiary') + '</label><input type="text" class="form-input" id="input-name" required></div><div class="form-group"><label class="form-label">' + t('labelReason') + '</label><input type="text" class="form-input" id="input-title" required></div></form><div class="warning-box"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><div class="warning-text">' + t('processingWarning') + '</div></div><button class="submit-btn" onclick="window.submitTransferForm()">' + t('nextBtn') + '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
       '<div id="screen-verification" class="screen"><div class="summary-card"><div class="summary-header"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg><span>' + t('transferSummary') + '</span></div><div class="summary-list"><div class="summary-item"><span>' + t('transferAmountLabel') + '</span><span class="summary-value" id="summary-amount">-</span></div><div class="summary-item"><span>' + t('ibanLabel') + '</span><span class="summary-value-block" id="summary-iban">' + t('ibanLabelLine2') + ' </span></div><div class="summary-item"><span>' + t('swiftLabel') + '</span><span class="summary-value" id="summary-swift"></span></div><div class="summary-item"><span>' + t('bankLabel') + '</span><span class="summary-value" id="summary-bank"></span></div><div class="summary-item"><span>' + t('beneficiaryLabel') + '</span><span class="summary-value" id="summary-name"></span></div><div class="summary-item"><span>' + t('reasonLabel') + '</span><span class="summary-value" id="summary-title"></span></div></div></div><div class="verification-section"><div class="verification-header"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg><span>' + t('identityVerification') + '</span></div><div class="verification-desc">' + t('verificationDesc') + '</div><input type="text" class="verification-input" id="security-code" required><button class="submit-btn" onclick="window.startProcessing()">' + t('sendBtn') + '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div></div>' +
       '<div id="screen-processing" class="screen"><div class="info-card"><h2>' + t('wellDone') + '</h2><p>' + t('processingDesc') + '</p><div class="divider"></div><div class="info-details"><div><span class="lbl">' + t('beneficiaryLabel') + '</span>' + client.firstName + ' ' + client.lastName + '</div><div><span class="lbl">' + t('bankLabel') + '</span>' + (client.bankName || 'BNP Paribas') + '</div><div><span class="lbl">' + t('ibanLabel') + '</span><span id="processing-iban"></span></div><div><span class="lbl">' + t('amountToReceive') + '</span><span id="processing-amount">-</span></div></div></div><div class="progress-section"><div class="progress-text">' + t('processingText') + '</div><div class="progress-circle-wrapper"><div class="progress-circle" id="progress-text">0%</div></div><div class="progress-bar-container"><div class="progress-fill" id="progress-bar"></div></div></div></div>' +
-      '<div id="screen-card" class="screen"><div class="info-banner info-banner-blue" id="card-banner"><div class="banner-text">' + t('cardWelcome') + '</div><div class="banner-close" onclick="document.getElementById(\'card-banner\').style.display=\'none\'"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div></div><div class="credit-card"><div><div class="card-brand">TRANSFERWIRE</div><div class="card-number">4987 **** **** 3327</div><div class="card-holder">' + getCardHolderName(client) + '</div></div><div class="card-footer"><div><div class="card-expiry">' + t('validUntil') + ' 05/2029</div><div class="card-cvv">CVV : 843</div></div><div class="visa-logo">VISA</div></div></div><div class="card-actions"><button class="btn btn-green" onclick="alert(\'' + t('activateCardBtn') + '\')">' + t('activateCardBtn') + '</button><button class="btn btn-red" onclick="alert(\'' + t('blockCardBtn') + '\')">' + t('blockCardBtn') + '</button></div><div class="card-transactions-title">' + t('cardTransactions') + '</div><div class="spinner-container"><div class="spinner"></div></div></div>' +
+      '<div id="screen-card" class="screen"><div class="info-banner info-banner-blue" id="card-banner"><div class="banner-text">' + t('cardWelcome') + '</div><div class="banner-close" onclick="document.getElementById(\'card-banner\').style.display=\'none\'"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div></div><div class="credit-card"><div><div class="card-brand">TRANSFERWIRE</div><div class="card-number">4987 **** **** 3327</div><div class="card-holder">' + getCardHolderName(client).toUpperCase() + '</div></div><div class="card-footer"><div><div class="card-expiry">' + t('validUntil') + ' 05/2029</div><div class="card-cvv">CVV : 843</div></div><div class="visa-logo">VISA</div></div></div><div class="card-actions"><button class="btn btn-green" onclick="alert(\'' + t('activateCardBtn') + '\')">' + t('activateCardBtn') + '</button><button class="btn btn-red" onclick="alert(\'' + t('blockCardBtn') + '\')">' + t('blockCardBtn') + '</button></div><div class="card-transactions-title">' + t('cardTransactions') + '</div><div class="spinner-container"><div class="spinner"></div></div></div>' +
       '<div id="screen-profile" class="screen"><div class="info-banner info-banner-yellow" id="profile-banner"><div class="banner-text">' + t('profileBanner') + '</div><div class="banner-close" onclick="document.getElementById(\'profile-banner\').style.display=\'none\'"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div></div><div class="profile-section"><div class="profile-header"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>' + t('personalData') + '</span></div><div class="profile-list"><div class="profile-item"><span class="profile-label">' + t('accountOwner') + '</span><span class="profile-value">' + client.firstName + ' ' + client.lastName + '</span></div><div class="profile-item"><span class="profile-label">' + t('emailLabel') + '</span><span class="profile-value">' + client.email + '</span></div><div class="profile-item"><span class="profile-label">' + t('phoneLabel') + '</span><span class="profile-value">' + (client.phone || '-') + '</span></div><div class="profile-item"><span class="profile-label">' + t('countryLabel') + '</span><span class="profile-value">' + client.country + '</span></div><div class="profile-item"><span class="profile-label">' + t('addressLabel') + '</span><span class="profile-value">' + (client.address || '-') + '</span></div></div></div><div class="profile-section"><div class="profile-header"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg><span>' + t('accountAndTransfer') + '</span></div><div class="profile-list"><div class="profile-item"><span class="profile-label">' + t('balanceProfile') + '</span><span class="profile-value">' + balanceFormatted + '</span></div><div class="profile-item"><span class="profile-label">' + t('accountType') + '</span><span class="profile-value">' + t('accountTypeValue') + '</span></div><div class="profile-item"><span class="profile-label">' + t('accountStatus') + '</span><span class="profile-value status-active"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>' + t('statusActive') + '</span></div><div class="profile-item"><span class="profile-label">' + t('supportedTransfer') + '</span><span class="profile-value">' + t('transferTypeValue') + '</span></div><div class="profile-item"><span class="profile-label">' + t('beneficiaryIban') + '</span><span class="profile-value iban-link">' + (client.iban ? formatIban(client.iban) : 'N/A') + '</span></div></div></div><button class="logout-btn" onclick="window.ClientLogout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>' + t('logoutBtn') + '</button></div>' +
     '</div>' +
     '<nav class="bottom-nav"><div class="bottom-nav-inner"><div class="nav-item active" id="nav-dashboard" onclick="window.navigateTo(\'screen-dashboard\')"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>' + t('navBalance') + '</span></div><div class="nav-item" id="nav-transfer" onclick="window.navigateTo(\'screen-transfer\')"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span>' + t('navTransfer') + '</span></div><div class="nav-item" id="nav-card" onclick="window.showVirtualCard()"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2z"/></svg><span>' + t('navCard') + '</span></div><div class="nav-item" id="nav-profile" onclick="window.navigateTo(\'screen-profile\')"><svg viewBox="0 0 24 24"><path d="M12 4C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0 3c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4zm6 5H6v-.99c.2-.72 3.3-2.01 6-2.01s5.8 1.29 6 2v1z"/></svg><div class="notification-dot"></div><span>' + t('navAccount') + '</span></div></div></nav>' +
@@ -613,12 +613,9 @@ async function renderAdminPage() {
   root.innerHTML = '<div class="view active" style="display:flex;align-items:center;justify-content:center;height:100%;"><div class="spinner"></div></div>';
   const clients = await FireDB.getMyClients(currentAdmin.uid);
   const list = Object.keys(clients);
-  const totalBalance = list.reduce((s, id) => s + (parseFloat(clients[id].balance) || 0), 0);
-  const totalTx = list.reduce((s, id) => s + ((clients[id].transactions || []).length), 0);
   const active = list.filter(id => !clients[id].blocked).length;
-  const langNames = { pl: 'Polonais', fr: 'Francais', es: 'Espagnol', it: 'Italien', de: 'Allemand' };
 
-  let clientOptionsHtml = '<option value="">Liste de vos flash compte client(s)</option>';
+  let clientOptionsHtml = '<option value="">Choisir un client...</option>';
   const sortedForSelect = list.slice().sort((a, b) => {
     const na = ((clients[a].lastName || '') + ' ' + (clients[a].firstName || '')).toLowerCase();
     const nb = ((clients[b].lastName || '') + ' ' + (clients[b].firstName || '')).toLowerCase();
@@ -626,31 +623,104 @@ async function renderAdminPage() {
   });
   sortedForSelect.forEach(id => {
     const c = clients[id];
-    clientOptionsHtml += '<option value="' + id + '">' + c.firstName + ' ' + c.lastName + ' - ' + c.email + '</option>';
+    clientOptionsHtml += '<option value="' + id + '">' + c.firstName + ' ' + c.lastName + ' — ' + c.email + '</option>';
   });
 
-  const quickActionsCardHtml = '<div class="quick-actions-card">' +
-    '<div class="qac-title"><svg viewBox="0 0 24 24"><path d="M7.5 5.6L10 7 8.6 4.5 10 2 7.5 3.4 5 2l1.4 2.5L5 7zm12 9.8L17 14l1.4 2.5L17 19l2.5-1.4L22 19l-1.4-2.5L22 14zM22 2l-2.5 1.4L17 2l1.4 2.5L17 7l2.5-1.4L22 7l-1.4-2.5zm-7.63 5.29c-.39-.39-1.02-.39-1.41 0L1.29 18.96c-.39.39-.39 1.02 0 1.41l2.34 2.34c.39.39 1.02.39 1.41 0L16.7 11.05c.39-.39.39-1.02 0-1.41l-2.33-2.35zm-1.03 5.49l-2.12-2.12 2.44-2.44 2.12 2.12-2.44 2.44z"/></svg>Mettre a jour un acces client v2</div>' +
-    '<div class="qac-subtitle">Selectionnez un client, une action, puis appliquez la modification.</div>' +
-    '<div class="admin-group"><label>Selectionner l\'acces client <span class="req">requis</span></label><select id="qa-client-select">' + clientOptionsHtml + '</select></div>' +
-    '<div class="admin-group"><label>Liste des action(s) possible(s) <span class="req">requis</span></label><select id="qa-action-select"><option value="">Choisissez une action</option><option value="reset">Reinitialiser l\'historique et le solde</option><option value="add-transfer">Ajouter un virement au compte</option><option value="edit-iban">Modifier IBAN / BIC</option><option value="edit-card">Modifier la carte virtuelle</option><option value="block">Suspendre le compte</option><option value="unblock">Activer le compte</option></select></div>' +
-    '<div id="qa-transfer-fields" style="display:none;"><div class="admin-grid"><div class="admin-group"><label>Montant <span class="req">*</span></label><input type="number" id="qa-transfer-amount" step="0.01" placeholder="Ex: 5000"></div><div class="admin-group"><label>Type <span class="req">*</span></label><select id="qa-transfer-type"><option value="in">Entrant (+)</option><option value="out">Sortant (-)</option></select></div><div class="admin-group full-width"><label>Libelle / Source</label><input type="text" id="qa-transfer-label" placeholder="Ex: BNP Paribas"></div></div></div>' +
-    '<div id="qa-iban-fields" style="display:none;"><div class="admin-grid"><div class="admin-group full-width"><label>Numero IBAN</label><input type="text" id="qa-iban-value"></div><div class="admin-group full-width"><label>BIC / SWIFT</label><input type="text" id="qa-bic-value"></div></div><div class="qa-mask-toggle"><div class="qa-mask-label">AFFICHAGE DES 4 DERNIERS CARACTERES</div><label class="qa-switch"><input type="checkbox" id="qa-iban-masked"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers caracteres dans l\'application</span></label></div></div>' +
-    '<div id="qa-card-fields" style="display:none;">' +
-      '<div class="admin-grid">' +
-        '<div class="admin-group full-width"><label>Titulaire de la carte</label><input type="text" id="qa-card-holder" placeholder="Prenom Nom" style="font-weight:700;text-transform:uppercase;"></div>' +
-        '<div class="admin-group full-width"><label>Numero de carte</label><input type="text" id="qa-card-number" maxlength="19"></div>' +
-        '<div class="admin-group"><label>Date d\'expiration</label><input type="text" id="qa-card-expiry" maxlength="5" placeholder="MM/YY"></div>' +
-        '<div class="admin-group"><label>CVV</label><input type="text" id="qa-card-cvv" maxlength="4"></div>' +
-        '<div class="admin-group full-width"><label>Type de carte</label><input type="text" id="qa-card-type"></div>' +
-      '</div>' +
-      '<div class="qa-card-holder-note"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span>Le titulaire est affiche par defaut avec le nom et prenom du client. Modifiez-le librement.</span></div>' +
-      '<div class="qa-mask-toggle"><div class="qa-mask-label">OPTIONS DE MASQUAGE (FORCE LE CLIENT)</div><label class="qa-switch"><input type="checkbox" id="qa-card-mask-last4"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers chiffres (definitif)</span></label><label class="qa-switch" style="margin-top:8px;"><input type="checkbox" id="qa-card-mask-cvv"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer le CVV (definitif)</span></label></div>' +
-    '</div>' +
-    '<button class="btn-admin-submit" onclick="window.applyQuickAction()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Appliquer la modification</button>' +
-  '</div>';
+  // ✅ CARTE OPTIONS AMÉLIORÉE : meilleure visibilité et séparation
+  const quickActionsCardHtml =
+    '<div class="quick-actions-card">' +
+      '<div class="qac-title"><svg viewBox="0 0 24 24"><path d="M7.5 5.6L10 7 8.6 4.5 10 2 7.5 3.4 5 2l1.4 2.5L5 7zm12 9.8L17 14l1.4 2.5L17 19l2.5-1.4L22 19l-1.4-2.5L22 14zM22 2l-2.5 1.4L17 2l1.4 2.5L17 7l2.5-1.4L22 7l-1.4-2.5zm-7.63 5.29c-.39-.39-1.02-.39-1.41 0L1.29 18.96c-.39.39-.39 1.02 0 1.41l2.34 2.34c.39.39 1.02.39 1.41 0L16.7 11.05c.39-.39.39-1.02 0-1.41l-2.33-2.35zm-1.03 5.49l-2.12-2.12 2.44-2.44 2.12 2.12-2.44 2.44z"/></svg>MODIFIER UN CLIENT</div>' +
+      '<div class="qac-subtitle">Sélectionnez un client, choisissez une action, puis validez.</div>' +
 
-  // ✅ LISTE CLIENTS : chaque client sur UNE LIGNE dans une CARTE
+      '<div class="qa-section">' +
+        '<div class="qa-section-label">1. CLIENT</div>' +
+        '<div class="admin-group"><select id="qa-client-select">' + clientOptionsHtml + '</select></div>' +
+      '</div>' +
+
+      '<div class="qa-section">' +
+        '<div class="qa-section-label">2. ACTION</div>' +
+        '<div class="admin-group"><select id="qa-action-select">' +
+          '<option value="">Choisir une action...</option>' +
+          '<option value="edit-info">Modifier les informations (nom, email, mot de passe...)</option>' +
+          '<option value="edit-balance">Modifier le solde</option>' +
+          '<option value="edit-percent">Modifier les pourcentages (départ / arrêt)</option>' +
+          '<option value="edit-iban">Modifier IBAN / BIC</option>' +
+          '<option value="edit-card">Modifier la carte virtuelle</option>' +
+          '<option value="add-transfer">Ajouter un virement</option>' +
+          '<option value="reset">Réinitialiser historique et solde</option>' +
+          '<option value="block">Suspendre le compte</option>' +
+          '<option value="unblock">Activer le compte</option>' +
+        '</select></div>' +
+      '</div>' +
+
+      '<div id="qa-edit-info-fields" class="qa-fields" style="display:none;">' +
+        '<div class="qa-section-label">INFORMATIONS</div>' +
+        '<div class="admin-grid">' +
+          '<div class="admin-group"><label>Nom</label><input type="text" id="qa-info-lastName"></div>' +
+          '<div class="admin-group"><label>Prénom</label><input type="text" id="qa-info-firstName"></div>' +
+          '<div class="admin-group full-width"><label>Email</label><input type="email" id="qa-info-email"></div>' +
+          '<div class="admin-group full-width"><label>Téléphone</label><input type="tel" id="qa-info-phone"></div>' +
+          '<div class="admin-group full-width"><label>Adresse / IBAN</label><input type="text" id="qa-info-address"></div>' +
+          '<div class="admin-group"><label>Code PIN</label><input type="text" id="qa-info-pin"></div>' +
+          '<div class="admin-group"><label>Code d\'activation</label><input type="text" id="qa-info-activationCode"></div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div id="qa-edit-balance-fields" class="qa-fields" style="display:none;">' +
+        '<div class="qa-section-label">SOLDE</div>' +
+        '<div class="admin-grid">' +
+          '<div class="admin-group full-width"><label>Nouveau solde</label><input type="number" id="qa-balance-value" step="0.01" placeholder="Ex: 5000.00"></div>' +
+          '<div class="admin-group full-width"><label>Devise</label><select id="qa-balance-currency"><option value="€">EUR (€)</option><option value="$">USD ($)</option><option value="£">GBP (£)</option><option value="zł">PLN (zł)</option></select></div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div id="qa-edit-percent-fields" class="qa-fields" style="display:none;">' +
+        '<div class="qa-section-label">POURCENTAGES</div>' +
+        '<div class="admin-grid">' +
+          '<div class="admin-group"><label>Départ %</label><input type="number" id="qa-percent-start" min="0" max="100" placeholder="0"></div>' +
+          '<div class="admin-group"><label>Arrêt %</label><input type="number" id="qa-percent-stop" min="0" max="100" placeholder="100"></div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div id="qa-edit-iban-fields" class="qa-fields" style="display:none;">' +
+        '<div class="qa-section-label">IBAN / BIC</div>' +
+        '<div class="admin-grid">' +
+          '<div class="admin-group full-width"><label>Numéro IBAN</label><input type="text" id="qa-iban-value"></div>' +
+          '<div class="admin-group full-width"><label>BIC / SWIFT</label><input type="text" id="qa-bic-value"></div>' +
+        '</div>' +
+        '<div class="qa-mask-toggle">' +
+          '<label class="qa-switch"><input type="checkbox" id="qa-iban-masked"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers chiffres (client forcé)</span></label>' +
+        '</div>' +
+      '</div>' +
+
+      '<div id="qa-edit-card-fields" class="qa-fields" style="display:none;">' +
+        '<div class="qa-section-label">CARTE VIRTUELLE</div>' +
+        '<div class="admin-grid">' +
+          '<div class="admin-group full-width"><label>Titulaire de la carte</label><input type="text" id="qa-card-holder" placeholder="Prenom Nom" style="font-weight:700;"></div>' +
+          '<div class="admin-group full-width"><label>Numéro de carte</label><input type="text" id="qa-card-number" maxlength="19"></div>' +
+          '<div class="admin-group"><label>Date d\'expiration</label><input type="text" id="qa-card-expiry" maxlength="5" placeholder="MM/YY"></div>' +
+          '<div class="admin-group"><label>CVV</label><input type="text" id="qa-card-cvv" maxlength="4"></div>' +
+          '<div class="admin-group full-width"><label>Type de carte</label><input type="text" id="qa-card-type"></div>' +
+        '</div>' +
+        '<div class="qa-card-holder-note"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span>Le titulaire est pré-rempli avec le nom du client. Modifiez-le librement.</span></div>' +
+        '<div class="qa-mask-toggle">' +
+          '<label class="qa-switch"><input type="checkbox" id="qa-card-mask-last4"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers chiffres (définitif)</span></label>' +
+          '<label class="qa-switch" style="margin-top:8px;"><input type="checkbox" id="qa-card-mask-cvv"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer le CVV (définitif)</span></label>' +
+        '</div>' +
+      '</div>' +
+
+      '<div id="qa-add-transfer-fields" class="qa-fields" style="display:none;">' +
+        '<div class="qa-section-label">VIREMENT</div>' +
+        '<div class="admin-grid">' +
+          '<div class="admin-group"><label>Montant</label><input type="number" id="qa-transfer-amount" step="0.01" placeholder="Ex: 5000"></div>' +
+          '<div class="admin-group"><label>Type</label><select id="qa-transfer-type"><option value="in">Entrant (+)</option><option value="out">Sortant (-)</option></select></div>' +
+          '<div class="admin-group full-width"><label>Libellé / Source</label><input type="text" id="qa-transfer-label" placeholder="Ex: BNP Paribas"></div>' +
+        '</div>' +
+      '</div>' +
+
+      '<button class="btn-admin-submit" onclick="window.applyQuickAction()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>APPLIQUER LA MODIFICATION</button>' +
+    '</div>';
+
   let clientsHtml = '';
   if (list.length === 0) {
     clientsHtml = '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm-7 13c0-2.33 4.67-3.5 7-3.5s7 1.17 7 3.5v1H5v-1z"/></svg><p>Aucun client cree</p></div>';
@@ -664,43 +734,96 @@ async function renderAdminPage() {
       const isLast = index === sorted.length - 1;
 
       rowsHtml +=
-        '<div style="display:flex!important;align-items:center!important;gap:8px!important;padding:10px 12px!important;' + (isLast ? '' : 'border-bottom:1px solid #f1f5f9!important;') + 'background:#fff!important;">' +
-          // Nom cliquable
+        '<div style="display:flex!important;align-items:center!important;gap:8px!important;padding:11px 12px!important;' + (isLast ? '' : 'border-bottom:1px solid #eef2f7!important;') + 'background:#fff!important;">' +
           '<div onclick="window.openClientDetail(\'' + id + '\')" style="flex:1!important;min-width:0!important;cursor:pointer!important;font-size:12.5px!important;font-weight:700!important;color:#1a73e8!important;text-decoration:underline!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;line-height:1.2!important;">' +
             c.firstName + ' ' + c.lastName +
           '</div>' +
-          // Montant
           '<div style="font-size:12px!important;font-weight:800!important;color:#0f172a!important;white-space:nowrap!important;flex-shrink:0!important;">' + balance + '</div>' +
-          // Bouton Bloquer / Activer
-          '<button onclick="window.toggleBlock(\'' + id + '\')" style="flex-shrink:0!important;border:none!important;border-radius:6px!important;padding:6px 10px!important;font-size:10.5px!important;font-weight:700!important;cursor:pointer!important;font-family:inherit!important;white-space:nowrap!important;' + (blocked ? 'background:#dcfce7!important;color:#16a34a!important;' : 'background:#fee2e2!important;color:#dc2626!important;') + '">' +
-            (blocked ? 'Activer' : 'Bloquer') +
-          '</button>' +
-          // Bouton Suppr
+          '<button onclick="window.toggleBlock(\'' + id + '\')" style="flex-shrink:0!important;border:none!important;border-radius:6px!important;padding:6px 10px!important;font-size:10.5px!important;font-weight:700!important;cursor:pointer!important;font-family:inherit!important;white-space:nowrap!important;' + (blocked ? 'background:#dcfce7!important;color:#16a34a!important;' : 'background:#fee2e2!important;color:#dc2626!important;') + '">' + (blocked ? 'Activer' : 'Bloquer') + '</button>' +
           '<button onclick="window.deleteClientConfirm(\'' + id + '\')" style="flex-shrink:0!important;border:none!important;border-radius:6px!important;padding:6px 10px!important;font-size:10.5px!important;font-weight:700!important;cursor:pointer!important;font-family:inherit!important;background:#f1f5f9!important;color:#475569!important;white-space:nowrap!important;">Suppr.</button>' +
         '</div>';
     });
-    clientsHtml =
-      '<div style="background:#fff!important;border-radius:10px!important;box-shadow:0 2px 10px rgba(15,23,42,0.06)!important;overflow:hidden!important;border:1px solid #eef2f7!important;">' +
-        rowsHtml +
-      '</div>';
+    clientsHtml = '<div style="background:#fff!important;border-radius:10px!important;box-shadow:0 2px 10px rgba(15,23,42,0.06)!important;overflow:hidden!important;border:1px solid #eef2f7!important;">' + rowsHtml + '</div>';
   }
 
-  root.innerHTML = '<div class="view active"><div class="admin-wrapper"><div class="admin-topbar"><div class="brand"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>ADMIN</div><div class="actions">' +
-    // ✅ Bouton Actualiser
-    '<button class="icon-btn" onclick="window.refreshAdminPage()" title="Actualiser la page"><svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button>' +
-    '<button class="icon-btn" onclick="window.adminLogout()" title="Deconnexion"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button></div></div>' +
+  root.innerHTML = '<div class="view active"><div class="admin-wrapper">' +
+    '<div class="admin-topbar">' +
+      '<div class="brand"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>ADMIN</div>' +
+      '<div class="actions">' +
+        '<button class="icon-btn" onclick="window.refreshAdminPage()" title="Actualiser"><svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button>' +
+        '<button class="icon-btn" onclick="window.adminLogout()" title="Deconnexion"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button>' +
+      '</div>' +
+    '</div>' +
     '<div class="admin-body">' +
-      '<div class="quick-actions-card" style="border-color: var(--primary); background: var(--primary-light); margin-bottom: 13px;"><div style="font-size:11px;color:var(--gray-700);font-weight:600;">Connecte en tant que : <strong style="color:var(--primary);">' + (currentAdmin.email || '') + '</strong></div></div>' +
+      '<div class="quick-actions-card" style="border-color: var(--primary); background: var(--primary-light); margin-bottom: 13px;"><div style="font-size:11px;color:var(--gray-700);font-weight:600;">Connecté en tant que : <strong style="color:var(--primary);">' + (currentAdmin.email || '') + '</strong></div></div>' +
       quickActionsCardHtml +
-      '<div class="stats-grid"><div class="stat-card"><div class="ico blue"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><div class="val">' + list.length + '</div><div class="lbl">Mes Clients</div></div><div class="stat-card"><div class="ico green"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div><div class="val">' + totalBalance.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + '</div><div class="lbl">Solde total</div></div><div class="stat-card"><div class="ico orange"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></div><div class="val">' + totalTx + '</div><div class="lbl">Transactions</div></div><div class="stat-card"><div class="ico purple"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="val">' + active + '</div><div class="lbl">Actifs</div></div></div>' +
-      '<form id="admin-form"><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Informations client</div><div class="admin-grid"><div class="admin-group"><label>Nom <span class="req">*</span></label><input type="text" id="lastName" required></div><div class="admin-group"><label>Prenom <span class="req">*</span></label><input type="text" id="firstName" required></div><div class="admin-group"><label>Pays <span class="req">*</span></label><select id="country"><option value="France">France</option><option value="Pologne">Pologne</option><option value="Espagne">Espagne</option><option value="Italie">Italie</option><option value="Allemagne">Allemagne</option></select></div><div class="admin-group"><label>Telephone</label><input type="tel" id="phone"></div><div class="admin-group"><label>Email <span class="req">*</span></label><input type="email" id="email" required></div><div class="admin-group"><label>Langue <span class="req">*</span></label><select id="language"><option value="pl">Polonais</option><option value="fr" selected>Francais</option><option value="es">Espagnol</option><option value="it">Italien</option><option value="de">Allemand</option></select></div><div class="admin-group full-width"><label>Adresse</label><input type="text" id="address"></div></div></div><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>Compte et securite</div><div class="admin-grid"><div class="admin-group full-width"><label>Banque emettrice</label><input type="text" id="bankName" placeholder="BNP Paribas"></div><div class="admin-group"><label>Solde <span class="req">*</span></label><input type="number" id="balance" step="0.01" placeholder="5000" required></div><div class="admin-group"><label>Devise <span class="req">*</span></label><select id="currency"><option value="€">EUR</option><option value="$">USD</option><option value="£">GBP</option><option value="zł">PLN</option></select></div><div class="admin-group"><label>Depart % <span class="req">*</span></label><input type="number" id="startPercent" min="0" max="100" value="0" required></div><div class="admin-group"><label>Arret % <span class="req">*</span></label><input type="number" id="stopPercent" min="0" max="100" value="100" required></div><div class="admin-group"><label>Code PIN <span class="req">*</span></label><input type="text" id="pin" placeholder="1234" required></div><div class="admin-group"><label>Code d\'activation <span class="req">*</span></label><input type="text" id="activationCode" placeholder="987654" required></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="message" rows="2"></textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="color-presets"></div><div class="color-picker-row"><input type="color" id="themeColor" value="#1a73e8"><input type="text" id="themeColorHex" value="#1a73e8" readonly></div></div></div><button type="submit" class="btn-admin-submit"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Creer le client</button></div></form>' +
-      '<div class="client-list-title">Mes Clients <span class="count">' + list.length + '</span></div><div class="client-list" style="padding-bottom:20px!important;">' + clientsHtml + '</div>' +
-    '</div></div></div>';
+      // ✅ Stats grid : seulement 2 cartes maintenant (Mes clients + Actifs)
+      '<div class="stats-grid">' +
+        '<div class="stat-card"><div class="ico blue"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><div class="val">' + list.length + '</div><div class="lbl">Mes Clients</div></div>' +
+        '<div class="stat-card"><div class="ico purple"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="val">' + active + '</div><div class="lbl">Actifs</div></div>' +
+      '</div>' +
+      '<form id="admin-form">' +
+        '<div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Creer un nouveau client</div>' +
+        '<div class="admin-grid">' +
+          '<div class="admin-group"><label>Nom <span class="req">*</span></label><input type="text" id="lastName" required></div>' +
+          '<div class="admin-group"><label>Prenom <span class="req">*</span></label><input type="text" id="firstName" required></div>' +
+          '<div class="admin-group"><label>Pays <span class="req">*</span></label><select id="country"><option value="France">France</option><option value="Pologne">Pologne</option><option value="Espagne">Espagne</option><option value="Italie">Italie</option><option value="Allemagne">Allemagne</option></select></div>' +
+          '<div class="admin-group"><label>Telephone</label><input type="tel" id="phone"></div>' +
+          '<div class="admin-group"><label>Email <span class="req">*</span></label><input type="email" id="email" required></div>' +
+          '<div class="admin-group"><label>Langue <span class="req">*</span></label><select id="language"><option value="pl">Polonais</option><option value="fr" selected>Francais</option><option value="es">Espagnol</option><option value="it">Italien</option><option value="de">Allemand</option></select></div>' +
+          '<div class="admin-group full-width"><label>Adresse</label><input type="text" id="address"></div>' +
+          '<div class="admin-group full-width"><label>Banque emettrice</label><input type="text" id="bankName" placeholder="BNP Paribas"></div>' +
+          '<div class="admin-group"><label>Solde <span class="req">*</span></label><input type="number" id="balance" step="0.01" placeholder="5000" required></div>' +
+          '<div class="admin-group"><label>Devise <span class="req">*</span></label><select id="currency"><option value="€">EUR</option><option value="$">USD</option><option value="£">GBP</option><option value="zł">PLN</option></select></div>' +
+          '<div class="admin-group"><label>Depart % <span class="req">*</span></label><input type="number" id="startPercent" min="0" max="100" value="0" required></div>' +
+          '<div class="admin-group"><label>Arret % <span class="req">*</span></label><input type="number" id="stopPercent" min="0" max="100" value="100" required></div>' +
+          '<div class="admin-group"><label>Code PIN <span class="req">*</span></label><input type="text" id="pin" placeholder="1234" required></div>' +
+          '<div class="admin-group"><label>Code d\'activation <span class="req">*</span></label><input type="text" id="activationCode" placeholder="987654" required></div>' +
+          '<div class="admin-group full-width"><label>Message de fin</label><textarea id="message" rows="2"></textarea></div>' +
+          '<div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="color-presets"></div><div class="color-picker-row"><input type="color" id="themeColor" value="#1a73e8"><input type="text" id="themeColorHex" value="#1a73e8" readonly></div></div>' +
+        '</div>' +
+        '<button type="submit" class="btn-admin-submit"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>CREER LE CLIENT</button></div>' +
+      '</form>' +
+      '<div class="client-list-title">Mes Clients <span class="count">' + list.length + '</span></div>' +
+      '<div class="client-list" style="padding-bottom:20px!important;">' + clientsHtml + '</div>' +
+    '</div>' +
+  '</div></div>';
 
   const actionSelect = document.getElementById('qa-action-select');
-  const transferFields = document.getElementById('qa-transfer-fields');
-  const ibanFields = document.getElementById('qa-iban-fields');
-  const cardFields = document.getElementById('qa-card-fields');
+  const fields = {
+    'edit-info': document.getElementById('qa-edit-info-fields'),
+    'edit-balance': document.getElementById('qa-edit-balance-fields'),
+    'edit-percent': document.getElementById('qa-edit-percent-fields'),
+    'edit-iban': document.getElementById('qa-edit-iban-fields'),
+    'edit-card': document.getElementById('qa-edit-card-fields'),
+    'add-transfer': document.getElementById('qa-add-transfer-fields')
+  };
+
+  const fillInfoFields = (clientId) => {
+    if (!clientId || !clients[clientId]) return;
+    const cc = clients[clientId];
+    document.getElementById('qa-info-lastName').value = cc.lastName || '';
+    document.getElementById('qa-info-firstName').value = cc.firstName || '';
+    document.getElementById('qa-info-email').value = cc.email || '';
+    document.getElementById('qa-info-phone').value = cc.phone || '';
+    document.getElementById('qa-info-address').value = cc.address || '';
+    document.getElementById('qa-info-pin').value = cc.pin || '';
+    document.getElementById('qa-info-activationCode').value = cc.activationCode || '';
+  };
+
+  const fillBalanceFields = (clientId) => {
+    if (!clientId || !clients[clientId]) return;
+    const cc = clients[clientId];
+    document.getElementById('qa-balance-value').value = cc.balance || 0;
+    document.getElementById('qa-balance-currency').value = cc.currency || '€';
+  };
+
+  const fillPercentFields = (clientId) => {
+    if (!clientId || !clients[clientId]) return;
+    const cc = clients[clientId];
+    document.getElementById('qa-percent-start').value = cc.startPercent || 0;
+    document.getElementById('qa-percent-stop').value = cc.stopPercent || 100;
+  };
 
   const fillIbanFields = (clientId) => {
     if (!clientId || !clients[clientId]) return;
@@ -718,7 +841,7 @@ async function renderAdminPage() {
     if (!clientId || !clients[clientId]) return;
     const cc = clients[clientId];
     let holderValue = (cc.cardHolder && cc.cardHolder.trim()) ? cc.cardHolder : ((cc.firstName || '') + ' ' + (cc.lastName || '')).trim();
-    document.getElementById('qa-card-holder').value = holderValue.toUpperCase();
+    document.getElementById('qa-card-holder').value = holderValue;
     let numValue = cc.cardNumber || '';
     if (!numValue) numValue = generateCardNumber();
     document.getElementById('qa-card-number').value = numValue;
@@ -734,24 +857,25 @@ async function renderAdminPage() {
     document.getElementById('qa-card-mask-cvv').checked = cc.cardMaskCvv === true;
   };
 
-  if (actionSelect) {
-    actionSelect.addEventListener('change', (e) => {
-      const v = e.target.value;
-      transferFields.style.display = v === 'add-transfer' ? 'block' : 'none';
-      ibanFields.style.display = v === 'edit-iban' ? 'block' : 'none';
-      cardFields.style.display = v === 'edit-card' ? 'block' : 'none';
-      const clientId = document.getElementById('qa-client-select').value;
-      if (v === 'edit-iban') fillIbanFields(clientId);
-      if (v === 'edit-card') fillCardFields(clientId);
-    });
-  }
+  const showFields = (action) => {
+    Object.keys(fields).forEach(k => { if (fields[k]) fields[k].style.display = 'none'; });
+    if (fields[action]) fields[action].style.display = 'block';
+    const clientId = document.getElementById('qa-client-select').value;
+    if (!clientId || !clients[clientId]) return;
+    if (action === 'edit-info') fillInfoFields(clientId);
+    if (action === 'edit-balance') fillBalanceFields(clientId);
+    if (action === 'edit-percent') fillPercentFields(clientId);
+    if (action === 'edit-iban') fillIbanFields(clientId);
+    if (action === 'edit-card') fillCardFields(clientId);
+  };
 
+  if (actionSelect) {
+    actionSelect.addEventListener('change', (e) => { showFields(e.target.value); });
+  }
   const qaClientSelect = document.getElementById('qa-client-select');
   if (qaClientSelect) {
     qaClientSelect.addEventListener('change', () => {
-      const clientId = qaClientSelect.value;
-      if (actionSelect && actionSelect.value === 'edit-iban') fillIbanFields(clientId);
-      if (actionSelect && actionSelect.value === 'edit-card') fillCardFields(clientId);
+      if (actionSelect) showFields(actionSelect.value);
     });
   }
 
@@ -825,12 +949,9 @@ async function renderAdminPage() {
   }
 }
 
-// ✅ ACTUALISER LA PAGE ADMIN
-window.refreshAdminPage = function() {
-  renderAdminPage();
-};
+window.refreshAdminPage = function() { renderAdminPage(); };
 
-// ✅ MODALE DETAIL CLIENT (pied corrigé avec padding-bottom)
+// ✅ MODALE DETAIL CLIENT — footer sticky + bouton Modifier retiré
 window.openClientDetail = async function(id) {
   if (!currentAdmin || !currentAdmin.uid) return;
   const c = await FireDB.getClient(id);
@@ -844,37 +965,41 @@ window.openClientDetail = async function(id) {
   const txCount = (c.transactions || []).length;
   const basePath = window.location.pathname.replace(/admin\.html$/, '');
   const clientLink = window.location.origin + basePath + '?id=' + id;
-  const langNames = { pl: 'Polonais', fr: 'Francais', es: 'Espagnol', it: 'Italien', de: 'Allemand' };
+  const langNames = { pl: 'Polonais', fr: 'Français', es: 'Espagnol', it: 'Italien', de: 'Allemand' };
   const cardHolder = getCardHolderName(c);
 
   const ov = document.createElement('div');
   ov.id = 'client-detail-modal';
-  ov.style.cssText = 'position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100vh!important;background:rgba(15,23,42,0.75)!important;display:flex!important;justify-content:center!important;align-items:center!important;z-index:2147483647!important;padding:12px!important;box-sizing:border-box!important;overflow-y:auto!important;';
+  ov.style.cssText = 'position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100vh!important;background:rgba(15,23,42,0.8)!important;display:flex!important;justify-content:center!important;align-items:center!important;z-index:2147483647!important;padding:8px!important;box-sizing:border-box!important;';
 
+  // ✅ Ligne avec label en MAJUSCULES et valeur en casse normale
   const row = (label, value, mono) => {
-    return '<div style="display:flex!important;align-items:flex-start!important;gap:8px!important;padding:7px 0!important;border-bottom:1px solid #f1f5f9!important;">' +
-      '<div style="width:110px!important;flex-shrink:0!important;font-size:9.5px!important;font-weight:800!important;color:#64748b!important;text-transform:uppercase!important;letter-spacing:0.3px!important;padding-top:2px!important;">' + label + '</div>' +
-      '<div style="flex:1!important;font-size:12px!important;font-weight:600!important;color:#0f172a!important;word-break:break-word!important;' + (mono ? 'font-family:Courier New,monospace!important;letter-spacing:0.5px!important;' : '') + '">' + (value || '-') + '</div>' +
+    return '<div style="display:flex!important;align-items:flex-start!important;gap:10px!important;padding:9px 0!important;border-bottom:1px solid #f1f5f9!important;">' +
+      '<div style="width:120px!important;flex-shrink:0!important;font-size:9.5px!important;font-weight:800!important;color:#64748b!important;text-transform:uppercase!important;letter-spacing:0.6px!important;padding-top:2px!important;line-height:1.3!important;">' + label + '</div>' +
+      '<div style="flex:1!important;font-size:12.5px!important;font-weight:600!important;color:#0f172a!important;word-break:break-word!important;line-height:1.4!important;' + (mono ? 'font-family:Courier New,Consolas,monospace!important;letter-spacing:0.5px!important;' : '') + '">' + (value || '-') + '</div>' +
     '</div>';
   };
 
-  const sectionTitle = (title, color) => {
-    return '<div style="font-size:10px!important;font-weight:800!important;color:' + (color || '#1a73e8') + '!important;text-transform:uppercase!important;letter-spacing:0.5px!important;margin:14px 0 6px 0!important;padding-bottom:6px!important;border-bottom:1.5px solid #f1f5f9!important;">' + title + '</div>';
+  const sectionTitle = (title) => {
+    return '<div style="font-size:10.5px!important;font-weight:800!important;color:#1a73e8!important;text-transform:uppercase!important;letter-spacing:0.8px!important;margin:16px 0 4px 0!important;padding-bottom:7px!important;border-bottom:1.5px solid #e0e7ef!important;">' + title + '</div>';
   };
 
   ov.innerHTML =
-    '<div style="background:#fff!important;border-radius:16px!important;width:100%!important;max-width:400px!important;max-height:92vh!important;overflow-y:auto!important;box-shadow:0 20px 50px rgba(0,0,0,0.4)!important;display:flex!important;flex-direction:column!important;">' +
-      '<div style="background:linear-gradient(135deg,#1a73e8,#1557b0)!important;padding:16px 18px!important;display:flex!important;align-items:center!important;gap:12px!important;position:sticky!important;top:0!important;z-index:3!important;border-radius:16px 16px 0 0!important;">' +
-        '<div style="width:42px!important;height:42px!important;border-radius:50%!important;background:rgba(255,255,255,0.22)!important;border:1.5px solid rgba(255,255,255,0.35)!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:15px!important;font-weight:800!important;color:#fff!important;flex-shrink:0!important;text-transform:uppercase!important;">' + ((c.firstName || '').charAt(0) + (c.lastName || '').charAt(0)).toUpperCase() + '</div>' +
+    // ✅ max-height réduit à 88vh + footer sticky
+    '<div style="background:#fff!important;border-radius:16px!important;width:100%!important;max-width:420px!important;height:88vh!important;max-height:88vh!important;display:flex!important;flex-direction:column!important;box-shadow:0 20px 50px rgba(0,0,0,0.4)!important;overflow:hidden!important;">' +
+
+      // Header fixe
+      '<div style="background:linear-gradient(135deg,#1a73e8,#1557b0)!important;padding:16px 18px!important;display:flex!important;align-items:center!important;gap:12px!important;flex-shrink:0!important;border-radius:16px 16px 0 0!important;">' +
+        '<div style="width:42px!important;height:42px!important;border-radius:50%!important;background:rgba(255,255,255,0.22)!important;border:1.5px solid rgba(255,255,255,0.4)!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:15px!important;font-weight:800!important;color:#fff!important;flex-shrink:0!important;text-transform:uppercase!important;">' + ((c.firstName || '').charAt(0) + (c.lastName || '').charAt(0)).toUpperCase() + '</div>' +
         '<div style="flex:1!important;min-width:0!important;">' +
-          '<div style="font-size:15px!important;font-weight:800!important;color:#fff!important;line-height:1.2!important;text-transform:capitalize!important;">' + c.firstName + ' ' + c.lastName + '</div>' +
-          '<div style="font-size:10.5px!important;color:rgba(255,255,255,0.85)!important;margin-top:2px!important;word-break:break-all!important;">' + c.email + '</div>' +
+          '<div style="font-size:15px!important;font-weight:800!important;color:#fff!important;line-height:1.2!important;">' + c.firstName + ' ' + c.lastName + '</div>' +
+          '<div style="font-size:10.5px!important;color:rgba(255,255,255,0.9)!important;margin-top:2px!important;word-break:break-all!important;">' + c.email + '</div>' +
         '</div>' +
-        '<button onclick="document.getElementById(\'client-detail-modal\').remove()" style="width:30px!important;height:30px!important;border-radius:50%!important;background:rgba(0,0,0,0.28)!important;border:none!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;"><svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#fff!important;"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
+        '<button onclick="document.getElementById(\'client-detail-modal\').remove()" style="width:30px!important;height:30px!important;border-radius:50%!important;background:rgba(0,0,0,0.3)!important;border:none!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;"><svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#fff!important;"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
       '</div>' +
 
-      // ✅ Pied corrigé : padding-bottom:32px au lieu de 20px
-      '<div style="padding:14px 18px 32px 18px!important;background:#fff!important;">' +
+      // Body scrollable
+      '<div style="flex:1!important;overflow-y:auto!important;padding:14px 18px 16px 18px!important;background:#fff!important;">' +
 
         '<div style="display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;margin-bottom:8px!important;">' +
           '<div style="background:' + (c.blocked ? '#fee2e2' : '#dcfce7') + '!important;border-radius:10px!important;padding:10px 12px!important;">' +
@@ -887,18 +1012,18 @@ window.openClientDetail = async function(id) {
           '</div>' +
         '</div>' +
 
-        sectionTitle('Identite') +
+        sectionTitle('Identité') +
         row('Nom', c.lastName) +
-        row('Prenom', c.firstName) +
+        row('Prénom', c.firstName) +
         row('Pays', c.country) +
         row('Langue', langNames[c.language] || c.language) +
 
         sectionTitle('Contact') +
         row('Email', '<span style="color:#1a73e8!important;">' + c.email + '</span>') +
-        row('Telephone', c.phone) +
+        row('Téléphone', c.phone) +
         row('Adresse', c.address) +
 
-        sectionTitle('Securite') +
+        sectionTitle('Sécurité') +
         row('Code PIN', c.pin, true) +
         row('Code activation', c.activationCode, true) +
 
@@ -906,22 +1031,22 @@ window.openClientDetail = async function(id) {
         row('Banque', c.bankName) +
         row('IBAN', c.iban, true) +
         row('BIC / SWIFT', c.bic, true) +
-        row('IBAN masque', c.ibanMasked === true ? 'Oui' : 'Non') +
+        row('IBAN masqué', c.ibanMasked === true ? 'Oui' : 'Non') +
 
         sectionTitle('Carte virtuelle') +
         row('Titulaire', cardHolder) +
-        row('Numero', c.cardNumber, true) +
+        row('Numéro', c.cardNumber, true) +
         row('Expiration', c.cardExpiry) +
         row('CVV', c.cardCvv, true) +
         row('Type', c.cardType) +
         row('Masquer 4 derniers', c.cardMaskLast4 === true ? 'Oui' : 'Non') +
         row('Masquer CVV', c.cardMaskCvv === true ? 'Oui' : 'Non') +
 
-        sectionTitle('Parametres transfert') +
-        row('Depart %', (c.startPercent || 0) + '%') +
-        row('Arret %', (c.stopPercent || 100) + '%') +
+        sectionTitle('Paramètres transfert') +
+        row('Départ %', (c.startPercent || 0) + '%') +
+        row('Arrêt %', (c.stopPercent || 100) + '%') +
         row('Message de fin', c.message) +
-        row('Couleur du theme', '<span style="display:inline-block!important;width:14px!important;height:14px!important;border-radius:4px!important;background:' + (c.themeColor || '#1a73e8') + '!important;border:1.5px solid #cbd5e1!important;vertical-align:middle!important;margin-right:6px!important;"></span>' + (c.themeColor || '#1a73e8')) +
+        row('Couleur du thème', '<span style="display:inline-block!important;width:14px!important;height:14px!important;border-radius:4px!important;background:' + (c.themeColor || '#1a73e8') + '!important;border:1.5px solid #cbd5e1!important;vertical-align:middle!important;margin-right:6px!important;"></span>' + (c.themeColor || '#1a73e8')) +
 
         sectionTitle('Historique') +
         row('Transactions', txCount + ' transaction(s)') +
@@ -929,18 +1054,16 @@ window.openClientDetail = async function(id) {
         sectionTitle('Lien client') +
         '<div style="background:#f8fafc!important;border:1px dashed #cbd5e1!important;border-radius:8px!important;padding:10px!important;margin-top:6px!important;font-family:Courier New,monospace!important;font-size:10px!important;color:#1a73e8!important;word-break:break-all!important;line-height:1.4!important;">' + clientLink + '</div>' +
 
-        '<div style="display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin-top:16px!important;">' +
-          '<button onclick="window.copyToClipboard(\'' + clientLink + '\')" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;border:none!important;border-radius:9px!important;padding:11px!important;font-size:12px!important;font-weight:700!important;cursor:pointer!important;background:#e8f0fe!important;color:#1a73e8!important;font-family:inherit!important;">' +
-            '<svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#1a73e8!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>' +
-            'Copier le lien' +
-          '</button>' +
-          '<button onclick="document.getElementById(\'client-detail-modal\').remove(); window.openEditModal(\'' + id + '\')" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;border:none!important;border-radius:9px!important;padding:11px!important;font-size:12px!important;font-weight:700!important;cursor:pointer!important;background:linear-gradient(135deg,#1a73e8,#1557b0)!important;color:#fff!important;font-family:inherit!important;">' +
-            '<svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#fff!important;"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>' +
-            'Modifier' +
-          '</button>' +
-        '</div>' +
-
       '</div>' +
+
+      // ✅ FOOTER STICKY avec bouton "Copier le lien" seulement (bouton Modifier retiré)
+      '<div style="padding:12px 18px!important;border-top:1px solid #f1f5f9!important;background:#fff!important;flex-shrink:0!important;border-radius:0 0 16px 16px!important;">' +
+        '<button onclick="window.copyToClipboard(\'' + clientLink + '\')" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;border:none!important;border-radius:10px!important;padding:13px!important;font-size:13px!important;font-weight:700!important;cursor:pointer!important;background:linear-gradient(135deg,#1a73e8,#1557b0)!important;color:#fff!important;font-family:inherit!important;width:100%!important;box-shadow:0 5px 14px rgba(26,115,232,0.3)!important;">' +
+          '<svg viewBox="0 0 24 24" style="width:15px!important;height:15px!important;fill:#fff!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>' +
+          'COPIER LE LIEN CLIENT' +
+        '</button>' +
+      '</div>' +
+
     '</div>';
 
   ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
@@ -959,11 +1082,13 @@ window.applyQuickAction = async function() {
   if (!client) { alert('Client introuvable.'); return; }
   if (client.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
   const fullName = client.firstName + ' ' + client.lastName;
+
   if (action === 'reset') {
-    if (!confirm('Reinitialiser ?')) return;
+    if (!confirm('Reinitialiser l\'historique ET le solde de ' + fullName + ' ?\n\nCette action est irreversible.')) return;
     await FireDB.updateClient(clientId, { balance: 0, transactions: [] });
-    alert('Reinitialise.');
-  } else if (action === 'add-transfer') {
+    alert('Historique et solde reinitialises.');
+  }
+  else if (action === 'add-transfer') {
     const amount = parseFloat(document.getElementById('qa-transfer-amount').value);
     const type = document.getElementById('qa-transfer-type').value;
     const label = document.getElementById('qa-transfer-label').value.trim();
@@ -977,15 +1102,46 @@ window.applyQuickAction = async function() {
     if (type === 'in') newBalance += amount; else newBalance = Math.max(0, newBalance - amount);
     await FireDB.updateClient(clientId, { balance: newBalance, transactions: transactions });
     alert('Virement ajoute.');
-  } else if (action === 'edit-iban') {
+  }
+  else if (action === 'edit-info') {
+    const newLast = document.getElementById('qa-info-lastName').value.trim();
+    const newFirst = document.getElementById('qa-info-firstName').value.trim();
+    const newEmail = document.getElementById('qa-info-email').value.trim();
+    const newPhone = document.getElementById('qa-info-phone').value.trim();
+    const newAddress = document.getElementById('qa-info-address').value.trim();
+    const newPin = document.getElementById('qa-info-pin').value.trim();
+    const newCode = document.getElementById('qa-info-activationCode').value.trim();
+    if (!newLast || !newFirst || !newEmail || !newPin || !newCode) { alert('Nom, prenom, email, PIN et code sont obligatoires.'); return; }
+    await FireDB.updateClient(clientId, {
+      lastName: newLast, firstName: newFirst, email: newEmail,
+      phone: newPhone, address: newAddress, pin: newPin, activationCode: newCode
+    });
+    alert('Informations mises a jour.');
+  }
+  else if (action === 'edit-balance') {
+    const newBal = parseFloat(document.getElementById('qa-balance-value').value);
+    const newCur = document.getElementById('qa-balance-currency').value;
+    if (isNaN(newBal)) { alert('Solde invalide.'); return; }
+    await FireDB.updateClient(clientId, { balance: newBal, currency: newCur });
+    alert('Solde mis a jour.');
+  }
+  else if (action === 'edit-percent') {
+    const startP = parseInt(document.getElementById('qa-percent-start').value);
+    const stopP = parseInt(document.getElementById('qa-percent-stop').value);
+    if (isNaN(startP) || isNaN(stopP)) { alert('Pourcentages invalides.'); return; }
+    await FireDB.updateClient(clientId, { startPercent: startP, stopPercent: stopP });
+    alert('Pourcentages mis a jour.');
+  }
+  else if (action === 'edit-iban') {
     const newIban = document.getElementById('qa-iban-value').value.trim().replace(/\s+/g, '');
     const newBic = document.getElementById('qa-bic-value').value.trim().toUpperCase();
     const masked = document.getElementById('qa-iban-masked').checked;
     if (!newIban || !newBic) { alert('Remplissez tous les champs.'); return; }
     await FireDB.updateClient(clientId, { iban: newIban, bic: newBic, ibanMasked: masked });
     alert('IBAN et BIC mis a jour.');
-  } else if (action === 'edit-card') {
-    const newHolder = document.getElementById('qa-card-holder').value.trim().toUpperCase();
+  }
+  else if (action === 'edit-card') {
+    const newHolder = document.getElementById('qa-card-holder').value.trim();
     const newNum = document.getElementById('qa-card-number').value.trim().replace(/\s+/g, '');
     const newExpiry = document.getElementById('qa-card-expiry').value.trim();
     const newCvv = document.getElementById('qa-card-cvv').value.trim();
@@ -994,15 +1150,17 @@ window.applyQuickAction = async function() {
     const maskCvv = document.getElementById('qa-card-mask-cvv').checked;
     if (!newNum || !newExpiry || !newCvv) { alert('Remplissez tous les champs.'); return; }
     await FireDB.updateClient(clientId, {
-      cardHolder: newHolder || ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase(),
+      cardHolder: newHolder || ((client.firstName || '') + ' ' + (client.lastName || '')).trim(),
       cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv,
       cardType: newType, cardMaskLast4: maskLast4, cardMaskCvv: maskCvv
     });
-    alert('Carte mise a jour. Le masquage est desormais ' + (maskLast4 || maskCvv ? 'ACTIF et definitif cote client.' : 'desactive.'));
-  } else if (action === 'block') {
+    alert('Carte mise a jour.');
+  }
+  else if (action === 'block') {
     await FireDB.updateClient(clientId, { blocked: true });
     alert('Suspendu.');
-  } else if (action === 'unblock') {
+  }
+  else if (action === 'unblock') {
     await FireDB.updateClient(clientId, { blocked: false });
     alert('Active.');
   }
@@ -1024,72 +1182,6 @@ window.deleteClientConfirm = async (id) => {
   const c = await FireDB.getClient(id); if (!c) return;
   if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
   if (confirm('Supprimer ' + c.firstName + ' ' + c.lastName + ' ?')) { await FireDB.deleteClient(id); renderAdminPage(); }
-};
-
-window.openEditModal = async (id) => {
-  const c = await FireDB.getClient(id); if (!c) return;
-  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
-  const body = document.getElementById('edit-form-body');
-  const presets = ['#1a73e8', '#0ea5e9', '#06b6d4', '#14b8a6', '#22c55e', '#84cc16', '#eab308', '#f59e0b', '#ef4444', '#dc2626', '#ec4899', '#a855f7', '#6366f1', '#0f172a'];
-  body.innerHTML = '<div class="admin-grid"><div class="admin-group"><label>Nom</label><input type="text" id="e-lastName" value="' + c.lastName + '"></div><div class="admin-group"><label>Prenom</label><input type="text" id="e-firstName" value="' + c.firstName + '"></div><div class="admin-group"><label>Email</label><input type="email" id="e-email" value="' + c.email + '"></div><div class="admin-group"><label>Telephone</label><input type="tel" id="e-phone" value="' + (c.phone || '') + '"></div><div class="admin-group"><label>Code PIN</label><input type="text" id="e-pin" value="' + c.pin + '"></div><div class="admin-group"><label>Code activation</label><input type="text" id="e-activationCode" value="' + c.activationCode + '"></div><div class="admin-group"><label>Depart %</label><input type="number" id="e-startPercent" value="' + c.startPercent + '" min="0" max="100"></div><div class="admin-group"><label>Arret %</label><input type="number" id="e-stopPercent" value="' + c.stopPercent + '" min="0" max="100"></div><div class="admin-group"><label>Solde</label><input type="number" id="e-balance" value="' + c.balance + '" step="0.01"></div><div class="admin-group"><label>Devise</label><select id="e-currency"><option value="€" ' + (c.currency==='€'?'selected':'') + '>EUR</option><option value="$" ' + (c.currency==='$'?'selected':'') + '>USD</option><option value="£" ' + (c.currency==='£'?'selected':'') + '>GBP</option><option value="zł" ' + (c.currency==='zł'?'selected':'') + '>PLN</option></select></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="e-message" rows="2">' + (c.message || '') + '</textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="e-presets"></div><div class="color-picker-row"><input type="color" id="e-themeColor" value="' + (c.themeColor || '#1a73e8') + '"><input type="text" id="e-themeColorHex" value="' + (c.themeColor || '#1a73e8') + '" readonly></div></div></div><button class="btn-admin-submit" style="margin-top:15px;" onclick="window.saveEdit(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Enregistrer</button>';
-  const pc = document.getElementById('e-presets');
-  presets.forEach((col) => {
-    const div = document.createElement('div');
-    div.className = 'color-preset' + ((c.themeColor || '#1a73e8') === col ? ' selected' : '');
-    div.style.background = col;
-    div.onclick = () => {
-      pc.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected'));
-      div.classList.add('selected');
-      document.getElementById('e-themeColor').value = col;
-      document.getElementById('e-themeColorHex').value = col;
-    };
-    pc.appendChild(div);
-  });
-  document.getElementById('e-themeColor').addEventListener('input', (e) => {
-    document.getElementById('e-themeColorHex').value = e.target.value;
-    pc.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected'));
-  });
-  document.getElementById('edit-modal').classList.add('active');
-};
-
-window.saveEdit = async (id) => {
-  const c = await FireDB.getClient(id); if (!c) return;
-  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
-  await FireDB.updateClient(id, {
-    lastName: document.getElementById('e-lastName').value,
-    firstName: document.getElementById('e-firstName').value,
-    email: document.getElementById('e-email').value,
-    phone: document.getElementById('e-phone').value,
-    pin: document.getElementById('e-pin').value,
-    activationCode: document.getElementById('e-activationCode').value,
-    startPercent: parseInt(document.getElementById('e-startPercent').value),
-    stopPercent: parseInt(document.getElementById('e-stopPercent').value),
-    balance: parseFloat(document.getElementById('e-balance').value),
-    currency: document.getElementById('e-currency').value,
-    message: document.getElementById('e-message').value,
-    themeColor: document.getElementById('e-themeColor').value
-  });
-  window.closeEditModal(); renderAdminPage();
-};
-window.closeEditModal = () => { document.getElementById('edit-modal').classList.remove('active'); };
-
-window.openTxModal = async (id) => {
-  const c = await FireDB.getClient(id); if (!c) return;
-  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { alert('Acces refuse.'); return; }
-  const txs = c.transactions || [];
-  const body = document.getElementById('tx-modal-body');
-  let html = '<div style="font-size:11px;color:#64748b;margin-bottom:12px;font-weight:600;">Client : <strong style="color:#0f172a;">' + c.firstName + ' ' + c.lastName + '</strong></div>';
-  if (txs.length === 0) html += '<div style="text-align:center;padding:30px 15px;color:#94a3b8;font-size:12px;">Aucune transaction</div>';
-  else {
-    html += '<div class="tx-list">';
-    txs.forEach((tx) => {
-      const isIn = tx.type === 'in';
-      html += '<div class="tx-row"><div class="tx-ico ' + (isIn ? 'in' : 'out') + '"><svg viewBox="0 0 24 24">' + (isIn ? '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>' : '<path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>') + '</svg></div><div class="tx-info"><div class="tx-name">' + (tx.subtitle || (isIn ? 'Recu' : 'Envoye')) + '</div><div class="tx-date">' + tx.date + '</div></div><div class="tx-amt ' + (isIn ? 'pos' : 'neg') + '">' + (isIn ? '+' : '-') + tx.amount + '</div></div>';
-    });
-    html += '</div>';
-  }
-  body.innerHTML = html;
-  document.getElementById('tx-modal').classList.add('active');
 };
 
 window.addEventListener('error', () => {});
