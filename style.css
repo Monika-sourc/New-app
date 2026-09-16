@@ -1,6 +1,6 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
-   v35 - Labels gris décalés dans les blocs gris
+   v36 - Seules les VALEURS sont décalées dans les blocs gris
    ===================================================== */
 
 :root {
@@ -397,7 +397,7 @@ input, select, textarea { font-family: inherit; }
 .verify-header-illustration { width: 56px; height: 38px; flex-shrink: 0; color: #94a3b8; opacity: 1; margin-top: -2px; }
 .verify-header-illustration svg { width: 100%; height: 100%; }
 
-/* ===== BLOC GRIS : padding normal, seuls les LABELS sont décalés ===== */
+/* ===== BLOC GRIS : padding normal, seules les VALEURS sont décalées ===== */
 .verify-data-block {
   background: #e8edf3;
   border: 1px solid #dde3ea;
@@ -411,23 +411,23 @@ input, select, textarea { font-family: inherit; }
 .verify-list { display: flex; flex-direction: column; gap: 12px; padding-bottom: 4px; }
 .verify-row { display: flex; flex-direction: column; gap: 4px; }
 
-/* ⬇️ SEULS LES LABELS (textes en gris) SONT DÉCALÉS VERS LE MILIEU */
+/* ⬇️ LES LABELS RESTENT AU BORD NORMAL */
 .verify-row-label {
   font-size: 11px;
   font-weight: 500;
   color: #64748b;
   line-height: 1.3;
-  padding-left: 16px;
+  padding-left: 0;
 }
 
-/* ⬇️ LES VALEURS RESTENT AU BORD */
+/* ⬇️ SEULES LES VALEURS SONT DÉCALÉES VERS LE MILIEU */
 .verify-row-value {
   font-size: 13px;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.35;
   word-break: break-word;
-  padding-left: 0;
+  padding-left: 16px;
 }
 
 .verify-cancel-btn { display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid #fca5a5; color: #dc2626; font-size: 11px; font-weight: 700; padding: 8px 14px; border-radius: 6px; cursor: pointer; margin-top: 16px; font-family: inherit; transition: background 0.2s ease; }
