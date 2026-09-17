@@ -1,6 +1,6 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
-   v39 - Boules multicolores auto + reçus + profil pro
+   v40 - Boules multicolores auto + reçus + profil pro + emails admin
    ===================================================== */
 
 :root {
@@ -272,10 +272,16 @@ input, select, textarea { font-family: inherit; }
 .detail-row-value.mono { font-family: 'Courier New', 'Consolas', monospace; letter-spacing: 0.6px; font-weight: 600; }
 .detail-link-box { background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 8px; padding: 10px 12px; margin-top: 8px; font-family: 'Courier New', monospace; font-size: 10px; color: #1a73e8; word-break: break-all; line-height: 1.5; }
 .detail-footer { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px solid #e2e8f0; padding-bottom: 8px; }
-.detail-footer-btn { display: flex; align-items: center; justify-content: center; gap: 8px; border: none; border-radius: 10px; padding: 13px; font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.detail-footer-btn { display: flex; align-items: center; justify-content: center; gap: 8px; border: none; border-radius: 10px; padding: 13px; font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: inherit; transition: transform 0.1s ease; }
+.detail-footer-btn:active { transform: scale(0.98); }
 .detail-footer-btn.copy { background: #e8f0fe; color: #1a73e8; }
 .detail-footer-btn.copy svg { fill: #1a73e8; width: 14px; height: 14px; }
-.detail-footer-btn:active { transform: scale(0.98); }
+/* ✅ NOUVEAU : Bouton "Envoyer les identifiants de connexion" */
+.detail-footer-btn.send-credentials { background: #fef3c7; color: #b45309; }
+.detail-footer-btn.send-credentials svg { fill: #b45309; width: 14px; height: 14px; }
+/* ✅ NOUVEAU : Bouton "Envoyer le code d'activation" */
+.detail-footer-btn.send-activation { background: #dcfce7; color: #16a34a; }
+.detail-footer-btn.send-activation svg { fill: #16a34a; width: 14px; height: 14px; }
 
 /* ========== LOGIN CLIENT ========== */
 .login-page { display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; padding: 20px; background: var(--bg-gray); overflow-y: auto; -webkit-overflow-scrolling: touch; }
