@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="googlebot" content="noindex, nofollow">
+<title>Super Admin - TransferWire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=12">
+</head>
+<body>
+
+<!-- CONTENEUR PRINCIPAL SUPER ADMIN -->
+<div class="app-container" id="super-admin-root">
+  <div style="display:flex;align-items:center;justify-content:center;height:100%;background:#0f172a;">
+    <div class="spinner"></div>
+  </div>
+</div>
+
+<!-- SCRIPT PRINCIPAL SUPER ADMIN -->
+<script type="module">
+  import { initSuperAdminApp } from './script.js?v=12';
+  initSuperAdminApp();
+
+  // Empêcher le zoom sur double-tap (mobile)
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', (event) => {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) {
+      event.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, false);
+</script>
+
+</body>
+</html>
