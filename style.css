@@ -1,7 +1,6 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
-   v49 - Cartes admin + historique rectangulaires
-   Reste de l'app : cartes arrondies (original)
+   v50 - Vrais logos banques + cartes admin/historique rectangulaires
    ===================================================== */
 
 :root {
@@ -341,7 +340,7 @@ input, select, textarea { font-family: inherit; }
 
 .greeting { padding: 14px 12px 6px 12px; font-size: 15px; color: #000000; font-weight: 700; }
 
-/* Dashboard hero - ARRONDI (16px) restauré */
+/* Dashboard hero - ARRONDI (16px) */
 .dashboard-hero { background: linear-gradient(160deg, var(--primary) 0%, var(--primary-dark) 100%); margin: 8px 12px 0 12px; border-radius: 16px; padding: 22px 14px 18px 14px; color: #fff; position: relative; overflow: hidden; box-shadow: 0 8px 24px rgba(26, 115, 232, 0.3); text-align: center; }
 .dashboard-hero::before, .dashboard-hero::after { display: none; }
 .hero-bubbles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
@@ -365,7 +364,7 @@ input, select, textarea { font-family: inherit; }
 .dots-indicator span { width: 4px; height: 4px; background: rgba(255, 255, 255, 0.5); border-radius: 50%; }
 .dots-indicator span.active { background: #fff; width: 14px; border-radius: 3px; }
 
-/* Quick actions - ARRONDI (16px) restauré */
+/* Quick actions - ARRONDI (16px) */
 .quick-actions-block { background: #fff; margin: 14px 12px 0 12px; border-radius: 16px; padding: 14px 8px; box-shadow: 0 2px 10px rgba(15, 23, 42, 0.1); display: flex; justify-content: space-around; align-items: flex-start; gap: 4px; }
 .quick-action { display: flex; flex-direction: column; align-items: center; gap: 7px; cursor: pointer; flex: 1; max-width: 110px; -webkit-tap-highlight-color: transparent; }
 .quick-icon { width: 44px; height: 44px; border-radius: 50%; background: var(--primary-light); border: 1px solid rgba(26, 115, 232, 0.15); display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
@@ -376,7 +375,7 @@ input, select, textarea { font-family: inherit; }
 .section-title { padding: 22px 12px 10px 12px; font-size: 13px; font-weight: 700; color: #000000; margin: 0 12px; padding-left: 0; padding-right: 0; }
 .transaction-list { padding: 0 12px; }
 
-/* ✅ CARTE HISTORIQUE - RECTANGULAIRE (4px) UNIQUEMENT */
+/* ✅ CARTE HISTORIQUE - RECTANGULAIRE (4px) */
 .transaction-item { display: flex; align-items: center; padding: 12px; background: #ffffff; border-radius: 4px; margin-bottom: 8px; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08); }
 .transaction-item:last-child { margin-bottom: 0; }
 .transaction-clickable { cursor: pointer; transition: transform 0.1s ease, box-shadow 0.2s ease; -webkit-tap-highlight-color: transparent; }
@@ -390,9 +389,24 @@ input, select, textarea { font-family: inherit; }
 .icon-green { background: #2d9249; } .icon-green svg { fill: #fff; }
 .icon-cancelled { background: #8b5cf6; } .icon-cancelled svg { fill: #fff; }
 
-/* Logo banque dans l'historique */
-.tx-icon-logo { background: #ffffff; border: 1px solid #e2e8f0; overflow: hidden; padding: 0; }
-.tx-icon-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; display: block; }
+/* ✅ VRAI logo de banque dans l'historique (Clearbit) */
+.tx-icon-logo {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  padding: 3px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tx-icon-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 50%;
+}
 
 .tx-details { flex-grow: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .tx-title { font-size: 11.5px; font-weight: 600; color: #000000; }
@@ -403,7 +417,7 @@ input, select, textarea { font-family: inherit; }
 .amount-cancelled { font-size: 12.5px; font-weight: 700; color: #8b5cf6; }
 .tx-date { font-size: 9.5px; color: #64748b; font-weight: 600; }
 
-/* Bottom nav - ARRONDI (17px) restauré */
+/* Bottom nav - ARRONDI (17px) */
 .bottom-nav { background: var(--bg-gray); padding: 7px 10px 8px 10px; flex-shrink: 0; z-index: 10; position: relative; }
 @supports (padding: env(safe-area-inset-bottom)) { .bottom-nav { padding-bottom: calc(8px + env(safe-area-inset-bottom)); } }
 .bottom-nav-inner { display: flex; justify-content: space-between; align-items: center; background: #ffffff; border-radius: 17px; padding: 4px; box-shadow: 0 3px 10px rgba(15, 23, 42, 0.12); gap: 2px; }
@@ -745,7 +759,7 @@ input, select, textarea { font-family: inherit; }
 @keyframes cardShine { 0% { left: -100%; } 45% { left: 150%; } 100% { left: 150%; } }
 
 /* ===================================================== */
-/* RÈGLES FINALES DE LISIBILITÉ - v49                    */
+/* RÈGLES FINALES DE LISIBILITÉ - v50                    */
 /* Labels clairs (#64748b) — Valeurs bien noires (#000)  */
 /* ===================================================== */
 
