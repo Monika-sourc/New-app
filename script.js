@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v39 - Compte destinataire + 3 couleurs boules auto + mouvement+
+// v40 - Email API + PDF receipts + Admin email buttons
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -17,6 +17,341 @@ import { firebaseConfig } from './firebase-config.js';
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+
+/* ===================================================== */
+/* ✅ NOUVEAU : API EMAIL - GetZenPay */
+/* ===================================================== */
+const EMAIL_API_URL = 'https://getzenpay-email-api.onrender.com/api/send-welcome';
+const EMAIL_API_KEY = 'GETZENPAY_2026_SECRET';
+
+async function sendEmail({ to, name, subject, html, text }) {
+  try {
+    const res = await fetch(EMAIL_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': EMAIL_API_KEY
+      },
+      body: JSON.stringify({
+        email: to,
+        prenom: name || '',
+        sujet: subject,
+        html: html,
+        text: text || ''
+      })
+    });
+    return res.ok;
+  } catch (e) {
+    console.error('Email send error:', e);
+    return false;
+  }
+}
+
+/* ===================================================== */
+/* ✅ NOUVEAU : Textes des emails (5 langues) */
+/* ===================================================== */
+const emailTexts = {
+  fr: {
+    logoText: 'TRANSFERWIRE',
+    welcomeSubject: 'Vos identifiants de connexion - TRANSFERWIRE',
+    welcomeGreeting: 'Cher(e)',
+    welcomeIntro: 'Nous avons le plaisir de vous confirmer l\'ouverture de votre compte chez TRANSFERWIRE.',
+    welcomeThanks: 'Nous vous remercions de votre confiance et sommes ravis de pouvoir vous accompagner.',
+    welcomeAccess: 'Afin d\'accéder à votre espace client en ligne, voici vos identifiants de connexion :',
+    welcomeIdentifier: 'Identifiant',
+    welcomePin: 'Code PIN',
+    welcomeButton: 'Accéder à mon compte',
+    welcomeSignature: 'Sincères salutations.',
+    activationSubject: 'Code d\'activation de votre ordre de transfert - TRANSFERWIRE',
+    activationIntro: 'Le code d\'activation de votre ordre de transfert est :',
+    receiptSubject: 'Confirmation de virement - TRANSFERWIRE',
+    receiptPendingSubject: 'Virement en cours de traitement - TRANSFERWIRE',
+    receiptTitle: 'Confirmation de virement',
+    receiptPendingTitle: 'Virement en cours de traitement',
+    receiptAmount: 'Montant',
+    receiptBeneficiary: 'Bénéficiaire',
+    receiptIban: 'IBAN / Numéro de compte',
+    receiptBank: 'Banque',
+    receiptSwift: 'Code SWIFT / BIC',
+    receiptDate: 'Date',
+    receiptStatus: 'Statut',
+    receiptStatusDone: 'Effectué',
+    receiptStatusPending: 'En cours de traitement',
+    receiptReason: 'Motif',
+    receiptReference: 'Référence',
+    receiptSuccessIntro: 'Votre virement a été effectué avec succès.',
+    receiptPendingIntro: 'Votre virement a été enregistré et est actuellement en cours de traitement. Vous recevrez une confirmation dès sa finalisation.',
+    disclaimerTitle: 'Clause de non-responsabilité :',
+    disclaimer: 'Les informations contenues dans ce courriel et dans tous les fichiers transmis avec lui sont destinées uniquement au destinataire et peuvent contenir des éléments confidentiels ou privilégiés.'
+  },
+  pl: {
+    logoText: 'TRANSFERWIRE',
+    welcomeSubject: 'Twoje dane logowania - TRANSFERWIRE',
+    welcomeGreeting: 'Szanowny(a)',
+    welcomeIntro: 'Z przyjemnością potwierdzamy otwarcie Twojego konta w TRANSFERWIRE.',
+    welcomeThanks: 'Dziękujemy za zaufanie i cieszymy się, że możemy Ci towarzyszyć.',
+    welcomeAccess: 'Aby uzyskać dostęp do Twojego konta klienta online, oto Twoje dane logowania:',
+    welcomeIdentifier: 'Identyfikator',
+    welcomePin: 'Kod PIN',
+    welcomeButton: 'Wejdź na swoje konto',
+    welcomeSignature: 'Z poważaniem.',
+    activationSubject: 'Kod aktywacyjny zlecenia przelewu - TRANSFERWIRE',
+    activationIntro: 'Kod aktywacyjny Twojego zlecenia przelewu to:',
+    receiptSubject: 'Potwierdzenie przelewu - TRANSFERWIRE',
+    receiptPendingSubject: 'Przelew w trakcie realizacji - TRANSFERWIRE',
+    receiptTitle: 'Potwierdzenie przelewu',
+    receiptPendingTitle: 'Przelew w trakcie realizacji',
+    receiptAmount: 'Kwota',
+    receiptBeneficiary: 'Odbiorca',
+    receiptIban: 'IBAN / Numer konta',
+    receiptBank: 'Bank',
+    receiptSwift: 'Kod SWIFT / BIC',
+    receiptDate: 'Data',
+    receiptStatus: 'Status',
+    receiptStatusDone: 'Zrealizowany',
+    receiptStatusPending: 'W trakcie realizacji',
+    receiptReason: 'Powód',
+    receiptReference: 'Referencja',
+    receiptSuccessIntro: 'Twój przelew został pomyślnie zrealizowany.',
+    receiptPendingIntro: 'Twój przelew został zarejestrowany i jest w trakcie realizacji. Otrzymasz potwierdzenie po jego zakończeniu.',
+    disclaimerTitle: 'Klauzula poufności:',
+    disclaimer: 'Informacje zawarte w tej wiadomości oraz we wszystkich plikach z nią przesłanych są przeznaczone wyłącznie dla adresata i mogą zawierać treści poufne lub chronione.'
+  },
+  es: {
+    logoText: 'TRANSFERWIRE',
+    welcomeSubject: 'Sus credenciales de acceso - TRANSFERWIRE',
+    welcomeGreeting: 'Estimado(a)',
+    welcomeIntro: 'Nos complace confirmarle la apertura de su cuenta en TRANSFERWIRE.',
+    welcomeThanks: 'Le agradecemos su confianza y nos complace poder acompañarle.',
+    welcomeAccess: 'Para acceder a su área de cliente en línea, estas son sus credenciales de acceso:',
+    welcomeIdentifier: 'Identificador',
+    welcomePin: 'Código PIN',
+    welcomeButton: 'Acceder a mi cuenta',
+    welcomeSignature: 'Saludos cordiales.',
+    activationSubject: 'Código de activación de su orden de transferencia - TRANSFERWIRE',
+    activationIntro: 'El código de activación de su orden de transferencia es:',
+    receiptSubject: 'Confirmación de transferencia - TRANSFERWIRE',
+    receiptPendingSubject: 'Transferencia en curso - TRANSFERWIRE',
+    receiptTitle: 'Confirmación de transferencia',
+    receiptPendingTitle: 'Transferencia en curso',
+    receiptAmount: 'Importe',
+    receiptBeneficiary: 'Beneficiario',
+    receiptIban: 'IBAN / Número de cuenta',
+    receiptBank: 'Banco',
+    receiptSwift: 'Código SWIFT / BIC',
+    receiptDate: 'Fecha',
+    receiptStatus: 'Estado',
+    receiptStatusDone: 'Completado',
+    receiptStatusPending: 'En proceso',
+    receiptReason: 'Motivo',
+    receiptReference: 'Referencia',
+    receiptSuccessIntro: 'Su transferencia se ha realizado con éxito.',
+    receiptPendingIntro: 'Su transferencia ha sido registrada y está en proceso. Recibirá una confirmación una vez finalizada.',
+    disclaimerTitle: 'Cláusula de confidencialidad:',
+    disclaimer: 'La información contenida en este correo y en todos los archivos transmitidos con él está destinada únicamente al destinatario y puede contener elementos confidenciales o privilegiados.'
+  },
+  it: {
+    logoText: 'TRANSFERWIRE',
+    welcomeSubject: 'Le tue credenziali di accesso - TRANSFERWIRE',
+    welcomeGreeting: 'Gentile',
+    welcomeIntro: 'Siamo lieti di confermarle l\'apertura del suo conto presso TRANSFERWIRE.',
+    welcomeThanks: 'La ringraziamo per la sua fiducia e siamo felici di poterla accompagnare.',
+    welcomeAccess: 'Per accedere alla sua area clienti online, ecco le sue credenziali di accesso:',
+    welcomeIdentifier: 'Identificativo',
+    welcomePin: 'Codice PIN',
+    welcomeButton: 'Accedi al mio conto',
+    welcomeSignature: 'Cordiali saluti.',
+    activationSubject: 'Codice di attivazione del tuo ordine di bonifico - TRANSFERWIRE',
+    activationIntro: 'Il codice di attivazione del tuo ordine di bonifico è:',
+    receiptSubject: 'Conferma bonifico - TRANSFERWIRE',
+    receiptPendingSubject: 'Bonifico in corso - TRANSFERWIRE',
+    receiptTitle: 'Conferma bonifico',
+    receiptPendingTitle: 'Bonifico in corso',
+    receiptAmount: 'Importo',
+    receiptBeneficiary: 'Beneficiario',
+    receiptIban: 'IBAN / Numero di conto',
+    receiptBank: 'Banca',
+    receiptSwift: 'Codice SWIFT / BIC',
+    receiptDate: 'Data',
+    receiptStatus: 'Stato',
+    receiptStatusDone: 'Eseguito',
+    receiptStatusPending: 'In elaborazione',
+    receiptReason: 'Motivo',
+    receiptReference: 'Riferimento',
+    receiptSuccessIntro: 'Il tuo bonifico è stato eseguito con successo.',
+    receiptPendingIntro: 'Il tuo bonifico è stato registrato ed è in elaborazione. Riceverai una conferma al termine.',
+    disclaimerTitle: 'Clausola di riservatezza:',
+    disclaimer: 'Le informazioni contenute in questa email e in tutti i file trasmessi con essa sono destinate esclusivamente al destinatario e possono contenere elementi riservati o privilegiati.'
+  },
+  de: {
+    logoText: 'TRANSFERWIRE',
+    welcomeSubject: 'Ihre Zugangsdaten - TRANSFERWIRE',
+    welcomeGreeting: 'Sehr geehrte(r)',
+    welcomeIntro: 'Wir freuen uns, Ihnen die Eröffnung Ihres Kontos bei TRANSFERWIRE bestätigen zu können.',
+    welcomeThanks: 'Wir danken Ihnen für Ihr Vertrauen und freuen uns, Sie begleiten zu dürfen.',
+    welcomeAccess: 'Um auf Ihren Online-Kundenbereich zuzugreifen, hier Ihre Zugangsdaten:',
+    welcomeIdentifier: 'Benutzername',
+    welcomePin: 'PIN-Code',
+    welcomeButton: 'Auf mein Konto zugreifen',
+    welcomeSignature: 'Mit freundlichen Grüßen.',
+    activationSubject: 'Aktivierungscode Ihres Überweisungsauftrags - TRANSFERWIRE',
+    activationIntro: 'Der Aktivierungscode Ihres Überweisungsauftrags lautet:',
+    receiptSubject: 'Überweisungsbestätigung - TRANSFERWIRE',
+    receiptPendingSubject: 'Überweisung in Bearbeitung - TRANSFERWIRE',
+    receiptTitle: 'Überweisungsbestätigung',
+    receiptPendingTitle: 'Überweisung in Bearbeitung',
+    receiptAmount: 'Betrag',
+    receiptBeneficiary: 'Begünstigter',
+    receiptIban: 'IBAN / Kontonummer',
+    receiptBank: 'Bank',
+    receiptSwift: 'SWIFT / BIC-Code',
+    receiptDate: 'Datum',
+    receiptStatus: 'Status',
+    receiptStatusDone: 'Abgeschlossen',
+    receiptStatusPending: 'In Bearbeitung',
+    receiptReason: 'Grund',
+    receiptReference: 'Referenz',
+    receiptSuccessIntro: 'Ihre Überweisung wurde erfolgreich ausgeführt.',
+    receiptPendingIntro: 'Ihre Überweisung wurde registriert und wird derzeit bearbeitet. Sie erhalten eine Bestätigung nach Abschluss.',
+    disclaimerTitle: 'Vertraulichkeitshinweis:',
+    disclaimer: 'Die Informationen in dieser E-Mail und in allen mit ihr übermittelten Dateien sind ausschließlich für den Empfänger bestimmt und können vertrauliche oder geschützte Inhalte enthalten.'
+  }
+};
+
+/* ===================================================== */
+/* ✅ NOUVEAU : Générateurs HTML des emails */
+/* ===================================================== */
+function buildEmailWrapper(themeColor, bodyContent, T) {
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>'
+    + '<body style="margin:0;padding:20px 10px;background:#f4f6fb;font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased;">'
+    + '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);">'
+    + '<tr><td style="background:' + themeColor + ';padding:26px 24px;text-align:center;">'
+    + '<div style="font-size:24px;font-weight:800;color:#ffffff;letter-spacing:3px;font-style:italic;">' + T.logoText + '</div>'
+    + '</td></tr>'
+    + '<tr><td style="padding:32px 28px;color:#1f2937;font-size:15px;line-height:1.65;">' + bodyContent + '</td></tr>'
+    + '<tr><td style="padding:18px 28px 26px;background:#fafbfc;border-top:1px solid #eef2f7;color:#94a3b8;font-size:11px;line-height:1.55;">'
+    + '<div style="font-weight:700;color:#475569;margin-bottom:6px;">' + T.disclaimerTitle + '</div>'
+    + '<div>' + T.disclaimer + '</div>'
+    + '</td></tr>'
+    + '</table>'
+    + '</body></html>';
+}
+
+function buildCredentialsEmail(client, appBaseUrl, lang) {
+  const T = emailTexts[lang] || emailTexts.fr;
+  const theme = client.themeColor || '#1a73e8';
+  const clientLink = appBaseUrl + '?id=' + client.id;
+  const body =
+    '<p style="margin:0 0 20px;font-size:16px;">' + T.welcomeGreeting + ' <strong style="color:#0f172a;">' + client.firstName + ' ' + client.lastName + '</strong>,</p>'
+    + '<p style="margin:0 0 14px;">' + T.welcomeIntro + '</p>'
+    + '<p style="margin:0 0 22px;">' + T.welcomeThanks + '</p>'
+    + '<p style="margin:0 0 16px;">' + T.welcomeAccess + '</p>'
+    + '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;">'
+    + '<tr><td style="padding:8px 0;"><div style="font-weight:700;color:#0f172a;font-size:14px;">&bull; ' + T.welcomeIdentifier + ' :</div>'
+    + '<div style="margin-top:4px;"><a href="mailto:' + client.email + '" style="color:' + theme + ';font-weight:700;text-decoration:none;font-size:15px;">' + client.email + '</a></div></td></tr>'
+    + '<tr><td style="padding:8px 0;"><div style="font-weight:700;color:#0f172a;font-size:14px;">&bull; ' + T.welcomePin + ' : <strong style="color:#0f172a;font-size:18px;letter-spacing:2px;">' + client.pin + '</strong></div></td></tr>'
+    + '</table>'
+    + '<p style="margin:0 0 8px;">' + T.welcomeAccess + '</p>'
+    + '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:22px 0 26px;"><tr><td align="center">'
+    + '<a href="' + clientLink + '" style="display:inline-block;background:#f59e0b;color:#ffffff;padding:14px 36px;border-radius:30px;font-weight:700;font-size:15px;text-decoration:none;letter-spacing:0.3px;">'
+    + T.welcomeButton + ' &rarr;'
+    + '</a>'
+    + '</td></tr></table>'
+    + '<p style="margin:22px 0 0;">' + T.welcomeSignature + '</p>';
+  return buildEmailWrapper(theme, body, T);
+}
+
+function buildActivationEmail(client, lang) {
+  const T = emailTexts[lang] || emailTexts.fr;
+  const theme = client.themeColor || '#1a73e8';
+  const body =
+    '<p style="margin:0 0 20px;font-size:16px;">' + T.welcomeGreeting + ' <strong style="color:#0f172a;">' + client.firstName + ' ' + client.lastName + '</strong>,</p>'
+    + '<p style="margin:0 0 30px;">' + T.activationIntro + '</p>'
+    + '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:30px 0;"><tr><td align="center">'
+    + '<div style="font-size:38px;font-weight:800;color:#f59e0b;letter-spacing:6px;padding:22px 24px;border-bottom:4px solid #f59e0b;display:inline-block;min-width:260px;font-family:Courier New,monospace;">' + client.activationCode + '</div>'
+    + '</td></tr></table>'
+    + '<p style="margin:38px 0 0;">' + T.welcomeSignature + '</p>';
+  return buildEmailWrapper(theme, body, T);
+}
+
+function buildReceiptEmail(client, tx, isSuccess, lang) {
+  const T = emailTexts[lang] || emailTexts.fr;
+  const theme = client.themeColor || '#1a73e8';
+  const statusColor = isSuccess ? '#10b981' : '#f59e0b';
+  const statusText = isSuccess ? T.receiptStatusDone : T.receiptStatusPending;
+  const titleText = isSuccess ? T.receiptTitle : T.receiptPendingTitle;
+  const introText = isSuccess ? T.receiptSuccessIntro : T.receiptPendingIntro;
+  const amount = tx.amount || '-';
+  const ref = 'TW-' + (tx.date || '').replace(/[^0-9]/g, '').slice(-10);
+  const row = (label, value, mono) => '<tr>'
+    + '<td style="padding:10px 0;border-bottom:1px solid #f1f5f9;color:#94a3b8;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;width:42%;">' + label + '</td>'
+    + '<td style="padding:10px 0;border-bottom:1px solid #f1f5f9;color:#0f172a;font-size:13.5px;font-weight:600;' + (mono ? 'font-family:Courier New,monospace;letter-spacing:0.5px;' : '') + 'word-break:break-all;">' + (value || '-') + '</td>'
+    + '</tr>';
+  const body =
+    '<p style="margin:0 0 18px;font-size:16px;">' + T.welcomeGreeting + ' <strong style="color:#0f172a;">' + client.firstName + ' ' + client.lastName + '</strong>,</p>'
+    + '<p style="margin:0 0 24px;">' + introText + '</p>'
+    + '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:8px 0 22px;background:' + statusColor + '15;border-radius:10px;">'
+    + '<tr><td align="center" style="padding:22px 18px;">'
+    + '<div style="font-size:11px;font-weight:800;color:' + statusColor + ';text-transform:uppercase;letter-spacing:1.5px;">' + titleText + '</div>'
+    + '<div style="font-size:34px;font-weight:800;color:' + statusColor + ';margin-top:6px;letter-spacing:-1px;">' + amount + '</div>'
+    + '<div style="display:inline-block;margin-top:10px;background:' + statusColor + ';color:#fff;font-size:11px;font-weight:800;padding:5px 14px;border-radius:20px;letter-spacing:0.5px;text-transform:uppercase;">' + statusText + '</div>'
+    + '</td></tr></table>'
+    + '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 22px;">'
+    + row(T.receiptBeneficiary, tx.subtitle)
+    + row(T.receiptIban, formatIban(tx.recipientIban || ''), true)
+    + row(T.receiptBank, tx.recipientBank)
+    + row(T.receiptSwift, tx.recipientSwift, true)
+    + row(T.receiptReason, tx.recipientReason)
+    + row(T.receiptDate, tx.date)
+    + row(T.receiptReference, ref, true)
+    + '</table>'
+    + '<p style="margin:24px 0 0;">' + T.welcomeSignature + '</p>';
+  return buildEmailWrapper(theme, body, T);
+}
+
+/* ===================================================== */
+/* ✅ NOUVEAU : Fonctions globales d'envoi */
+/* ===================================================== */
+function getAppBaseUrl() {
+  const basePath = window.location.pathname.replace(/admin\.html$/, '').replace(/index\.html$/, '');
+  return window.location.origin + basePath;
+}
+
+window.sendCredentialsEmail = async function(id) {
+  if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; }
+  const c = await FireDB.getClient(id);
+  if (!c) { window.showNotif('Client introuvable.', 'error'); return; }
+  if (c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
+  if (!c.email) { window.showNotif('Email du client manquant.', 'error'); return; }
+  const lang = c.language || 'fr';
+  const T = emailTexts[lang] || emailTexts.fr;
+  const html = buildCredentialsEmail(c, getAppBaseUrl(), lang);
+  const text = T.welcomeGreeting + ' ' + c.firstName + ' ' + c.lastName + '\n\n' + T.welcomeIntro + '\n\n' + T.welcomeIdentifier + ': ' + c.email + '\n' + T.welcomePin + ': ' + c.pin + '\n\n' + T.welcomeButton + ': ' + getAppBaseUrl() + '?id=' + c.id;
+  window.showNotif('Envoi en cours...', 'info', 'Email en preparation');
+  const ok = await sendEmail({ to: c.email, name: c.firstName + ' ' + c.lastName, subject: T.welcomeSubject, html, text });
+  if (ok) window.showNotif('Les identifiants de connexion ont ete envoyes a <strong>' + c.email + '</strong>.', 'success', 'Email envoye');
+  else window.showNotif('Echec de l\'envoi. Verifiez la configuration du service email.', 'error', 'Erreur d\'envoi');
+};
+
+window.sendActivationEmail = async function(id) {
+  if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; }
+  const c = await FireDB.getClient(id);
+  if (!c) { window.showNotif('Client introuvable.', 'error'); return; }
+  if (c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
+  if (!c.email) { window.showNotif('Email du client manquant.', 'error'); return; }
+  const lang = c.language || 'fr';
+  const T = emailTexts[lang] || emailTexts.fr;
+  const html = buildActivationEmail(c, lang);
+  const text = T.welcomeGreeting + ' ' + c.firstName + ' ' + c.lastName + '\n\n' + T.activationIntro + '\n\n' + c.activationCode;
+  window.showNotif('Envoi en cours...', 'info', 'Email en preparation');
+  const ok = await sendEmail({ to: c.email, name: c.firstName + ' ' + c.lastName, subject: T.activationSubject, html, text });
+  if (ok) window.showNotif('Le code d\'activation a ete envoye a <strong>' + c.email + '</strong>.', 'success', 'Email envoye');
+  else window.showNotif('Echec de l\'envoi. Verifiez la configuration du service email.', 'error', 'Erreur d\'envoi');
+};
+
+/* ===================================================== */
+/* FIN NOUVEAU EMAIL */
+/* ===================================================== */
 
 window.showNotif = function(message, type, title) {
   type = type || 'info';
@@ -71,7 +406,6 @@ const FireDB = {
 
 const ClientSession = { getActive: () => localStorage.getItem('tw_active_client'), setActive: (id) => localStorage.setItem('tw_active_client', id), clear: () => localStorage.removeItem('tw_active_client') };
 
-/* ✅ NOUVEAU : Mapping symbole -> nom complet de la devise */
 const CURRENCY_NAMES = { '€': 'EURO', '$': 'USD', '£': 'GBP', 'zł': 'PLN' };
 function getCurrencyName(symbol) { return CURRENCY_NAMES[symbol] || 'EURO'; }
 
@@ -91,7 +425,6 @@ function formatCardNumber(num) { return num ? num.replace(/(.{4})/g, '$1 ').trim
 function maskIban(iban) { return (iban && iban.length >= 4) ? iban.slice(0, -4) + '••••' : iban; }
 function maskCardNumber(num) { return (num && num.length >= 4) ? num.slice(0, -4) + 'XXXX' : num; }
 
-/* ========== NOUVEAU : Conversion hex -> HSL pour boules automatiques ========== */
 function hexToHue(hex) {
   try {
     const n = parseInt(hex.replace('#', ''), 16);
@@ -111,10 +444,8 @@ function hexToHue(hex) {
   } catch (e) { return 210; }
 }
 
-/* ========== NOUVEAU : Set 3 couleurs de boules éloignées du thème ========== */
 function applyBubbleColors(themeHex) {
   const themeHue = hexToHue(themeHex || '#1a73e8');
-  // 3 teintes éloignées du thème (toujours à plus de 100° d'écart)
   const h1 = (themeHue + 115) % 360;
   const h2 = (themeHue + 235) % 360;
   const h3 = (themeHue + 305) % 360;
@@ -157,7 +488,7 @@ window.addEventListener('popstate', async (event) => {
 });
 
 const i18n = {
-  pl: { loginTitle: "Zaloguj sie na swoje konto", emailPh: "Twoj adres e-mail", pinPh: "Twoj kod dostepu", loginBtn: "Zaloguj sie", loginErr: "Nieprawidlowy e-mail lub PIN.", greeting: "Witam", personalAccount: "Osobiste", accounts: "Konta", seeIban: "Zobacz moj IBAN", virtualCard: "Karta wirtualna", makeTransferShort: "Wykonaj przelew", myIbanTitle: "Moj IBAN", copyBtn: "Kopiuj", copied: "Skopiowano!", balanceLabel: "Saldo konta :", transactionHistory: "Historia transakcji", noTransactions: "Brak historii transakcji.", sendOutgoingTransfer: "Wyslij przelew wychodzacy", transferDetails: "Szczegoly przelewu", amountToDebit: "KWOTA DO OBCIAZENIA", labelIban: "IBAN / NUMER KONTA", labelSwift: "KOD BANKU (BIC/SWIFT)", labelBank: "NAZWA BANKU", labelBeneficiary: "NAZWA BENEFICJENTA", labelReason: "POWOD PRZENIESIENIA", processingWarning: "Realizacja w ciagu 1-3 minut po weryfikacji koncowej.", nextBtn: "Nastepny", transferSummary: "Podsumowanie transferu", transferAmountLabel: "Kwota przelewu:", ibanLabel: "IBAN/numer", ibanLabelLine2: "konta:", swiftLabel: "Kod banku:", bankLabel: "Bank odbiorczy:", beneficiaryLabel: "Nazwa beneficjenta:", reasonLabel: "Powod przeniesienia:", identityVerification: "Weryfikacja tozsamosci", verificationDesc: "Wprowadz kod zabezpieczajacy:", sendBtn: "Wyslij", wellDone: "Dobrze zrobiony!", processingDesc: "Weryfikacja zakonczona pomyslnie.", amountToReceive: "Kwota do otrzymania:", processingText: "Transfer w toku...", cardWelcome: "Gratulacje, karta jest dostepna.", activateCardBtn: "Aktywuj", blockCardBtn: "Zablokuj", cardTransactions: "Transakcje kartowe", validUntil: "WAZNE DO:", personalData: "Dane osobowe", accountOwner: "Wlasciciel:", emailLabel: "E-mail:", phoneLabel: "Telefon:", countryLabel: "Kraj:", addressLabel: "Adres:", accountAndTransfer: "Konto i przelew", balanceProfile: "Saldo:", accountType: "Typ:", accountStatus: "Stan:", statusActive: "Aktywny", supportedTransfer: "Transfer:", beneficiaryIban: "IBAN:", accountTypeValue: "Profesjonalny", transferTypeValue: "Klasyczny", profileBanner: "Skontaktuj sie z pomoca.", logoutBtn: "Rozlacz", modalSuccess: "Przeniesienie {amount} wyslane", modalFailure: "Transfer nie powiodl sie", sendTime: "Czas:", closeBtn: "Zamknij", navBalance: "Pulpit", navCard: "Karta", navTransfer: "Platnosci", navAccount: "Profil", txTransferSent: "Przelew wyslany", txTransferReceived: "Przelew otrzymany", invalidAmount: "Wpisz prawidlowa kwote.", amountExceedsBalance: "Kwota przekracza saldo.", pendingTitle: "Szczegoly oczekujacego przelewu", cancelTransferBtn: "Anuluj przelew", lockText: "Wprowadz kod aktywacyjny przelewu", codeLabel: "Kod aktywacyjny", validateTransferBtn: "Zatwierdz przelew", processingPageTitle: "Twoje zlecenie przelewu w toku...", processingStatus: "Weryfikacja tozsamosci zakonczona pomyslnie.", processingDescLong: "Poczekaj na zakonczenie przelewu srodkow do Twojego banku przed odswiezeniem tej strony.", processingDetailsTitle: "Szczegoly przelewu w toku", processingAmountLabel: "Kwota przelewu :", processingBeneficiaryLabel: "Nazwa beneficjenta :", processingIbanLabel: "IBAN / Numer konta :", processingBankLabel: "Nazwa banku :", receiptTitle: "Potwierdzenie transakcji", receiptSent: "Virement envoye", receiptReceived: "Virement recu", receiptAmount: "Montant", receiptTo: "Beneficiaire", receiptFrom: "Expediteur", receiptDate: "Date", receiptStatus: "Statut", receiptStatusDone: "Effectue", receiptRef: "Reference", receiptClose: "Fermer", receiptRecipientAccount: "Compte beneficiaire", receiptSenderAccount: "Compte emetteur" },
+  pl: { loginTitle: "Zaloguj sie na swoje konto", emailPh: "Twoj adres e-mail", pinPh: "Twoj kod dostepu", loginBtn: "Zaloguj sie", loginErr: "Nieprawidlowy e-mail lub PIN.", greeting: "Witaj", personalAccount: "Osobiste", accounts: "Konta", seeIban: "Zobacz moj IBAN", virtualCard: "Karta wirtualna", makeTransferShort: "Wykonaj przelew", myIbanTitle: "Moj IBAN", copyBtn: "Kopiuj", copied: "Skopiowano!", balanceLabel: "Saldo konta :", transactionHistory: "Historia transakcji", noTransactions: "Brak historii transakcji.", sendOutgoingTransfer: "Wyslij przelew wychodzacy", transferDetails: "Szczegoly przelewu", amountToDebit: "KWOTA DO OBCIAZENIA", labelIban: "IBAN / NUMER KONTA", labelSwift: "KOD BANKU (BIC/SWIFT)", labelBank: "NAZWA BANKU", labelBeneficiary: "NAZWA BENEFICJENTA", labelReason: "POWOD PRZENIESIENIA", processingWarning: "Realizacja w ciagu 1-3 minut po weryfikacji koncowej.", nextBtn: "Nastepny", transferSummary: "Podsumowanie transferu", transferAmountLabel: "Kwota przelewu:", ibanLabel: "IBAN/numer", ibanLabelLine2: "konta:", swiftLabel: "Kod banku:", bankLabel: "Bank odbiorczy:", beneficiaryLabel: "Nazwa beneficjenta:", reasonLabel: "Powod przeniesienia:", identityVerification: "Weryfikacja tozsamosci", verificationDesc: "Wprowadz kod zabezpieczajacy:", sendBtn: "Wyslij", wellDone: "Dobrze zrobiony!", processingDesc: "Weryfikacja zakonczona pomyslnie.", amountToReceive: "Kwota do otrzymania:", processingText: "Transfer w toku...", cardWelcome: "Gratulacje, karta jest dostepna.", activateCardBtn: "Aktywuj", blockCardBtn: "Zablokuj", cardTransactions: "Transakcje kartowe", validUntil: "WAZNE DO:", personalData: "Dane osobowe", accountOwner: "Wlasciciel:", emailLabel: "E-mail:", phoneLabel: "Telefon:", countryLabel: "Kraj:", addressLabel: "Adres:", accountAndTransfer: "Konto i przelew", balanceProfile: "Saldo:", accountType: "Typ:", accountStatus: "Stan:", statusActive: "Aktywny", supportedTransfer: "Transfer:", beneficiaryIban: "IBAN:", accountTypeValue: "Profesjonalny", transferTypeValue: "Klasyczny", profileBanner: "Skontaktuj sie z pomoca.", logoutBtn: "Rozlacz", modalSuccess: "Przeniesienie {amount} wyslane", modalFailure: "Transfer nie powiodl sie", sendTime: "Czas:", closeBtn: "Zamknij", navBalance: "Pulpit", navCard: "Karta", navTransfer: "Platnosci", navAccount: "Profil", txTransferSent: "Przelew wyslany", txTransferReceived: "Przelew otrzymany", invalidAmount: "Wpisz prawidlowa kwote.", amountExceedsBalance: "Kwota przekracza saldo.", pendingTitle: "Szczegoly oczekujacego przelewu", cancelTransferBtn: "Anuluj przelew", lockText: "Wprowadz kod aktywacyjny przelewu", codeLabel: "Kod aktywacyjny", validateTransferBtn: "Zatwierdz przelew", processingPageTitle: "Twoje zlecenie przelewu w toku...", processingStatus: "Weryfikacja tozsamosci zakonczona pomyslnie.", processingDescLong: "Poczekaj na zakonczenie przelewu srodkow do Twojego banku przed odswiezeniem tej strony.", processingDetailsTitle: "Szczegoly przelewu w toku", processingAmountLabel: "Kwota przelewu :", processingBeneficiaryLabel: "Nazwa beneficjenta :", processingIbanLabel: "IBAN / Numer konta :", processingBankLabel: "Nazwa banku :", receiptTitle: "Potwierdzenie transakcji", receiptSent: "Virement envoye", receiptReceived: "Virement recu", receiptAmount: "Montant", receiptTo: "Beneficiaire", receiptFrom: "Expediteur", receiptDate: "Date", receiptStatus: "Statut", receiptStatusDone: "Effectue", receiptRef: "Reference", receiptClose: "Fermer", receiptRecipientAccount: "Compte beneficiaire", receiptSenderAccount: "Compte emetteur" },
   fr: { loginTitle: "Connectez-vous a votre compte", emailPh: "Votre adresse e-mail", pinPh: "Votre code d'acces", loginBtn: "Se connecter", loginErr: "Adresse e-mail ou code PIN incorrect.", greeting: "Bonjour", personalAccount: "Personnel", accounts: "Comptes", seeIban: "Voir mon IBAN", virtualCard: "Carte virtuelle", makeTransferShort: "Faire un virement", myIbanTitle: "Mon IBAN", copyBtn: "Copier", copied: "Copie !", balanceLabel: "Solde du compte :", transactionHistory: "Historique des transactions", noTransactions: "Aucun historique.", sendOutgoingTransfer: "Envoyer un virement sortant", transferDetails: "Details du virement", amountToDebit: "MONTANT A DEBITER", labelIban: "IBAN / NUMERO DE COMPTE", labelSwift: "CODE BANQUE (BIC/SWIFT)", labelBank: "NOM DE LA BANQUE", labelBeneficiary: "NOM DU BENEFICIAIRE", labelReason: "MOTIF DU VIREMENT", processingWarning: "Realisation sous 1 a 3 minutes apres verification finale.", nextBtn: "Suivant", transferSummary: "Recapitulatif", transferAmountLabel: "Montant :", ibanLabel: "IBAN/numero", ibanLabelLine2: "de compte :", swiftLabel: "Code banque :", bankLabel: "Banque destinataire :", beneficiaryLabel: "Nom du beneficiaire :", reasonLabel: "Motif :", identityVerification: "Verification d'identite", verificationDesc: "Saisissez le code de securite :", sendBtn: "Envoyer", wellDone: "Bien joue !", processingDesc: "Verification reussie.", amountToReceive: "Montant a recevoir :", processingText: "Virement en cours...", cardWelcome: "Felicitations, votre carte est disponible.", activateCardBtn: "Activer ma carte", blockCardBtn: "Bloquer ma carte", cardTransactions: "Transactions par carte", validUntil: "VALABLE JUSQU'AU :", personalData: "Donnees personnelles", accountOwner: "Titulaire", emailLabel: "E-mail", phoneLabel: "Telephone", countryLabel: "Pays", addressLabel: "Adresse", accountAndTransfer: "Compte et virement", balanceProfile: "Solde", accountType: "Type", accountStatus: "Statut", statusActive: "Actif", supportedTransfer: "Virement supporte", beneficiaryIban: "IBAN du beneficiaire", accountTypeValue: "Professionnel", transferTypeValue: "Classique", profileBanner: "Contactez notre equipe d'assistance.", logoutBtn: "Se deconnecter", modalSuccess: "Virement de {amount} envoye", modalFailure: "Echec du transfert", sendTime: "Heure d'envoi :", closeBtn: "Fermer", navBalance: "Accueil", navCard: "Carte virtuelle", navTransfer: "Paiements", navAccount: "Profil", txTransferSent: "Virement envoye", txTransferReceived: "Virement recu", invalidAmount: "Veuillez saisir un montant valide.", amountExceedsBalance: "Le montant depasse votre solde disponible.", pendingTitle: "Details du virement en attente", cancelTransferBtn: "Annuler le virement", lockText: "Veuillez saisir le code d'activation du virement", codeLabel: "Code d'activation", validateTransferBtn: "Valider le virement", processingPageTitle: "Votre ordre de virement en cours...", processingStatus: "Verification d'identite effectuee avec succes.", processingDescLong: "Veuillez patienter la fin du virement des fonds vers votre banque avant d'actualiser cette page.", processingDetailsTitle: "Details du virement en cours", processingAmountLabel: "Montant du virement :", processingBeneficiaryLabel: "Nom du beneficiaire :", processingIbanLabel: "IBAN / Numero de Compte :", processingBankLabel: "Nom de la Banque :", receiptTitle: "Recu de transaction", receiptSent: "Virement envoye", receiptReceived: "Virement recu", receiptAmount: "Montant", receiptTo: "Beneficiaire", receiptFrom: "Expediteur", receiptDate: "Date", receiptStatus: "Statut", receiptStatusDone: "Effectue", receiptRef: "Reference", receiptClose: "Fermer", receiptRecipientAccount: "Compte beneficiaire", receiptSenderAccount: "Compte emetteur" },
   es: { loginTitle: "Inicia sesion", emailPh: "Tu correo", pinPh: "Tu codigo", loginBtn: "Iniciar", loginErr: "Correo o PIN incorrecto.", greeting: "Hola", personalAccount: "Personal", accounts: "Cuentas", seeIban: "Ver mi IBAN", virtualCard: "Tarjeta virtual", makeTransferShort: "Hacer transferencia", myIbanTitle: "Mi IBAN", copyBtn: "Copiar", copied: "Copiado!", balanceLabel: "Saldo :", transactionHistory: "Historial", noTransactions: "Sin historial.", sendOutgoingTransfer: "Enviar transferencia", transferDetails: "Detalles", amountToDebit: "IMPORTE A DEBITAR", labelIban: "IBAN / NUMERO DE CUENTA", labelSwift: "CODIGO BANCO (BIC/SWIFT)", labelBank: "NOMBRE DEL BANCO", labelBeneficiary: "NOMBRE DEL BENEFICIARIO", labelReason: "MOTIVO", processingWarning: "Realizacion en 1-3 minutos tras verificacion final.", nextBtn: "Siguiente", transferSummary: "Resumen", transferAmountLabel: "Importe:", ibanLabel: "IBAN", ibanLabelLine2: "de cuenta:", swiftLabel: "BIC:", bankLabel: "Banco:", beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:", identityVerification: "Verificacion", verificationDesc: "Introduzca el codigo:", sendBtn: "Enviar", wellDone: "Bien hecho!", processingDesc: "Verificacion exitosa.", amountToReceive: "Importe:", processingText: "En curso...", cardWelcome: "Tarjeta disponible.", activateCardBtn: "Activar", blockCardBtn: "Bloquear", cardTransactions: "Transacciones", validUntil: "VALIDA HASTA:", personalData: "Datos personales", accountOwner: "Titular", emailLabel: "Correo", phoneLabel: "Telefono", countryLabel: "Pais", addressLabel: "Direccion", accountAndTransfer: "Cuenta y transferencia", balanceProfile: "Saldo", accountType: "Tipo", accountStatus: "Estado", statusActive: "Activo", supportedTransfer: "Soporte", beneficiaryIban: "IBAN del beneficiario", accountTypeValue: "Profesional", transferTypeValue: "Clasico", profileBanner: "Contacte con soporte.", logoutBtn: "Salir", modalSuccess: "Transferencia de {amount} enviada", modalFailure: "Fallida", sendTime: "Hora:", closeBtn: "Cerrar", navBalance: "Inicio", navCard: "Tarjeta virtual", navTransfer: "Pagos", navAccount: "Perfil", txTransferSent: "Enviada", txTransferReceived: "Recibida", invalidAmount: "Ingrese un importe valido.", amountExceedsBalance: "El importe supera su saldo.", pendingTitle: "Detalles de la transferencia pendiente", cancelTransferBtn: "Cancelar la transferencia", lockText: "Introduzca el codigo de activacion", codeLabel: "Codigo de activacion", validateTransferBtn: "Validar la transferencia", processingPageTitle: "Su orden de transferencia en curso...", processingStatus: "Verificacion de identidad exitosa.", processingDescLong: "Espere el fin de la transferencia de fondos a su banco antes de actualizar esta pagina.", processingDetailsTitle: "Detalles de la transferencia en curso", processingAmountLabel: "Importe de la transferencia :", processingBeneficiaryLabel: "Nombre del beneficiario :", processingIbanLabel: "IBAN / Numero de cuenta :", processingBankLabel: "Nombre del banco :", receiptTitle: "Recibo de transaccion", receiptSent: "Transferencia enviada", receiptReceived: "Transferencia recibida", receiptAmount: "Importe", receiptTo: "Beneficiario", receiptFrom: "Remitente", receiptDate: "Fecha", receiptStatus: "Estado", receiptStatusDone: "Completado", receiptRef: "Referencia", receiptClose: "Cerrar", receiptRecipientAccount: "Cuenta beneficiaria", receiptSenderAccount: "Cuenta emisora" },
   it: { loginTitle: "Accedi", emailPh: "Email", pinPh: "Codice", loginBtn: "Accedi", loginErr: "Email o PIN errato.", greeting: "Ciao", personalAccount: "Personale", accounts: "Conti", seeIban: "Vedi il mio IBAN", virtualCard: "Carta virtuale", makeTransferShort: "Fai un bonifico", myIbanTitle: "Il mio IBAN", copyBtn: "Copia", copied: "Copiato!", balanceLabel: "Saldo :", transactionHistory: "Cronologia", noTransactions: "Nessuna cronologia.", sendOutgoingTransfer: "Invia bonifico", transferDetails: "Dettagli", amountToDebit: "IMPORTO DA ADDEBITARE", labelIban: "IBAN / NUMERO DI CONTO", labelSwift: "CODICE BANCA (BIC/SWIFT)", labelBank: "NOME DELLA BANCA", labelBeneficiary: "NOME DEL BENEFICIARIO", labelReason: "MOTIVO", processingWarning: "Esecuzione entro 1-3 minuti dopo verifica finale.", nextBtn: "Avanti", transferSummary: "Riepilogo", transferAmountLabel: "Importo:", ibanLabel: "IBAN", ibanLabelLine2: "conto:", swiftLabel: "BIC:", bankLabel: "Banca:", beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:", identityVerification: "Verifica", verificationDesc: "Inserisci il codice:", sendBtn: "Invia", wellDone: "Ben fatto!", processingDesc: "Verifica riuscita.", amountToReceive: "Importo:", processingText: "In corso...", cardWelcome: "Carta disponibile.", activateCardBtn: "Attiva", blockCardBtn: "Blocca", cardTransactions: "Transazioni", validUntil: "VALIDA FINO AL:", personalData: "Dati personali", accountOwner: "Titolare", emailLabel: "Email", phoneLabel: "Telefono", countryLabel: "Paese", addressLabel: "Indirizzo", accountAndTransfer: "Conto e bonifico", balanceProfile: "Saldo", accountType: "Tipo", accountStatus: "Stato", statusActive: "Attivo", supportedTransfer: "Supporto", beneficiaryIban: "IBAN del beneficiario", accountTypeValue: "Professionale", transferTypeValue: "Classico", profileBanner: "Contatta il supporto.", logoutBtn: "Esci", modalSuccess: "Bonifico di {amount} inviato", modalFailure: "Fallito", sendTime: "Ora:", closeBtn: "Chiudi", navBalance: "Home", navCard: "Carta virtuale", navTransfer: "Pagamenti", navAccount: "Profilo", txTransferSent: "Inviato", txTransferReceived: "Ricevuto", invalidAmount: "Inserisci un importo valido.", amountExceedsBalance: "L'importo supera il saldo.", pendingTitle: "Dettagli del bonifico in sospeso", cancelTransferBtn: "Annulla il bonifico", lockText: "Inserisci il codice di attivazione", codeLabel: "Codice di attivazione", validateTransferBtn: "Convalida il bonifico", processingPageTitle: "Il tuo ordine di bonifico in corso...", processingStatus: "Verifica dell'identita completata con successo.", processingDescLong: "Attendere la fine del trasferimento dei fondi alla tua banca prima di aggiornare questa pagina.", processingDetailsTitle: "Dettagli del bonifico in corso", processingAmountLabel: "Importo del bonifico :", processingBeneficiaryLabel: "Nome del beneficiario :", processingIbanLabel: "IBAN / Numero di conto :", processingBankLabel: "Nome della banca :", receiptTitle: "Ricevuta transazione", receiptSent: "Bonifico inviato", receiptReceived: "Bonifico ricevuto", receiptAmount: "Importo", receiptTo: "Beneficiario", receiptFrom: "Mittente", receiptDate: "Data", receiptStatus: "Stato", receiptStatusDone: "Completato", receiptRef: "Riferimento", receiptClose: "Chiudi", receiptRecipientAccount: "Conto beneficiario", receiptSenderAccount: "Conto mittente" },
@@ -196,7 +527,7 @@ const applyTheme = (color) => {
   color = color || '#1a73e8';
   document.documentElement.style.setProperty('--primary', color);
   document.documentElement.style.setProperty('--primary-dark', darken(color, 40));
-  applyBubbleColors(color); // ✅ Mise à jour des 3 couleurs des boules
+  applyBubbleColors(color);
 };
 const splitBalance = (amount, currency) => {
   const f = (amount || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -207,7 +538,6 @@ const splitBalance = (amount, currency) => {
 
 function renderBalanceHero(client) {
   const currency = client.currency || '€';
-  /* ✅ MODIFIÉ : le label affiche le nom complet (EURO, USD, GBP, PLN) mais le montant garde le symbole */
   const currencyLabel = getCurrencyName(currency);
   const parts = splitBalance(client.balance || 0, currency);
   return '<div class="hero-bubbles">' +
@@ -226,7 +556,6 @@ function renderBalanceHero(client) {
     '<div class="dots-indicator"><span class="active"></span><span></span><span></span></div>';
 }
 
-/* ✅ MODIFIÉ : 3 nouvelles icônes réelles (IBAN=banque, Carte=vraie carte, Virement=double flèches) */
 function renderQuickActions() {
   return '<div class="quick-actions-block">' +
     '<div class="quick-action" onclick="window.showIban()"><div class="quick-icon"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg></div><span>' + t('seeIban') + '</span></div>' +
@@ -331,7 +660,7 @@ function renderBankingApp(client) {
   root.innerHTML = '<div class="view active" style="display:flex;flex-direction:column;height:100%;">' +
     '<header class="app-header"><button class="icon-button menu-icon" onclick="window.ClientLogout()"><svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button><div class="header-title">TRANSFERWIRE</div><button class="icon-button" onclick="window.navigateTo(\'screen-profile\')"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></button></header>' +
     '<div class="screens-container">' +
-      '<div id="screen-dashboard" class="screen active"><div class="greeting">' + t('greeting') + ' ' + client.firstName + ' ' + client.lastName + ' ,</div><div class="dashboard-hero" id="balance-hero">' + renderBalanceHero(client) + '</div>' + renderQuickActions() + '<div class="section-title">' + t('transactionHistory') + '</div><div class="transaction-list" id="transaction-list">' + renderTransactions(client.transactions) + '</div></div>' +
+      '<div id="screen-dashboard" class="screen active"><div class="greeting">' + t('greeting') + ', ' + client.firstName + ' ' + client.lastName + '</div><div class="dashboard-hero" id="balance-hero">' + renderBalanceHero(client) + '</div>' + renderQuickActions() + '<div class="section-title">' + t('transactionHistory') + '</div><div class="transaction-list" id="transaction-list">' + renderTransactions(client.transactions) + '</div></div>' +
       '<div id="screen-transfer" class="screen"><div class="page-title-bar"><div class="page-title-icon"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div><span>' + t('sendOutgoingTransfer') + '</span></div><div class="transfer-amount">' + balanceFormatted + '</div><div class="transfer-card"><div class="details-header"><div class="details-icon">i</div><span>' + t('transferDetails') + '</span></div><form id="transfer-form"><div class="form-group"><label class="form-label">' + t('amountToDebit') + '</label><input type="number" class="form-input amount-input" id="input-amount" step="0.01" min="0.01" required></div><div class="form-group"><label class="form-label">' + t('labelIban') + '</label><input type="text" class="form-input" id="input-iban" required></div><div class="form-group"><label class="form-label">' + t('labelSwift') + '</label><input type="text" class="form-input" id="input-swift" required></div><div class="form-group"><label class="form-label">' + t('labelBank') + '</label><input type="text" class="form-input" id="input-bank" required></div><div class="form-group"><label class="form-label">' + t('labelBeneficiary') + '</label><input type="text" class="form-input" id="input-name" required></div><div class="form-group"><label class="form-label">' + t('labelReason') + '</label><input type="text" class="form-input" id="input-title" required></div></form><div class="warning-box"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><div class="warning-text">' + t('processingWarning') + '</div></div></div><button class="submit-btn" onclick="window.submitTransferForm()">' + t('nextBtn') + '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
 
       '<div id="screen-verification" class="screen"><div class="verify-card">' +
@@ -457,9 +786,6 @@ window.cancelTransfer = function() {
   window.navigateTo('screen-transfer');
 };
 
-/* ===================================================== */
-/* REÇU DE TRANSACTION - Affiche le compte du DESTINATAIRE pour les envoyés */
-/* ===================================================== */
 window.openReceipt = function(idx) {
   if (!currentTransactions || !currentTransactions[idx]) return;
   const tx = currentTransactions[idx];
@@ -476,14 +802,11 @@ window.openReceipt = function(idx) {
   const ref = 'TW-' + (tx.date || '').replace(/[^0-9]/g, '').slice(-8) + '-' + String(idx + 1).padStart(3, '0');
   const labelTo = isIn ? t('receiptFrom') : t('receiptTo');
 
-  /* ✅ NOUVEAU : Pour les virements envoyés, afficher l'IBAN du DESTINATAIRE (celui saisi) */
   let accountRow = '';
   if (!isIn) {
-    // Virement envoyé : afficher le compte du bénéficiaire (destinataire)
     const recipientIban = tx.recipientIban || tx.iban || '—';
     accountRow = '<div class="receipt-row"><div class="receipt-row-label">' + t('receiptRecipientAccount') + '</div><div class="receipt-row-value receipt-mono">' + (formatIban(recipientIban) || '—') + '</div></div>';
   } else {
-    // Virement reçu : afficher le compte de l'expéditeur (ici = notre propre compte par défaut)
     const senderIban = tx.senderIban || currentClient.iban || '';
     accountRow = '<div class="receipt-row"><div class="receipt-row-label">' + t('receiptSenderAccount') + '</div><div class="receipt-row-value receipt-mono">' + (formatIban(senderIban) || '—') + '</div></div>';
   }
@@ -757,32 +1080,50 @@ window.closeResultModal = async function() {
   const fresh = await FireDB.getClient(currentClient.id);
   if (!fresh) { window.showNotif('Compte supprime.', 'error'); window.location.reload(); return; }
   if (fresh.blocked) { window.showNotif('Compte suspendu.', 'error'); ClientSession.clear(); window.location.reload(); return; }
+
+  const amt = pendingTransferAmount || 0;
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+  const recipientIban = document.getElementById('input-iban').value;
+  const recipientBank = document.getElementById('input-bank').value;
+  const recipientSwift = document.getElementById('input-swift').value;
+  const recipientName = document.getElementById('input-name').value;
+  const recipientReason = document.getElementById('input-title').value;
+
+  const newTx = {
+    type: 'out',
+    subtitle: recipientName || (fresh.firstName + ' ' + fresh.lastName),
+    amount: formatAmount(amt, currency),
+    date: dateStr,
+    recipientIban: recipientIban,
+    recipientBank: recipientBank,
+    recipientSwift: recipientSwift,
+    recipientReason: recipientReason
+  };
+
   if (isSuccess) {
-    const amt = pendingTransferAmount || 0;
     const newBalance = Math.max(0, (parseFloat(fresh.balance) || 0) - amt);
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-
-    /* ✅ NOUVEAU : On enregistre les infos du bénéficiaire (IBAN, banque, swift, motif) dans la transaction */
-    const recipientIban = document.getElementById('input-iban').value;
-    const recipientBank = document.getElementById('input-bank').value;
-    const recipientSwift = document.getElementById('input-swift').value;
-    const recipientName = document.getElementById('input-name').value;
-    const recipientReason = document.getElementById('input-title').value;
-
-    const newTx = {
-      type: 'out',
-      subtitle: recipientName || (fresh.firstName + ' ' + fresh.lastName),
-      amount: formatAmount(amt, currency),
-      date: dateStr,
-      recipientIban: recipientIban,
-      recipientBank: recipientBank,
-      recipientSwift: recipientSwift,
-      recipientReason: recipientReason
-    };
     const transactions = fresh.transactions || []; transactions.unshift(newTx);
     await FireDB.updateClient(fresh.id, { balance: newBalance, transactions: transactions });
+  } else {
+    /* ✅ NOUVEAU : Enregistrer aussi les virements partiels (< 100%) */
+    const transactions = fresh.transactions || []; transactions.unshift(newTx);
+    await FireDB.updateClient(fresh.id, { transactions: transactions });
   }
+
+  /* ✅ NOUVEAU : Envoi automatique du reçu PDF (HTML) par email au client */
+  if (fresh.email) {
+    const lang = fresh.language || 'fr';
+    const T = emailTexts[lang] || emailTexts.fr;
+    const receiptHtml = buildReceiptEmail(fresh, newTx, isSuccess, lang);
+    const subject = isSuccess ? T.receiptSubject : T.receiptPendingSubject;
+    const text = (isSuccess ? T.receiptSuccessIntro : T.receiptPendingIntro) + '\n\n' + T.receiptAmount + ': ' + newTx.amount + '\n' + T.receiptBeneficiary + ': ' + newTx.subtitle;
+    sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject: subject, html: receiptHtml, text: text })
+      .then(ok => { if (ok) window.showNotif('Un recu a ete envoye a <strong>' + fresh.email + '</strong>.', 'success', 'Recu envoye'); })
+      .catch(() => {});
+  }
+
   const form = document.getElementById('transfer-form'); if (form) form.reset();
   const codeInput = document.getElementById('security-code'); if (codeInput) codeInput.value = '';
   pendingTransferAmount = 0;
@@ -994,6 +1335,7 @@ async function renderAdminPage() {
 
 window.refreshAdminPage = function() { renderAdminPage(); };
 
+/* ✅ MODIFIÉ : Ajout des 2 boutons d'envoi d'emails en bas de la fenetre */
 window.openClientDetail = async function(id) {
   if (!currentAdmin || !currentAdmin.uid) return;
   const c = await FireDB.getClient(id);
@@ -1022,7 +1364,11 @@ window.openClientDetail = async function(id) {
       sectionTitle('Parametres transfert') + row('Depart %', (c.startPercent || 0) + '%') + row('Arret %', (c.stopPercent || 100) + '%') + row('Message de fin', c.message) + row('Couleur du theme', c.themeColor || '#1a73e8') +
       sectionTitle('Historique') + row('Transactions', txCount + ' transaction(s)') +
       sectionTitle('Lien client') + '<div class="detail-link-box">' + clientLink + '</div>' +
-      '<div class="detail-footer"><button class="detail-footer-btn copy" onclick="window.copyToClipboard(\'' + clientLink + '\')"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span>Copier le lien</span></button></div></div></div>';
+      '<div class="detail-footer" style="grid-template-columns:1fr;gap:8px;">' +
+        '<button class="detail-footer-btn copy" onclick="window.copyToClipboard(\'' + clientLink + '\')"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span>Copier le lien</span></button>' +
+        '<button class="detail-footer-btn send-credentials" onclick="window.sendCredentialsEmail(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>Envoyer les identifiants de connexion</span></button>' +
+        '<button class="detail-footer-btn send-activation" onclick="window.sendActivationEmail(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><span>Envoyer le code d\'activation</span></button>' +
+      '</div></div></div>';
   ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
   document.body.appendChild(ov);
 };
