@@ -9,114 +9,84 @@
 <title>Administration - TransferWire</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=10">
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
 
-<!-- CONTENEUR PRINCIPAL ADMIN -->
 <div class="app-container" id="admin-root">
   <div style="display:flex;align-items:center;justify-content:center;height:100%;background:#fff;">
     <div class="spinner"></div>
   </div>
 </div>
 
-<!-- MODAL : ÉDITION CLIENT -->
 <div class="overlay" id="edit-modal">
   <div class="modal edit-modal">
     <div class="edit-modal-header">
       <h3>Modifier le client</h3>
       <button class="close-btn-edit" onclick="closeEditModal()" aria-label="Fermer">
-        <svg viewBox="0 0 24 24">
-          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
       </button>
     </div>
     <div class="edit-modal-body" id="edit-form-body"></div>
   </div>
 </div>
 
-<!-- MODAL : TRANSACTIONS CLIENT -->
 <div class="overlay" id="tx-modal">
   <div class="modal tx-modal">
     <div class="edit-modal-header">
       <h3>Historique des transactions</h3>
       <button class="close-btn-edit" onclick="document.getElementById('tx-modal').classList.remove('active')" aria-label="Fermer">
-        <svg viewBox="0 0 24 24">
-          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
       </button>
     </div>
     <div class="edit-modal-body" id="tx-modal-body"></div>
   </div>
 </div>
 
-<!-- MODAL : CHANGEMENT MOT DE PASSE ADMIN -->
 <div class="overlay" id="pass-modal">
   <div class="modal edit-modal">
     <div class="edit-modal-header">
       <h3>Changer le mot de passe admin</h3>
       <button class="close-btn-edit" onclick="document.getElementById('pass-modal').classList.remove('active')" aria-label="Fermer">
-        <svg viewBox="0 0 24 24">
-          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
       </button>
     </div>
     <div class="edit-modal-body">
-      <div class="admin-group">
-        <label>Ancien mot de passe</label>
-        <input type="password" id="old-pass" placeholder="••••••••">
-      </div>
-      <div class="admin-group">
-        <label>Nouveau mot de passe</label>
-        <input type="password" id="new-pass" placeholder="Au moins 4 caractères">
-      </div>
-      <div class="admin-group">
-        <label>Confirmer le nouveau mot de passe</label>
-        <input type="password" id="confirm-pass" placeholder="••••••••">
-      </div>
+      <div class="admin-group"><label>Ancien mot de passe</label><input type="password" id="old-pass" placeholder="••••••••"></div>
+      <div class="admin-group"><label>Nouveau mot de passe</label><input type="password" id="new-pass" placeholder="Au moins 4 caractères"></div>
+      <div class="admin-group"><label>Confirmer le nouveau mot de passe</label><input type="password" id="confirm-pass" placeholder="••••••••"></div>
       <div id="pass-error" style="color:#dc3545;font-size:13px;margin-top:8px;display:none;font-weight:600;"></div>
       <button class="btn-admin-submit" style="margin-top:20px;" onclick="changePassword()">
-        <svg viewBox="0 0 24 24">
-          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
         Enregistrer le nouveau mot de passe
       </button>
     </div>
   </div>
 </div>
 
-<!-- SCRIPT PRINCIPAL ADMIN -->
 <script type="module">
-  import { initAdminApp } from './script.js?v=10';
-  
+  import { initAdminApp } from './script.js?v=11';
   initAdminApp();
 
   let lastTouchEnd = 0;
   document.addEventListener('touchend', (event) => {
     const now = Date.now();
-    if (now - lastTouchEnd <= 300) {
-      event.preventDefault();
-    }
+    if (now - lastTouchEnd <= 300) event.preventDefault();
     lastTouchEnd = now;
   }, false);
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      document.querySelectorAll('.overlay.active').forEach(overlay => {
-        overlay.classList.remove('active');
-      });
+      document.querySelectorAll('.overlay.active').forEach(overlay => overlay.classList.remove('active'));
     }
   });
 
   document.querySelectorAll('.overlay').forEach(overlay => {
     overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) {
-        overlay.classList.remove('active');
-      }
+      if (e.target === overlay) overlay.classList.remove('active');
     });
   });
 </script>
-
 </body>
 </html>
