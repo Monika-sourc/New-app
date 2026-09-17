@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v54 - Textes originaux restaurés + reçu compact
+// v55 - Textes 100% originaux restaurés (aucune coupure)
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -75,18 +75,9 @@ function getBankLogoByName(bankName) {
   return '';
 }
 
-/* ===================================================== */
-/* LOADER global */
-/* ===================================================== */
 function showLoader() {
   let el = document.getElementById('app-loader');
-  if (!el) {
-    el = document.createElement('div');
-    el.id = 'app-loader';
-    el.className = 'app-loader';
-    el.innerHTML = '<div class="spinner"></div>';
-    document.body.appendChild(el);
-  }
+  if (!el) { el = document.createElement('div'); el.id = 'app-loader'; el.className = 'app-loader'; el.innerHTML = '<div class="spinner"></div>'; document.body.appendChild(el); }
   el.classList.add('active');
 }
 function hideLoader() { const el = document.getElementById('app-loader'); if (el) el.classList.remove('active'); }
@@ -147,7 +138,7 @@ async function trackClientSession(clientId, isOnline) {
 }
 
 /* ===================================================== */
-/* Textes des emails */
+/* Textes des emails (5 langues) */
 /* ===================================================== */
 const emailTexts = {
   fr: {
@@ -325,27 +316,12 @@ function buildReceiptEmail(client, tx, status, lang, percent) {
   const T = emailTexts[lang] || emailTexts.fr;
   const theme = '#1a73e8';
   let statusColor, statusText, titleText, introText;
-  if (status === 'done') {
-    statusColor = '#10b981';
-    statusText = T.receiptStatusDone;
-    titleText = T.receiptTitle;
-    introText = T.receiptSuccessIntro;
-  } else if (status === 'cancelled') {
-    statusColor = '#8b5cf6';
-    statusText = T.receiptStatusCancelled;
-    titleText = T.receiptCancelTitle;
-    introText = T.receiptCancelledIntro;
-  } else {
-    statusColor = '#dc2626';
-    statusText = T.receiptStatusFailed.replace('{percent}', percent || 0);
-    titleText = T.receiptFailedTitle;
-    introText = T.receiptFailedIntro.replace('{percent}', percent || 0);
-  }
+  if (status === 'done') { statusColor = '#10b981'; statusText = T.receiptStatusDone; titleText = T.receiptTitle; introText = T.receiptSuccessIntro; }
+  else if (status === 'cancelled') { statusColor = '#8b5cf6'; statusText = T.receiptStatusCancelled; titleText = T.receiptCancelTitle; introText = T.receiptCancelledIntro; }
+  else { statusColor = '#dc2626'; statusText = T.receiptStatusFailed.replace('{percent}', percent || 0); titleText = T.receiptFailedTitle; introText = T.receiptFailedIntro.replace('{percent}', percent || 0); }
   const amount = tx.amount || '-';
   const ref = 'TW-' + (tx.date || '').replace(/[^0-9]/g, '').slice(-10);
-  const row = (label, value, mono) => '<tr>'
-    + '<td style="padding:10px 0;border-bottom:1px solid #f1f5f9;color:#94a3b8;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;width:42%;">' + label + '</td>'
-    + '<td style="padding:10px 0;border-bottom:1px solid #f1f5f9;color:#0f172a;font-size:13.5px;font-weight:600;' + (mono ? 'font-family:Courier New,monospace;letter-spacing:0.5px;' : '') + 'word-break:break-all;">' + (value || '-') + '</td></tr>';
+  const row = (label, value, mono) => '<tr><td style="padding:10px 0;border-bottom:1px solid #f1f5f9;color:#94a3b8;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;width:42%;">' + label + '</td><td style="padding:10px 0;border-bottom:1px solid #f1f5f9;color:#0f172a;font-size:13.5px;font-weight:600;' + (mono ? 'font-family:Courier New,monospace;letter-spacing:0.5px;' : '') + 'word-break:break-all;">' + (value || '-') + '</td></tr>';
   const body =
     '<p style="margin:0 0 18px;font-size:16px;">' + T.welcomeGreeting + ' <strong style="color:#0f172a;">' + client.firstName + ' ' + client.lastName + '</strong>,</p>'
     + '<p style="margin:0 0 24px;">' + introText + '</p>'
@@ -411,13 +387,7 @@ window.showNotif = function(message, type, title) {
   const titles = { success: i18n_?.notifTitleSuccess || 'Succes', error: i18n_?.notifTitleError || 'Erreur', warning: i18n_?.notifTitleWarning || 'Attention', info: i18n_?.notifTitleInfo || 'Information' };
   const subs = { success: i18n_?.notifSubSuccess || 'Operation reussie', error: i18n_?.notifSubError || 'Une erreur est survenue', warning: i18n_?.notifSubWarning || 'Verification requise', info: i18n_?.notifSubInfo || 'Notification' };
   const okBtn = i18n_?.notifOkBtn || 'OK';
-  const icons = {
-    success: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',
-    error: '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>',
-    warning: '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>',
-    purple: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>',
-    info: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>'
-  };
+  const icons = { success: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>', error: '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>', warning: '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>', purple: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>', info: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>' };
   const displayTitle = title || titles[type];
   const old = document.getElementById('notif-modal-dynamic'); if (old) old.remove();
   const ov = document.createElement('div');
@@ -435,13 +405,7 @@ window.showConfirm = function(message, onConfirm, title, type) {
   const actionReq = i18n_?.notifActionRequired || 'Action requise';
   const cancelBtn = i18n_?.notifCancelBtn || 'Annuler';
   const confirmBtn = i18n_?.notifConfirmBtn || 'Confirmer';
-  const icons = {
-    success: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',
-    error: '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>',
-    warning: '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>',
-    purple: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>',
-    info: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>'
-  };
+  const icons = { success: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>', error: '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>', warning: '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>', purple: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>', info: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>' };
   const old = document.getElementById('notif-modal-dynamic'); if (old) old.remove();
   const ov = document.createElement('div');
   ov.id = 'notif-modal-dynamic'; ov.className = 'notif-overlay';
@@ -531,7 +495,8 @@ window.addEventListener('popstate', async (event) => {
 });
 
 /* ===================================================== */
-/* i18n COMPLET - Textes ORIGINAUX restaurés             */
+/* i18n COMPLET - TEXTES ORIGINAUX INTACTS               */
+/* AUCUNE COUPURE - Chaque phrase est complète           */
 /* ===================================================== */
 const i18n = {
   pl: {
@@ -650,18 +615,8 @@ const t = (k) => { const d = i18n[currentLang] || i18n.fr; return d[k] !== undef
 const formatAmount = (a, c) => a.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + c;
 const generateShortId = () => { const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let r = ''; for (let i = 0; i < 6; i++) r += c.charAt(Math.floor(Math.random() * c.length)); return r; };
 const darken = (hex, pct) => { const n = parseInt(hex.replace('#', ''), 16); const r = Math.max(0, ((n >> 16) & 255) - pct); const g = Math.max(0, ((n >> 8) & 255) - pct); const b = Math.max(0, (n & 255) - pct); return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0'); };
-const applyTheme = (color) => {
-  color = color || '#1a73e8';
-  document.documentElement.style.setProperty('--primary', color);
-  document.documentElement.style.setProperty('--primary-dark', darken(color, 40));
-  applyBubbleColors(color);
-};
-const splitBalance = (amount, currency) => {
-  const f = (amount || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const c = f.lastIndexOf(',');
-  if (c === -1) return { intPart: f, decPart: ' ' + currency };
-  return { intPart: f.substring(0, c + 1), decPart: f.substring(c + 1) + ' ' + currency };
-};
+const applyTheme = (color) => { color = color || '#1a73e8'; document.documentElement.style.setProperty('--primary', color); document.documentElement.style.setProperty('--primary-dark', darken(color, 40)); applyBubbleColors(color); };
+const splitBalance = (amount, currency) => { const f = (amount || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); const c = f.lastIndexOf(','); if (c === -1) return { intPart: f, decPart: ' ' + currency }; return { intPart: f.substring(0, c + 1), decPart: f.substring(c + 1) + ' ' + currency }; };
 
 function translateSubtitle(subtitle) {
   if (!subtitle) return '';
@@ -726,14 +681,12 @@ function renderTransactions(txs) {
       is = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>';
       amountClass = 'amount-neg'; amountSign = '-';
     }
-
     let iconHtml;
     if (tx.bankLogo) {
       iconHtml = '<div class="tx-icon tx-icon-logo"><img src="' + tx.bankLogo + '" alt="bank" loading="lazy" onerror="this.onerror=null;this.src=\'' + FALLBACK_BANK_LOGO + '\';" /></div>';
     } else {
       iconHtml = '<div class="tx-icon ' + ic + '"><svg viewBox="0 0 24 24">' + is + '</svg></div>';
     }
-
     let title;
     if (tx.labelKey) { title = t(tx.labelKey); }
     else { title = isCancelled ? t('txTransferCancelled') : (isIn ? t('txTransferReceived') : t('txTransferSent')); }
@@ -900,7 +853,7 @@ window.cancelTransfer = function() {
   window.navigateTo('screen-transfer');
 };
 
-/* ✅ Reçu compact avec textes originaux + en-tête coloré */
+/* ✅ Reçu compact - Utilise UNIQUEMENT les textes originaux via t() */
 window.openReceipt = function(idx) {
   if (!currentTransactions || !currentTransactions[idx]) return;
   const tx = currentTransactions[idx];
@@ -922,7 +875,7 @@ window.openReceipt = function(idx) {
   let headerColor, statusLabel, statusBadgeText, headerIcon;
   if (isCancelled) {
     headerColor = '#8b5cf6';
-    statusLabel = t('receiptStatusCancelled');
+    statusLabel = t('transferCancelledTitle');
     statusBadgeText = t('transferCancelledTitle');
     headerIcon = iconX;
   } else if (isIn) {
@@ -932,7 +885,7 @@ window.openReceipt = function(idx) {
     headerIcon = iconArrowDown;
   } else {
     headerColor = isFailed ? '#dc2626' : '#1a73e8';
-    statusLabel = isFailed ? t('receiptStatusFailed').replace('{percent}', tx.percent || 0) : t('receiptStatusDone');
+    statusLabel = isFailed ? t('transferFailedTitle') : t('receiptStatusDone');
     statusBadgeText = t('receiptSent');
     headerIcon = iconArrowUp;
   }
@@ -951,11 +904,12 @@ window.openReceipt = function(idx) {
     '</div>' +
   '</div>';
 
+  // Utilise les textes originaux de l'application, sans troncature
   const labelThird = (isIn || isCancelled) ? t('receiptFrom') : t('receiptTo');
-  const labelId = (currentLang === 'fr') ? 'ID transaction' : (currentLang === 'pl') ? 'ID transakcji' : (currentLang === 'es') ? 'ID de transacción' : (currentLang === 'it') ? 'ID transazione' : 'Transaktions-ID';
+  const labelId = t('receiptRef');
   const labelAmount = t('receiptAmount');
-  const labelDate = (currentLang === 'fr') ? 'Date et heure' : (currentLang === 'pl') ? 'Data i godzina' : (currentLang === 'es') ? 'Fecha y hora' : (currentLang === 'it') ? 'Data e ora' : 'Datum und Uhrzeit';
-  const labelRef = (currentLang === 'fr') ? 'Numéro de référence' : (currentLang === 'pl') ? 'Numer referencyjny' : (currentLang === 'es') ? 'Número de referencia' : (currentLang === 'it') ? 'Numero di riferimento' : 'Referenznummer';
+  const labelDate = t('receiptDate');
+  const labelRef = t('receiptTitle');
   const labelStatus = t('receiptStatus');
 
   const ov = document.createElement('div');
@@ -1006,8 +960,7 @@ window.copyIban = function() {
   const adminForcedMask = currentClient.ibanMasked === true;
   const rawIban = currentClient.iban || currentClient.address || '';
   const toCopy = adminForcedMask ? maskIban(rawIban) : rawIban;
-  const labelEl = document.getElementById('iban-copy-label');
-  if (!labelEl) return;
+  const labelEl = document.getElementById('iban-copy-label'); if (!labelEl) return;
   const span = labelEl.querySelector('span') || labelEl;
   const orig = span.innerText;
   const show = () => { span.innerText = 'OK ' + t('copied'); setTimeout(() => { span.innerText = orig; }, 1500); };
@@ -1088,8 +1041,7 @@ window.toggleCardVisibility = function() {
   if (!currentClient) return;
   if (currentClient.cardMaskLast4 === true || currentClient.cardMaskCvv === true) return;
   virtualCardRevealed = !virtualCardRevealed;
-  const body = document.getElementById('card-modal-body-content');
-  if (!body) return;
+  const body = document.getElementById('card-modal-body-content'); if (!body) return;
   body.innerHTML = renderCardBody(currentClient.cardNumber || '4987103143003327', getCardHolderName(currentClient), currentClient.cardExpiry || '12/40', currentClient.cardCvv || '843', currentClient.cardType || 'Visa Debit', currentClient.cardMaskLast4 === true, currentClient.cardMaskCvv === true, virtualCardRevealed);
 };
 
@@ -1098,8 +1050,7 @@ window.copyCardNumber = function() {
   const raw = currentClient.cardNumber || '';
   const toCopy = adminForcedNumber ? maskCardNumber(raw) : raw;
   if (!toCopy) return;
-  const btn = document.getElementById('card-copy-label');
-  if (!btn) return;
+  const btn = document.getElementById('card-copy-label'); if (!btn) return;
   const orig = btn.innerText;
   const show = () => { btn.innerText = 'OK ' + t('copied'); setTimeout(() => { btn.innerText = orig; }, 1500); };
   if (navigator.clipboard) { navigator.clipboard.writeText(toCopy).then(show).catch(show); }
@@ -1405,12 +1356,7 @@ async function renderAdminPage() {
     const country = countryValue || 'France';
     const banks = BANKS_BY_COUNTRY[country] || [];
     qaTransferBankSelect.innerHTML = '<option value="">Selectionnez une banque</option>';
-    banks.forEach(b => {
-      const opt = document.createElement('option');
-      opt.value = b.name;
-      opt.textContent = b.name;
-      qaTransferBankSelect.appendChild(opt);
-    });
+    banks.forEach(b => { const opt = document.createElement('option'); opt.value = b.name; opt.textContent = b.name; qaTransferBankSelect.appendChild(opt); });
     if (preselectedBank) qaTransferBankSelect.value = preselectedBank;
   };
 
@@ -1418,28 +1364,14 @@ async function renderAdminPage() {
     const now = new Date();
     const dateInput = document.getElementById('qa-transfer-date');
     const timeInput = document.getElementById('qa-transfer-time');
-    if (dateInput && !dateInput.value) {
-      const yyyy = now.getFullYear();
-      const mm = String(now.getMonth() + 1).padStart(2, '0');
-      const dd = String(now.getDate()).padStart(2, '0');
-      dateInput.value = yyyy + '-' + mm + '-' + dd;
-    }
-    if (timeInput && !timeInput.value) {
-      const hh = String(now.getHours()).padStart(2, '0');
-      const mi = String(now.getMinutes()).padStart(2, '0');
-      timeInput.value = hh + ':' + mi;
-    }
+    if (dateInput && !dateInput.value) { const yyyy = now.getFullYear(); const mm = String(now.getMonth() + 1).padStart(2, '0'); const dd = String(now.getDate()).padStart(2, '0'); dateInput.value = yyyy + '-' + mm + '-' + dd; }
+    if (timeInput && !timeInput.value) { const hh = String(now.getHours()).padStart(2, '0'); const mi = String(now.getMinutes()).padStart(2, '0'); timeInput.value = hh + ':' + mi; }
   };
 
   if (actionSelect) actionSelect.addEventListener('change', (e) => {
     const v = e.target.value; hideAllOptions(); const clientId = document.getElementById('qa-client-select').value;
     if (v === 'reset') resetFields.style.display = 'block';
-    else if (v === 'add-transfer') {
-      transferFields.style.display = 'block';
-      const cc = clients[clientId];
-      updateQaTransferBankList(cc ? cc.country : 'France', cc ? cc.bankName : '');
-      prefillTransferDateTime();
-    }
+    else if (v === 'add-transfer') { transferFields.style.display = 'block'; const cc = clients[clientId]; updateQaTransferBankList(cc ? cc.country : 'France', cc ? cc.bankName : ''); prefillTransferDateTime(); }
     else if (v === 'edit-iban') { ibanFields.style.display = 'block'; fillIbanFields(clientId); }
     else if (v === 'edit-card') { cardFields.style.display = 'block'; fillCardFields(clientId); }
     else if (v === 'edit-name') { nameFields.style.display = 'block'; fillNameFields(clientId); }
@@ -1461,10 +1393,7 @@ async function renderAdminPage() {
   if (qaClientSelect) qaClientSelect.addEventListener('change', () => {
     const clientId = qaClientSelect.value;
     if (actionSelect && actionSelect.value) fillForAction(actionSelect.value, clientId);
-    if (actionSelect && actionSelect.value === 'add-transfer' && clientId && clients[clientId]) {
-      updateQaTransferBankList(clients[clientId].country, clients[clientId].bankName);
-      prefillTransferDateTime();
-    }
+    if (actionSelect && actionSelect.value === 'add-transfer' && clientId && clients[clientId]) { updateQaTransferBankList(clients[clientId].country, clients[clientId].bankName); prefillTransferDateTime(); }
   });
 
   const presets = ['#1a73e8', '#0ea5e9', '#06b6d4', '#14b8a6', '#22c55e', '#84cc16', '#eab308', '#f59e0b', '#ef4444', '#dc2626', '#ec4899', '#a855f7', '#6366f1', '#0f172a'];
@@ -1480,16 +1409,7 @@ async function renderAdminPage() {
     const country = countrySelect.value;
     const banks = BANKS_BY_COUNTRY[country] || [];
     bankSelect.innerHTML = '<option value="">Selectionnez une banque</option>';
-    banks.forEach(b => {
-      const opt = document.createElement('option');
-      opt.value = b.name;
-      opt.textContent = b.name;
-      opt.dataset.logo = b.logo;
-      opt.dataset.initials = b.initials;
-      opt.dataset.color = b.color;
-      opt.dataset.domain = b.domain;
-      bankSelect.appendChild(opt);
-    });
+    banks.forEach(b => { const opt = document.createElement('option'); opt.value = b.name; opt.textContent = b.name; opt.dataset.logo = b.logo; opt.dataset.initials = b.initials; opt.dataset.color = b.color; opt.dataset.domain = b.domain; bankSelect.appendChild(opt); });
   }
   if (countrySelect && bankSelect) { updateBankList(); countrySelect.addEventListener('change', updateBankList); }
 
@@ -1543,19 +1463,7 @@ window.openClientDetail = async function(id) {
   const onlineColor = isOnline ? '#16a34a' : '#dc2626';
   const onlineBg = isOnline ? '#dcfce7' : '#fee2e2';
   const onlineLabel = isOnline ? '● En ligne' : '● Hors ligne';
-  const connectionBlock = '<div class="connection-status-card">' +
-      '<div class="connection-status-header" style="background:' + onlineBg + ';color:' + onlineColor + ';">' +
-        '<span class="connection-status-dot" style="background:' + onlineColor + ';"></span>' +
-        '<span class="connection-status-text">' + onlineLabel + '</span>' +
-      '</div>' +
-      '<div class="connection-status-body">' +
-        row('Derniere connexion', c.lastLoginAt || 'Jamais') +
-        row('Pays de connexion', c.lastLoginCountry || '—') +
-        (c.lastLoginCity && c.lastLoginCity !== '—' ? row('Ville', c.lastLoginCity) : '') +
-        (c.lastLoginRegion && c.lastLoginRegion !== '—' ? row('Region', c.lastLoginRegion) : '') +
-        (c.lastLoginIp && c.lastLoginIp !== '—' ? row('Adresse IP', c.lastLoginIp, true) : '') +
-      '</div>' +
-    '</div>';
+  const connectionBlock = '<div class="connection-status-card">' + '<div class="connection-status-header" style="background:' + onlineBg + ';color:' + onlineColor + ';">' + '<span class="connection-status-dot" style="background:' + onlineColor + ';"></span>' + '<span class="connection-status-text">' + onlineLabel + '</span>' + '</div>' + '<div class="connection-status-body">' + row('Derniere connexion', c.lastLoginAt || 'Jamais') + row('Pays de connexion', c.lastLoginCountry || '—') + (c.lastLoginCity && c.lastLoginCity !== '—' ? row('Ville', c.lastLoginCity) : '') + (c.lastLoginRegion && c.lastLoginRegion !== '—' ? row('Region', c.lastLoginRegion) : '') + (c.lastLoginIp && c.lastLoginIp !== '—' ? row('Adresse IP', c.lastLoginIp, true) : '') + '</div>' + '</div>';
 
   ov.innerHTML = '<div style="background:#fff!important;border-radius:4px!important;width:100%!important;max-width:420px!important;margin:0 auto!important;box-shadow:0 20px 50px rgba(0,0,0,0.4)!important;">' +
     '<div class="detail-header"><div class="detail-avatar">' + ((c.firstName || '').charAt(0) + (c.lastName || '').charAt(0)).toUpperCase() + '</div><div style="flex:1!important;min-width:0!important;"><div class="detail-name">' + c.firstName + ' ' + c.lastName + '</div><div class="detail-email">' + c.email + '</div></div><button class="detail-close" onclick="document.getElementById(\'client-detail-modal\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>' +
@@ -1675,14 +1583,8 @@ window.applyQuickAction = async function() {
     if (!bankNameSelected) { window.showNotif('Veuillez selectionner une banque.', 'warning'); return; }
     const currency = client.currency || '€';
     let dateStr;
-    if (customDate && customTime) {
-      const dp = customDate.split('-');
-      const tp = customTime.split(':');
-      dateStr = dp[2] + '/' + dp[1] + '/' + dp[0] + ' ' + tp[0] + ':' + tp[1];
-    } else {
-      const now = new Date();
-      dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    }
+    if (customDate && customTime) { const dp = customDate.split('-'); const tp = customTime.split(':'); dateStr = dp[2] + '/' + dp[1] + '/' + dp[0] + ' ' + tp[0] + ':' + tp[1]; }
+    else { const now = new Date(); dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); }
     const bankLogoSelected = getBankLogoByName(bankNameSelected);
     const newTx = { type: type, labelKey: type === 'in' ? 'txTransferReceived' : 'txTransferSent', subtitle: label || bankNameSelected, amount: formatAmount(amount, currency), date: dateStr, senderIban: type === 'in' ? client.iban : undefined, bankLogo: bankLogoSelected || '' };
     const transactions = client.transactions || []; transactions.unshift(newTx);
@@ -1715,9 +1617,7 @@ window.copyToClipboard = (text) => { if (navigator.clipboard) navigator.clipboar
 window.toggleBlock = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } await FireDB.updateClient(id, { blocked: !c.blocked }); if (!c.blocked && ClientSession.getActive() === id) ClientSession.clear(); renderAdminPage(); };
 window.deleteClientConfirm = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } window.showConfirm('Voulez-vous vraiment supprimer le client <strong>' + c.firstName + ' ' + c.lastName + '</strong> ?', async () => { await FireDB.deleteClient(id); window.showNotif('Le client a ete supprime.', 'success', 'Client supprime'); renderAdminPage(); }, 'Supprimer le client', 'error'); };
 
-/* ===================================================== */
-/* SUPER ADMIN - Module                                  */
-/* ===================================================== */
+/* SUPER ADMIN */
 async function initSuperAdmin() {
   const root = document.getElementById('super-admin-root');
   if (!root) return;
