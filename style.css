@@ -1,6 +1,6 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
-   v50 - Vrais logos banques + cartes admin/historique rectangulaires
+   v52 - Nouveau reçu coloré + logo humain virements envoyés
    ===================================================== */
 
 :root {
@@ -84,7 +84,7 @@ input, select, textarea { font-family: inherit; }
 .admin-auth .err.show { display: block; }
 .admin-auth .info-box { font-size: 10.5px; color: #1e293b; margin-top: 18px; text-align: center; line-height: 1.5; max-width: 260px; font-weight: 500; }
 
-/* ========== ADMIN DASHBOARD (cartes rectangulaires) ========== */
+/* ========== ADMIN DASHBOARD ========== */
 .admin-wrapper { display: flex; flex-direction: column; height: 100%; background: var(--bg-gray); min-height: 0; }
 .admin-topbar { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; padding: 11px 14px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 3px 12px rgba(26, 115, 232, 0.25); flex-shrink: 0; }
 .admin-topbar .brand { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; }
@@ -106,9 +106,9 @@ input, select, textarea { font-family: inherit; }
 .quick-actions-card .admin-group:last-child { margin-bottom: 0; }
 .quick-actions-card label { font-size: 10px; font-weight: 700; color: #334155; text-transform: none; letter-spacing: 0.3px; margin-bottom: 5px; display: block; }
 .quick-actions-card label .req { color: var(--danger); font-weight: 700; }
-.quick-actions-card select, .quick-actions-card input[type=text], .quick-actions-card input[type=number], .quick-actions-card input[type=email], .quick-actions-card input[type=tel] { width: 100%; padding: 10px 12px; border: 1.5px solid var(--gray-200); border-radius: 4px; font-size: 12px; color: #000000; font-weight: 500; outline: none; background: #fff; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 8px center; background-size: 16px; padding-right: 32px; }
+.quick-actions-card select, .quick-actions-card input[type=text], .quick-actions-card input[type=number], .quick-actions-card input[type=email], .quick-actions-card input[type=tel], .quick-actions-card input[type=date], .quick-actions-card input[type=time] { width: 100%; padding: 10px 12px; border: 1.5px solid var(--gray-200); border-radius: 4px; font-size: 12px; color: #000000; font-weight: 500; outline: none; background: #fff; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 8px center; background-size: 16px; padding-right: 32px; }
 .quick-actions-card select:focus, .quick-actions-card input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1); }
-.quick-actions-card input[type=text], .quick-actions-card input[type=number], .quick-actions-card input[type=email], .quick-actions-card input[type=tel] { background-image: none; padding-right: 11px; }
+.quick-actions-card input[type=text], .quick-actions-card input[type=number], .quick-actions-card input[type=email], .quick-actions-card input[type=tel], .quick-actions-card input[type=date], .quick-actions-card input[type=time] { background-image: none; padding-right: 11px; }
 .quick-actions-card .btn-admin-submit { margin-top: 4px; }
 
 .option-panel { background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 4px; padding: 14px; margin-bottom: 12px; margin-top: 4px; }
@@ -205,7 +205,7 @@ input, select, textarea { font-family: inherit; }
 .tx-row .tx-amt.pos { color: var(--success); }
 .tx-row .tx-amt.neg { color: var(--danger); }
 
-/* ========== DÉTAIL CLIENT (rectangulaire) ========== */
+/* ========== DÉTAIL CLIENT ========== */
 .detail-header { background: linear-gradient(135deg, #1a73e8, #1557b0); padding: 16px 18px; display: flex; align-items: center; gap: 12px; border-radius: 4px 4px 0 0; position: relative; }
 .detail-avatar { width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 255, 255, 0.22); border: 1.5px solid rgba(255, 255, 255, 0.35); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: #fff; flex-shrink: 0; text-transform: none; letter-spacing: 0.5px; }
 .detail-name { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.2; text-transform: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -302,7 +302,7 @@ input, select, textarea { font-family: inherit; }
 .transfer-detail-btn-close { background: #f1f5f9; color: #334155; border: none; border-radius: 4px; padding: 12px 28px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
 .transfer-detail-btn-close:hover { background: #e2e8f0; }
 
-/* ========== LOGIN CLIENT (arrondi original) ========== */
+/* ========== LOGIN CLIENT ========== */
 .login-page { display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; padding: 20px; background: var(--bg-gray); overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .login-card { width: 100%; max-width: 320px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 28px 22px 26px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 6px 20px rgba(15, 23, 42, 0.1); animation: loginCardIn 0.4s ease-out; }
 @keyframes loginCardIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -388,6 +388,10 @@ input, select, textarea { font-family: inherit; }
 .icon-red { background: #ea4335; } .icon-red svg { fill: #fff; }
 .icon-green { background: #2d9249; } .icon-green svg { fill: #fff; }
 .icon-cancelled { background: #8b5cf6; } .icon-cancelled svg { fill: #fff; }
+
+/* ✅ Icône humain professionnel pour les virements envoyés */
+.tx-icon.icon-professional { background: #1a73e8; }
+.tx-icon.icon-professional svg { fill: #ffffff; }
 
 /* ✅ VRAI logo de banque dans l'historique (Clearbit) */
 .tx-icon-logo {
@@ -518,9 +522,33 @@ input, select, textarea { font-family: inherit; }
 .result-close-action { background: var(--gray-100); border: none; border-radius: 8px; padding: 10px 20px; font-size: 12.5px; font-weight: 700; color: #334155; cursor: pointer; font-family: inherit; }
 .result-close-action:hover { background: var(--gray-200); }
 
-/* ========== REÇU (arrondi original 14px) ========== */
+/* ========== NOUVEAU REÇU (design avec en-tête coloré) - v52 ========== */
 .receipt-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 2147483647; padding: 20px; box-sizing: border-box; animation: notifFadeIn 0.2s ease-out; }
-.receipt-modal { background: #fff; border-radius: 14px; width: 100%; max-width: 340px; overflow: hidden; box-shadow: 0 25px 60px rgba(15, 23, 42, 0.4); animation: notifPopIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; flex-direction: column; }
+.receipt-modal-new { background: #fff; border-radius: 24px; width: 100%; max-width: 380px; max-height: 92vh; overflow-y: auto; box-shadow: 0 25px 60px rgba(15, 23, 42, 0.4); animation: notifPopIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; flex-direction: column; }
+
+/* En-tête coloré */
+.receipt-header-new { padding: 30px 20px 26px 20px; display: flex; flex-direction: column; align-items: center; gap: 14px; position: relative; color: #fff; flex-shrink: 0; }
+.receipt-close-new { position: absolute; top: 14px; right: 14px; width: 30px; height: 30px; border-radius: 50%; background: rgba(255, 255, 255, 0.22); border: 1px solid rgba(255, 255, 255, 0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.receipt-close-new svg { width: 13px; height: 13px; fill: #fff; }
+.receipt-close-new:active { background: rgba(255, 255, 255, 0.35); }
+.receipt-header-circle { width: 52px; height: 52px; border-radius: 50%; background: rgba(255, 255, 255, 0.18); border: 1.5px solid rgba(255, 255, 255, 0.4); display: flex; align-items: center; justify-content: center; }
+.receipt-header-circle svg { width: 24px; height: 24px; fill: #fff; }
+.receipt-header-amount { font-size: 30px; font-weight: 800; letter-spacing: -0.8px; color: #fff; text-align: center; line-height: 1.1; word-break: break-word; }
+.receipt-header-status { background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.35); color: #fff; padding: 6px 16px; border-radius: 30px; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
+
+/* Corps du reçu */
+.receipt-body-new { padding: 12px 20px 20px 20px; display: flex; flex-direction: column; }
+.receipt-line { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f1f5f9; }
+.receipt-line:last-child { border-bottom: none; }
+.receipt-line-icon { width: 38px; height: 38px; border-radius: 10px; background: #ede9fe; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.receipt-line-icon svg { width: 18px; height: 18px; fill: #7c3aed; }
+.receipt-line-content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.receipt-line-label { font-size: 9.5px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.9px; }
+.receipt-line-value { font-size: 14px; font-weight: 700; color: #000000; word-break: break-word; line-height: 1.35; }
+.receipt-line-status { display: inline-block; align-self: flex-start; font-size: 10.5px; font-weight: 800; padding: 5px 14px; border-radius: 20px; border-width: 1.5px; border-style: solid; letter-spacing: 0.6px; text-transform: uppercase; }
+
+/* Ancien reçu (compatibilité - si utilisé ailleurs) */
+.receipt-modal { background: #fff; border-radius: 14px; width: 100%; max-width: 340px; overflow: hidden; box-shadow: 0 25px 60px rgba(15, 23, 42, 0.4); display: flex; flex-direction: column; }
 .receipt-header { padding: 16px 52px 16px 16px; display: flex; align-items: center; gap: 12px; position: relative; color: #fff; }
 .receipt-header-icon { width: 42px; height: 42px; border-radius: 12px; background: rgba(255, 255, 255, 0.22); border: 1px solid rgba(255, 255, 255, 0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .receipt-header-icon svg { width: 22px; height: 22px; fill: #fff; }
@@ -535,12 +563,8 @@ input, select, textarea { font-family: inherit; }
 .receipt-amount { font-size: 30px; font-weight: 700; letter-spacing: -0.8px; line-height: 1.1; }
 .receipt-rows { display: flex; flex-direction: column; gap: 12px; }
 .receipt-row { display: flex; flex-direction: column; gap: 3px; }
-
-/* Labels du reçu : couleur claire + icône */
 .receipt-row-label { display: flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 700; color: #64748b; text-transform: none; letter-spacing: 0.5px; }
 .receipt-row-icon { width: 13px; height: 13px; fill: #64748b; flex-shrink: 0; }
-
-/* Valeurs du reçu : bien noires */
 .receipt-row-value { font-size: 13px; font-weight: 700; color: #000000; word-break: break-word; line-height: 1.4; }
 .receipt-row-value.receipt-mono { font-family: 'Courier New', 'Consolas', monospace; letter-spacing: 0.6px; font-size: 11.5px; color: #1e293b; font-weight: 700; }
 .receipt-status-done { color: #10b981 !important; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
@@ -549,7 +573,7 @@ input, select, textarea { font-family: inherit; }
 .receipt-btn-close { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff; border: none; border-radius: 9px; padding: 12px 32px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; letter-spacing: 0.3px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35); }
 .receipt-btn-close:active { transform: scale(0.97); }
 
-/* ========== PROFIL (arrondi original) ========== */
+/* ========== PROFIL ========== */
 .profile-top-card { background: linear-gradient(160deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: 18px; margin: 12px 12px 16px 12px; padding: 26px 18px 24px 18px; display: flex; flex-direction: column; align-items: center; color: #fff; position: relative; overflow: hidden; box-shadow: 0 10px 28px rgba(26, 115, 232, 0.3); }
 .profile-top-card::before { content: ''; position: absolute; top: -55%; right: -25%; width: 200px; height: 200px; background: radial-gradient(circle, rgba(255, 255, 255, 0.16), transparent 70%); border-radius: 50%; pointer-events: none; }
 .profile-top-card::after { content: ''; position: absolute; bottom: -45%; left: -25%; width: 170px; height: 170px; background: radial-gradient(circle, rgba(255, 255, 255, 0.09), transparent 70%); border-radius: 50%; pointer-events: none; }
@@ -639,7 +663,6 @@ input, select, textarea { font-family: inherit; }
 .btn-red { background: var(--danger); color: #fff; }
 .btn svg { width: 11px; height: 11px; fill: currentColor; flex-shrink: 0; }
 
-/* Modal IBAN (arrondi original 14px) */
 .modal.iban-modal-new { max-width: 290px; width: calc(100% - 28px); border-radius: 14px; overflow: hidden; padding: 0; background: #fff; }
 .iban-new-header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 14px; display: flex; align-items: center; gap: 10px; position: relative; }
 .iban-new-icon { width: 38px; height: 38px; border-radius: 11px; background: rgba(255, 255, 255, 0.22); border: 1px solid rgba(255, 255, 255, 0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -662,7 +685,6 @@ input, select, textarea { font-family: inherit; }
 .iban-new-warning { background: #fef3c7; border: 1px solid #fde68a; border-radius: 9px; padding: 9px 11px; display: flex; align-items: flex-start; gap: 7px; font-size: 10px; color: #78350f; line-height: 1.45; font-weight: 700; }
 .iban-new-warning svg { width: 12px; height: 12px; fill: #d97706; flex-shrink: 0; margin-top: 1px; }
 
-/* Notifications (arrondi original 14px) */
 .notif-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 2147483647; padding: 20px; box-sizing: border-box; animation: notifFadeIn 0.2s ease-out; }
 @keyframes notifFadeIn { from { opacity: 0; } to { opacity: 1; } }
 .notif-modal { background: #fff; border-radius: 14px; width: 100%; max-width: 340px; overflow: hidden; box-shadow: 0 25px 60px rgba(15, 23, 42, 0.4); animation: notifPopIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; flex-direction: column; }
@@ -759,7 +781,7 @@ input, select, textarea { font-family: inherit; }
 @keyframes cardShine { 0% { left: -100%; } 45% { left: 150%; } 100% { left: 150%; } }
 
 /* ===================================================== */
-/* RÈGLES FINALES DE LISIBILITÉ - v50                    */
+/* RÈGLES FINALES DE LISIBILITÉ - v52                    */
 /* Labels clairs (#64748b) — Valeurs bien noires (#000)  */
 /* ===================================================== */
 
@@ -778,7 +800,8 @@ input, select, textarea { font-family: inherit; }
 .admin-identity-card,
 .transfer-detail-header-name,
 .receipt-amount,
-.result-detail-value {
+.result-detail-value,
+.receipt-line-value {
   color: #000000 !important;
 }
 
@@ -798,7 +821,8 @@ input, select, textarea { font-family: inherit; }
 .receipt-amount-label,
 .result-detail-label,
 .detail-status-label,
-.option-panel-toggle-label {
+.option-panel-toggle-label,
+.receipt-line-label {
   color: #64748b !important;
 }
 
