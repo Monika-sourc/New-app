@@ -1,6 +1,6 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
-   v41 - App fullscreen avec contenu contraint (420px)
+   v42 - Full screen + Notifs colorées par action
    ===================================================== */
 
 :root {
@@ -24,7 +24,6 @@
   --gray-800: #1e293b;
   --gray-900: #0f172a;
   --bg-gray: #d8dbe0;
-  /* Couleurs des boules (mises à jour dynamiquement par JS) */
   --bubble-c1: hsla(320, 95%, 62%, 0.95);
   --bubble-c2: hsla(170, 95%, 58%, 0.85);
   --bubble-c3: hsla(60, 98%, 65%, 0.75);
@@ -40,11 +39,11 @@ body { min-height: 100%; margin: 0; padding: 0; background: var(--bg-gray); colo
 button { font-family: inherit; cursor: pointer; }
 input, select, textarea { font-family: inherit; }
 
-/* ========== ✅ MODIFIÉ : CONTENEUR PRINCIPAL PLEIN ÉCRAN ========== */
+/* ========== CONTENEUR PRINCIPAL PLEIN ÉCRAN ========== */
 .app-container { width: 100%; height: 100vh; height: 100dvh; background: var(--bg-gray); position: relative; display: flex; flex-direction: column; overflow: hidden; }
 
-/* ========== ✅ MODIFIÉ : Vue interne contrainte à 420px max (centrée) ========== */
-.view { display: none; width: 100%; max-width: 420px; margin: 0 auto; height: 100%; flex-direction: column; overflow: hidden; min-height: 0; }
+/* ========== ✅ MODIFIÉ : Vue interne 100% (plus de max-width) ========== */
+.view { display: none; width: 100%; height: 100%; flex-direction: column; overflow: hidden; min-height: 0; }
 .view.active { display: flex; }
 
 /* ========== SPINNER ========== */
@@ -276,10 +275,8 @@ input, select, textarea { font-family: inherit; }
 .detail-footer-btn:active { transform: scale(0.98); }
 .detail-footer-btn.copy { background: #e8f0fe; color: #1a73e8; }
 .detail-footer-btn.copy svg { fill: #1a73e8; width: 14px; height: 14px; }
-/* ✅ Bouton "Envoyer les identifiants de connexion" */
 .detail-footer-btn.send-credentials { background: #fef3c7; color: #b45309; }
 .detail-footer-btn.send-credentials svg { fill: #b45309; width: 14px; height: 14px; }
-/* ✅ Bouton "Envoyer le code d'activation" */
 .detail-footer-btn.send-activation { background: #dcfce7; color: #16a34a; }
 .detail-footer-btn.send-activation svg { fill: #16a34a; width: 14px; height: 14px; }
 
@@ -338,19 +335,12 @@ input, select, textarea { font-family: inherit; }
 }
 .dashboard-hero::before, .dashboard-hero::after { display: none; }
 
-.hero-bubbles {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-}
+.hero-bubbles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
 
 .hero-bubble {
   position: absolute;
   border-radius: 50%;
-  background:
-    radial-gradient(circle at 30% 30%,
+  background: radial-gradient(circle at 30% 30%,
       var(--bubble-c1, hsla(320, 95%, 62%, 0.95)) 0%,
       var(--bubble-c2, hsla(170, 95%, 58%, 0.75)) 45%,
       var(--bubble-c3, hsla(60, 98%, 65%, 0.35)) 75%,
@@ -645,7 +635,6 @@ input, select, textarea { font-family: inherit; }
 }
 .profile-top-badge svg { width: 13px; height: 13px; fill: #fff; }
 
-/* ===== CARTES BLANCHES PROFESSIONNELLES ===== */
 .profile-section {
   background: #ffffff;
   border-radius: 16px;
@@ -681,69 +670,16 @@ input, select, textarea { font-family: inherit; }
 .profile-header-icon svg { width: 16px; height: 16px; fill: #fff; }
 .profile-header span { flex: 1; min-width: 0; }
 
-.profile-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  padding: 4px 0;
-}
-.profile-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid #f1f5f9;
-  font-size: 12px;
-  gap: 14px;
-}
+.profile-list { display: flex; flex-direction: column; gap: 0; padding: 4px 0; }
+.profile-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #f1f5f9; font-size: 12px; gap: 14px; }
 .profile-item:last-child { border-bottom: none; }
-.profile-label {
-  font-weight: 700;
-  color: #94a3b8;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  flex-shrink: 0;
-  width: auto;
-  padding-top: 0;
-}
-.profile-value {
-  font-weight: 700;
-  color: #0f172a;
-  text-align: right;
-  word-break: break-word;
-  flex: 1;
-  min-width: 0;
-  font-size: 12.5px;
-}
-.status-active {
-  color: #10b981;
-  font-weight: 800;
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 4px;
-}
+.profile-label { font-weight: 700; color: #94a3b8; font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; flex-shrink: 0; width: auto; padding-top: 0; }
+.profile-value { font-weight: 700; color: #0f172a; text-align: right; word-break: break-word; flex: 1; min-width: 0; font-size: 12.5px; }
+.status-active { color: #10b981; font-weight: 800; display: inline-flex; align-items: center; justify-content: flex-end; gap: 4px; }
 .status-active svg { width: 13px; height: 13px; fill: #10b981; }
 .iban-link { color: var(--primary); text-decoration: underline; font-weight: 600; word-break: break-all; }
-
-.profile-value-balance {
-  font-weight: 800 !important;
-  color: var(--primary) !important;
-  font-size: 14px !important;
-  letter-spacing: -0.2px;
-}
-
-.profile-logout-btn {
-  display: flex !important;
-  width: calc(100% - 24px) !important;
-  margin: 4px 12px 20px 12px !important;
-  padding: 14px 16px !important;
-  font-size: 13px !important;
-  justify-content: center !important;
-  border-radius: 12px !important;
-  letter-spacing: 0.2px !important;
-}
+.profile-value-balance { font-weight: 800 !important; color: var(--primary) !important; font-size: 14px !important; letter-spacing: -0.2px; }
+.profile-logout-btn { display: flex !important; width: calc(100% - 24px) !important; margin: 4px 12px 20px 12px !important; padding: 14px 16px !important; font-size: 13px !important; justify-content: center !important; border-radius: 12px !important; letter-spacing: 0.2px !important; }
 
 .info-card { background: #ffffff; border-radius: 12px; padding: 20px 16px; margin: 14px 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08); }
 .info-card h2 { font-size: 13px; font-weight: 800; color: var(--gray-900); margin-bottom: 8px; }
