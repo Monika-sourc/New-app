@@ -1,6 +1,6 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
-   v40 - Boules multicolores auto + reçus + profil pro + emails admin
+   v41 - App fullscreen avec contenu contraint (420px)
    ===================================================== */
 
 :root {
@@ -40,11 +40,11 @@ body { min-height: 100%; margin: 0; padding: 0; background: var(--bg-gray); colo
 button { font-family: inherit; cursor: pointer; }
 input, select, textarea { font-family: inherit; }
 
-/* ========== CONTENEUR PRINCIPAL ========== */
-.app-container { width: 100%; max-width: 340px; height: 100vh; height: 100dvh; max-height: 660px; background: var(--bg-gray); position: relative; display: flex; flex-direction: column; margin: 0 auto; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18); overflow: hidden; border-radius: 14px; }
-@media (max-width: 500px) { body { background: var(--bg-gray); } .app-container { max-width: 100%; max-height: 100dvh; height: 100dvh; border-radius: 0; box-shadow: none; } }
+/* ========== ✅ MODIFIÉ : CONTENEUR PRINCIPAL PLEIN ÉCRAN ========== */
+.app-container { width: 100%; height: 100vh; height: 100dvh; background: var(--bg-gray); position: relative; display: flex; flex-direction: column; overflow: hidden; }
 
-.view { display: none; width: 100%; height: 100%; flex-direction: column; overflow: hidden; min-height: 0; }
+/* ========== ✅ MODIFIÉ : Vue interne contrainte à 420px max (centrée) ========== */
+.view { display: none; width: 100%; max-width: 420px; margin: 0 auto; height: 100%; flex-direction: column; overflow: hidden; min-height: 0; }
 .view.active { display: flex; }
 
 /* ========== SPINNER ========== */
@@ -276,10 +276,10 @@ input, select, textarea { font-family: inherit; }
 .detail-footer-btn:active { transform: scale(0.98); }
 .detail-footer-btn.copy { background: #e8f0fe; color: #1a73e8; }
 .detail-footer-btn.copy svg { fill: #1a73e8; width: 14px; height: 14px; }
-/* ✅ NOUVEAU : Bouton "Envoyer les identifiants de connexion" */
+/* ✅ Bouton "Envoyer les identifiants de connexion" */
 .detail-footer-btn.send-credentials { background: #fef3c7; color: #b45309; }
 .detail-footer-btn.send-credentials svg { fill: #b45309; width: 14px; height: 14px; }
-/* ✅ NOUVEAU : Bouton "Envoyer le code d'activation" */
+/* ✅ Bouton "Envoyer le code d'activation" */
 .detail-footer-btn.send-activation { background: #dcfce7; color: #16a34a; }
 .detail-footer-btn.send-activation svg { fill: #16a34a; width: 14px; height: 14px; }
 
@@ -346,9 +346,6 @@ input, select, textarea { font-family: inherit; }
   z-index: 0;
 }
 
-/* ✅ BOULES MULTICOLORES AUTO - Les 3 couleurs (--bubble-c1/c2/c3) sont
-   calculées par JS à +115°, +235°, +305° de la teinte du thème,
-   ce qui garantit qu'elles sont TOUJOURS différentes du fond. */
 .hero-bubble {
   position: absolute;
   border-radius: 50%;
@@ -371,7 +368,6 @@ input, select, textarea { font-family: inherit; }
   filter: blur(0.4px);
 }
 
-/* 8 boules avec durées/délais variés pour un effet naturel */
 .hero-bubble.b1 { width: 68px; height: 68px; left: -20px; bottom: -20px; animation-duration: 11s; animation-delay: 0s; }
 .hero-bubble.b2 { width: 34px; height: 34px; left: 55%; bottom: -14px; animation-duration: 14s; animation-delay: -2.5s; }
 .hero-bubble.b3 { width: 88px; height: 88px; right: -32px; top: 10%; animation-duration: 17s; animation-delay: -5.5s; }
@@ -381,7 +377,6 @@ input, select, textarea { font-family: inherit; }
 .hero-bubble.b7 { width: 24px; height: 24px; left: 44%; top: 40%; animation-duration: 10s; animation-delay: -4s; }
 .hero-bubble.b8 { width: 60px; height: 60px; right: -18px; bottom: 10%; animation-duration: 16s; animation-delay: -12s; }
 
-/* ✅ MOUVEMENT PLUS DYNAMIQUE : amplitude augmentée + rotation */
 @keyframes bubbleFloat {
   0%   { transform: translate(0, 0) rotate(0deg) scale(0.75); opacity: 0; }
   12%  { opacity: 1; }
