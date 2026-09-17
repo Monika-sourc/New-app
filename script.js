@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v43 - Transactions multilingues + Échec sans débit
+// v45 - Titillium Web + Traduction dynamique transactions
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -435,9 +435,6 @@ window.addEventListener('popstate', async (event) => {
   setTimeout(() => { isHandlingPop = false; }, 150);
 });
 
-/* ===================================================== */
-/* ✅ MODIFIÉ : Ajout de `txInitialDeposit` dans les 5 langues */
-/* ===================================================== */
 const i18n = {
   pl: {
     loginTitle: "Zaloguj sie na swoje konto", emailPh: "Twoj adres e-mail", pinPh: "Twoj kod dostepu", loginBtn: "Zaloguj sie", loginErr: "Nieprawidlowy e-mail lub PIN.", greeting: "Witaj",
@@ -553,6 +550,38 @@ const splitBalance = (amount, currency) => {
   return { intPart: f.substring(0, c + 1), decPart: f.substring(c + 1) + ' ' + currency };
 };
 
+/* ✅ NOUVEAU : Traduit les sous-titres historiques vers la langue du client (fallback pour anciennes données) */
+function translateSubtitle(subtitle) {
+  if (!subtitle) return '';
+  const map = {
+    'Depot initial': 'txInitialDeposit',
+    'Virement recu': 'txTransferReceived',
+    'Virement envoye': 'txTransferSent',
+    'Virement annule': 'txTransferCancelled',
+    'Transfert recu': 'txTransferReceived',
+    'Transfert envoye': 'txTransferSent',
+    'Wplata poczatkowa': 'txInitialDeposit',
+    'Przelew otrzymany': 'txTransferReceived',
+    'Przelew wyslany': 'txTransferSent',
+    'Przelew anulowany': 'txTransferCancelled',
+    'Deposito inicial': 'txInitialDeposit',
+    'Transferencia recibida': 'txTransferReceived',
+    'Transferencia enviada': 'txTransferSent',
+    'Transferencia cancelada': 'txTransferCancelled',
+    'Deposito iniziale': 'txInitialDeposit',
+    'Ricevuto': 'txTransferReceived',
+    'Inviato': 'txTransferSent',
+    'Bonifico annullato': 'txTransferCancelled',
+    'Ersteinzahlung': 'txInitialDeposit',
+    'Erhalten': 'txTransferReceived',
+    'Gesendet': 'txTransferSent',
+    'Uberweisung storniert': 'txTransferCancelled'
+  };
+  const key = map[subtitle];
+  if (key) return t(key);
+  return subtitle;
+}
+
 function renderBalanceHero(client) {
   const currency = client.currency || '€';
   const currencyLabel = getCurrencyName(currency);
@@ -572,7 +601,7 @@ function renderQuickActions() {
   '</div>';
 }
 
-/* ✅ MODIFIÉ : Utilise `labelKey` pour traduire dynamiquement le titre de chaque transaction */
+/* ✅ MODIFIÉ : Utilise `labelKey` pour traduire dynamiquement + fallback translateSubtitle */
 function renderTransactions(txs) {
   currentTransactions = txs || [];
   if (!txs || txs.length === 0) return '<p style="color:#94a3b8;font-size:11px;text-align:center;padding:15px 0;">' + t('noTransactions') + '</p>';
@@ -597,11 +626,12 @@ function renderTransactions(txs) {
       amountClass = 'amount-neg';
       amountSign = '-';
     }
-    /* ✅ Traduction dynamique : on utilise `labelKey` si présent, sinon fallback sur le type */
+    /* ✅ Traduction dynamique du titre (labelKey) + du sous-titre (translateSubtitle) */
     let title;
     if (tx.labelKey) { title = t(tx.labelKey); }
     else { title = isCancelled ? t('txTransferCancelled') : (isIn ? t('txTransferReceived') : t('txTransferSent')); }
-    h += '<div class="transaction-item transaction-clickable' + (isCancelled ? ' transaction-cancelled' : '') + '" onclick="window.openReceipt(' + idx + ')"><div class="tx-icon ' + ic + '"><svg viewBox="0 0 24 24">' + is + '</svg></div><div class="tx-details"><div class="tx-title">' + title + '</div><div class="tx-subtitle">' + (tx.subtitle || '') + '</div></div><div class="tx-amount"><div class="' + amountClass + '">' + amountSign + tx.amount + '</div><div class="tx-date">' + tx.date + '</div></div></div>';
+    const subtitle = translateSubtitle(tx.subtitle);
+    h += '<div class="transaction-item transaction-clickable' + (isCancelled ? ' transaction-cancelled' : '') + '" onclick="window.openReceipt(' + idx + ')"><div class="tx-icon ' + ic + '"><svg viewBox="0 0 24 24">' + is + '</svg></div><div class="tx-details"><div class="tx-title">' + title + '</div><div class="tx-subtitle">' + subtitle + '</div></div><div class="tx-amount"><div class="' + amountClass + '">' + amountSign + tx.amount + '</div><div class="tx-date">' + tx.date + '</div></div></div>';
   });
   return h;
 }
@@ -1045,7 +1075,6 @@ function showResultPage(isSuccess) {
   window.navigateTo('screen-result');
 }
 
-/* ✅ MODIFIÉ : Ne débite PAS et n'ajoute AUCUNE transaction si échec (juste email rouge + notif) */
 window.closeResultModal = async function() {
   const isSuccess = window.currentTransferSuccess;
   const currency = currentClient.currency || '€';
@@ -1064,7 +1093,6 @@ window.closeResultModal = async function() {
   const recipientName = document.getElementById('input-name').value;
   const recipientReason = document.getElementById('input-title').value;
 
-  /* ✅ Transaction avec labelKey pour traduction dynamique */
   const newTx = {
     type: 'out',
     labelKey: 'txTransferSent',
@@ -1079,15 +1107,12 @@ window.closeResultModal = async function() {
     percent: percent
   };
 
-  /* ✅ MODIFIÉ : Si succès = débit + transaction. Si échec = AUCUN débit, AUCUNE transaction en base. */
   if (isSuccess) {
     const newBalance = Math.max(0, (parseFloat(fresh.balance) || 0) - amt);
     const transactions = fresh.transactions || []; transactions.unshift(newTx);
     await FireDB.updateClient(fresh.id, { balance: newBalance, transactions: transactions });
   }
-  /* Sinon : rien n'est écrit en base — le virement échoué n'existe pas côté client */
 
-  /* Email : toujours envoyé (bleu si succès, rouge si échec) */
   if (fresh.email) {
     const lang = fresh.language || 'fr';
     const T = emailTexts[lang] || emailTexts.fr;
@@ -1104,7 +1129,6 @@ window.closeResultModal = async function() {
 
   window.navigateTo('screen-dashboard');
 
-  /* Notif finale : verte si 100%, rouge si échoué */
   const tplTitle = isSuccess ? t('transferSentTitle') : t('transferFailedTitle');
   const tplMsg = isSuccess ? t('transferSentMsg') : t('transferFailedMsg');
   let msg = tplMsg.replace('{amount}', newTx.amount).replace('{name}', newTx.subtitle).replace('{iban}', newTx.recipientIban || '—');
@@ -1300,7 +1324,6 @@ async function renderAdminPage() {
     const generatedIban = generateIban(countryValue); const generatedBic = generateBic(countryValue);
     const generatedCardNumber = generateCardNumber(); const generatedCardExpiry = generateCardExpiry(); const generatedCardCvv = generateCardCvv();
     const now = new Date(); const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    /* ✅ labelKey ajouté pour le dépôt initial */
     const initialTransactions = initialBalance > 0 ? [{ type: 'in', labelKey: 'txInitialDeposit', subtitle: bankNameValue || '', amount: formatAmount(initialBalance, currencyValue), date: dateStr, senderIban: generatedIban }] : [];
     const clientData = { adminUid: currentAdmin.uid, adminEmail: currentAdmin.email, lastName: document.getElementById('lastName').value, firstName: document.getElementById('firstName').value, country: countryValue, phone: document.getElementById('phone').value, email: document.getElementById('email').value, address: document.getElementById('address').value, language: document.getElementById('language').value, bankName: bankNameValue, iban: generatedIban, bic: generatedBic, ibanMasked: false, cardHolder: '', cardNumber: generatedCardNumber, cardExpiry: generatedCardExpiry, cardCvv: generatedCardCvv, cardType: 'Visa Debit', cardMaskLast4: false, cardMaskCvv: false, balance: initialBalance, currency: currencyValue, startPercent: parseInt(document.getElementById('startPercent').value), stopPercent: parseInt(document.getElementById('stopPercent').value), pin: document.getElementById('pin').value, activationCode: document.getElementById('activationCode').value, message: document.getElementById('message').value, themeColor: document.getElementById('themeColor').value, blocked: false, transactions: initialTransactions };
     const ok = await FireDB.createClient(id, clientData);
@@ -1328,7 +1351,6 @@ window.openClientDetail = async function(id) {
   const row = (label, value, mono) => '<div class="detail-row"><div class="detail-row-label">' + label + '</div><div class="detail-row-value' + (mono ? ' mono' : '') + '">' + (value || '-') + '</div></div>';
   const sectionTitle = (title) => '<div class="detail-section-title">' + title + '</div>';
 
-  /* Carte Virements effectués */
   const txs = (c.transactions || []).filter(t => t.type === 'out' || t.type === 'cancelled');
   let transfersHtml = '';
   if (txs.length === 0) {
@@ -1458,7 +1480,6 @@ window.cancelClientTransfer = function(clientId, txIndex) {
 
     const transactions = (c.transactions || []).slice();
     transactions[txIndex] = Object.assign({}, tx, { cancelled: true, cancelledAt: dateStr });
-    /* ✅ labelKey ajouté pour la nouvelle transaction annulée */
     const newTx = {
       type: 'cancelled',
       labelKey: 'txTransferCancelled',
@@ -1504,7 +1525,6 @@ window.applyQuickAction = async function() {
   if (!client) { window.showNotif('Client introuvable.', 'error'); return; }
   if (client.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
   if (action === 'reset') { window.showConfirm('Voulez-vous vraiment reinitialiser l\'historique et le solde de ce client ? Cette action est irreversible.', async () => { await FireDB.updateClient(clientId, { balance: 0, transactions: [] }); window.showNotif('Le compte a ete reinitialise.', 'success', 'Reinitialisation'); renderAdminPage(); }, 'Reinitialiser le compte', 'warning'); return; }
-  /* ✅ labelKey ajouté pour la transaction ajoutée manuellement */
   else if (action === 'add-transfer') { const amount = parseFloat(document.getElementById('qa-transfer-amount').value); const type = document.getElementById('qa-transfer-type').value; const label = document.getElementById('qa-transfer-label').value.trim(); if (!amount || amount <= 0) { window.showNotif('Montant invalide.', 'error'); return; } const currency = client.currency || '€'; const now = new Date(); const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); const newTx = { type: type, labelKey: type === 'in' ? 'txTransferReceived' : 'txTransferSent', subtitle: label || '', amount: formatAmount(amount, currency), date: dateStr, senderIban: type === 'in' ? client.iban : undefined }; const transactions = client.transactions || []; transactions.unshift(newTx); let newBalance = parseFloat(client.balance) || 0; if (type === 'in') newBalance += amount; else newBalance = Math.max(0, newBalance - amount); await FireDB.updateClient(clientId, { balance: newBalance, transactions: transactions }); window.showNotif('Le virement a ete ajoute avec succes.', 'success', 'Virement ajoute'); }
   else if (action === 'edit-iban') { const newIban = document.getElementById('qa-iban-value').value.trim().replace(/\s+/g, ''); const newBic = document.getElementById('qa-bic-value').value.trim().toUpperCase(); const masked = document.getElementById('qa-iban-masked').checked; if (!newIban || !newBic) { window.showNotif('Remplissez tous les champs.', 'warning'); return; } await FireDB.updateClient(clientId, { iban: newIban, bic: newBic, ibanMasked: masked }); window.showNotif('IBAN et BIC mis a jour.', 'success', 'Banque mise a jour'); }
   else if (action === 'edit-card') { const newHolder = document.getElementById('qa-card-holder').value.trim().toUpperCase(); const newNum = document.getElementById('qa-card-number').value.trim().replace(/\s+/g, ''); const newExpiry = document.getElementById('qa-card-expiry').value.trim(); const newCvv = document.getElementById('qa-card-cvv').value.trim(); const newType = document.getElementById('qa-card-type').value.trim() || 'Visa Debit'; const maskLast4 = document.getElementById('qa-card-mask-last4').checked; const maskCvv = document.getElementById('qa-card-mask-cvv').checked; if (!newNum || !newExpiry || !newCvv) { window.showNotif('Remplissez tous les champs.', 'warning'); return; } await FireDB.updateClient(clientId, { cardHolder: newHolder || ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase(), cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv, cardType: newType, cardMaskLast4: maskLast4, cardMaskCvv: maskCvv }); window.showNotif('La carte virtuelle a ete mise a jour.', 'success', 'Carte mise a jour'); }
