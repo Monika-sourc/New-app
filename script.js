@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v51 - Banque + Date/Heure personnalisables pour virements admin
+// v52 - Reçu redessiné + logo humain virements envoyés
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -21,7 +21,7 @@ const auth = getAuth(app);
 const SUPER_ADMIN_PASSWORD = 'SuperAdmin@TW2026';
 
 /* ===================================================== */
-/* ✅ 25 BANQUES - 5 par pays - VRAIS LOGOS Clearbit     */
+/* 25 BANQUES - 5 par pays - VRAIS LOGOS Clearbit        */
 /* ===================================================== */
 const BANKS_BY_COUNTRY = {
   'France': [
@@ -452,6 +452,7 @@ function renderQuickActions() {
   '</div>';
 }
 
+/* ✅ MODIFIÉ v52 : Virements envoyés = logo humain professionnel */
 function renderTransactions(txs) {
   currentTransactions = txs || [];
   if (!txs || txs.length === 0) return '<p style="color:#1e293b;font-size:11px;text-align:center;padding:15px 0;font-weight:600;">' + t('noTransactions') + '</p>';
@@ -460,9 +461,20 @@ function renderTransactions(txs) {
     const isCancelled = tx.type === 'cancelled';
     const isIn = tx.type === 'in';
     let ic, is, amountClass, amountSign;
-    if (isCancelled) { ic = 'icon-cancelled'; is = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>'; amountClass = 'amount-cancelled'; amountSign = '+'; }
-    else if (isIn) { ic = 'icon-green'; is = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>'; amountClass = 'amount-pos'; amountSign = '+'; }
-    else { ic = 'icon-red'; is = '<path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>'; amountClass = 'amount-neg'; amountSign = '-'; }
+    if (isCancelled) {
+      ic = 'icon-cancelled';
+      is = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
+      amountClass = 'amount-cancelled'; amountSign = '+';
+    } else if (isIn) {
+      ic = 'icon-green';
+      is = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>';
+      amountClass = 'amount-pos'; amountSign = '+';
+    } else {
+      // ✅ Virements ENVOYÉS → logo humain professionnel
+      ic = 'icon-professional';
+      is = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>';
+      amountClass = 'amount-neg'; amountSign = '-';
+    }
 
     let iconHtml;
     if (tx.bankLogo) {
@@ -627,61 +639,87 @@ window.cancelTransfer = function() {
   window.navigateTo('screen-transfer');
 };
 
+/* ✅ MODIFIÉ v52 : Reçu avec en-tête coloré + cercle centré + lignes à icônes */
 window.openReceipt = function(idx) {
   if (!currentTransactions || !currentTransactions[idx]) return;
   const tx = currentTransactions[idx];
   const isCancelled = tx.type === 'cancelled';
   const isIn = tx.type === 'in';
+  const isFailed = tx.status === 'failed';
   const old = document.getElementById('receipt-modal-dynamic'); if (old) old.remove();
 
-  const iconCheck = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
+  // Icônes en-tête
   const iconArrowDown = '<path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>';
   const iconArrowUp = '<path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>';
   const iconX = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
-  const iconUser = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>';
+
+  // Icônes des lignes
+  const iconHash = '<path d="M7 2h2v4h4V2h2v4h3v2h-3v4h3v2h-3v4h-2v-4h-4v4H7v-4H4v-2h3V8H4V6h3V2zm2 6v4h4V8H9z"/>';
   const iconCard = '<path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>';
-  const iconClock = '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>';
-  const iconHash = '<path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>';
-  const iconInfo = '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>';
+  const iconUser = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>';
+  const iconCalendar = '<path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>';
+  const iconRef = '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>';
+  const iconStatus = '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>';
 
-  let headerColor, titleText, amountSign, amountColor, iconHtml;
-  if (isCancelled) { headerColor = 'linear-gradient(135deg, #8b5cf6, #7c3aed)'; titleText = t('txTransferCancelled'); amountSign = '+'; amountColor = '#8b5cf6'; iconHtml = iconX; }
-  else if (isIn) { headerColor = 'linear-gradient(135deg, #10b981, #059669)'; titleText = t('receiptReceived'); amountSign = '+'; amountColor = '#10b981'; iconHtml = iconArrowDown; }
-  else { headerColor = 'linear-gradient(135deg, #3b82f6, #1d4ed8)'; titleText = t('receiptSent'); amountSign = '-'; amountColor = '#dc2626'; iconHtml = iconArrowUp; }
-
-  const ref = 'TW-' + (tx.date || '').replace(/[^0-9]/g, '').slice(-8) + '-' + String(idx + 1).padStart(3, '0');
-  const labelTo = (isIn || isCancelled) ? t('receiptFrom') : t('receiptTo');
-
-  const receiptRow = (label, value, iconPath, mono) => '<div class="receipt-row">' +
-      '<div class="receipt-row-label"><svg class="receipt-row-icon" viewBox="0 0 24 24">' + iconPath + '</svg><span>' + label + '</span></div>' +
-      '<div class="receipt-row-value' + (mono ? ' receipt-mono' : '') + '">' + (value || '—') + '</div>' +
-    '</div>';
-
-  let accountRow = '';
-  if (!isIn && !isCancelled) {
-    const recipientIban = tx.recipientIban || tx.iban || '—';
-    accountRow = receiptRow(t('receiptRecipientAccount'), formatIban(recipientIban), iconCard, true);
+  let headerColor, statusLabel, statusBadgeText, headerIcon;
+  if (isCancelled) {
+    headerColor = '#8b5cf6';
+    statusLabel = (currentLang === 'fr' ? 'Annulé' : 'ANULOWANY');
+    statusBadgeText = (currentLang === 'fr' ? 'VIREMENT ANNULÉ' : 'PRZELEW ANULOWANY');
+    headerIcon = iconX;
+  } else if (isIn) {
+    headerColor = '#10b981';
+    statusLabel = (currentLang === 'fr' ? 'Effectué' : 'ZREALIZOWANY');
+    statusBadgeText = (currentLang === 'fr' ? 'VIREMENT REÇU' : 'PRZELEW OTRZYMANY');
+    headerIcon = iconArrowDown;
+  } else {
+    headerColor = isFailed ? '#dc2626' : '#1a73e8';
+    statusLabel = isFailed ? (currentLang === 'fr' ? 'Échoué' : 'NIEUDANY') : (currentLang === 'fr' ? 'Effectué' : 'ZREALIZOWANY');
+    statusBadgeText = (currentLang === 'fr' ? 'VIREMENT ENVOYÉ' : 'PRZELEW WYSŁANY');
+    headerIcon = iconArrowUp;
   }
+
+  const amountSign = isCancelled ? '+' : (isIn ? '+' : '-');
+  const ref = 'TW-' + (tx.date || '').replace(/[^0-9]/g, '').slice(-8) + '-' + String(idx + 1).padStart(3, '0');
+  const txId = 'CR' + (tx.date || '').replace(/[^0-9]/g, '').slice(-10);
+
+  const rowHtml = (label, value, iconPath, valueColor, isStatus) => '<div class="receipt-line">' +
+    '<div class="receipt-line-icon"><svg viewBox="0 0 24 24">' + iconPath + '</svg></div>' +
+    '<div class="receipt-line-content">' +
+      '<div class="receipt-line-label">' + label + '</div>' +
+      (isStatus
+        ? '<div class="receipt-line-status" style="color:' + valueColor + ';border-color:' + valueColor + ';background:' + valueColor + '15;">' + value + '</div>'
+        : '<div class="receipt-line-value" style="' + (valueColor ? 'color:' + valueColor + ';' : '') + '">' + value + '</div>') +
+    '</div>' +
+  '</div>';
+
+  const labelThird = (isIn || isCancelled)
+    ? (currentLang === 'fr' ? 'ÉMETTEUR' : 'NADAWCA')
+    : (currentLang === 'fr' ? 'BÉNÉFICIAIRE' : 'ODBIORCA');
+  const labelId = (currentLang === 'fr' ? 'ID TRANSACTION' : 'ID TRANSAKCJI');
+  const labelAmount = (currentLang === 'fr' ? 'MONTANT' : 'KWOTA');
+  const labelDate = (currentLang === 'fr' ? 'DATE ET HEURE' : 'DATA I GODZINA');
+  const labelRef = (currentLang === 'fr' ? 'NUMÉRO DE RÉFÉRENCE' : 'NUMER REFERENCYJNY');
+  const labelStatus = (currentLang === 'fr' ? 'STATUT' : 'STATUS');
 
   const ov = document.createElement('div');
   ov.id = 'receipt-modal-dynamic'; ov.className = 'receipt-overlay';
-  ov.innerHTML = '<div class="receipt-modal">' +
-      '<div class="receipt-header" style="background: ' + headerColor + ';">' +
-        '<div class="receipt-header-icon"><svg viewBox="0 0 24 24">' + iconHtml + '</svg></div>' +
-        '<div class="receipt-header-text"><div class="receipt-header-title">' + titleText + '</div><div class="receipt-header-sub">' + t('receiptTitle') + '</div></div>' +
-        '<button class="receipt-close" onclick="document.getElementById(\'receipt-modal-dynamic\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
-      '</div>' +
-      '<div class="receipt-body"><div class="receipt-amount-block"><div class="receipt-amount-label">' + t('receiptAmount') + '</div><div class="receipt-amount" style="color:' + amountColor + '">' + amountSign + tx.amount + '</div></div>' +
-        '<div class="receipt-rows">' +
-          receiptRow(labelTo, tx.subtitle, iconUser) +
-          accountRow +
-          receiptRow(t('receiptDate'), tx.date, iconClock) +
-          '<div class="receipt-row"><div class="receipt-row-label"><svg class="receipt-row-icon" viewBox="0 0 24 24">' + iconInfo + '</svg><span>' + t('receiptStatus') + '</span></div><div class="receipt-row-value receipt-status-done" style="color:' + amountColor + '"><svg viewBox="0 0 24 24" style="fill:' + amountColor + ';width:13px;height:13px;margin-right:4px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>' + (isCancelled ? t('txTransferCancelled') : t('receiptStatusDone')) + '</div></div>' +
-          receiptRow(t('receiptRef'), ref, iconHash, true) +
-        '</div>' +
-      '</div>' +
-      '<div class="receipt-footer"><button class="receipt-btn-close" onclick="document.getElementById(\'receipt-modal-dynamic\').remove()">' + t('receiptClose') + '</button></div>' +
-    '</div>';
+  ov.innerHTML = '<div class="receipt-modal-new">' +
+    '<div class="receipt-header-new" style="background:' + headerColor + ';">' +
+      '<button class="receipt-close-new" onclick="document.getElementById(\'receipt-modal-dynamic\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
+      '<div class="receipt-header-circle"><svg viewBox="0 0 24 24">' + headerIcon + '</svg></div>' +
+      '<div class="receipt-header-amount">' + amountSign + ' ' + tx.amount + '</div>' +
+      '<div class="receipt-header-status">' + statusBadgeText + '</div>' +
+    '</div>' +
+    '<div class="receipt-body-new">' +
+      rowHtml(labelId, txId, iconHash) +
+      rowHtml(labelAmount, amountSign + ' ' + tx.amount, iconCard, headerColor) +
+      rowHtml(labelThird, tx.subtitle || '—', iconUser) +
+      rowHtml(labelDate, tx.date, iconCalendar) +
+      rowHtml(labelRef, ref, iconRef) +
+      rowHtml(labelStatus, statusLabel, iconStatus, headerColor, true) +
+    '</div>' +
+  '</div>';
   ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
   document.body.appendChild(ov);
 };
@@ -1067,7 +1105,7 @@ async function renderAdminPage() {
   const hideAllOptions = () => { [resetFields, transferFields, ibanFields, cardFields, blockFields, unblockFields, nameFields, emailFields, phoneFields, addressFields, countryFields, languageFields, currencyFields, themeFields, stopPercentFields, pinFields, activationCodeFields, messageFields].forEach(el => { if (el) el.style.display = 'none'; }); };
   const fillForAction = (v, clientId) => { if (v === 'edit-iban') fillIbanFields(clientId); else if (v === 'edit-card') fillCardFields(clientId); else if (v === 'edit-name') fillNameFields(clientId); else if (v === 'edit-email') fillEmailFields(clientId); else if (v === 'edit-phone') fillPhoneFields(clientId); else if (v === 'edit-address') fillAddressFields(clientId); else if (v === 'edit-country') fillCountryFields(clientId); else if (v === 'edit-language') fillLanguageFields(clientId); else if (v === 'edit-currency') fillCurrencyFields(clientId); else if (v === 'edit-theme') fillThemeFields(clientId); else if (v === 'edit-stop-percent') fillStopPercentFields(clientId); else if (v === 'edit-pin') fillPinFields(clientId); else if (v === 'edit-activation-code') fillActivationCodeFields(clientId); else if (v === 'edit-message') fillMessageFields(clientId); };
 
-  // ✅ NOUVEAU : Remplir la liste des banques du panneau "Ajouter un virement"
+  // Remplir la liste des banques du panneau "Ajouter un virement"
   const updateQaTransferBankList = (countryValue, preselectedBank) => {
     const qaTransferBankSelect = document.getElementById('qa-transfer-bank');
     if (!qaTransferBankSelect) return;
@@ -1083,7 +1121,7 @@ async function renderAdminPage() {
     if (preselectedBank) qaTransferBankSelect.value = preselectedBank;
   };
 
-  // ✅ NOUVEAU : Pré-remplir date/heure actuelles
+  // Pré-remplir date/heure actuelles
   const prefillTransferDateTime = () => {
     const now = new Date();
     const dateInput = document.getElementById('qa-transfer-date');
@@ -1143,7 +1181,6 @@ async function renderAdminPage() {
   const themeColorInput = document.getElementById('themeColor');
   if (themeColorInput) themeColorInput.addEventListener('input', (e) => { document.getElementById('themeColorHex').value = e.target.value; presetContainer.querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected')); });
 
-  // Banques selon pays (formulaire de création)
   const countrySelect = document.getElementById('country');
   const bankSelect = document.getElementById('bankName');
   function updateBankList() {
