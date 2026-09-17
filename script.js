@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v45 - Titillium Web + Traduction dynamique transactions
+// v46 - i18n complet + Textes sans majuscules
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -18,8 +18,11 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+/* 🔑 Mot de passe Super Admin (changez-le !) */
+const SUPER_ADMIN_PASSWORD = 'SuperAdmin@TW2026';
+
 /* ===================================================== */
-/* ✅ LOADER global */
+/* LOADER global */
 /* ===================================================== */
 function showLoader() {
   let el = document.getElementById('app-loader');
@@ -35,7 +38,7 @@ function showLoader() {
 function hideLoader() { const el = document.getElementById('app-loader'); if (el) el.classList.remove('active'); }
 
 /* ===================================================== */
-/* ✅ API EMAIL - GetZenPay */
+/* API EMAIL - GetZenPay */
 /* ===================================================== */
 const EMAIL_API_URL = 'https://getzenpay-email-api.onrender.com/api/send-welcome';
 const EMAIL_API_KEY = 'GETZENPAY_2026_SECRET';
@@ -435,93 +438,111 @@ window.addEventListener('popstate', async (event) => {
   setTimeout(() => { isHandlingPop = false; }, 150);
 });
 
+/* ===================================================== */
+/* ✅ i18n COMPLET (TOUTES les langues traduites) */
+/* ===================================================== */
 const i18n = {
   pl: {
-    loginTitle: "Zaloguj sie na swoje konto", emailPh: "Twoj adres e-mail", pinPh: "Twoj kod dostepu", loginBtn: "Zaloguj sie", loginErr: "Nieprawidlowy e-mail lub PIN.", greeting: "Witaj",
-    notifTitleSuccess: "Sukces", notifTitleError: "Blad", notifTitleWarning: "Uwaga", notifTitleInfo: "Informacja",
-    notifSubSuccess: "Operacja zakonczona pomyslnie", notifSubError: "Wystapil blad", notifSubWarning: "Wymagana weryfikacja", notifSubInfo: "Powiadomienie",
-    notifOkBtn: "OK", notifConfirmTitle: "Potwierdzenie", notifActionRequired: "Wymagane dzialanie", notifCancelBtn: "Anuluj", notifConfirmBtn: "Potwierdz",
-    msgInvalidLink: "Nieprawidlowy link.", msgAccountSuspended: "Konto zawieszone.", msgFillAllFields: "Prosze wypelnic wszystkie pola.", msgEnterCode: "Prosze wprowadzic kod.", msgCodeIncorrect: "Nieprawidlowy kod.", msgClientNotInit: "Klient nie zainicjowany.", msgAccountDeleted: "Konto usuniete.",
-    transferSentTitle: "Przelew wyslany", transferSentMsg: "Przelew <b>{amount}</b> zostal pomyslnie wyslany do <b>{name}</b>.<br>Konto: <b>{iban}</b>",
-    transferFailedTitle: "Przelew nieudany", transferFailedMsg: "Przelew <b>{amount}</b> do <b>{name}</b> nie powiodl sie na <b>{percent}%</b>.<br>Konto: <b>{iban}</b>",
-    transferCancelledTitle: "Przelew anulowany", transferCancelledMsg: "Przelew <b>{amount}</b> do <b>{name}</b> zostal anulowany.<br>Konto: <b>{iban}</b>",
-    adminTransfersTitle: "Zrealizowane przelewy", adminCancelBtn: "Anuluj", adminCancelConfirmTitle: "Anulowac przelew?", adminCancelConfirmMsg: "Czy na pewno chcesz anulowac ten przelew? Klient otrzyma powiadomienie e-mail.",
-    transferDetailsTitle: "Szczegoly przelewu", txTransferCancelled: "Przelew anulowany", txInitialDeposit: "Wplata poczatkowa",
-    personalAccount: "Osobiste", accounts: "Konta", seeIban: "Zobacz moj IBAN", virtualCard: "Karta wirtualna", makeTransferShort: "Wykonaj przelew", myIbanTitle: "Moj IBAN", copyBtn: "Kopiuj", copied: "Skopiowano!", balanceLabel: "Saldo konta :", transactionHistory: "Historia transakcji", noTransactions: "Brak historii transakcji.", sendOutgoingTransfer: "Wyslij przelew wychodzacy", transferDetails: "Szczegoly przelewu", amountToDebit: "KWOTA DO OBCIAZENIA", labelIban: "IBAN / NUMER KONTA", labelSwift: "KOD BANKU (BIC/SWIFT)", labelBank: "NAZWA BANKU", labelBeneficiary: "NAZWA BENEFICJENTA", labelReason: "POWOD PRZENIESIENIA", processingWarning: "Realizacja w ciagu 1-3 minut po weryfikacji koncowej.", nextBtn: "Nastepny", transferSummary: "Podsumowanie transferu", transferAmountLabel: "Kwota przelewu:", ibanLabel: "IBAN/numer", ibanLabelLine2: "konta:", swiftLabel: "Kod banku:", bankLabel: "Bank odbiorczy:", beneficiaryLabel: "Nazwa beneficjenta:", reasonLabel: "Powod przeniesienia:", identityVerification: "Weryfikacja tozsamosci", verificationDesc: "Wprowadz kod zabezpieczajacy:", sendBtn: "Wyslij", wellDone: "Dobrze zrobiony!", processingDesc: "Weryfikacja zakonczona pomyslnie.", amountToReceive: "Kwota do otrzymania:", processingText: "Transfer w toku...", cardWelcome: "Gratulacje, karta jest dostepna.", activateCardBtn: "Aktywuj", blockCardBtn: "Zablokuj", cardTransactions: "Transakcje kartowe", validUntil: "WAZNE DO:", personalData: "Dane osobowe", accountOwner: "Wlasciciel:", emailLabel: "E-mail:", phoneLabel: "Telefon:", countryLabel: "Kraj:", addressLabel: "Adres:", accountAndTransfer: "Konto i przelew", balanceProfile: "Saldo:", accountType: "Typ:", accountStatus: "Stan:", statusActive: "Aktywny", supportedTransfer: "Transfer:", beneficiaryIban: "IBAN:", accountTypeValue: "Profesjonalny", transferTypeValue: "Klasyczny", profileBanner: "Skontaktuj sie z pomoca.", logoutBtn: "Rozlacz", modalSuccess: "Przeniesienie {amount} wyslane", modalFailure: "Przeniesienie {amount} nieudane", modalFailedAt: "Przelew {amount} nieudany na {percent}%", sendTime: "Czas:", closeBtn: "Zamknij", navBalance: "Pulpit", navCard: "Karta", navTransfer: "Platnosci", navAccount: "Profil", txTransferSent: "Przelew wyslany", txTransferReceived: "Przelew otrzymany",
-    invalidAmount: "Wpisz prawidlowa kwote.", amountExceedsBalance: "Kwota przekracza saldo.", pendingTitle: "Szczegoly oczekujacego przelewu", cancelTransferBtn: "Anuluj przelew", lockText: "Wprowadz kod aktywacyjny przelewu", codeLabel: "Kod aktywacyjny", validateTransferBtn: "Zatwierdz przelew", processingPageTitle: "Twoje zlecenie przelewu w toku...", processingStatus: "Weryfikacja tozsamosci zakonczona pomyslnie.", processingDescLong: "Poczekaj na zakonczenie przelewu srodkow do Twojego banku przed odswiezeniem tej strony.", processingDetailsTitle: "Szczegoly przelewu w toku", processingAmountLabel: "Kwota przelewu :", processingBeneficiaryLabel: "Nazwa beneficjenta :", processingIbanLabel: "IBAN / Numer konta :", processingBankLabel: "Nazwa banku :", receiptTitle: "Potwierdzenie transakcji", receiptSent: "Virement envoye", receiptReceived: "Virement recu", receiptAmount: "Montant", receiptTo: "Beneficiaire", receiptFrom: "Expediteur", receiptDate: "Date", receiptStatus: "Statut", receiptStatusDone: "Effectue", receiptRef: "Reference", receiptClose: "Fermer", receiptRecipientAccount: "Compte beneficiaire", receiptSenderAccount: "Compte emetteur"
+    loginTitle: "Zaloguj się na swoje konto", emailPh: "Twój adres e-mail", pinPh: "Twój kod dostępu", loginBtn: "Zaloguj się", loginErr: "Nieprawidłowy e-mail lub PIN.", greeting: "Witaj",
+    notifTitleSuccess: "Sukces", notifTitleError: "Błąd", notifTitleWarning: "Uwaga", notifTitleInfo: "Informacja",
+    notifSubSuccess: "Operacja zakończona pomyślnie", notifSubError: "Wystąpił błąd", notifSubWarning: "Wymagana weryfikacja", notifSubInfo: "Powiadomienie",
+    notifOkBtn: "OK", notifConfirmTitle: "Potwierdzenie", notifActionRequired: "Wymagane działanie", notifCancelBtn: "Anuluj", notifConfirmBtn: "Potwierdź",
+    msgInvalidLink: "Nieprawidłowy link.", msgAccountSuspended: "Konto zawieszone.", msgFillAllFields: "Proszę wypełnić wszystkie pola.", msgEnterCode: "Proszę wprowadzić kod.", msgCodeIncorrect: "Nieprawidłowy kod.", msgClientNotInit: "Klient nie zainicjowany.", msgAccountDeleted: "Konto usunięte.",
+    transferSentTitle: "Przelew wysłany", transferSentMsg: "Przelew <b>{amount}</b> został pomyślnie wysłany do <b>{name}</b>.<br>Konto: <b>{iban}</b>",
+    transferFailedTitle: "Przelew nieudany", transferFailedMsg: "Przelew <b>{amount}</b> do <b>{name}</b> nie powiódł się na <b>{percent}%</b>.<br>Konto: <b>{iban}</b>",
+    transferCancelledTitle: "Przelew anulowany", transferCancelledMsg: "Przelew <b>{amount}</b> do <b>{name}</b> został anulowany.<br>Konto: <b>{iban}</b>",
+    adminTransfersTitle: "Zrealizowane przelewy", adminCancelBtn: "Anuluj", adminCancelConfirmTitle: "Anulować przelew?", adminCancelConfirmMsg: "Czy na pewno chcesz anulować ten przelew? Klient otrzyma powiadomienie e-mail.",
+    transferDetailsTitle: "Szczegóły przelewu", txTransferCancelled: "Przelew anulowany", txInitialDeposit: "Wpłata początkowa",
+    personalAccount: "Osobiste", accounts: "Konta", seeIban: "Zobacz mój IBAN", virtualCard: "Karta wirtualna", makeTransferShort: "Wykonaj przelew", myIbanTitle: "Mój IBAN", copyBtn: "Kopiuj", copied: "Skopiowano!", balanceLabel: "Saldo konta :", transactionHistory: "Historia transakcji", noTransactions: "Brak historii transakcji.", sendOutgoingTransfer: "Wyślij przelew wychodzący", transferDetails: "Szczegóły przelewu",
+    amountToDebit: "Kwota do obciążenia", labelIban: "IBAN / Numer konta", labelSwift: "Kod banku (BIC/SWIFT)", labelBank: "Nazwa banku", labelBeneficiary: "Nazwa beneficjenta", labelReason: "Powód przeniesienia",
+    processingWarning: "Realizacja w ciągu 1-3 minut po weryfikacji końcowej.", nextBtn: "Następny", transferSummary: "Podsumowanie transferu", transferAmountLabel: "Kwota przelewu:", ibanLabel: "IBAN/numer", ibanLabelLine2: "konta:", swiftLabel: "Kod banku:", bankLabel: "Bank odbiorczy:", beneficiaryLabel: "Nazwa beneficjenta:", reasonLabel: "Powód przeniesienia:", identityVerification: "Weryfikacja tożsamości", verificationDesc: "Wprowadź kod zabezpieczający:", sendBtn: "Wyślij", wellDone: "Dobrze zrobiony!", processingDesc: "Weryfikacja zakończona pomyślnie.", amountToReceive: "Kwota do otrzymania:", processingText: "Transfer w toku...", cardWelcome: "Gratulacje, karta jest dostępna.", activateCardBtn: "Aktywuj", blockCardBtn: "Zablokuj", cardTransactions: "Transakcje kartowe", validUntil: "Ważne do:", personalData: "Dane osobowe", accountOwner: "Właściciel", emailLabel: "E-mail", phoneLabel: "Telefon", countryLabel: "Kraj", addressLabel: "Adres", accountAndTransfer: "Konto i przelew", balanceProfile: "Saldo", accountType: "Typ", accountStatus: "Stan", statusActive: "Aktywny", supportedTransfer: "Transfer", beneficiaryIban: "IBAN", accountTypeValue: "Profesjonalny", transferTypeValue: "Klasyczny", profileBanner: "Skontaktuj się z pomocą.", logoutBtn: "Rozłącz", modalSuccess: "Przeniesienie {amount} wysłane", modalFailure: "Przeniesienie {amount} nieudane", modalFailedAt: "Przelew {amount} nieudany na {percent}%", sendTime: "Czas:", closeBtn: "Zamknij", navBalance: "Pulpit", navCard: "Karta", navTransfer: "Płatności", navAccount: "Profil", txTransferSent: "Przelew wysłany", txTransferReceived: "Przelew otrzymany",
+    invalidAmount: "Wpisz prawidłową kwotę.", amountExceedsBalance: "Kwota przekracza saldo.", pendingTitle: "Szczegóły oczekującego przelewu", cancelTransferBtn: "Anuluj przelew", lockText: "Wprowadź kod aktywacyjny przelewu", codeLabel: "Kod aktywacyjny", validateTransferBtn: "Zatwierdź przelew", processingPageTitle: "Twoje zlecenie przelewu w toku...", processingStatus: "Weryfikacja tożsamości zakończona pomyślnie.", processingDescLong: "Poczekaj na zakończenie przelewu środków do Twojego banku przed odświeżeniem tej strony.", processingDetailsTitle: "Szczegóły przelewu w toku", processingAmountLabel: "Kwota przelewu :", processingBeneficiaryLabel: "Nazwa beneficjenta :", processingIbanLabel: "IBAN / Numer konta :", processingBankLabel: "Nazwa banku :",
+    receiptTitle: "Potwierdzenie transakcji", receiptSent: "Przelew wysłany", receiptReceived: "Przelew otrzymany", receiptAmount: "Kwota", receiptTo: "Odbiorca", receiptFrom: "Nadawca", receiptDate: "Data", receiptStatus: "Status", receiptStatusDone: "Zrealizowany", receiptRef: "Referencja", receiptClose: "Zamknij", receiptRecipientAccount: "Konto odbiorcy", receiptSenderAccount: "Konto nadawcy"
   },
   fr: {
-    loginTitle: "Connectez-vous a votre compte", emailPh: "Votre adresse e-mail", pinPh: "Votre code d'acces", loginBtn: "Se connecter", loginErr: "Adresse e-mail ou code PIN incorrect.", greeting: "Bonjour",
-    notifTitleSuccess: "Succes", notifTitleError: "Erreur", notifTitleWarning: "Attention", notifTitleInfo: "Information",
-    notifSubSuccess: "Operation reussie", notifSubError: "Une erreur est survenue", notifSubWarning: "Verification requise", notifSubInfo: "Notification",
+    loginTitle: "Connectez-vous à votre compte", emailPh: "Votre adresse e-mail", pinPh: "Votre code d'accès", loginBtn: "Se connecter", loginErr: "Adresse e-mail ou code PIN incorrect.", greeting: "Bonjour",
+    notifTitleSuccess: "Succès", notifTitleError: "Erreur", notifTitleWarning: "Attention", notifTitleInfo: "Information",
+    notifSubSuccess: "Opération réussie", notifSubError: "Une erreur est survenue", notifSubWarning: "Vérification requise", notifSubInfo: "Notification",
     notifOkBtn: "OK", notifConfirmTitle: "Confirmation", notifActionRequired: "Action requise", notifCancelBtn: "Annuler", notifConfirmBtn: "Confirmer",
-    msgInvalidLink: "Lien invalide.", msgAccountSuspended: "Compte suspendu.", msgFillAllFields: "Veuillez remplir tous les champs.", msgEnterCode: "Veuillez saisir le code.", msgCodeIncorrect: "Code incorrect.", msgClientNotInit: "Client non initialise.", msgAccountDeleted: "Compte supprime.",
-    transferSentTitle: "Virement envoye", transferSentMsg: "Virement de <b>{amount}</b> envoye avec succes a <b>{name}</b>.<br>Compte beneficiaire : <b>{iban}</b>",
-    transferFailedTitle: "Virement echoue", transferFailedMsg: "Virement de <b>{amount}</b> a <b>{name}</b> a echoue a <b>{percent}%</b>.<br>Compte : <b>{iban}</b>",
-    transferCancelledTitle: "Virement annule", transferCancelledMsg: "Virement de <b>{amount}</b> a <b>{name}</b> a ete annule.<br>Compte : <b>{iban}</b>",
-    adminTransfersTitle: "Virements effectues", adminCancelBtn: "Annuler", adminCancelConfirmTitle: "Annuler le virement ?", adminCancelConfirmMsg: "Voulez-vous vraiment annuler ce virement ? Le client recevra un email de notification.",
-    transferDetailsTitle: "Details du virement", txTransferCancelled: "Virement annule", txInitialDeposit: "Depot initial",
-    personalAccount: "Personnel", accounts: "Comptes", seeIban: "Voir mon IBAN", virtualCard: "Carte virtuelle", makeTransferShort: "Faire un virement", myIbanTitle: "Mon IBAN", copyBtn: "Copier", copied: "Copie !", balanceLabel: "Solde du compte :", transactionHistory: "Historique des transactions", noTransactions: "Aucun historique.", sendOutgoingTransfer: "Envoyer un virement sortant", transferDetails: "Details du virement", amountToDebit: "MONTANT A DEBITER", labelIban: "IBAN / NUMERO DE COMPTE", labelSwift: "CODE BANQUE (BIC/SWIFT)", labelBank: "NOM DE LA BANQUE", labelBeneficiary: "NOM DU BENEFICIAIRE", labelReason: "MOTIF DU VIREMENT", processingWarning: "Realisation sous 1 a 3 minutes apres verification finale.", nextBtn: "Suivant", transferSummary: "Recapitulatif", transferAmountLabel: "Montant :", ibanLabel: "IBAN/numero", ibanLabelLine2: "de compte :", swiftLabel: "Code banque :", bankLabel: "Banque destinataire :", beneficiaryLabel: "Nom du beneficiaire :", reasonLabel: "Motif :", identityVerification: "Verification d'identite", verificationDesc: "Saisissez le code de securite :", sendBtn: "Envoyer", wellDone: "Bien joue !", processingDesc: "Verification reussie.", amountToReceive: "Montant a recevoir :", processingText: "Virement en cours...", cardWelcome: "Felicitations, votre carte est disponible.", activateCardBtn: "Activer ma carte", blockCardBtn: "Bloquer ma carte", cardTransactions: "Transactions par carte", validUntil: "VALABLE JUSQU'AU :", personalData: "Donnees personnelles", accountOwner: "Titulaire", emailLabel: "E-mail", phoneLabel: "Telephone", countryLabel: "Pays", addressLabel: "Adresse", accountAndTransfer: "Compte et virement", balanceProfile: "Solde", accountType: "Type", accountStatus: "Statut", statusActive: "Actif", supportedTransfer: "Virement supporte", beneficiaryIban: "IBAN du beneficiaire", accountTypeValue: "Professionnel", transferTypeValue: "Classique", profileBanner: "Contactez notre equipe d'assistance.", logoutBtn: "Se deconnecter", modalSuccess: "Virement de {amount} envoye", modalFailure: "Virement de {amount} echoue", modalFailedAt: "Virement {amount} echoue a {percent}%", sendTime: "Heure d'envoi :", closeBtn: "Fermer", navBalance: "Accueil", navCard: "Carte virtuelle", navTransfer: "Paiements", navAccount: "Profil", txTransferSent: "Virement envoye", txTransferReceived: "Virement recu",
-    invalidAmount: "Veuillez saisir un montant valide.", amountExceedsBalance: "Le montant depasse votre solde disponible.", pendingTitle: "Details du virement en attente", cancelTransferBtn: "Annuler le virement", lockText: "Veuillez saisir le code d'activation du virement", codeLabel: "Code d'activation", validateTransferBtn: "Valider le virement", processingPageTitle: "Votre ordre de virement en cours...", processingStatus: "Verification d'identite effectuee avec succes.", processingDescLong: "Veuillez patienter la fin du virement des fonds vers votre banque avant d'actualiser cette page.", processingDetailsTitle: "Details du virement en cours", processingAmountLabel: "Montant du virement :", processingBeneficiaryLabel: "Nom du beneficiaire :", processingIbanLabel: "IBAN / Numero de Compte :", processingBankLabel: "Nom de la Banque :", receiptTitle: "Recu de transaction", receiptSent: "Virement envoye", receiptReceived: "Virement recu", receiptAmount: "Montant", receiptTo: "Beneficiaire", receiptFrom: "Expediteur", receiptDate: "Date", receiptStatus: "Statut", receiptStatusDone: "Effectue", receiptRef: "Reference", receiptClose: "Fermer", receiptRecipientAccount: "Compte beneficiaire", receiptSenderAccount: "Compte emetteur"
+    msgInvalidLink: "Lien invalide.", msgAccountSuspended: "Compte suspendu.", msgFillAllFields: "Veuillez remplir tous les champs.", msgEnterCode: "Veuillez saisir le code.", msgCodeIncorrect: "Code incorrect.", msgClientNotInit: "Client non initialisé.", msgAccountDeleted: "Compte supprimé.",
+    transferSentTitle: "Virement envoyé", transferSentMsg: "Virement de <b>{amount}</b> envoyé avec succès à <b>{name}</b>.<br>Compte bénéficiaire : <b>{iban}</b>",
+    transferFailedTitle: "Virement échoué", transferFailedMsg: "Virement de <b>{amount}</b> à <b>{name}</b> a échoué à <b>{percent}%</b>.<br>Compte : <b>{iban}</b>",
+    transferCancelledTitle: "Virement annulé", transferCancelledMsg: "Virement de <b>{amount}</b> à <b>{name}</b> a été annulé.<br>Compte : <b>{iban}</b>",
+    adminTransfersTitle: "Virements effectués", adminCancelBtn: "Annuler", adminCancelConfirmTitle: "Annuler le virement ?", adminCancelConfirmMsg: "Voulez-vous vraiment annuler ce virement ? Le client recevra un email de notification.",
+    transferDetailsTitle: "Détails du virement", txTransferCancelled: "Virement annulé", txInitialDeposit: "Dépôt initial",
+    personalAccount: "Personnel", accounts: "Comptes", seeIban: "Voir mon IBAN", virtualCard: "Carte virtuelle", makeTransferShort: "Faire un virement", myIbanTitle: "Mon IBAN", copyBtn: "Copier", copied: "Copié !", balanceLabel: "Solde du compte :", transactionHistory: "Historique des transactions", noTransactions: "Aucun historique.", sendOutgoingTransfer: "Envoyer un virement sortant", transferDetails: "Détails du virement",
+    amountToDebit: "Montant à débiter", labelIban: "IBAN / Numéro de compte", labelSwift: "Code banque (BIC/SWIFT)", labelBank: "Nom de la banque", labelBeneficiary: "Nom du bénéficiaire", labelReason: "Motif du virement",
+    processingWarning: "Réalisation sous 1 à 3 minutes après vérification finale.", nextBtn: "Suivant", transferSummary: "Récapitulatif", transferAmountLabel: "Montant :", ibanLabel: "IBAN/Numéro", ibanLabelLine2: "de compte :", swiftLabel: "Code banque :", bankLabel: "Banque destinataire :", beneficiaryLabel: "Nom du bénéficiaire :", reasonLabel: "Motif :", identityVerification: "Vérification d'identité", verificationDesc: "Saisissez le code de sécurité :", sendBtn: "Envoyer", wellDone: "Bien joué !", processingDesc: "Vérification réussie.", amountToReceive: "Montant à recevoir :", processingText: "Virement en cours...", cardWelcome: "Félicitations, votre carte est disponible.", activateCardBtn: "Activer ma carte", blockCardBtn: "Bloquer ma carte", cardTransactions: "Transactions par carte", validUntil: "Valable jusqu'au :", personalData: "Données personnelles", accountOwner: "Titulaire", emailLabel: "E-mail", phoneLabel: "Téléphone", countryLabel: "Pays", addressLabel: "Adresse", accountAndTransfer: "Compte et virement", balanceProfile: "Solde", accountType: "Type", accountStatus: "Statut", statusActive: "Actif", supportedTransfer: "Virement supporté", beneficiaryIban: "IBAN du bénéficiaire", accountTypeValue: "Professionnel", transferTypeValue: "Classique", profileBanner: "Contactez notre équipe d'assistance.", logoutBtn: "Se déconnecter", modalSuccess: "Virement de {amount} envoyé", modalFailure: "Virement de {amount} échoué", modalFailedAt: "Virement {amount} échoué à {percent}%", sendTime: "Heure d'envoi :", closeBtn: "Fermer", navBalance: "Accueil", navCard: "Carte virtuelle", navTransfer: "Paiements", navAccount: "Profil", txTransferSent: "Virement envoyé", txTransferReceived: "Virement reçu",
+    invalidAmount: "Veuillez saisir un montant valide.", amountExceedsBalance: "Le montant dépasse votre solde disponible.", pendingTitle: "Détails du virement en attente", cancelTransferBtn: "Annuler le virement", lockText: "Veuillez saisir le code d'activation du virement", codeLabel: "Code d'activation", validateTransferBtn: "Valider le virement", processingPageTitle: "Votre ordre de virement en cours...", processingStatus: "Vérification d'identité effectuée avec succès.", processingDescLong: "Veuillez patienter la fin du virement des fonds vers votre banque avant d'actualiser cette page.", processingDetailsTitle: "Détails du virement en cours", processingAmountLabel: "Montant du virement :", processingBeneficiaryLabel: "Nom du bénéficiaire :", processingIbanLabel: "IBAN / Numéro de Compte :", processingBankLabel: "Nom de la Banque :",
+    receiptTitle: "Reçu de transaction", receiptSent: "Virement envoyé", receiptReceived: "Virement reçu", receiptAmount: "Montant", receiptTo: "Bénéficiaire", receiptFrom: "Expéditeur", receiptDate: "Date", receiptStatus: "Statut", receiptStatusDone: "Effectué", receiptRef: "Référence", receiptClose: "Fermer", receiptRecipientAccount: "Compte bénéficiaire", receiptSenderAccount: "Compte émetteur"
   },
   es: {
-    loginTitle: "Inicia sesion", emailPh: "Tu correo", pinPh: "Tu codigo", loginBtn: "Iniciar", loginErr: "Correo o PIN incorrecto.", greeting: "Hola",
-    notifTitleSuccess: "Exito", notifTitleError: "Error", notifTitleWarning: "Atencion", notifTitleInfo: "Informacion",
-    notifSubSuccess: "Operacion exitosa", notifSubError: "Se ha producido un error", notifSubWarning: "Verificacion requerida", notifSubInfo: "Notificacion",
-    notifOkBtn: "OK", notifConfirmTitle: "Confirmacion", notifActionRequired: "Accion requerida", notifCancelBtn: "Cancelar", notifConfirmBtn: "Confirmar",
-    msgInvalidLink: "Enlace invalido.", msgAccountSuspended: "Cuenta suspendida.", msgFillAllFields: "Complete todos los campos.", msgEnterCode: "Introduzca el codigo.", msgCodeIncorrect: "Codigo incorrecto.", msgClientNotInit: "Cliente no inicializado.", msgAccountDeleted: "Cuenta eliminada.",
-    transferSentTitle: "Transferencia enviada", transferSentMsg: "Transferencia de <b>{amount}</b> enviada con exito a <b>{name}</b>.<br>Cuenta: <b>{iban}</b>",
-    transferFailedTitle: "Transferencia fallida", transferFailedMsg: "Transferencia de <b>{amount}</b> a <b>{name}</b> fallo al <b>{percent}%</b>.<br>Cuenta: <b>{iban}</b>",
+    loginTitle: "Inicia sesión", emailPh: "Tu correo", pinPh: "Tu código", loginBtn: "Iniciar", loginErr: "Correo o PIN incorrecto.", greeting: "Hola",
+    notifTitleSuccess: "Éxito", notifTitleError: "Error", notifTitleWarning: "Atención", notifTitleInfo: "Información",
+    notifSubSuccess: "Operación exitosa", notifSubError: "Se ha producido un error", notifSubWarning: "Verificación requerida", notifSubInfo: "Notificación",
+    notifOkBtn: "OK", notifConfirmTitle: "Confirmación", notifActionRequired: "Acción requerida", notifCancelBtn: "Cancelar", notifConfirmBtn: "Confirmar",
+    msgInvalidLink: "Enlace inválido.", msgAccountSuspended: "Cuenta suspendida.", msgFillAllFields: "Complete todos los campos.", msgEnterCode: "Introduzca el código.", msgCodeIncorrect: "Código incorrecto.", msgClientNotInit: "Cliente no inicializado.", msgAccountDeleted: "Cuenta eliminada.",
+    transferSentTitle: "Transferencia enviada", transferSentMsg: "Transferencia de <b>{amount}</b> enviada con éxito a <b>{name}</b>.<br>Cuenta: <b>{iban}</b>",
+    transferFailedTitle: "Transferencia fallida", transferFailedMsg: "Transferencia de <b>{amount}</b> a <b>{name}</b> falló al <b>{percent}%</b>.<br>Cuenta: <b>{iban}</b>",
     transferCancelledTitle: "Transferencia cancelada", transferCancelledMsg: "Transferencia de <b>{amount}</b> a <b>{name}</b> fue cancelada.<br>Cuenta: <b>{iban}</b>",
-    adminTransfersTitle: "Transferencias realizadas", adminCancelBtn: "Cancelar", adminCancelConfirmTitle: "Cancelar la transferencia?", adminCancelConfirmMsg: "Desea cancelar esta transferencia? El cliente recibira una notificacion por correo.",
-    transferDetailsTitle: "Detalles de la transferencia", txTransferCancelled: "Transferencia cancelada", txInitialDeposit: "Deposito inicial",
-    personalAccount: "Personal", accounts: "Cuentas", seeIban: "Ver mi IBAN", virtualCard: "Tarjeta virtual", makeTransferShort: "Hacer transferencia", myIbanTitle: "Mi IBAN", copyBtn: "Copiar", copied: "Copiado!", balanceLabel: "Saldo :", transactionHistory: "Historial", noTransactions: "Sin historial.", sendOutgoingTransfer: "Enviar transferencia", transferDetails: "Detalles", amountToDebit: "IMPORTE A DEBITAR", labelIban: "IBAN / NUMERO DE CUENTA", labelSwift: "CODIGO BANCO (BIC/SWIFT)", labelBank: "NOMBRE DEL BANCO", labelBeneficiary: "NOMBRE DEL BENEFICIARIO", labelReason: "MOTIVO", processingWarning: "Realizacion en 1-3 minutos tras verificacion final.", nextBtn: "Siguiente", transferSummary: "Resumen", transferAmountLabel: "Importe:", ibanLabel: "IBAN", ibanLabelLine2: "de cuenta:", swiftLabel: "BIC:", bankLabel: "Banco:", beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:", identityVerification: "Verificacion", verificationDesc: "Introduzca el codigo:", sendBtn: "Enviar", wellDone: "Bien hecho!", processingDesc: "Verificacion exitosa.", amountToReceive: "Importe:", processingText: "En curso...", cardWelcome: "Tarjeta disponible.", activateCardBtn: "Activar", blockCardBtn: "Bloquear", cardTransactions: "Transacciones", validUntil: "VALIDA HASTA:", personalData: "Datos personales", accountOwner: "Titular", emailLabel: "Correo", phoneLabel: "Telefono", countryLabel: "Pais", addressLabel: "Direccion", accountAndTransfer: "Cuenta y transferencia", balanceProfile: "Saldo", accountType: "Tipo", accountStatus: "Estado", statusActive: "Activo", supportedTransfer: "Soporte", beneficiaryIban: "IBAN del beneficiario", accountTypeValue: "Profesional", transferTypeValue: "Clasico", profileBanner: "Contacte con soporte.", logoutBtn: "Salir", modalSuccess: "Transferencia de {amount} enviada", modalFailure: "Transferencia de {amount} fallida", modalFailedAt: "Transferencia {amount} fallo al {percent}%", sendTime: "Hora:", closeBtn: "Cerrar", navBalance: "Inicio", navCard: "Tarjeta virtual", navTransfer: "Pagos", navAccount: "Perfil", txTransferSent: "Enviada", txTransferReceived: "Recibida",
-    invalidAmount: "Ingrese un importe valido.", amountExceedsBalance: "El importe supera su saldo.", pendingTitle: "Detalles de la transferencia pendiente", cancelTransferBtn: "Cancelar la transferencia", lockText: "Introduzca el codigo de activacion", codeLabel: "Codigo de activacion", validateTransferBtn: "Validar la transferencia", processingPageTitle: "Su orden de transferencia en curso...", processingStatus: "Verificacion de identidad exitosa.", processingDescLong: "Espere el fin de la transferencia de fondos a su banco antes de actualizar esta pagina.", processingDetailsTitle: "Detalles de la transferencia en curso", processingAmountLabel: "Importe de la transferencia :", processingBeneficiaryLabel: "Nombre del beneficiario :", processingIbanLabel: "IBAN / Numero de cuenta :", processingBankLabel: "Nombre del banco :", receiptTitle: "Recibo de transaccion", receiptSent: "Transferencia enviada", receiptReceived: "Transferencia recibida", receiptAmount: "Importe", receiptTo: "Beneficiario", receiptFrom: "Remitente", receiptDate: "Fecha", receiptStatus: "Estado", receiptStatusDone: "Completado", receiptRef: "Referencia", receiptClose: "Cerrar", receiptRecipientAccount: "Cuenta beneficiaria", receiptSenderAccount: "Cuenta emisora"
+    adminTransfersTitle: "Transferencias realizadas", adminCancelBtn: "Cancelar", adminCancelConfirmTitle: "¿Cancelar la transferencia?", adminCancelConfirmMsg: "¿Desea cancelar esta transferencia? El cliente recibirá una notificación por correo.",
+    transferDetailsTitle: "Detalles de la transferencia", txTransferCancelled: "Transferencia cancelada", txInitialDeposit: "Depósito inicial",
+    personalAccount: "Personal", accounts: "Cuentas", seeIban: "Ver mi IBAN", virtualCard: "Tarjeta virtual", makeTransferShort: "Hacer transferencia", myIbanTitle: "Mi IBAN", copyBtn: "Copiar", copied: "¡Copiado!", balanceLabel: "Saldo :", transactionHistory: "Historial", noTransactions: "Sin historial.", sendOutgoingTransfer: "Enviar transferencia", transferDetails: "Detalles",
+    amountToDebit: "Importe a debitar", labelIban: "IBAN / Número de cuenta", labelSwift: "Código banco (BIC/SWIFT)", labelBank: "Nombre del banco", labelBeneficiary: "Nombre del beneficiario", labelReason: "Motivo",
+    processingWarning: "Realización en 1-3 minutos tras verificación final.", nextBtn: "Siguiente", transferSummary: "Resumen", transferAmountLabel: "Importe:", ibanLabel: "IBAN", ibanLabelLine2: "de cuenta:", swiftLabel: "BIC:", bankLabel: "Banco:", beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:", identityVerification: "Verificación", verificationDesc: "Introduzca el código:", sendBtn: "Enviar", wellDone: "¡Bien hecho!", processingDesc: "Verificación exitosa.", amountToReceive: "Importe:", processingText: "En curso...", cardWelcome: "Tarjeta disponible.", activateCardBtn: "Activar", blockCardBtn: "Bloquear", cardTransactions: "Transacciones", validUntil: "Válida hasta:", personalData: "Datos personales", accountOwner: "Titular", emailLabel: "Correo", phoneLabel: "Teléfono", countryLabel: "País", addressLabel: "Dirección", accountAndTransfer: "Cuenta y transferencia", balanceProfile: "Saldo", accountType: "Tipo", accountStatus: "Estado", statusActive: "Activo", supportedTransfer: "Soporte", beneficiaryIban: "IBAN del beneficiario", accountTypeValue: "Profesional", transferTypeValue: "Clásico", profileBanner: "Contacte con soporte.", logoutBtn: "Salir", modalSuccess: "Transferencia de {amount} enviada", modalFailure: "Transferencia de {amount} fallida", modalFailedAt: "Transferencia {amount} falló al {percent}%", sendTime: "Hora:", closeBtn: "Cerrar", navBalance: "Inicio", navCard: "Tarjeta virtual", navTransfer: "Pagos", navAccount: "Perfil", txTransferSent: "Enviada", txTransferReceived: "Recibida",
+    invalidAmount: "Ingrese un importe válido.", amountExceedsBalance: "El importe supera su saldo.", pendingTitle: "Detalles de la transferencia pendiente", cancelTransferBtn: "Cancelar la transferencia", lockText: "Introduzca el código de activación", codeLabel: "Código de activación", validateTransferBtn: "Validar la transferencia", processingPageTitle: "Su orden de transferencia en curso...", processingStatus: "Verificación de identidad exitosa.", processingDescLong: "Espere el fin de la transferencia de fondos a su banco antes de actualizar esta página.", processingDetailsTitle: "Detalles de la transferencia en curso", processingAmountLabel: "Importe de la transferencia :", processingBeneficiaryLabel: "Nombre del beneficiario :", processingIbanLabel: "IBAN / Número de cuenta :", processingBankLabel: "Nombre del banco :",
+    receiptTitle: "Recibo de transacción", receiptSent: "Transferencia enviada", receiptReceived: "Transferencia recibida", receiptAmount: "Importe", receiptTo: "Beneficiario", receiptFrom: "Remitente", receiptDate: "Fecha", receiptStatus: "Estado", receiptStatusDone: "Completado", receiptRef: "Referencia", receiptClose: "Cerrar", receiptRecipientAccount: "Cuenta beneficiaria", receiptSenderAccount: "Cuenta emisora"
   },
   it: {
     loginTitle: "Accedi", emailPh: "Email", pinPh: "Codice", loginBtn: "Accedi", loginErr: "Email o PIN errato.", greeting: "Ciao",
     notifTitleSuccess: "Successo", notifTitleError: "Errore", notifTitleWarning: "Attenzione", notifTitleInfo: "Informazione",
-    notifSubSuccess: "Operazione riuscita", notifSubError: "Si e verificato un errore", notifSubWarning: "Verifica richiesta", notifSubInfo: "Notifica",
+    notifSubSuccess: "Operazione riuscita", notifSubError: "Si è verificato un errore", notifSubWarning: "Verifica richiesta", notifSubInfo: "Notifica",
     notifOkBtn: "OK", notifConfirmTitle: "Conferma", notifActionRequired: "Azione richiesta", notifCancelBtn: "Annulla", notifConfirmBtn: "Conferma",
     msgInvalidLink: "Link non valido.", msgAccountSuspended: "Conto sospeso.", msgFillAllFields: "Compila tutti i campi.", msgEnterCode: "Inserisci il codice.", msgCodeIncorrect: "Codice errato.", msgClientNotInit: "Cliente non inizializzato.", msgAccountDeleted: "Conto eliminato.",
     transferSentTitle: "Bonifico inviato", transferSentMsg: "Bonifico di <b>{amount}</b> inviato con successo a <b>{name}</b>.<br>Conto beneficiario: <b>{iban}</b>",
     transferFailedTitle: "Bonifico fallito", transferFailedMsg: "Bonifico di <b>{amount}</b> a <b>{name}</b> fallito al <b>{percent}%</b>.<br>Conto: <b>{iban}</b>",
-    transferCancelledTitle: "Bonifico annullato", transferCancelledMsg: "Bonifico di <b>{amount}</b> a <b>{name}</b> e stato annullato.<br>Conto: <b>{iban}</b>",
-    adminTransfersTitle: "Bonifici effettuati", adminCancelBtn: "Annulla", adminCancelConfirmTitle: "Annullare il bonifico?", adminCancelConfirmMsg: "Vuoi davvero annullare questo bonifico? Il cliente ricevera un'email di notifica.",
+    transferCancelledTitle: "Bonifico annullato", transferCancelledMsg: "Bonifico di <b>{amount}</b> a <b>{name}</b> è stato annullato.<br>Conto: <b>{iban}</b>",
+    adminTransfersTitle: "Bonifici effettuati", adminCancelBtn: "Annulla", adminCancelConfirmTitle: "Annullare il bonifico?", adminCancelConfirmMsg: "Vuoi davvero annullare questo bonifico? Il cliente riceverà un'email di notifica.",
     transferDetailsTitle: "Dettagli del bonifico", txTransferCancelled: "Bonifico annullato", txInitialDeposit: "Deposito iniziale",
-    personalAccount: "Personale", accounts: "Conti", seeIban: "Vedi il mio IBAN", virtualCard: "Carta virtuale", makeTransferShort: "Fai un bonifico", myIbanTitle: "Il mio IBAN", copyBtn: "Copia", copied: "Copiato!", balanceLabel: "Saldo :", transactionHistory: "Cronologia", noTransactions: "Nessuna cronologia.", sendOutgoingTransfer: "Invia bonifico", transferDetails: "Dettagli", amountToDebit: "IMPORTO DA ADDEBITARE", labelIban: "IBAN / NUMERO DI CONTO", labelSwift: "CODICE BANCA (BIC/SWIFT)", labelBank: "NOME DELLA BANCA", labelBeneficiary: "NOME DEL BENEFICIARIO", labelReason: "MOTIVO", processingWarning: "Esecuzione entro 1-3 minuti dopo verifica finale.", nextBtn: "Avanti", transferSummary: "Riepilogo", transferAmountLabel: "Importo:", ibanLabel: "IBAN", ibanLabelLine2: "conto:", swiftLabel: "BIC:", bankLabel: "Banca:", beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:", identityVerification: "Verifica", verificationDesc: "Inserisci il codice:", sendBtn: "Invia", wellDone: "Ben fatto!", processingDesc: "Verifica riuscita.", amountToReceive: "Importo:", processingText: "In corso...", cardWelcome: "Carta disponibile.", activateCardBtn: "Attiva", blockCardBtn: "Blocca", cardTransactions: "Transazioni", validUntil: "VALIDA FINO AL:", personalData: "Dati personali", accountOwner: "Titolare", emailLabel: "Email", phoneLabel: "Telefono", countryLabel: "Paese", addressLabel: "Indirizzo", accountAndTransfer: "Conto e bonifico", balanceProfile: "Saldo", accountType: "Tipo", accountStatus: "Stato", statusActive: "Attivo", supportedTransfer: "Supporto", beneficiaryIban: "IBAN del beneficiario", accountTypeValue: "Professionale", transferTypeValue: "Classico", profileBanner: "Contatta il supporto.", logoutBtn: "Esci", modalSuccess: "Bonifico di {amount} inviato", modalFailure: "Bonifico di {amount} fallito", modalFailedAt: "Bonifico {amount} fallito al {percent}%", sendTime: "Ora:", closeBtn: "Chiudi", navBalance: "Home", navCard: "Carta virtuale", navTransfer: "Pagamenti", navAccount: "Profilo", txTransferSent: "Inviato", txTransferReceived: "Ricevuto",
-    invalidAmount: "Inserisci un importo valido.", amountExceedsBalance: "L'importo supera il saldo.", pendingTitle: "Dettagli del bonifico in sospeso", cancelTransferBtn: "Annulla il bonifico", lockText: "Inserisci il codice di attivazione", codeLabel: "Codice di attivazione", validateTransferBtn: "Convalida il bonifico", processingPageTitle: "Il tuo ordine di bonifico in corso...", processingStatus: "Verifica dell'identita completata con successo.", processingDescLong: "Attendere la fine del trasferimento dei fondi alla tua banca prima di aggiornare questa pagina.", processingDetailsTitle: "Dettagli del bonifico in corso", processingAmountLabel: "Importo del bonifico :", processingBeneficiaryLabel: "Nome del beneficiario :", processingIbanLabel: "IBAN / Numero di conto :", processingBankLabel: "Nome della banca :", receiptTitle: "Ricevuta transazione", receiptSent: "Bonifico inviato", receiptReceived: "Bonifico ricevuto", receiptAmount: "Importo", receiptTo: "Beneficiario", receiptFrom: "Mittente", receiptDate: "Data", receiptStatus: "Stato", receiptStatusDone: "Completato", receiptRef: "Riferimento", receiptClose: "Chiudi", receiptRecipientAccount: "Conto beneficiario", receiptSenderAccount: "Conto mittente"
+    personalAccount: "Personale", accounts: "Conti", seeIban: "Vedi il mio IBAN", virtualCard: "Carta virtuale", makeTransferShort: "Fai un bonifico", myIbanTitle: "Il mio IBAN", copyBtn: "Copia", copied: "Copiato!", balanceLabel: "Saldo :", transactionHistory: "Cronologia", noTransactions: "Nessuna cronologia.", sendOutgoingTransfer: "Invia bonifico", transferDetails: "Dettagli",
+    amountToDebit: "Importo da addebitare", labelIban: "IBAN / Numero di conto", labelSwift: "Codice banca (BIC/SWIFT)", labelBank: "Nome della banca", labelBeneficiary: "Nome del beneficiario", labelReason: "Motivo",
+    processingWarning: "Esecuzione entro 1-3 minuti dopo verifica finale.", nextBtn: "Avanti", transferSummary: "Riepilogo", transferAmountLabel: "Importo:", ibanLabel: "IBAN", ibanLabelLine2: "conto:", swiftLabel: "BIC:", bankLabel: "Banca:", beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:", identityVerification: "Verifica", verificationDesc: "Inserisci il codice:", sendBtn: "Invia", wellDone: "Ben fatto!", processingDesc: "Verifica riuscita.", amountToReceive: "Importo:", processingText: "In corso...", cardWelcome: "Carta disponibile.", activateCardBtn: "Attiva", blockCardBtn: "Blocca", cardTransactions: "Transazioni", validUntil: "Valida fino al:", personalData: "Dati personali", accountOwner: "Titolare", emailLabel: "Email", phoneLabel: "Telefono", countryLabel: "Paese", addressLabel: "Indirizzo", accountAndTransfer: "Conto e bonifico", balanceProfile: "Saldo", accountType: "Tipo", accountStatus: "Stato", statusActive: "Attivo", supportedTransfer: "Supporto", beneficiaryIban: "IBAN del beneficiario", accountTypeValue: "Professionale", transferTypeValue: "Classico", profileBanner: "Contatta il supporto.", logoutBtn: "Esci", modalSuccess: "Bonifico di {amount} inviato", modalFailure: "Bonifico di {amount} fallito", modalFailedAt: "Bonifico {amount} fallito al {percent}%", sendTime: "Ora:", closeBtn: "Chiudi", navBalance: "Home", navCard: "Carta virtuale", navTransfer: "Pagamenti", navAccount: "Profilo", txTransferSent: "Inviato", txTransferReceived: "Ricevuto",
+    invalidAmount: "Inserisci un importo valido.", amountExceedsBalance: "L'importo supera il saldo.", pendingTitle: "Dettagli del bonifico in sospeso", cancelTransferBtn: "Annulla il bonifico", lockText: "Inserisci il codice di attivazione", codeLabel: "Codice di attivazione", validateTransferBtn: "Convalida il bonifico", processingPageTitle: "Il tuo ordine di bonifico in corso...", processingStatus: "Verifica dell'identità completata con successo.", processingDescLong: "Attendere la fine del trasferimento dei fondi alla tua banca prima di aggiornare questa pagina.", processingDetailsTitle: "Dettagli del bonifico in corso", processingAmountLabel: "Importo del bonifico :", processingBeneficiaryLabel: "Nome del beneficiario :", processingIbanLabel: "IBAN / Numero di conto :", processingBankLabel: "Nome della banca :",
+    receiptTitle: "Ricevuta transazione", receiptSent: "Bonifico inviato", receiptReceived: "Bonifico ricevuto", receiptAmount: "Importo", receiptTo: "Beneficiario", receiptFrom: "Mittente", receiptDate: "Data", receiptStatus: "Stato", receiptStatusDone: "Completato", receiptRef: "Riferimento", receiptClose: "Chiudi", receiptRecipientAccount: "Conto beneficiario", receiptSenderAccount: "Conto mittente"
   },
   de: {
     loginTitle: "Anmelden", emailPh: "E-Mail", pinPh: "Zugangscode", loginBtn: "Anmelden", loginErr: "Falsche E-Mail oder PIN.", greeting: "Hallo",
     notifTitleSuccess: "Erfolg", notifTitleError: "Fehler", notifTitleWarning: "Achtung", notifTitleInfo: "Information",
     notifSubSuccess: "Vorgang erfolgreich", notifSubError: "Ein Fehler ist aufgetreten", notifSubWarning: "Verifizierung erforderlich", notifSubInfo: "Benachrichtigung",
-    notifOkBtn: "OK", notifConfirmTitle: "Bestatigung", notifActionRequired: "Aktion erforderlich", notifCancelBtn: "Abbrechen", notifConfirmBtn: "Bestatigen",
-    msgInvalidLink: "Ungultiger Link.", msgAccountSuspended: "Konto gesperrt.", msgFillAllFields: "Bitte alle Felder ausfullen.", msgEnterCode: "Bitte Code eingeben.", msgCodeIncorrect: "Falscher Code.", msgClientNotInit: "Kunde nicht initialisiert.", msgAccountDeleted: "Konto geloscht.",
-    transferSentTitle: "Uberweisung gesendet", transferSentMsg: "Uberweisung von <b>{amount}</b> erfolgreich an <b>{name}</b>.<br>Empfangerkonto: <b>{iban}</b>",
-    transferFailedTitle: "Uberweisung fehlgeschlagen", transferFailedMsg: "Uberweisung von <b>{amount}</b> an <b>{name}</b> bei <b>{percent}%</b> fehlgeschlagen.<br>Konto: <b>{iban}</b>",
-    transferCancelledTitle: "Uberweisung storniert", transferCancelledMsg: "Uberweisung von <b>{amount}</b> an <b>{name}</b> wurde storniert.<br>Konto: <b>{iban}</b>",
-    adminTransfersTitle: "Ausgefuhrte Uberweisungen", adminCancelBtn: "Stornieren", adminCancelConfirmTitle: "Uberweisung stornieren?", adminCancelConfirmMsg: "Mochten Sie diese Uberweisung wirklich stornieren? Der Kunde erhalt eine E-Mail-Benachrichtigung.",
-    transferDetailsTitle: "Uberweisungsdetails", txTransferCancelled: "Uberweisung storniert", txInitialDeposit: "Ersteinzahlung",
-    personalAccount: "Personlich", accounts: "Konten", seeIban: "Meine IBAN anzeigen", virtualCard: "Virtuelle Karte", makeTransferShort: "Uberweisung", myIbanTitle: "Meine IBAN", copyBtn: "Kopieren", copied: "Kopiert!", balanceLabel: "Kontostand :", transactionHistory: "Verlauf", noTransactions: "Kein Verlauf.", sendOutgoingTransfer: "Uberweisung senden", transferDetails: "Details", amountToDebit: "ZU BELASTENDER BETRAG", labelIban: "IBAN / KONTONUMMER", labelSwift: "BANKCODE (BIC/SWIFT)", labelBank: "NAME DER BANK", labelBeneficiary: "NAME DES BEGUNSTIGTEN", labelReason: "GRUND", processingWarning: "Ausfuhrung in 1-3 Minuten nach finaler Uberprufung.", nextBtn: "Weiter", transferSummary: "Ubersicht", transferAmountLabel: "Betrag:", ibanLabel: "IBAN", ibanLabelLine2: "des Kontos:", swiftLabel: "BIC:", bankLabel: "Empfanger:", beneficiaryLabel: "Begunstigter:", reasonLabel: "Grund:", identityVerification: "Prufung", verificationDesc: "Code eingeben:", sendBtn: "Senden", wellDone: "Gut gemacht!", processingDesc: "Erfolgreich.", amountToReceive: "Betrag:", processingText: "In Bearbeitung...", cardWelcome: "Karte verfugbar.", activateCardBtn: "Aktivieren", blockCardBtn: "Sperren", cardTransactions: "Transaktionen", validUntil: "GULTIG BIS:", personalData: "Personliche Daten", accountOwner: "Kontoinhaber", emailLabel: "E-Mail", phoneLabel: "Telefon", countryLabel: "Land", addressLabel: "Adresse", accountAndTransfer: "Konto und Uberweisung", balanceProfile: "Kontostand", accountType: "Typ", accountStatus: "Status", statusActive: "Aktiv", supportedTransfer: "Support", beneficiaryIban: "IBAN des Begunstigten", accountTypeValue: "Professionell", transferTypeValue: "Klassisch", profileBanner: "Support kontaktieren.", logoutBtn: "Abmelden", modalSuccess: "Uberweisung von {amount} gesendet", modalFailure: "Uberweisung von {amount} fehlgeschlagen", modalFailedAt: "Uberweisung {amount} bei {percent}% fehlgeschlagen", sendTime: "Zeit:", closeBtn: "Schliessen", navBalance: "Start", navCard: "Virtuelle Karte", navTransfer: "Zahlungen", navAccount: "Profil", txTransferSent: "Gesendet", txTransferReceived: "Erhalten",
-    invalidAmount: "Bitte gultigen Betrag eingeben.", amountExceedsBalance: "Der Betrag ubersteigt das Guthaben.", pendingTitle: "Details der ausstehenden Uberweisung", cancelTransferBtn: "Uberweisung stornieren", lockText: "Bitte Aktivierungscode eingeben", codeLabel: "Aktivierungscode", validateTransferBtn: "Uberweisung bestatigen", processingPageTitle: "Ihr Uberweisungsauftrag wird bearbeitet...", processingStatus: "Identitatsprufung erfolgreich abgeschlossen.", processingDescLong: "Bitte warten Sie, bis die Uberweisung an Ihre Bank abgeschlossen ist, bevor Sie diese Seite aktualisieren.", processingDetailsTitle: "Details der laufenden Uberweisung", processingAmountLabel: "Uberweisungsbetrag :", processingBeneficiaryLabel: "Name des Begunstigten :", processingIbanLabel: "IBAN / Kontonummer :", processingBankLabel: "Name der Bank :", receiptTitle: "Transaktionsbeleg", receiptSent: "Uberweisung gesendet", receiptReceived: "Uberweisung erhalten", receiptAmount: "Betrag", receiptTo: "Begunstigter", receiptFrom: "Absender", receiptDate: "Datum", receiptStatus: "Status", receiptStatusDone: "Abgeschlossen", receiptRef: "Referenz", receiptClose: "Schliessen", receiptRecipientAccount: "Empfangerkonto", receiptSenderAccount: "Absenderkonto"
+    notifOkBtn: "OK", notifConfirmTitle: "Bestätigung", notifActionRequired: "Aktion erforderlich", notifCancelBtn: "Abbrechen", notifConfirmBtn: "Bestätigen",
+    msgInvalidLink: "Ungültiger Link.", msgAccountSuspended: "Konto gesperrt.", msgFillAllFields: "Bitte alle Felder ausfüllen.", msgEnterCode: "Bitte Code eingeben.", msgCodeIncorrect: "Falscher Code.", msgClientNotInit: "Kunde nicht initialisiert.", msgAccountDeleted: "Konto gelöscht.",
+    transferSentTitle: "Überweisung gesendet", transferSentMsg: "Überweisung von <b>{amount}</b> erfolgreich an <b>{name}</b>.<br>Empfängerkonto: <b>{iban}</b>",
+    transferFailedTitle: "Überweisung fehlgeschlagen", transferFailedMsg: "Überweisung von <b>{amount}</b> an <b>{name}</b> bei <b>{percent}%</b> fehlgeschlagen.<br>Konto: <b>{iban}</b>",
+    transferCancelledTitle: "Überweisung storniert", transferCancelledMsg: "Überweisung von <b>{amount}</b> an <b>{name}</b> wurde storniert.<br>Konto: <b>{iban}</b>",
+    adminTransfersTitle: "Ausgeführte Überweisungen", adminCancelBtn: "Stornieren", adminCancelConfirmTitle: "Überweisung stornieren?", adminCancelConfirmMsg: "Möchten Sie diese Überweisung wirklich stornieren? Der Kunde erhält eine E-Mail-Benachrichtigung.",
+    transferDetailsTitle: "Überweisungsdetails", txTransferCancelled: "Überweisung storniert", txInitialDeposit: "Ersteinzahlung",
+    personalAccount: "Persönlich", accounts: "Konten", seeIban: "Meine IBAN anzeigen", virtualCard: "Virtuelle Karte", makeTransferShort: "Überweisung", myIbanTitle: "Meine IBAN", copyBtn: "Kopieren", copied: "Kopiert!", balanceLabel: "Kontostand :", transactionHistory: "Verlauf", noTransactions: "Kein Verlauf.", sendOutgoingTransfer: "Überweisung senden", transferDetails: "Details",
+    amountToDebit: "Zu belastender Betrag", labelIban: "IBAN / Kontonummer", labelSwift: "Bankcode (BIC/SWIFT)", labelBank: "Name der Bank", labelBeneficiary: "Name des Begünstigten", labelReason: "Grund",
+    processingWarning: "Ausführung in 1-3 Minuten nach finaler Überprüfung.", nextBtn: "Weiter", transferSummary: "Übersicht", transferAmountLabel: "Betrag:", ibanLabel: "IBAN", ibanLabelLine2: "des Kontos:", swiftLabel: "BIC:", bankLabel: "Empfänger:", beneficiaryLabel: "Begünstigter:", reasonLabel: "Grund:", identityVerification: "Prüfung", verificationDesc: "Code eingeben:", sendBtn: "Senden", wellDone: "Gut gemacht!", processingDesc: "Erfolgreich.", amountToReceive: "Betrag:", processingText: "In Bearbeitung...", cardWelcome: "Karte verfügbar.", activateCardBtn: "Aktivieren", blockCardBtn: "Sperren", cardTransactions: "Transaktionen", validUntil: "Gültig bis:", personalData: "Persönliche Daten", accountOwner: "Kontoinhaber", emailLabel: "E-Mail", phoneLabel: "Telefon", countryLabel: "Land", addressLabel: "Adresse", accountAndTransfer: "Konto und Überweisung", balanceProfile: "Kontostand", accountType: "Typ", accountStatus: "Status", statusActive: "Aktiv", supportedTransfer: "Support", beneficiaryIban: "IBAN des Begünstigten", accountTypeValue: "Professionell", transferTypeValue: "Klassisch", profileBanner: "Support kontaktieren.", logoutBtn: "Abmelden", modalSuccess: "Überweisung von {amount} gesendet", modalFailure: "Überweisung von {amount} fehlgeschlagen", modalFailedAt: "Überweisung {amount} bei {percent}% fehlgeschlagen", sendTime: "Zeit:", closeBtn: "Schließen", navBalance: "Start", navCard: "Virtuelle Karte", navTransfer: "Zahlungen", navAccount: "Profil", txTransferSent: "Gesendet", txTransferReceived: "Erhalten",
+    invalidAmount: "Bitte gültigen Betrag eingeben.", amountExceedsBalance: "Der Betrag übersteigt das Guthaben.", pendingTitle: "Details der ausstehenden Überweisung", cancelTransferBtn: "Überweisung stornieren", lockText: "Bitte Aktivierungscode eingeben", codeLabel: "Aktivierungscode", validateTransferBtn: "Überweisung bestätigen", processingPageTitle: "Ihr Überweisungsauftrag wird bearbeitet...", processingStatus: "Identitätsprüfung erfolgreich abgeschlossen.", processingDescLong: "Bitte warten Sie, bis die Überweisung an Ihre Bank abgeschlossen ist, bevor Sie diese Seite aktualisieren.", processingDetailsTitle: "Details der laufenden Überweisung", processingAmountLabel: "Überweisungsbetrag :", processingBeneficiaryLabel: "Name des Begünstigten :", processingIbanLabel: "IBAN / Kontonummer :", processingBankLabel: "Name der Bank :",
+    receiptTitle: "Transaktionsbeleg", receiptSent: "Überweisung gesendet", receiptReceived: "Überweisung erhalten", receiptAmount: "Betrag", receiptTo: "Begünstigter", receiptFrom: "Absender", receiptDate: "Datum", receiptStatus: "Status", receiptStatusDone: "Abgeschlossen", receiptRef: "Referenz", receiptClose: "Schließen", receiptRecipientAccount: "Empfängerkonto", receiptSenderAccount: "Absenderkonto"
   }
 };
 
 const ibanLabels = {
-  pl: { title: "Dane konta", numberLabel: "NUMER IBAN", ownerLabel: "WLASCICIEL", bicLabel: "BIC / SWIFT", warning: "Ze wzgledow bezpieczenstwa niektore znaki IBAN zostaly zamaskowane." },
-  fr: { title: "Details du compte", numberLabel: "NUMERO IBAN", ownerLabel: "TITULAIRE", bicLabel: "BIC / SWIFT", warning: "Pour des raisons de securite, certains caracteres de l'IBAN ont ete masques." },
-  es: { title: "Detalles de la cuenta", numberLabel: "NUMERO IBAN", ownerLabel: "TITULAR", bicLabel: "BIC / SWIFT", warning: "Por razones de seguridad, algunos caracteres del IBAN han sido enmascarados." },
-  it: { title: "Dettagli del conto", numberLabel: "NUMERO IBAN", ownerLabel: "TITOLARE", bicLabel: "BIC / SWIFT", warning: "Per motivi di sicurezza, alcuni caratteri dell'IBAN sono stati mascherati." },
-  de: { title: "Kontodetails", numberLabel: "IBAN-NUMMER", ownerLabel: "INHABER", bicLabel: "BIC / SWIFT", warning: "Aus Sicherheitsgrunden wurden einige IBAN-Zeichen maskiert." }
+  pl: { title: "Dane konta", numberLabel: "Numer IBAN", ownerLabel: "Właściciel", bicLabel: "BIC / SWIFT", warning: "Ze względów bezpieczeństwa niektóre znaki IBAN zostały zamaskowane." },
+  fr: { title: "Détails du compte", numberLabel: "Numéro IBAN", ownerLabel: "Titulaire", bicLabel: "BIC / SWIFT", warning: "Pour des raisons de sécurité, certains caractères de l'IBAN ont été masqués." },
+  es: { title: "Detalles de la cuenta", numberLabel: "Número IBAN", ownerLabel: "Titular", bicLabel: "BIC / SWIFT", warning: "Por razones de seguridad, algunos caracteres del IBAN han sido enmascarados." },
+  it: { title: "Dettagli del conto", numberLabel: "Numero IBAN", ownerLabel: "Titolare", bicLabel: "BIC / SWIFT", warning: "Per motivi di sicurezza, alcuni caratteri dell'IBAN sono stati mascherati." },
+  de: { title: "Kontodetails", numberLabel: "IBAN-Nummer", ownerLabel: "Inhaber", bicLabel: "BIC / SWIFT", warning: "Aus Sicherheitsgründen wurden einige IBAN-Zeichen maskiert." }
 };
 
 const cardLabels = {
-  pl: { title: "Karta wirtualna", holderLabel: "POSIADACZ", expiryLabel: "WAZNA DO", cvvLabel: "CVV", numberLabel: "NUMER KARTY", typeLabel: "TYP", copyBtn: "Kopiuj numer", showBtn: "Pokaz", hideBtn: "Ukryj", warningMasked: "Ostatnie 4 cyfry sa ukryte przez administratora.", warningCvvMasked: "CVV jest ukryty przez administratora.", warningFull: "Karta w pelni widoczna.", warningAdminMasked: "Ostatnie 4 cyfry i CVV sa ukryte przez administratora." },
-  fr: { title: "Carte virtuelle", holderLabel: "TITULAIRE", expiryLabel: "VALABLE JUSQU'AU", cvvLabel: "CVV", numberLabel: "NUMERO DE CARTE", typeLabel: "TYPE", copyBtn: "Copier le numero", showBtn: "Afficher", hideBtn: "Masquer", warningMasked: "Les 4 derniers chiffres sont masques par l'administrateur.", warningCvvMasked: "Le CVV est masque par l'administrateur.", warningFull: "Carte completement visible.", warningAdminMasked: "Les 4 derniers chiffres et le CVV sont masques par l'administrateur." },
-  es: { title: "Tarjeta virtual", holderLabel: "TITULAR", expiryLabel: "VALIDA HASTA", cvvLabel: "CVV", numberLabel: "NUMERO DE TARJETA", typeLabel: "TIPO", copyBtn: "Copiar numero", showBtn: "Mostrar", hideBtn: "Ocultar", warningMasked: "Los ultimos 4 digitos estan ocultos por el administrador.", warningCvvMasked: "El CVV esta oculto por el administrador.", warningFull: "Tarjeta completamente visible.", warningAdminMasked: "Los ultimos 4 digitos y el CVV estan ocultos por el administrador." },
-  it: { title: "Carta virtuale", holderLabel: "TITOLARE", expiryLabel: "VALIDA FINO AL", cvvLabel: "CVV", numberLabel: "NUMERO CARTA", typeLabel: "TIPO", copyBtn: "Copia numero", showBtn: "Mostra", hideBtn: "Nascondi", warningMasked: "Le ultime 4 cifre sono nascoste dall'amministratore.", warningCvvMasked: "Il CVV e nascosto dall'amministratore.", warningFull: "Carta completamente visibile.", warningAdminMasked: "Le ultime 4 cifre e il CVV sono nascosti dall'amministratore." },
-  de: { title: "Virtuelle Karte", holderLabel: "INHABER", expiryLabel: "GULTIG BIS", cvvLabel: "CVV", numberLabel: "KARTENNUMMER", typeLabel: "TYP", copyBtn: "Nummer kopieren", showBtn: "Anzeigen", hideBtn: "Verbergen", warningMasked: "Die letzten 4 Ziffern sind vom Administrator ausgeblendet.", warningCvvMasked: "CVV ist vom Administrator ausgeblendet.", warningFull: "Karte vollstandig sichtbar.", warningAdminMasked: "Die letzten 4 Ziffern und der CVV sind vom Administrator ausgeblendet." }
+  pl: { title: "Karta wirtualna", holderLabel: "Posiadacz", expiryLabel: "Ważna do", cvvLabel: "CVV", numberLabel: "Numer karty", typeLabel: "Typ", copyBtn: "Kopiuj numer", showBtn: "Pokaż", hideBtn: "Ukryj", warningMasked: "Ostatnie 4 cyfry są ukryte przez administratora.", warningCvvMasked: "CVV jest ukryty przez administratora.", warningFull: "Karta w pełni widoczna.", warningAdminMasked: "Ostatnie 4 cyfry i CVV są ukryte przez administratora." },
+  fr: { title: "Carte virtuelle", holderLabel: "Titulaire", expiryLabel: "Valable jusqu'au", cvvLabel: "CVV", numberLabel: "Numéro de carte", typeLabel: "Type", copyBtn: "Copier le numéro", showBtn: "Afficher", hideBtn: "Masquer", warningMasked: "Les 4 derniers chiffres sont masqués par l'administrateur.", warningCvvMasked: "Le CVV est masqué par l'administrateur.", warningFull: "Carte complètement visible.", warningAdminMasked: "Les 4 derniers chiffres et le CVV sont masqués par l'administrateur." },
+  es: { title: "Tarjeta virtual", holderLabel: "Titular", expiryLabel: "Válida hasta", cvvLabel: "CVV", numberLabel: "Número de tarjeta", typeLabel: "Tipo", copyBtn: "Copiar número", showBtn: "Mostrar", hideBtn: "Ocultar", warningMasked: "Los últimos 4 dígitos están ocultos por el administrador.", warningCvvMasked: "El CVV está oculto por el administrador.", warningFull: "Tarjeta completamente visible.", warningAdminMasked: "Los últimos 4 dígitos y el CVV están ocultos por el administrador." },
+  it: { title: "Carta virtuale", holderLabel: "Titolare", expiryLabel: "Valida fino al", cvvLabel: "CVV", numberLabel: "Numero carta", typeLabel: "Tipo", copyBtn: "Copia numero", showBtn: "Mostra", hideBtn: "Nascondi", warningMasked: "Le ultime 4 cifre sono nascoste dall'amministratore.", warningCvvMasked: "Il CVV è nascosto dall'amministratore.", warningFull: "Carta completamente visibile.", warningAdminMasked: "Le ultime 4 cifre e il CVV sono nascosti dall'amministratore." },
+  de: { title: "Virtuelle Karte", holderLabel: "Inhaber", expiryLabel: "Gültig bis", cvvLabel: "CVV", numberLabel: "Kartennummer", typeLabel: "Typ", copyBtn: "Nummer kopieren", showBtn: "Anzeigen", hideBtn: "Verbergen", warningMasked: "Die letzten 4 Ziffern sind vom Administrator ausgeblendet.", warningCvvMasked: "CVV ist vom Administrator ausgeblendet.", warningFull: "Karte vollständig sichtbar.", warningAdminMasked: "Die letzten 4 Ziffern und der CVV sind vom Administrator ausgeblendet." }
 };
 
 let currentLang = 'fr';
@@ -550,32 +571,23 @@ const splitBalance = (amount, currency) => {
   return { intPart: f.substring(0, c + 1), decPart: f.substring(c + 1) + ' ' + currency };
 };
 
-/* ✅ NOUVEAU : Traduit les sous-titres historiques vers la langue du client (fallback pour anciennes données) */
 function translateSubtitle(subtitle) {
   if (!subtitle) return '';
   const map = {
-    'Depot initial': 'txInitialDeposit',
-    'Virement recu': 'txTransferReceived',
-    'Virement envoye': 'txTransferSent',
-    'Virement annule': 'txTransferCancelled',
-    'Transfert recu': 'txTransferReceived',
-    'Transfert envoye': 'txTransferSent',
-    'Wplata poczatkowa': 'txInitialDeposit',
-    'Przelew otrzymany': 'txTransferReceived',
-    'Przelew wyslany': 'txTransferSent',
+    'Depot initial': 'txInitialDeposit', 'Dépôt initial': 'txInitialDeposit',
+    'Virement recu': 'txTransferReceived', 'Virement reçu': 'txTransferReceived',
+    'Virement envoye': 'txTransferSent', 'Virement envoyé': 'txTransferSent',
+    'Virement annule': 'txTransferCancelled', 'Virement annulé': 'txTransferCancelled',
+    'Transfert recu': 'txTransferReceived', 'Transfert envoye': 'txTransferSent',
+    'Wplata poczatkowa': 'txInitialDeposit', 'Wpłata początkowa': 'txInitialDeposit',
+    'Przelew otrzymany': 'txTransferReceived', 'Przelew wyslany': 'txTransferSent', 'Przelew wysłany': 'txTransferSent',
     'Przelew anulowany': 'txTransferCancelled',
-    'Deposito inicial': 'txInitialDeposit',
-    'Transferencia recibida': 'txTransferReceived',
-    'Transferencia enviada': 'txTransferSent',
-    'Transferencia cancelada': 'txTransferCancelled',
-    'Deposito iniziale': 'txInitialDeposit',
-    'Ricevuto': 'txTransferReceived',
-    'Inviato': 'txTransferSent',
-    'Bonifico annullato': 'txTransferCancelled',
-    'Ersteinzahlung': 'txInitialDeposit',
-    'Erhalten': 'txTransferReceived',
-    'Gesendet': 'txTransferSent',
-    'Uberweisung storniert': 'txTransferCancelled'
+    'Deposito inicial': 'txInitialDeposit', 'Transferencia recibida': 'txTransferReceived',
+    'Transferencia enviada': 'txTransferSent', 'Transferencia cancelada': 'txTransferCancelled',
+    'Deposito iniziale': 'txInitialDeposit', 'Ricevuto': 'txTransferReceived',
+    'Inviato': 'txTransferSent', 'Bonifico annullato': 'txTransferCancelled',
+    'Ersteinzahlung': 'txInitialDeposit', 'Erhalten': 'txTransferReceived',
+    'Gesendet': 'txTransferSent', 'Uberweisung storniert': 'txTransferCancelled'
   };
   const key = map[subtitle];
   if (key) return t(key);
@@ -601,7 +613,6 @@ function renderQuickActions() {
   '</div>';
 }
 
-/* ✅ MODIFIÉ : Utilise `labelKey` pour traduire dynamiquement + fallback translateSubtitle */
 function renderTransactions(txs) {
   currentTransactions = txs || [];
   if (!txs || txs.length === 0) return '<p style="color:#94a3b8;font-size:11px;text-align:center;padding:15px 0;">' + t('noTransactions') + '</p>';
@@ -613,20 +624,16 @@ function renderTransactions(txs) {
     if (isCancelled) {
       ic = 'icon-cancelled';
       is = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
-      amountClass = 'amount-cancelled';
-      amountSign = '+';
+      amountClass = 'amount-cancelled'; amountSign = '+';
     } else if (isIn) {
       ic = 'icon-green';
       is = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>';
-      amountClass = 'amount-pos';
-      amountSign = '+';
+      amountClass = 'amount-pos'; amountSign = '+';
     } else {
       ic = 'icon-red';
       is = '<path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>';
-      amountClass = 'amount-neg';
-      amountSign = '-';
+      amountClass = 'amount-neg'; amountSign = '-';
     }
-    /* ✅ Traduction dynamique du titre (labelKey) + du sous-titre (translateSubtitle) */
     let title;
     if (tx.labelKey) { title = t(tx.labelKey); }
     else { title = isCancelled ? t('txTransferCancelled') : (isIn ? t('txTransferReceived') : t('txTransferSent')); }
@@ -649,12 +656,7 @@ function subscribeToClient(clientId) {
       const cardBody = document.getElementById('card-modal-body-content');
       if (cardBody) {
         virtualCardRevealed = false;
-        const cardNum = fresh.cardNumber || '4987103143003327';
-        const cardHolder = getCardHolderName(fresh);
-        const cardExpiry = fresh.cardExpiry || '12/40';
-        const cardCvv = fresh.cardCvv || '843';
-        const cardType = fresh.cardType || 'Visa Debit';
-        cardBody.innerHTML = renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, fresh.cardMaskLast4 === true, fresh.cardMaskCvv === true, false);
+        cardBody.innerHTML = renderCardBody(fresh.cardNumber || '4987103143003327', getCardHolderName(fresh), fresh.cardExpiry || '12/40', fresh.cardCvv || '843', fresh.cardType || 'Visa Debit', fresh.cardMaskLast4 === true, fresh.cardMaskCvv === true, false);
       }
     }, () => {});
   } catch (e) {}
@@ -662,6 +664,7 @@ function subscribeToClient(clientId) {
 
 export function initClientApp() { initClient(); }
 export function initAdminApp() { initAdmin(); }
+export function initSuperAdminApp() { initSuperAdmin(); }
 
 async function initClient() {
   const clientId = new URLSearchParams(window.location.search).get('id');
@@ -719,8 +722,7 @@ function renderBankingApp(client) {
     '<div class="screens-container">' +
       '<div id="screen-dashboard" class="screen active"><div class="greeting">' + t('greeting') + ', ' + client.firstName + ' ' + client.lastName + '</div><div class="dashboard-hero" id="balance-hero">' + renderBalanceHero(client) + '</div>' + renderQuickActions() + '<div class="section-title">' + t('transactionHistory') + '</div><div class="transaction-list" id="transaction-list">' + renderTransactions(client.transactions) + '</div></div>' +
       '<div id="screen-transfer" class="screen"><div class="page-title-bar"><div class="page-title-icon"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div><span>' + t('sendOutgoingTransfer') + '</span></div><div class="transfer-amount">' + balanceFormatted + '</div><div class="transfer-card"><div class="details-header"><div class="details-icon">i</div><span>' + t('transferDetails') + '</span></div><form id="transfer-form"><div class="form-group"><label class="form-label">' + t('amountToDebit') + '</label><input type="number" class="form-input amount-input" id="input-amount" step="0.01" min="0.01" required></div><div class="form-group"><label class="form-label">' + t('labelIban') + '</label><input type="text" class="form-input" id="input-iban" required></div><div class="form-group"><label class="form-label">' + t('labelSwift') + '</label><input type="text" class="form-input" id="input-swift" required></div><div class="form-group"><label class="form-label">' + t('labelBank') + '</label><input type="text" class="form-input" id="input-bank" required></div><div class="form-group"><label class="form-label">' + t('labelBeneficiary') + '</label><input type="text" class="form-input" id="input-name" required></div><div class="form-group"><label class="form-label">' + t('labelReason') + '</label><input type="text" class="form-input" id="input-title" required></div></form><div class="warning-box"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><div class="warning-text">' + t('processingWarning') + '</div></div></div><button class="submit-btn" onclick="window.submitTransferForm()">' + t('nextBtn') + '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
-      '<div id="screen-verification" class="screen"><div class="verify-card">' +
-        '<div class="verify-header"><div class="verify-header-icon"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg></div><div class="verify-header-title">' + t('pendingTitle') + '</div><div class="verify-header-illustration"><svg viewBox="0 0 60 40"><g><rect x="10" y="6" width="42" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="7" y="9" width="42" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="4" y="12" width="42" height="26" rx="2" fill="#fff" stroke="currentColor" stroke-width="1.8"/><circle cx="25" cy="25" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><text x="25" y="29" font-size="8" font-weight="700" text-anchor="middle" fill="currentColor">$</text><path d="M48 30 L56 30 M53 27 L56 30 L53 33" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></svg></div></div>' +
+      '<div id="screen-verification" class="screen"><div class="verify-card"><div class="verify-header"><div class="verify-header-icon"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg></div><div class="verify-header-title">' + t('pendingTitle') + '</div><div class="verify-header-illustration"><svg viewBox="0 0 60 40"><g><rect x="10" y="6" width="42" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="7" y="9" width="42" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="4" y="12" width="42" height="26" rx="2" fill="#fff" stroke="currentColor" stroke-width="1.8"/><circle cx="25" cy="25" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><text x="25" y="29" font-size="8" font-weight="700" text-anchor="middle" fill="currentColor">$</text><path d="M48 30 L56 30 M53 27 L56 30 L53 33" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></svg></div></div>' +
         '<div class="verify-data-block"><div class="verify-list">' +
           '<div class="verify-row"><div class="verify-row-label">' + t('transferAmountLabel') + '</div><div class="verify-row-value" id="summary-amount">-</div></div>' +
           '<div class="verify-row"><div class="verify-row-label">' + t('beneficiaryLabel') + '</div><div class="verify-row-value" id="summary-name">-</div></div>' +
@@ -729,17 +731,13 @@ function renderBankingApp(client) {
           '<div class="verify-row"><div class="verify-row-label">' + t('bankLabel') + '</div><div class="verify-row-value" id="summary-bank">-</div></div>' +
           '<div class="verify-row"><div class="verify-row-label">' + t('reasonLabel') + '</div><div class="verify-row-value" id="summary-title">-</div></div>' +
         '</div><button type="button" class="verify-cancel-btn" onclick="window.cancelTransfer()">' + t('cancelTransferBtn') + ' <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
-        '<div class="verify-separator"></div>' +
-        '<div class="verify-lock-row"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><span>' + t('lockText') + '</span></div>' +
+        '<div class="verify-separator"></div><div class="verify-lock-row"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><span>' + t('lockText') + '</span></div>' +
         '<label class="verify-code-label">' + t('codeLabel') + '</label><input type="text" class="verify-code-input" id="security-code" placeholder="*******" required>' +
       '</div><button class="submit-btn verify-submit-btn" onclick="window.startProcessing()">' + t('validateTransferBtn') + ' <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
       '<div id="screen-processing" class="screen"><div class="processing-page-title">' + t('processingPageTitle') + '</div><div class="verify-card">' +
         '<div class="processing-status-row"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>' + t('processingStatus') + '</span></div>' +
         '<div class="processing-desc-text">' + t('processingDescLong') + '</div>' +
-        '<div class="processing-circle-wrapper"><div class="processing-circle">' +
-          '<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="9"/><circle cx="60" cy="60" r="50" fill="none" stroke="#f59e0b" stroke-width="9" stroke-dasharray="314.159" stroke-dashoffset="314.159" stroke-linecap="round" transform="rotate(-90 60 60)" id="progress-ring"/></svg>' +
-          '<div class="processing-circle-label" id="progress-text">0%</div>' +
-        '</div></div>' +
+        '<div class="processing-circle-wrapper"><div class="processing-circle"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="9"/><circle cx="60" cy="60" r="50" fill="none" stroke="#f59e0b" stroke-width="9" stroke-dasharray="314.159" stroke-dashoffset="314.159" stroke-linecap="round" transform="rotate(-90 60 60)" id="progress-ring"/></svg><div class="processing-circle-label" id="progress-text">0%</div></div></div>' +
         '<div class="processing-details-header"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg><span>' + t('processingDetailsTitle') + '</span></div>' +
         '<div class="verify-data-block"><div class="verify-list">' +
           '<div class="verify-row"><div class="verify-row-label">' + t('processingAmountLabel') + '</div><div class="verify-row-value" id="processing-amount">-</div></div>' +
@@ -846,7 +844,7 @@ window.openReceipt = function(idx) {
       '<div class="receipt-body"><div class="receipt-amount-block"><div class="receipt-amount-label">' + t('receiptAmount') + '</div><div class="receipt-amount" style="color:' + amountColor + '">' + amountSign + tx.amount + '</div></div>' +
         '<div class="receipt-rows"><div class="receipt-row"><div class="receipt-row-label">' + labelTo + '</div><div class="receipt-row-value">' + (tx.subtitle || '-') + '</div></div>' + accountRow +
           '<div class="receipt-row"><div class="receipt-row-label">' + t('receiptDate') + '</div><div class="receipt-row-value">' + (tx.date || '-') + '</div></div>' +
-          '<div class="receipt-row"><div class="receipt-row-label">' + t('receiptStatus') + '</div><div class="receipt-row-value receipt-status-done" style="color:' + amountColor + '"><svg viewBox="0 0 24 24" style="fill:' + amountColor + '">' + iconCheck + '</svg>' + (isCancelled ? (t('receiptStatusCancelled') || 'Annule') : t('receiptStatusDone')) + '</div></div>' +
+          '<div class="receipt-row"><div class="receipt-row-label">' + t('receiptStatus') + '</div><div class="receipt-row-value receipt-status-done" style="color:' + amountColor + '"><svg viewBox="0 0 24 24" style="fill:' + amountColor + '">' + iconCheck + '</svg>' + (isCancelled ? t('txTransferCancelled') : t('receiptStatusDone')) + '</div></div>' +
           '<div class="receipt-row"><div class="receipt-row-label">' + t('receiptRef') + '</div><div class="receipt-row-value receipt-mono">' + ref + '</div></div>' +
         '</div>' +
       '</div>' +
@@ -909,7 +907,7 @@ window.showVirtualCard = function() {
   ov.innerHTML = '<div style="background:#f8fafc!important;border-radius:14px!important;width:100%!important;max-width:290px!important;max-height:92vh!important;overflow-y:auto!important;box-shadow:0 20px 50px rgba(0,0,0,0.4)!important;display:flex!important;flex-direction:column!important;">' +
     '<div style="background:#fff!important;padding:12px 14px!important;display:flex!important;align-items:center!important;gap:10px!important;position:sticky!important;top:0!important;z-index:3!important;border-bottom:1px solid #eef2f7!important;border-radius:14px 14px 0 0!important;">' +
       '<div style="width:28px!important;height:28px!important;border-radius:9px!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;"><svg viewBox="0 0 24 24" style="width:14px!important;height:14px!important;fill:#fff!important;"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6z"/></svg></div>' +
-      '<div style="flex:1!important;font-size:13.5px!important;font-weight:800!important;color:#0f172a!important;">' + L.title + '</div>' +
+      '<div style="flex:1!important;font-size:13.5px!important;font-weight:700!important;color:#0f172a!important;">' + L.title + '</div>' +
       '<button onclick="document.getElementById(\'card-modal-dynamic\').remove()" style="width:26px!important;height:26px!important;border-radius:50%!important;background:#e2e8f0!important;border:none!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;"><svg viewBox="0 0 24 24" style="width:12px!important;height:12px!important;fill:#475569!important;"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
     '</div>' +
     '<div id="card-modal-body-content" style="padding:12px!important;display:flex!important;flex-direction:column!important;gap:9px!important;background:#f8fafc!important;">' + renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, maskLast4, maskCvv, false) + '</div>' +
@@ -1081,38 +1079,21 @@ window.closeResultModal = async function() {
   const fresh = await FireDB.getClient(currentClient.id);
   if (!fresh) { window.showNotif(t('msgAccountDeleted'), 'error'); window.location.reload(); return; }
   if (fresh.blocked) { window.showNotif(t('msgAccountSuspended'), 'error'); ClientSession.clear(); window.location.reload(); return; }
-
   const amt = pendingTransferAmount || 0;
   const percent = pendingTransferPercent;
   const now = new Date();
   const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-
   const recipientIban = document.getElementById('input-iban').value;
   const recipientBank = document.getElementById('input-bank').value;
   const recipientSwift = document.getElementById('input-swift').value;
   const recipientName = document.getElementById('input-name').value;
   const recipientReason = document.getElementById('input-title').value;
-
-  const newTx = {
-    type: 'out',
-    labelKey: 'txTransferSent',
-    subtitle: recipientName || (fresh.firstName + ' ' + fresh.lastName),
-    amount: formatAmount(amt, currency),
-    date: dateStr,
-    recipientIban: recipientIban,
-    recipientBank: recipientBank,
-    recipientSwift: recipientSwift,
-    recipientReason: recipientReason,
-    status: isSuccess ? 'done' : 'failed',
-    percent: percent
-  };
-
+  const newTx = { type: 'out', labelKey: 'txTransferSent', subtitle: recipientName || (fresh.firstName + ' ' + fresh.lastName), amount: formatAmount(amt, currency), date: dateStr, recipientIban, recipientBank, recipientSwift, recipientReason, status: isSuccess ? 'done' : 'failed', percent };
   if (isSuccess) {
     const newBalance = Math.max(0, (parseFloat(fresh.balance) || 0) - amt);
     const transactions = fresh.transactions || []; transactions.unshift(newTx);
-    await FireDB.updateClient(fresh.id, { balance: newBalance, transactions: transactions });
+    await FireDB.updateClient(fresh.id, { balance: newBalance, transactions });
   }
-
   if (fresh.email) {
     const lang = fresh.language || 'fr';
     const T = emailTexts[lang] || emailTexts.fr;
@@ -1120,28 +1101,23 @@ window.closeResultModal = async function() {
     const receiptHtml = buildReceiptEmail(fresh, newTx, status, lang, percent);
     const subject = isSuccess ? T.receiptSubject : T.receiptFailedSubject;
     const text = isSuccess ? T.receiptSuccessIntro : T.receiptFailedIntro.replace('{percent}', percent);
-    sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject: subject, html: receiptHtml, text: text }).catch(() => {});
+    sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject, html: receiptHtml, text }).catch(() => {});
   }
-
   const form = document.getElementById('transfer-form'); if (form) form.reset();
   const codeInput = document.getElementById('security-code'); if (codeInput) codeInput.value = '';
   pendingTransferAmount = 0;
-
   window.navigateTo('screen-dashboard');
-
   const tplTitle = isSuccess ? t('transferSentTitle') : t('transferFailedTitle');
   const tplMsg = isSuccess ? t('transferSentMsg') : t('transferFailedMsg');
   let msg = tplMsg.replace('{amount}', newTx.amount).replace('{name}', newTx.subtitle).replace('{iban}', newTx.recipientIban || '—');
   if (!isSuccess) msg = msg.replace('{percent}', percent);
-  setTimeout(() => {
-    window.showNotif(msg, isSuccess ? 'success' : 'error', tplTitle);
-  }, 400);
+  setTimeout(() => { window.showNotif(msg, isSuccess ? 'success' : 'error', tplTitle); }, 400);
   pendingTransferPercent = 100;
 };
 
-// =====================================================
-// ADMIN
-// =====================================================
+/* ===================================================== */
+/* ADMIN */
+/* ===================================================== */
 let currentAdmin = null;
 let authUnsubscribe = null;
 
@@ -1149,7 +1125,22 @@ async function initAdmin() {
   const root = document.getElementById('admin-root');
   if (!root) return;
   root.innerHTML = '<div class="view active" style="display:flex;align-items:center;justify-content:center;height:100%;"><div class="spinner"></div></div>';
-  authUnsubscribe = onAuthStateChanged(auth, (user) => { if (user) { currentAdmin = { uid: user.uid, email: user.email }; renderAdminPage(); } else { currentAdmin = null; renderAuthScreen(); } });
+  authUnsubscribe = onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      try {
+        const adminDoc = await getDoc(doc(db, 'admin_users', user.uid));
+        if (!adminDoc.exists() || adminDoc.data().blocked === true) {
+          await signOut(auth);
+          currentAdmin = null;
+          renderAuthScreen();
+          setTimeout(() => { window.showNotif('Votre compte administrateur a ete bloque ou supprime.', 'error', 'Acces refuse'); }, 300);
+          return;
+        }
+      } catch (e) {}
+      currentAdmin = { uid: user.uid, email: user.email };
+      renderAdminPage();
+    } else { currentAdmin = null; renderAuthScreen(); }
+  });
 }
 
 function renderAuthScreen(mode) {
@@ -1186,7 +1177,8 @@ function renderAuthScreen(mode) {
       else {
         const confirmPass = document.getElementById('auth-password-confirm').value;
         if (password !== confirmPass) { errEl.textContent = 'Les mots de passe ne correspondent pas.'; errEl.classList.add('show'); btn.disabled = false; btn.textContent = 'Creer le compte'; return; }
-        await createUserWithEmailAndPassword(auth, email, password);
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        try { await setDoc(doc(db, 'admin_users', cred.user.uid), { email: email, password: password, blocked: false, createdAt: serverTimestamp() }); } catch (e) { console.error('Erreur enregistrement admin:', e); }
       }
     } catch (error) {
       btn.disabled = false; btn.textContent = isLogin ? 'Se connecter' : 'Creer le compte';
@@ -1209,27 +1201,26 @@ async function renderAdminPage() {
   const clients = await FireDB.getMyClients(currentAdmin.uid);
   const list = Object.keys(clients);
   const active = list.filter(id => !clients[id].blocked).length;
-  window._adminClients = clients;
   let clientOptionsHtml = '<option value="">Liste de vos flash compte client(s)</option>';
   const sortedForSelect = list.slice().sort((a, b) => { const na = ((clients[a].lastName || '') + ' ' + (clients[a].firstName || '')).toLowerCase(); const nb = ((clients[b].lastName || '') + ' ' + (clients[b].firstName || '')).toLowerCase(); return na.localeCompare(nb); });
   sortedForSelect.forEach(id => { const c = clients[id]; clientOptionsHtml += '<option value="' + id + '">' + c.firstName + ' ' + c.lastName + ' - ' + c.email + '</option>'; });
 
-  const quickActionsCardHtml = '<div class="quick-actions-card"><div class="qac-title"><svg viewBox="0 0 24 24"><path d="M7.5 5.6L10 7 8.6 4.5 10 2 7.5 3.4 5 2l1.4 2.5L5 7zm12 9.8L17 14l1.4 2.5L17 19l2.5-1.4L22 19l-1.4-2.5L22 14zM22 2l-2.5 1.4L17 2l1.4 2.5L17 7l2.5-1.4L22 7l-1.4-2.5zm-7.63 5.29c-.39-.39-1.02-.39-1.41 0L1.29 18.96c-.39.39-.39 1.02 0 1.41l2.34 2.34c.39.39 1.02.39 1.41 0L16.7 11.05c.39-.39.39-1.02 0-1.41l-2.33-2.35zm-1.03 5.49l-2.12-2.12 2.44-2.44 2.12 2.12-2.44 2.44z"/></svg>Mettre a jour un acces client v2</div><div class="qac-subtitle">Selectionnez un client, une action, puis appliquez la modification. Chaque changement est applique en direct dans l\'application du client.</div>' +
+  const quickActionsCardHtml = '<div class="quick-actions-card"><div class="qac-title"><svg viewBox="0 0 24 24"><path d="M7.5 5.6L10 7 8.6 4.5 10 2 7.5 3.4 5 2l1.4 2.5L5 7zm12 9.8L17 14l1.4 2.5L17 19l2.5-1.4L22 19l-1.4-2.5L22 14zM22 2l-2.5 1.4L17 2l1.4 2.5L17 7l2.5-1.4L22 7l-1.4-2.5zm-7.63 5.29c-.39-.39-1.02-.39-1.41 0L1.29 18.96c-.39.39-.39 1.02 0 1.41l2.34 2.34c.39.39 1.02.39 1.41 0L16.7 11.05c.39-.39.39-1.02 0-1.41l-2.33-2.35zm-1.03 5.49l-2.12-2.12 2.44-2.44 2.12 2.12-2.44 2.44z"/></svg>Mettre a jour un acces client v2</div><div class="qac-subtitle">Selectionnez un client, une action, puis appliquez la modification.</div>' +
     '<div class="admin-group"><label>Selectionner l\'acces client <span class="req">requis</span></label><select id="qa-client-select">' + clientOptionsHtml + '</select></div>' +
     '<div class="admin-group"><label>Liste des action(s) possible(s) <span class="req">requis</span></label><select id="qa-action-select"><option value="">Choisissez une action</option>' +
       '<optgroup label="Compte"><option value="reset">Reinitialiser l\'historique et le solde</option><option value="block">Suspendre le compte</option><option value="unblock">Activer le compte</option></optgroup>' +
       '<optgroup label="Identite du client"><option value="edit-name">Modifier nom et prenom</option><option value="edit-email">Modifier l\'adresse e-mail</option><option value="edit-phone">Modifier le numero de telephone</option><option value="edit-address">Modifier l\'adresse domicile</option><option value="edit-country">Modifier le pays</option><option value="edit-language">Modifier la langue</option></optgroup>' +
       '<optgroup label="Banque et carte"><option value="edit-iban">Modifier IBAN / BIC</option><option value="edit-card">Modifier la carte virtuelle</option><option value="edit-currency">Modifier la devise</option><option value="add-transfer">Ajouter un virement au compte</option></optgroup>' +
       '<optgroup label="Apparence et securite"><option value="edit-theme">Modifier la couleur de l\'interface</option><option value="edit-stop-percent">Modifier l\'arret du pourcentage</option><option value="edit-pin">Modifier le code PIN</option><option value="edit-activation-code">Modifier le code d\'activation</option><option value="edit-message">Modifier le message de fin</option></optgroup></select></div>' +
-    '<div id="qa-reset-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg><span>Reinitialisation</span></div><div class="option-panel-desc">Cette action va effacer tout l\'historique des transactions et remettre le solde a zero. Cette operation est irreversible.</div></div>' +
+    '<div id="qa-reset-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg><span>Reinitialisation</span></div><div class="option-panel-desc">Cette action va effacer tout l\'historique des transactions et remettre le solde a zero.</div></div>' +
     '<div id="qa-transfer-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg><span>Ajouter un virement</span></div><div class="admin-grid"><div class="admin-group"><label>Montant <span class="req">*</span></label><input type="number" id="qa-transfer-amount" step="0.01" placeholder="Ex: 5000"></div><div class="admin-group"><label>Type <span class="req">*</span></label><select id="qa-transfer-type"><option value="in">Entrant (+)</option><option value="out">Sortant (-)</option></select></div><div class="admin-group full-width"><label>Libelle / Source</label><input type="text" id="qa-transfer-label" placeholder="Ex: BNP Paribas"></div></div></div>' +
-    '<div id="qa-iban-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg><span>Modifier IBAN / BIC</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Numero IBAN</label><input type="text" id="qa-iban-value"></div><div class="admin-group full-width"><label>BIC / SWIFT</label><input type="text" id="qa-bic-value"></div></div><div class="option-panel-toggle"><div class="option-panel-toggle-label">AFFICHAGE DES 4 DERNIERS CARACTERES</div><label class="qa-switch"><input type="checkbox" id="qa-iban-masked"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers caracteres dans l\'application</span></label></div></div>' +
-    '<div id="qa-card-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg><span>Modifier la carte virtuelle</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Titulaire de la carte</label><input type="text" id="qa-card-holder" style="font-weight:700;text-transform:uppercase;"></div><div class="admin-group full-width"><label>Numero de carte</label><input type="text" id="qa-card-number" maxlength="19"></div><div class="admin-group"><label>Date d\'expiration</label><input type="text" id="qa-card-expiry" maxlength="5" placeholder="MM/YY"></div><div class="admin-group"><label>CVV</label><input type="text" id="qa-card-cvv" maxlength="4"></div><div class="admin-group full-width"><label>Type de carte</label><input type="text" id="qa-card-type"></div></div><div class="qa-card-holder-note"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span>Le titulaire est affiche par defaut avec le nom et prenom du client. Modifiez-le librement.</span></div><div class="option-panel-toggle"><div class="option-panel-toggle-label">OPTIONS DE MASQUAGE (FORCE LE CLIENT)</div><label class="qa-switch"><input type="checkbox" id="qa-card-mask-last4"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers chiffres (definitif)</span></label><label class="qa-switch" style="margin-top:8px;"><input type="checkbox" id="qa-card-mask-cvv"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer le CVV (definitif)</span></label></div></div>' +
+    '<div id="qa-iban-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg><span>Modifier IBAN / BIC</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Numero IBAN</label><input type="text" id="qa-iban-value"></div><div class="admin-group full-width"><label>BIC / SWIFT</label><input type="text" id="qa-bic-value"></div></div><div class="option-panel-toggle"><div class="option-panel-toggle-label">Affichage des 4 derniers caracteres</div><label class="qa-switch"><input type="checkbox" id="qa-iban-masked"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers caracteres dans l\'application</span></label></div></div>' +
+    '<div id="qa-card-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg><span>Modifier la carte virtuelle</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Titulaire de la carte</label><input type="text" id="qa-card-holder" style="font-weight:700;text-transform:uppercase;"></div><div class="admin-group full-width"><label>Numero de carte</label><input type="text" id="qa-card-number" maxlength="19"></div><div class="admin-group"><label>Date d\'expiration</label><input type="text" id="qa-card-expiry" maxlength="5" placeholder="MM/YY"></div><div class="admin-group"><label>CVV</label><input type="text" id="qa-card-cvv" maxlength="4"></div><div class="admin-group full-width"><label>Type de carte</label><input type="text" id="qa-card-type"></div></div><div class="qa-card-holder-note"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span>Le titulaire est affiche par defaut avec le nom et prenom du client.</span></div><div class="option-panel-toggle"><div class="option-panel-toggle-label">Options de masquage (force le client)</div><label class="qa-switch"><input type="checkbox" id="qa-card-mask-last4"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers chiffres (definitif)</span></label><label class="qa-switch" style="margin-top:8px;"><input type="checkbox" id="qa-card-mask-cvv"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer le CVV (definitif)</span></label></div></div>' +
     '<div id="qa-name-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Nom et prenom du client</span></div><div class="admin-grid"><div class="admin-group"><label>Nom <span class="req">*</span></label><input type="text" id="qa-lastName"></div><div class="admin-group"><label>Prenom <span class="req">*</span></label><input type="text" id="qa-firstName"></div></div></div>' +
     '<div id="qa-email-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>Adresse e-mail du client</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Adresse e-mail <span class="req">*</span></label><input type="email" id="qa-email"></div></div></div>' +
     '<div id="qa-phone-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span>Numero de telephone</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Telephone</label><input type="tel" id="qa-phone"></div></div></div>' +
     '<div id="qa-address-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span>Adresse domicile</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Adresse complete</label><input type="text" id="qa-address"></div></div></div>' +
-    '<div id="qa-country-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg><span>Pays du client</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Pays <span class="req">*</span></label><select id="qa-country"><option value="France">France</option><option value="Pologne">Pologne</option><option value="Espagne">Espagne</option><option value="Italie">Italie</option><option value="Allemagne">Allemagne</option></select></div></div></div>' +
+    '<div id="qa-country-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg><span>Pays du client</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Pays <span class="req">*</span></label><select id="qa-country"><option value="France">France</option><option value="Pologne">Pologne</option><option value="Espagne">Espagne</option><option value="Italie">Italie</option><option value="Allemagne">Allemagne</option></select></div></div></div>' +
     '<div id="qa-language-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/></svg><span>Langue de l\'application</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Langue <span class="req">*</span></label><select id="qa-language"><option value="pl">Polonais</option><option value="fr">Francais</option><option value="es">Espagnol</option><option value="it">Italien</option><option value="de">Allemand</option></select></div></div></div>' +
     '<div id="qa-currency-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg><span>Devise du compte</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Devise <span class="req">*</span></label><select id="qa-currency"><option value="€">EUR (€)</option><option value="$">USD ($)</option><option value="£">GBP (£)</option><option value="zł">PLN (zł)</option></select></div></div></div>' +
     '<div id="qa-theme-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z"/></svg><span>Couleur de l\'interface</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="qa-color-presets"></div><div class="color-picker-row"><input type="color" id="qa-themeColor" value="#1a73e8"><input type="text" id="qa-themeColorHex" value="#1a73e8" readonly></div></div></div></div>' +
@@ -1350,36 +1341,11 @@ window.openClientDetail = async function(id) {
   ov.style.cssText = 'position:fixed!important;inset:0!important;background:rgba(15,23,42,0.75)!important;display:block!important;z-index:2147483647!important;overflow-y:auto!important;padding:20px 12px 40px 12px!important;box-sizing:border-box!important;';
   const row = (label, value, mono) => '<div class="detail-row"><div class="detail-row-label">' + label + '</div><div class="detail-row-value' + (mono ? ' mono' : '') + '">' + (value || '-') + '</div></div>';
   const sectionTitle = (title) => '<div class="detail-section-title">' + title + '</div>';
-
   const txs = (c.transactions || []).filter(t => t.type === 'out' || t.type === 'cancelled');
   let transfersHtml = '';
-  if (txs.length === 0) {
-    transfersHtml = '<div class="admin-transfers-empty">Aucun virement effectue</div>';
-  } else {
-    let itemsHtml = '';
-    txs.forEach((tx) => {
-      const realIdx = (c.transactions || []).indexOf(tx);
-      const isCancelled = tx.type === 'cancelled';
-      const txName = tx.subtitle || '—';
-      const txAmount = tx.amount || '—';
-      const txDate = tx.date || '';
-      const cancelBtn = isCancelled ? '' : '<button class="admin-transfer-cancel-btn" onclick="window.cancelClientTransfer(\'' + id + '\',' + realIdx + ')">Annuler</button>';
-      itemsHtml += '<div class="admin-transfer-item' + (isCancelled ? ' cancelled' : '') + '">'
-        + '<div class="admin-transfer-info">'
-        + '<div class="admin-transfer-name" onclick="window.openTransferDetailModal(\'' + id + '\',' + realIdx + ')">' + txName + '</div>'
-        + '<div class="admin-transfer-meta">' + txDate + (isCancelled ? ' · Annule' : '') + '</div>'
-        + '</div>'
-        + '<div class="admin-transfer-amount">' + txAmount + '</div>'
-        + cancelBtn
-        + '</div>';
-    });
-    transfersHtml = itemsHtml;
-  }
-  const transfersCard = '<div class="admin-transfers-card">'
-    + '<div class="admin-transfers-title"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span>Virements effectues</span></div>'
-    + transfersHtml
-    + '</div>';
-
+  if (txs.length === 0) { transfersHtml = '<div class="admin-transfers-empty">Aucun virement effectue</div>'; }
+  else { let itemsHtml = ''; txs.forEach((tx) => { const realIdx = (c.transactions || []).indexOf(tx); const isCancelled = tx.type === 'cancelled'; const txName = tx.subtitle || '—'; const txAmount = tx.amount || '—'; const txDate = tx.date || ''; const cancelBtn = isCancelled ? '' : '<button class="admin-transfer-cancel-btn" onclick="window.cancelClientTransfer(\'' + id + '\',' + realIdx + ')">Annuler</button>'; itemsHtml += '<div class="admin-transfer-item' + (isCancelled ? ' cancelled' : '') + '"><div class="admin-transfer-info"><div class="admin-transfer-name" onclick="window.openTransferDetailModal(\'' + id + '\',' + realIdx + ')">' + txName + '</div><div class="admin-transfer-meta">' + txDate + (isCancelled ? ' · Annule' : '') + '</div></div><div class="admin-transfer-amount">' + txAmount + '</div>' + cancelBtn + '</div>'; }); transfersHtml = itemsHtml; }
+  const transfersCard = '<div class="admin-transfers-card"><div class="admin-transfers-title"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span>Virements effectues</span></div>' + transfersHtml + '</div>';
   ov.innerHTML = '<div style="background:#fff!important;border-radius:16px!important;width:100%!important;max-width:420px!important;margin:0 auto!important;box-shadow:0 20px 50px rgba(0,0,0,0.4)!important;">' +
     '<div class="detail-header"><div class="detail-avatar">' + ((c.firstName || '').charAt(0) + (c.lastName || '').charAt(0)).toUpperCase() + '</div><div style="flex:1!important;min-width:0!important;"><div class="detail-name">' + c.firstName + ' ' + c.lastName + '</div><div class="detail-email">' + c.email + '</div></div><button class="detail-close" onclick="document.getElementById(\'client-detail-modal\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>' +
     '<div class="detail-body">' +
@@ -1412,56 +1378,38 @@ window.openTransferDetailModal = async function(clientId, txIndex) {
   const T = emailTexts[lang] || emailTexts.fr;
   const isCancelled = tx.type === 'cancelled';
   const isFailed = tx.status === 'failed';
-  const status = isCancelled ? 'cancelled' : (isFailed ? 'failed' : 'done');
   const statusText = isCancelled ? (T.receiptStatusCancelled || 'Annule') : (isFailed ? T.receiptStatusFailed.replace('{percent}', tx.percent || 0) : T.receiptStatusDone);
   const statusClass = isCancelled ? 'cancelled' : (isFailed ? 'failed' : 'done');
   const statusIcon = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
   const ov = document.createElement('div');
   ov.id = 'transfer-detail-modal';
   ov.style.cssText = 'position:fixed!important;inset:0!important;background:rgba(15,23,42,0.8)!important;backdrop-filter:blur(4px)!important;display:flex!important;justify-content:center!important;align-items:center!important;z-index:2147483647!important;padding:20px!important;box-sizing:border-box!important;overflow-y:auto!important;';
-  const rowHtml = (label, value, iconPath, mono) => '<div class="transfer-detail-row">'
-    + '<div class="transfer-detail-row-icon"><svg viewBox="0 0 24 24">' + iconPath + '</svg></div>'
-    + '<div class="transfer-detail-row-content">'
-    + '<div class="transfer-detail-row-label">' + label + '</div>'
-    + '<div class="transfer-detail-row-value' + (mono ? ' mono' : '') + '">' + (value || '-') + '</div>'
-    + '</div></div>';
+  const rowHtml = (label, value, iconPath, mono) => '<div class="transfer-detail-row"><div class="transfer-detail-row-icon"><svg viewBox="0 0 24 24">' + iconPath + '</svg></div><div class="transfer-detail-row-content"><div class="transfer-detail-row-label">' + label + '</div><div class="transfer-detail-row-value' + (mono ? ' mono' : '') + '">' + (value || '-') + '</div></div></div>';
   const iconUser = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>';
   const iconCard = '<path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>';
   const iconBank = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>';
   const iconClock = '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>';
   const iconNote = '<path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/>';
-  ov.innerHTML = '<div class="transfer-detail-modal-new">'
-    + '<div class="transfer-detail-header">'
-      + '<button class="transfer-detail-close" onclick="document.getElementById(\'transfer-detail-modal\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>'
-      + '<div class="transfer-detail-header-top">'
-        + '<div class="transfer-detail-header-avatar"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></div>'
-        + '<div class="transfer-detail-header-info">'
-          + '<div class="transfer-detail-header-label">' + (T.transferDetailsTitle || 'DETAILS DU VIREMENT') + '</div>'
-          + '<div class="transfer-detail-header-name">' + (tx.subtitle || '—') + '</div>'
-        + '</div>'
-      + '</div>'
-      + '<div class="transfer-detail-amount-block">'
-        + '<div class="transfer-detail-amount-label">' + (T.receiptAmount || 'Montant') + '</div>'
-        + '<div class="transfer-detail-amount-value">' + (tx.amount || '—') + '</div>'
-      + '</div>'
-    + '</div>'
-    + '<div class="transfer-detail-body">'
-      + rowHtml((T.receiptBeneficiary || 'Beneficiaire'), tx.subtitle, iconUser)
-      + rowHtml((T.receiptIban || 'IBAN'), formatIban(tx.recipientIban || ''), iconCard, true)
-      + rowHtml((T.receiptBank || 'Banque'), tx.recipientBank, iconBank)
-      + rowHtml((T.receiptSwift || 'SWIFT/BIC'), tx.recipientSwift, iconCard, true)
-      + rowHtml((T.receiptReason || 'Motif'), tx.recipientReason, iconNote)
-      + rowHtml((T.receiptDate || 'Date'), tx.date, iconClock)
-      + '<div class="transfer-detail-row">'
-        + '<div class="transfer-detail-row-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>'
-        + '<div class="transfer-detail-row-content">'
-          + '<div class="transfer-detail-row-label">' + (T.receiptStatus || 'Statut') + '</div>'
-          + '<div><span class="transfer-detail-status-badge ' + statusClass + '"><svg viewBox="0 0 24 24">' + statusIcon + '</svg>' + statusText + '</span></div>'
-        + '</div>'
-      + '</div>'
-    + '</div>'
-    + '<div class="transfer-detail-footer"><button class="transfer-detail-btn-close" onclick="document.getElementById(\'transfer-detail-modal\').remove()">' + (T.closeBtn || 'Fermer') + '</button></div>'
-  + '</div>';
+  ov.innerHTML = '<div class="transfer-detail-modal-new">' +
+    '<div class="transfer-detail-header">' +
+      '<button class="transfer-detail-close" onclick="document.getElementById(\'transfer-detail-modal\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
+      '<div class="transfer-detail-header-top">' +
+        '<div class="transfer-detail-header-avatar"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></div>' +
+        '<div class="transfer-detail-header-info"><div class="transfer-detail-header-label">' + (T.transferDetailsTitle || 'DETAILS DU VIREMENT') + '</div><div class="transfer-detail-header-name">' + (tx.subtitle || '—') + '</div></div>' +
+      '</div>' +
+      '<div class="transfer-detail-amount-block"><div class="transfer-detail-amount-label">' + (T.receiptAmount || 'Montant') + '</div><div class="transfer-detail-amount-value">' + (tx.amount || '—') + '</div></div>' +
+    '</div>' +
+    '<div class="transfer-detail-body">' +
+      rowHtml((T.receiptBeneficiary || 'Beneficiaire'), tx.subtitle, iconUser) +
+      rowHtml((T.receiptIban || 'IBAN'), formatIban(tx.recipientIban || ''), iconCard, true) +
+      rowHtml((T.receiptBank || 'Banque'), tx.recipientBank, iconBank) +
+      rowHtml((T.receiptSwift || 'SWIFT/BIC'), tx.recipientSwift, iconCard, true) +
+      rowHtml((T.receiptReason || 'Motif'), tx.recipientReason, iconNote) +
+      rowHtml((T.receiptDate || 'Date'), tx.date, iconClock) +
+      '<div class="transfer-detail-row"><div class="transfer-detail-row-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div><div class="transfer-detail-row-content"><div class="transfer-detail-row-label">' + (T.receiptStatus || 'Statut') + '</div><div><span class="transfer-detail-status-badge ' + statusClass + '"><svg viewBox="0 0 24 24">' + statusIcon + '</svg>' + statusText + '</span></div></div></div>' +
+    '</div>' +
+    '<div class="transfer-detail-footer"><button class="transfer-detail-btn-close" onclick="document.getElementById(\'transfer-detail-modal\').remove()">' + (T.receiptClose || 'Fermer') + '</button></div>' +
+  '</div>';
   ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
   document.body.appendChild(ov);
 };
@@ -1477,34 +1425,19 @@ window.cancelClientTransfer = function(clientId, txIndex) {
     const currency = c.currency || '€';
     const now = new Date();
     const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-
     const transactions = (c.transactions || []).slice();
     transactions[txIndex] = Object.assign({}, tx, { cancelled: true, cancelledAt: dateStr });
-    const newTx = {
-      type: 'cancelled',
-      labelKey: 'txTransferCancelled',
-      subtitle: tx.subtitle,
-      amount: formatAmount(amountValue, currency),
-      date: dateStr,
-      recipientIban: tx.recipientIban,
-      recipientBank: tx.recipientBank,
-      recipientSwift: tx.recipientSwift,
-      recipientReason: tx.recipientReason,
-      originalDate: tx.date
-    };
+    const newTx = { type: 'cancelled', labelKey: 'txTransferCancelled', subtitle: tx.subtitle, amount: formatAmount(amountValue, currency), date: dateStr, recipientIban: tx.recipientIban, recipientBank: tx.recipientBank, recipientSwift: tx.recipientSwift, recipientReason: tx.recipientReason, originalDate: tx.date };
     transactions.unshift(newTx);
     const newBalance = (parseFloat(c.balance) || 0) + amountValue;
-    await FireDB.updateClient(clientId, { balance: newBalance, transactions: transactions });
-
+    await FireDB.updateClient(clientId, { balance: newBalance, transactions });
     if (c.email) {
       const lang = c.language || 'fr';
       const T = emailTexts[lang] || emailTexts.fr;
       const emailTx = Object.assign({}, newTx, { amount: formatAmount(amountValue, currency) });
       const receiptHtml = buildReceiptEmail(c, emailTx, 'cancelled', lang, 0);
-      const text = T.receiptCancelledIntro;
-      sendEmail({ to: c.email, name: c.firstName + ' ' + c.lastName, subject: T.receiptCancelSubject, html: receiptHtml, text: text }).catch(() => {});
+      sendEmail({ to: c.email, name: c.firstName + ' ' + c.lastName, subject: T.receiptCancelSubject, html: receiptHtml, text: T.receiptCancelledIntro }).catch(() => {});
     }
-
     const oldModal = document.getElementById('client-detail-modal');
     if (oldModal) oldModal.remove();
     window.showNotif('Le virement a ete annule avec succes.', 'purple', 'Virement annule');
@@ -1524,8 +1457,8 @@ window.applyQuickAction = async function() {
   const client = await FireDB.getClient(clientId);
   if (!client) { window.showNotif('Client introuvable.', 'error'); return; }
   if (client.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
-  if (action === 'reset') { window.showConfirm('Voulez-vous vraiment reinitialiser l\'historique et le solde de ce client ? Cette action est irreversible.', async () => { await FireDB.updateClient(clientId, { balance: 0, transactions: [] }); window.showNotif('Le compte a ete reinitialise.', 'success', 'Reinitialisation'); renderAdminPage(); }, 'Reinitialiser le compte', 'warning'); return; }
-  else if (action === 'add-transfer') { const amount = parseFloat(document.getElementById('qa-transfer-amount').value); const type = document.getElementById('qa-transfer-type').value; const label = document.getElementById('qa-transfer-label').value.trim(); if (!amount || amount <= 0) { window.showNotif('Montant invalide.', 'error'); return; } const currency = client.currency || '€'; const now = new Date(); const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); const newTx = { type: type, labelKey: type === 'in' ? 'txTransferReceived' : 'txTransferSent', subtitle: label || '', amount: formatAmount(amount, currency), date: dateStr, senderIban: type === 'in' ? client.iban : undefined }; const transactions = client.transactions || []; transactions.unshift(newTx); let newBalance = parseFloat(client.balance) || 0; if (type === 'in') newBalance += amount; else newBalance = Math.max(0, newBalance - amount); await FireDB.updateClient(clientId, { balance: newBalance, transactions: transactions }); window.showNotif('Le virement a ete ajoute avec succes.', 'success', 'Virement ajoute'); }
+  if (action === 'reset') { window.showConfirm('Voulez-vous vraiment reinitialiser l\'historique et le solde de ce client ?', async () => { await FireDB.updateClient(clientId, { balance: 0, transactions: [] }); window.showNotif('Le compte a ete reinitialise.', 'success', 'Reinitialisation'); renderAdminPage(); }, 'Reinitialiser le compte', 'warning'); return; }
+  else if (action === 'add-transfer') { const amount = parseFloat(document.getElementById('qa-transfer-amount').value); const type = document.getElementById('qa-transfer-type').value; const label = document.getElementById('qa-transfer-label').value.trim(); if (!amount || amount <= 0) { window.showNotif('Montant invalide.', 'error'); return; } const currency = client.currency || '€'; const now = new Date(); const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); const newTx = { type: type, labelKey: type === 'in' ? 'txTransferReceived' : 'txTransferSent', subtitle: label || '', amount: formatAmount(amount, currency), date: dateStr, senderIban: type === 'in' ? client.iban : undefined }; const transactions = client.transactions || []; transactions.unshift(newTx); let newBalance = parseFloat(client.balance) || 0; if (type === 'in') newBalance += amount; else newBalance = Math.max(0, newBalance - amount); await FireDB.updateClient(clientId, { balance: newBalance, transactions }); window.showNotif('Le virement a ete ajoute avec succes.', 'success', 'Virement ajoute'); }
   else if (action === 'edit-iban') { const newIban = document.getElementById('qa-iban-value').value.trim().replace(/\s+/g, ''); const newBic = document.getElementById('qa-bic-value').value.trim().toUpperCase(); const masked = document.getElementById('qa-iban-masked').checked; if (!newIban || !newBic) { window.showNotif('Remplissez tous les champs.', 'warning'); return; } await FireDB.updateClient(clientId, { iban: newIban, bic: newBic, ibanMasked: masked }); window.showNotif('IBAN et BIC mis a jour.', 'success', 'Banque mise a jour'); }
   else if (action === 'edit-card') { const newHolder = document.getElementById('qa-card-holder').value.trim().toUpperCase(); const newNum = document.getElementById('qa-card-number').value.trim().replace(/\s+/g, ''); const newExpiry = document.getElementById('qa-card-expiry').value.trim(); const newCvv = document.getElementById('qa-card-cvv').value.trim(); const newType = document.getElementById('qa-card-type').value.trim() || 'Visa Debit'; const maskLast4 = document.getElementById('qa-card-mask-last4').checked; const maskCvv = document.getElementById('qa-card-mask-cvv').checked; if (!newNum || !newExpiry || !newCvv) { window.showNotif('Remplissez tous les champs.', 'warning'); return; } await FireDB.updateClient(clientId, { cardHolder: newHolder || ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase(), cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv, cardType: newType, cardMaskLast4: maskLast4, cardMaskCvv: maskCvv }); window.showNotif('La carte virtuelle a ete mise a jour.', 'success', 'Carte mise a jour'); }
   else if (action === 'edit-name') { const newLast = document.getElementById('qa-lastName').value.trim(); const newFirst = document.getElementById('qa-firstName').value.trim(); if (!newLast || !newFirst) { window.showNotif('Remplissez le nom et le prenom.', 'warning'); return; } await FireDB.updateClient(clientId, { lastName: newLast, firstName: newFirst }); window.showNotif('Le nom et prenom ont ete mis a jour.', 'success', 'Identite mise a jour'); }
@@ -1548,5 +1481,59 @@ window.applyQuickAction = async function() {
 window.copyToClipboard = (text) => { if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie')).catch(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie')); else { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); window.showNotif('Le lien a ete copie.', 'success', 'Lien copie'); } };
 window.toggleBlock = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } await FireDB.updateClient(id, { blocked: !c.blocked }); if (!c.blocked && ClientSession.getActive() === id) ClientSession.clear(); renderAdminPage(); };
 window.deleteClientConfirm = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } window.showConfirm('Voulez-vous vraiment supprimer le client <strong>' + c.firstName + ' ' + c.lastName + '</strong> ?', async () => { await FireDB.deleteClient(id); window.showNotif('Le client a ete supprime.', 'success', 'Client supprime'); renderAdminPage(); }, 'Supprimer le client', 'error'); };
+
+/* ===================================================== */
+/* SUPER ADMIN - Module                                  */
+/* ===================================================== */
+async function initSuperAdmin() {
+  const root = document.getElementById('super-admin-root');
+  if (!root) return;
+  const isAuth = sessionStorage.getItem('tw_super_admin_auth') === '1';
+  if (isAuth) renderSuperAdminPage();
+  else renderSuperAdminLogin();
+}
+
+function renderSuperAdminLogin() {
+  const root = document.getElementById('super-admin-root');
+  if (!root) return;
+  root.innerHTML = '<div class="sa-login-screen">' +
+    '<div class="sa-login-logo"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11z"/></svg></div>' +
+    '<div class="sa-login-title">Acces Super Admin</div>' +
+    '<div class="sa-login-sub">Zone reservee. Veuillez saisir le mot de passe maitre.</div>' +
+    '<form class="sa-login-form" id="sa-form">' +
+      '<input type="password" class="sa-login-input" id="sa-password" placeholder="Mot de passe super admin" autocomplete="off" required>' +
+      '<button type="submit" class="sa-login-btn"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>Acceder</button>' +
+      '<div class="sa-login-error" id="sa-error">Mot de passe incorrect.</div>' +
+    '</form>' +
+  '</div>';
+  document.getElementById('sa-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const pwd = document.getElementById('sa-password').value;
+    if (pwd === SUPER_ADMIN_PASSWORD) { sessionStorage.setItem('tw_super_admin_auth', '1'); renderSuperAdminPage(); }
+    else { document.getElementById('sa-error').classList.add('show'); document.getElementById('sa-password').value = ''; }
+  });
+}
+
+async function renderSuperAdminPage() {
+  const root = document.getElementById('super-admin-root');
+  if (!root) return;
+  root.innerHTML = '<div class="sa-wrapper"><div class="sa-body"><div style="display:flex;justify-content:center;padding:40px 0;"><div class="spinner"></div></div></div></div>';
+  try {
+    const snap = await getDocs(collection(db, 'admin_users'));
+    const admins = [];
+    snap.forEach(d => admins.push({ uid: d.id, ...d.data() }));
+    admins.sort((a, b) => { const ta = (a.createdAt && a.createdAt.seconds) || 0; const tb = (b.createdAt && b.createdAt.seconds) || 0; return tb - ta; });
+    const total = admins.length;
+    const blockedCount = admins.filter(a => a.blocked === true).length;
+    let cardsHtml = '';
+    if (admins.length === 0) { cardsHtml = '<div class="sa-empty"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm-7 13c0-2.33 4.67-3.5 7-3.5s7 1.17 7 3.5v1H5v-1z"/></svg><p>Aucun administrateur enregistre</p></div>'; }
+    else { admins.forEach((a) => { const isBlocked = a.blocked === true; const initials = (a.email || '?').charAt(0).toUpperCase(); let dateStr = '—'; try { if (a.createdAt && typeof a.createdAt.toDate === 'function') { const d = a.createdAt.toDate(); dateStr = d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); } else if (a.createdAt && a.createdAt.seconds) { const d = new Date(a.createdAt.seconds * 1000); dateStr = d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); } } catch (e) {} const pwd = a.password || '(non enregistre)'; cardsHtml += '<div class="sa-admin-card' + (isBlocked ? ' blocked' : '') + '">' + '<div class="sa-admin-header"><div class="sa-admin-avatar">' + initials + '</div><div class="sa-admin-info"><div class="sa-admin-email">' + (a.email || '—') + '<span class="sa-badge ' + (isBlocked ? 'blocked' : 'active') + '">' + (isBlocked ? 'Bloque' : 'Actif') + '</span></div><div class="sa-admin-meta">Inscrit le ' + dateStr + '</div></div></div>' + '<div class="sa-admin-fields"><div class="sa-field-row"><span class="sa-field-label">Email</span><span class="sa-field-value">' + (a.email || '—') + '</span></div><div class="sa-field-row"><span class="sa-field-label">Mot de passe</span><span class="sa-field-value password">' + pwd + '</span></div><div class="sa-field-row"><span class="sa-field-label">UID</span><span class="sa-field-value">' + a.uid + '</span></div></div>' + '<div class="sa-admin-actions">' + (isBlocked ? '<button class="sa-action-btn unblock" onclick="window.saBlockAdmin(\'' + a.uid + '\', false)"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>DeBloquer</button>' : '<button class="sa-action-btn block" onclick="window.saBlockAdmin(\'' + a.uid + '\', true)"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg>Bloquer</button>') + '<button class="sa-action-btn delete" onclick="window.saDeleteAdmin(\'' + a.uid + '\', \'' + (a.email || '').replace(/\'/g, '') + '\')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>Supprimer</button>' + '</div></div>'; }); }
+    root.innerHTML = '<div class="sa-wrapper">' + '<div class="sa-topbar"><div class="sa-brand"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>Super <span>Admin</span></div><button class="sa-logout-btn" onclick="window.saLogout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>Quitter</button></div>' + '<div class="sa-body">' + '<div class="sa-stats"><div class="sa-stat-card"><div class="sa-stat-val">' + total + '</div><div class="sa-stat-lbl">Admins total</div></div><div class="sa-stat-card blocked"><div class="sa-stat-val">' + blockedCount + '</div><div class="sa-stat-lbl">Bloques</div></div></div>' + '<div class="sa-section-title">Liste des administrateurs</div>' + '<div class="sa-admin-list">' + cardsHtml + '</div>' + '</div>' + '</div>';
+  } catch (e) { console.error('Super admin load error:', e); root.innerHTML = '<div class="sa-wrapper"><div class="sa-body"><div class="sa-empty"><p>Erreur de chargement. Verifiez les permissions Firestore.</p></div></div></div>'; }
+}
+
+window.saLogout = function () { sessionStorage.removeItem('tw_super_admin_auth'); initSuperAdmin(); };
+window.saBlockAdmin = async function (uid, blocked) { try { await updateDoc(doc(db, 'admin_users', uid), { blocked: !!blocked }); renderSuperAdminPage(); } catch (e) { console.error(e); } };
+window.saDeleteAdmin = function (uid, email) { window.showConfirm('Voulez-vous vraiment supprimer l\'administrateur <strong>' + (email || uid) + '</strong> ?<br><br><span style="color:#dc2626;font-weight:700;">Cette action est irreversible.</span>', async () => { try { await deleteDoc(doc(db, 'admin_users', uid)); renderSuperAdminPage(); } catch (e) { console.error(e); } }, 'Supprimer l\'administrateur', 'error'); };
 
 window.addEventListener('error', () => {});
