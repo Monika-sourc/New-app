@@ -9,14 +9,13 @@
 <title>Administration - TransferWire</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=10">
 </head>
 <body>
 
 <!-- CONTENEUR PRINCIPAL ADMIN -->
 <div class="app-container" id="admin-root">
-  <!-- Écran de chargement initial -->
   <div style="display:flex;align-items:center;justify-content:center;height:100%;background:#fff;">
     <div class="spinner"></div>
   </div>
@@ -33,9 +32,7 @@
         </svg>
       </button>
     </div>
-    <div class="edit-modal-body" id="edit-form-body">
-      <!-- Contenu injecté par JavaScript -->
-    </div>
+    <div class="edit-modal-body" id="edit-form-body"></div>
   </div>
 </div>
 
@@ -50,9 +47,7 @@
         </svg>
       </button>
     </div>
-    <div class="edit-modal-body" id="tx-modal-body">
-      <!-- Contenu injecté par JavaScript -->
-    </div>
+    <div class="edit-modal-body" id="tx-modal-body"></div>
   </div>
 </div>
 
@@ -93,12 +88,10 @@
 
 <!-- SCRIPT PRINCIPAL ADMIN -->
 <script type="module">
-  import { initAdminApp } from './script.js';
+  import { initAdminApp } from './script.js?v=10';
   
-  // Initialiser l'application admin
   initAdminApp();
 
-  // Empêcher le zoom sur double-tap (mobile)
   let lastTouchEnd = 0;
   document.addEventListener('touchend', (event) => {
     const now = Date.now();
@@ -108,7 +101,6 @@
     lastTouchEnd = now;
   }, false);
 
-  // Fermer les modals avec la touche Échap
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       document.querySelectorAll('.overlay.active').forEach(overlay => {
@@ -117,7 +109,6 @@
     }
   });
 
-  // Fermer les modals en cliquant à l'extérieur
   document.querySelectorAll('.overlay').forEach(overlay => {
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) {
