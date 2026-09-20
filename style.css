@@ -1,6 +1,6 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
-   v57.7 - FINAL
+   v57.8 - FINAL
    ===================================================== */
 
 :root {
@@ -497,24 +497,24 @@ input, select, textarea { font-family: inherit; }
 
 /* ========== REÇU ========== */
 .receipt-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 2147483647; padding: 16px; box-sizing: border-box; animation: notifFadeIn 0.2s ease-out; }
-.receipt-modal-new { background: #fff; border-radius: 14px; width: 100%; max-width: 210px; max-height: 90vh; overflow-y: auto; box-shadow: 0 15px 40px rgba(15, 23, 42, 0.4); animation: notifPopIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; flex-direction: column; }
-.receipt-header-new { padding: 15px 12px 13px 12px; display: flex; flex-direction: column; align-items: center; gap: 7px; position: relative; color: #fff; flex-shrink: 0; }
-.receipt-close-new { position: absolute; top: 7px; right: 7px; width: 18px; height: 18px; border-radius: 50%; background: rgba(255, 255, 255, 0.22); border: 1px solid rgba(255, 255, 255, 0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.receipt-close-new svg { width: 8px; height: 8px; fill: #fff; }
+.receipt-modal-new { background: #fff; border-radius: 14px; width: 100%; max-width: 300px; max-height: 92vh; overflow-y: auto; box-shadow: 0 15px 40px rgba(15, 23, 42, 0.4); animation: notifPopIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; flex-direction: column; }
+.receipt-header-new { padding: 18px 14px 16px 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; color: #fff; flex-shrink: 0; }
+.receipt-close-new { position: absolute; top: 9px; right: 9px; width: 22px; height: 22px; border-radius: 50%; background: rgba(255, 255, 255, 0.22); border: 1px solid rgba(255, 255, 255, 0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.receipt-close-new svg { width: 10px; height: 10px; fill: #fff; }
 .receipt-close-new:active { background: rgba(255, 255, 255, 0.35); }
-.receipt-header-circle { width: 26px; height: 26px; border-radius: 50%; background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.4); display: flex; align-items: center; justify-content: center; }
-.receipt-header-circle svg { width: 12px; height: 12px; fill: #fff; }
-.receipt-header-amount { font-size: 15px; font-weight: 800; letter-spacing: -0.4px; color: #fff; text-align: center; line-height: 1.1; white-space: normal; word-break: break-word; }
-.receipt-header-status { background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.35); color: #fff; padding: 3px 9px; border-radius: 15px; font-size: 7.5px; font-weight: 700; letter-spacing: 0.3px; text-transform: none; white-space: normal; word-break: break-word; text-align: center; }
-.receipt-body-new { padding: 6px 12px 12px 12px; display: flex; flex-direction: column; }
-.receipt-line { display: flex; align-items: flex-start; gap: 7px; padding: 7px 0; border-bottom: 1px solid #f1f5f9; }
+.receipt-header-circle { width: 34px; height: 34px; border-radius: 50%; background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.4); display: flex; align-items: center; justify-content: center; }
+.receipt-header-circle svg { width: 16px; height: 16px; fill: #fff; }
+.receipt-header-amount { font-size: 20px; font-weight: 800; letter-spacing: -0.4px; color: #fff; text-align: center; line-height: 1.15; white-space: normal; word-break: break-word; }
+.receipt-header-status { background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.35); color: #fff; padding: 4px 12px; border-radius: 15px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.3px; text-transform: none; white-space: normal; word-break: break-word; text-align: center; }
+.receipt-body-new { padding: 10px 14px 14px 14px; display: flex; flex-direction: column; }
+.receipt-line { display: flex; align-items: flex-start; gap: 9px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
 .receipt-line:last-child { border-bottom: none; }
-.receipt-line-icon { width: 22px; height: 22px; border-radius: 6px; background: #ede9fe; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-.receipt-line-icon svg { width: 11px; height: 11px; fill: #7c3aed; }
-.receipt-line-content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.receipt-line-label { font-size: 8px; font-weight: 700; color: #64748b; text-transform: none; letter-spacing: 0.2px; white-space: normal; word-break: break-word; line-height: 1.3; }
-.receipt-line-value { font-size: 10.5px; font-weight: 700; color: #000000; word-break: break-word; line-height: 1.35; white-space: normal; }
-.receipt-line-status { display: inline-block; align-self: flex-start; font-size: 8.5px; font-weight: 800; padding: 3px 9px; border-radius: 12px; border-width: 1px; border-style: solid; letter-spacing: 0.2px; text-transform: none; white-space: normal; word-break: break-word; line-height: 1.2; }
+.receipt-line-icon { width: 26px; height: 26px; border-radius: 7px; background: #ede9fe; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.receipt-line-icon svg { width: 13px; height: 13px; fill: #7c3aed; }
+.receipt-line-content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.receipt-line-label { font-size: 9.5px; font-weight: 700; color: #64748b; text-transform: none; letter-spacing: 0.2px; white-space: normal; word-break: break-word; line-height: 1.3; }
+.receipt-line-value { font-size: 12.5px; font-weight: 700; color: #000000; word-break: break-word; line-height: 1.4; white-space: normal; }
+.receipt-line-status { display: inline-block; align-self: flex-start; font-size: 10px; font-weight: 800; padding: 4px 11px; border-radius: 12px; border-width: 1.5px; border-style: solid; letter-spacing: 0.2px; text-transform: none; white-space: normal; word-break: break-word; line-height: 1.2; }
 
 .receipt-modal { background: #fff; border-radius: 14px; width: 100%; max-width: 340px; overflow: hidden; box-shadow: 0 25px 60px rgba(15, 23, 42, 0.4); display: flex; flex-direction: column; }
 .receipt-header { padding: 16px 52px 16px 16px; display: flex; align-items: center; gap: 12px; position: relative; color: #fff; }
@@ -762,7 +762,7 @@ input, select, textarea { font-family: inherit; }
 .receipt-row-label svg, .receipt-row-icon { fill: #64748b !important; }
 
 /* ===================================================== */
-/* INTERFACE CLIENT v57.7 (FINALE)                       */
+/* INTERFACE CLIENT v57.8 (FINALE)                       */
 /* ===================================================== */
 
 /* ---------- HEADER BLEU FONCÉ (NOM CENTRÉ) ---------- */
@@ -777,33 +777,10 @@ input, select, textarea { font-family: inherit; }
   overflow: hidden;
   min-height: 48px;
 }
-.header-new::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at right top, rgba(59,130,246,0.35), transparent 60%);
-  pointer-events: none;
-}
-.header-new .hamburger-btn {
-  background: none; border: none; padding: 4px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; position: relative; z-index: 2;
-}
+.header-new::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at right top, rgba(59,130,246,0.35), transparent 60%); pointer-events: none; }
+.header-new .hamburger-btn { background: none; border: none; padding: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; z-index: 2; }
 .header-new .hamburger-btn svg { width: 20px; height: 20px; fill: #fff; }
-
-.header-brand-new {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  z-index: 2;
-  max-width: 62%;
-  pointer-events: none;
-  text-align: center;
-}
+.header-brand-new { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 8px; z-index: 2; max-width: 62%; pointer-events: none; text-align: center; }
 .header-logo-new { width: 26px; height: 26px; flex-shrink: 0; }
 .header-brand-text-new { display: flex; flex-direction: column; align-items: center; min-width: 0; text-align: center; }
 .header-brand-title-new { font-size: 13.5px; font-weight: 800; color: #fff; letter-spacing: 0.6px; line-height: 1.05; font-style: italic; text-align: center; white-space: nowrap; }
@@ -825,7 +802,7 @@ input, select, textarea { font-family: inherit; }
 .account-status-badge-new { display: inline-flex; align-items: center; gap: 5px; background: #dcfce7; color: #166534; padding: 4px 9px; border-radius: 20px; font-size: 9px; font-weight: 700; flex-shrink: 0; white-space: nowrap; }
 .account-status-dot-new { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; flex-shrink: 0; }
 
-/* ---------- CARTE SOLDE ---------- */
+/* ---------- CARTE SOLDE (SUIT LE THÈME ADMIN) ---------- */
 .balance-card-new {
   background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 55%, var(--primary) 100%);
   border-radius: 13px;
@@ -846,16 +823,8 @@ input, select, textarea { font-family: inherit; }
     radial-gradient(ellipse at 5% 95%, rgba(255, 255, 255, 0.12), transparent 60%);
   pointer-events: none;
 }
-.balance-card-chart-new {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  opacity: 0.7;
-  pointer-events: none;
-}
-.balance-card-chart-new path {
-  stroke: rgba(255, 255, 255, 0.75);
-  stroke-width: 2.5;
-}
+.balance-card-chart-new { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.7; pointer-events: none; }
+.balance-card-chart-new path { stroke: rgba(255, 255, 255, 0.75); stroke-width: 2.5; }
 .balance-card-inner-new { position: relative; z-index: 2; display: flex; flex-direction: column; flex: 1; }
 .balance-card-top-new { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; }
 .balance-card-type-icon-new { width: 24px; height: 24px; border-radius: 7px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -895,7 +864,7 @@ input, select, textarea { font-family: inherit; }
 .quick-action-label-new { font-size: 9px; font-weight: 700; color: #0f172a; line-height: 1.15; white-space: normal; word-break: break-word; text-align: center; }
 .quick-action-sublabel-new { display: none !important; visibility: hidden !important; height: 0 !important; margin: 0 !important; padding: 0 !important; }
 
-/* ---------- HISTORIQUE TRANSACTIONS (COULEURS COMPLÈTES) ---------- */
+/* ---------- HISTORIQUE TRANSACTIONS (RECTANGULAIRE) ---------- */
 .transactions-section-new { margin: 0 9px 10px 9px; }
 .tx-section-header-new { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 2px 2px 7px 2px; }
 .tx-section-title-new { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: #0f172a; white-space: normal; word-break: break-word; }
@@ -904,7 +873,7 @@ input, select, textarea { font-family: inherit; }
 .see-all-link-new svg { width: 10px; height: 10px; fill: #2563eb; flex-shrink: 0; }
 .tx-list-new {
   background: #ffffff;
-  border-radius: 16px;
+  border-radius: 6px;
   padding: 0;
   box-shadow: 0 2px 14px rgba(15, 23, 42, 0.06);
   overflow: hidden;
@@ -921,11 +890,7 @@ input, select, textarea { font-family: inherit; }
 }
 .tx-item-new:last-child { border-bottom: none; }
 .tx-item-new:active { background: #f8fafc; }
-.tx-icon-circle-new {
-  width: 44px; height: 44px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; overflow: hidden;
-}
+.tx-icon-circle-new { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
 .tx-icon-circle-new svg { width: 22px; height: 22px; }
 .tx-icon-circle-new.in { background: #dcfce7; }
 .tx-icon-circle-new.in svg { fill: #16a34a; }
@@ -936,23 +901,8 @@ input, select, textarea { font-family: inherit; }
 .tx-icon-circle-new.bank-logo { background: #ffffff; border: 1px solid #e2e8f0; padding: 4px; box-sizing: border-box; }
 .tx-icon-circle-new.bank-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
 .tx-info-new { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.tx-name-new {
-  font-size: 14px;
-  font-weight: 700;
-  color: #0f172a;
-  line-height: 1.25;
-  white-space: normal;
-  word-break: break-word;
-}
-.tx-sub-new {
-  font-size: 12px;
-  font-weight: 500;
-  color: #64748b;
-  line-height: 1.25;
-  white-space: normal;
-  word-break: break-word;
-}
-/* ✅ COULEUR COMPLÈTE DU TEXTE SELON LE TYPE */
+.tx-name-new { font-size: 14px; font-weight: 700; color: #0f172a; line-height: 1.25; white-space: normal; word-break: break-word; }
+.tx-sub-new { font-size: 12px; font-weight: 500; color: #64748b; line-height: 1.25; white-space: normal; word-break: break-word; }
 .tx-item-new:has(.tx-icon-circle-new.in) .tx-name-new,
 .tx-item-new:has(.tx-icon-circle-new.in) .tx-sub-new { color: #16a34a; }
 .tx-item-new:has(.tx-icon-circle-new.out) .tx-name-new,
@@ -962,41 +912,20 @@ input, select, textarea { font-family: inherit; }
 .tx-item-new:has(.tx-icon-circle-new.in) .tx-sub-new,
 .tx-item-new:has(.tx-icon-circle-new.out) .tx-sub-new,
 .tx-item-new:has(.tx-icon-circle-new.cancelled) .tx-sub-new { opacity: 0.85; }
-.tx-amount-box-new {
-  text-align: right; flex-shrink: 0;
-  display: flex; flex-direction: column; align-items: flex-end;
-  gap: 3px; margin-left: 4px;
-}
-.tx-amount-value-new {
-  font-size: 14px;
-  font-weight: 700;
-  white-space: nowrap;
-  line-height: 1.25;
-}
+.tx-amount-box-new { text-align: right; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; margin-left: 4px; }
+.tx-amount-value-new { font-size: 14px; font-weight: 700; white-space: nowrap; line-height: 1.25; }
 .tx-amount-value-new.pos { color: #16a34a; }
 .tx-amount-value-new.neg { color: #dc2626; }
 .tx-amount-value-new.cancelled { color: #8b5cf6; }
-.tx-date-new {
-  font-size: 10.5px;
-  font-weight: 500;
-  color: #94a3b8;
-  white-space: nowrap;
-  line-height: 1.25;
-}
+.tx-date-new { font-size: 10.5px; font-weight: 500; color: #94a3b8; white-space: nowrap; line-height: 1.25; }
 .tx-item-new:has(.tx-icon-circle-new.in) .tx-date-new { color: #16a34a; opacity: 0.7; }
 .tx-item-new:has(.tx-icon-circle-new.out) .tx-date-new { color: #dc2626; opacity: 0.7; }
 .tx-item-new:has(.tx-icon-circle-new.cancelled) .tx-date-new { color: #8b5cf6; opacity: 0.7; }
-.tx-chevron-new {
-  width: 16px;
-  height: 16px;
-  fill: #cbd5e1;
-  flex-shrink: 0;
-  margin-left: 4px;
-}
+.tx-chevron-new { width: 16px; height: 16px; fill: #cbd5e1; flex-shrink: 0; margin-left: 4px; }
 
-/* ---------- BANNIÈRE SÉCURITÉ (FIXE AU-DESSUS DES 4 BOUTONS) ---------- */
+/* ---------- BANNIÈRE SÉCURITÉ FIXÉE EN BAS (JAMAIS NE BOUGE) ---------- */
 .security-banner-new {
-  margin: 0 9px 10px 9px;
+  margin: 0;
   background: linear-gradient(135deg, #0a2540 0%, #1e3a8a 55%, #1e40af 100%);
   border-radius: 13px;
   padding: 10px 11px;
@@ -1022,8 +951,25 @@ input, select, textarea { font-family: inherit; }
 .security-btn-new { background: #fff; color: #1e3a8a; border: none; padding: 5px 10px; border-radius: 18px; font-size: 9px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; font-family: inherit; align-self: flex-start; white-space: nowrap; }
 .security-btn-new svg { width: 9px; height: 9px; fill: #1e3a8a; flex-shrink: 0; }
 
+/* ✅ La bannière sécurité est FIXÉE en bas de #screen-dashboard */
+#screen-dashboard .security-banner-new {
+  position: fixed;
+  left: 9px;
+  right: 9px;
+  bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+  z-index: 50;
+  margin: 0;
+  pointer-events: auto;
+}
+/* ✅ Espace réservé en bas du dashboard pour que le dernier élément ne soit pas caché */
+#screen-dashboard {
+  display: block;
+  min-height: 100%;
+  padding-bottom: 120px;
+}
+
 /* ---------- BOTTOM NAV ---------- */
-.bottom-nav-new { background: var(--bg-gray); padding: 6px 9px 7px 9px; flex-shrink: 0; position: relative; z-index: 10; border-top: none; box-shadow: none; }
+.bottom-nav-new { background: var(--bg-gray); padding: 6px 9px 7px 9px; flex-shrink: 0; position: relative; z-index: 100; border-top: none; box-shadow: none; }
 @supports (padding: env(safe-area-inset-bottom)) { .bottom-nav-new { padding-bottom: calc(7px + env(safe-area-inset-bottom)); } }
 .bottom-nav-inner-new { display: flex; justify-content: space-between; align-items: center; background: #ffffff; border-radius: 17px; padding: 4px; box-shadow: 0 3px 10px rgba(15, 23, 42, 0.12); gap: 2px; }
 .nav-item-new { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 5px 3px; border-radius: 12px; border: none; background: transparent; box-shadow: none; cursor: pointer; flex: 1; min-width: 0; position: relative; transition: background 0.2s ease; font-family: inherit; -webkit-tap-highlight-color: transparent; }
@@ -1034,20 +980,6 @@ input, select, textarea { font-family: inherit; }
 .nav-item-new.active svg { fill: #7c3aed; }
 .nav-item-new.active span { color: #7c3aed; }
 .nav-item-new.active::after { display: none; }
-
-/* ---------- DASHBOARD : BANNIÈRE SÉCURITÉ STICKY EN BAS ---------- */
-#screen-dashboard {
-  display: block;
-  min-height: 100%;
-  padding-bottom: 0;
-}
-#screen-dashboard .security-banner-new {
-  position: sticky;
-  bottom: 8px;
-  z-index: 5;
-  margin-top: 10px;
-  margin-bottom: 8px;
-}
 
 /* ---------- MODAL HISTORIQUE COMPLET ---------- */
 .full-history-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: flex-end; z-index: 2147483647; padding: 0; animation: fadeInOverlay 0.25s ease-out; }
@@ -1073,7 +1005,6 @@ input, select, textarea { font-family: inherit; }
 .balance-card-new { animation: fadeInUp 0.5s ease-out 0.05s both; }
 .quick-actions-row-new { animation: fadeInUp 0.5s ease-out 0.1s both; }
 .transactions-section-new { animation: fadeInUp 0.5s ease-out 0.15s both; }
-.security-banner-new { animation: fadeInUp 0.5s ease-out 0.2s both; }
 .account-status-badge-new { animation: pulseActive 2.4s ease-in-out infinite; }
 .quick-action-icon-new { animation: iconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
 .quick-action-item-new:nth-child(1) .quick-action-icon-new { animation-delay: 0.15s; }
@@ -1093,5 +1024,5 @@ input, select, textarea { font-family: inherit; }
 .security-btn-new:hover, .security-btn-new:active { transform: scale(1.05); }
 
 /* ===================================================== */
-/* FIN - TRANSFERWIRE v57.7 (VERSION FINALE)             */
+/* FIN - TRANSFERWIRE v57.8 (VERSION FINALE)             */
 /* ===================================================== */
