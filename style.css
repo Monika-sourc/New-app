@@ -1,6 +1,6 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
-   v57 - Nouvelle interface dashboard (maquette) + 5 langues
+   v57.1 - Nouvelle interface + corrections demandées
    ===================================================== */
 
 :root {
@@ -805,8 +805,7 @@ input, select, textarea { font-family: inherit; }
 }
 
 /* ===================================================== */
-/* NOUVELLE INTERFACE DASHBOARD - v57                    */
-/* Reproduction exacte de la maquette                    */
+/* v57 - NOUVELLE INTERFACE DASHBOARD (maquette)         */
 /* ===================================================== */
 
 .screen.active { background: #f1f5f9 !important; }
@@ -1004,7 +1003,7 @@ input, select, textarea { font-family: inherit; }
 }
 .balance-card-details-btn-new svg { width: 12px; height: 12px; fill: #fff; flex-shrink: 0; }
 
-/* ---------- QUICK ACTIONS (4) ---------- */
+/* ---------- QUICK ACTIONS (4 → 3 boutons v57.1) ---------- */
 .quick-actions-row-new {
   background: #ffffff;
   margin: 0 12px 14px 12px;
@@ -1180,7 +1179,7 @@ input, select, textarea { font-family: inherit; }
 }
 .security-btn-new svg { width: 11px; height: 11px; fill: #1e3a8a; flex-shrink: 0; }
 
-/* ---------- BOTTOM NAV ---------- */
+/* ---------- BOTTOM NAV v57 ---------- */
 .bottom-nav-new {
   background: #ffffff;
   padding: 8px 6px;
@@ -1219,3 +1218,349 @@ input, select, textarea { font-family: inherit; }
   bottom: -2px; left: 50%; transform: translateX(-50%);
   width: 26px; height: 3px; background: #2563eb; border-radius: 2px;
 }
+
+/* ===================================================== */
+/* v57.1 - CORRECTIONS DEMANDÉES                         */
+/* ===================================================== */
+
+/* ---------- 1. RÉDUCTION DE L'INTERFACE À 50% ---------- */
+.app-container {
+  zoom: 0.5;
+  width: 200%;
+  height: 200vh;
+  max-width: 200%;
+  max-height: 200vh;
+}
+@supports not (zoom: 1) {
+  .app-container {
+    transform: scale(0.5);
+    transform-origin: top left;
+    width: 200vw;
+    height: 200vh;
+  }
+}
+
+/* ---------- 2. SYMBOLE DE DEVISE (zł) NET ET PRÉCIS ---------- */
+.balance-card-type-label-new .curr-symbol {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.2px;
+  margin-left: 1px;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+/* ---------- 3. DÉCIMALES ET DEVISE PLUS PETITES ---------- */
+.balance-card-amount-new {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  flex-wrap: wrap;
+}
+.balance-card-amount-new .int-part {
+  font-size: 33px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.balance-card-amount-new .dec-part {
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.3px;
+  line-height: 1;
+  margin-left: 1px;
+  opacity: 0.98;
+}
+.balance-card-amount-new .cur-part {
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  margin-left: 4px;
+  opacity: 0.95;
+}
+
+/* ---------- 4. SUPPRESSION DU BOUTON "PLUS" (3 boutons) ---------- */
+.quick-actions-row-new {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  padding: 16px 10px;
+}
+.quick-action-item-new:not(:last-child)::after { display: none; }
+.quick-action-icon-new { width: 56px; height: 56px; }
+.quick-action-icon-new svg { width: 26px; height: 26px; }
+
+/* ---------- 5. CARTE HISTORIQUE EXACTE (image 1) ---------- */
+.tx-list-new {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2px 0;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.06);
+  overflow: hidden;
+}
+.tx-item-new {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.tx-item-new:last-child { border-bottom: none; }
+.tx-item-new:active { background: #f8fafc; }
+.tx-icon-circle-new {
+  width: 42px; height: 42px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.tx-icon-circle-new.in { background: #dbeafe; }
+.tx-icon-circle-new.in svg { fill: #2563eb; width: 20px; height: 20px; }
+.tx-icon-circle-new.out { background: #fee2e2; }
+.tx-icon-circle-new.out svg { fill: #dc2626; width: 20px; height: 20px; }
+.tx-icon-circle-new.cancelled { background: #ede9fe; }
+.tx-icon-circle-new.cancelled svg { fill: #8b5cf6; width: 20px; height: 20px; }
+.tx-icon-circle-new svg { width: 20px; height: 20px; }
+.tx-info-new { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.tx-name-new {
+  font-size: 14px; font-weight: 700; color: #0f172a;
+  line-height: 1.25;
+}
+.tx-sub-new {
+  font-size: 12px; font-weight: 500; color: #64748b;
+  line-height: 1.25;
+}
+.tx-amount-box-new {
+  text-align: right; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: flex-end;
+  gap: 4px; margin-left: 4px;
+}
+.tx-amount-value-new {
+  font-size: 14px; font-weight: 800;
+  white-space: nowrap; line-height: 1.25;
+}
+.tx-amount-value-new.pos { color: #16a34a; }
+.tx-amount-value-new.neg { color: #dc2626; }
+.tx-amount-value-new.cancelled { color: #8b5cf6; }
+.tx-date-new { font-size: 10.5px; font-weight: 500; color: #94a3b8; white-space: nowrap; }
+.tx-chevron-new { width: 14px; height: 14px; fill: #94a3b8; flex-shrink: 0; margin-left: 6px; }
+
+/* ---------- 6. BOTTOM NAV AVEC CONTOUR ROND ---------- */
+.bottom-nav-inner-new {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+}
+.nav-item-new {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 6px;
+  border-radius: 16px;
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  cursor: pointer;
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-family: inherit;
+}
+.nav-item-new svg {
+  width: 22px; height: 22px; fill: #94a3b8;
+  flex-shrink: 0;
+  transition: fill 0.2s ease, transform 0.2s ease;
+}
+.nav-item-new span {
+  font-size: 10.5px; font-weight: 700; color: #94a3b8;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 100%; line-height: 1.1;
+  transition: color 0.2s ease;
+}
+.nav-item-new:active { transform: scale(0.96); }
+.nav-item-new.active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.18);
+}
+.nav-item-new.active svg {
+  fill: #2563eb;
+  transform: scale(1.08);
+}
+.nav-item-new.active span { color: #2563eb; }
+.nav-item-new.active::after { display: none; }
+
+/* ---------- 7. MODAL HISTORIQUE COMPLET ---------- */
+.full-history-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 2147483647;
+  padding: 0;
+  animation: fadeInOverlay 0.25s ease-out;
+}
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.full-history-modal {
+  background: #f1f5f9;
+  border-radius: 22px 22px 0 0;
+  width: 100%;
+  max-width: 520px;
+  max-height: 88vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: slideUpModal 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes slideUpModal {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.full-history-header {
+  background: linear-gradient(135deg, #0a2540 0%, #0f2f5c 55%, #1e40af 100%);
+  padding: 18px 18px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.full-history-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.3px;
+  margin: 0;
+}
+.full-history-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.full-history-close svg { width: 14px; height: 14px; fill: #fff; }
+.full-history-body {
+  padding: 14px;
+  overflow-y: auto;
+  flex: 1;
+  -webkit-overflow-scrolling: touch;
+}
+.full-history-body .tx-list-new {
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+.full-history-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+}
+.full-history-empty svg {
+  width: 42px;
+  height: 42px;
+  fill: #cbd5e1;
+  margin-bottom: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ---------- 8. ANIMATIONS GLOBALES ---------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulseActive {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+  }
+}
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+@keyframes iconPop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.greeting-wrap-new { animation: fadeInUp 0.4s ease-out both; }
+.balance-card-new { animation: fadeInUp 0.5s ease-out 0.05s both; }
+.quick-actions-row-new { animation: fadeInUp 0.5s ease-out 0.1s both; }
+.transactions-section-new { animation: fadeInUp 0.5s ease-out 0.15s both; }
+.security-banner-new { animation: fadeInUp 0.5s ease-out 0.2s both; }
+
+.account-status-badge-new {
+  animation: pulseActive 2.4s ease-in-out infinite;
+}
+
+.quick-action-icon-new {
+  animation: iconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.quick-action-item-new:nth-child(1) .quick-action-icon-new { animation-delay: 0.15s; }
+.quick-action-item-new:nth-child(2) .quick-action-icon-new { animation-delay: 0.22s; }
+.quick-action-item-new:nth-child(3) .quick-action-icon-new { animation-delay: 0.29s; }
+.quick-action-item-new:hover .quick-action-icon-new,
+.quick-action-item-new:active .quick-action-icon-new {
+  transform: scale(1.08) translateY(-2px);
+}
+
+.tx-item-new {
+  animation: slideInRight 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.tx-item-new:nth-child(1) { animation-delay: 0.20s; }
+.tx-item-new:nth-child(2) { animation-delay: 0.27s; }
+.tx-item-new:nth-child(3) { animation-delay: 0.34s; }
+.tx-item-new:nth-child(4) { animation-delay: 0.41s; }
+.tx-item-new:nth-child(5) { animation-delay: 0.48s; }
+.tx-item-new:nth-child(6) { animation-delay: 0.55s; }
+
+.balance-card-details-btn-new,
+.security-btn-new {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease;
+}
+.balance-card-details-btn-new:hover,
+.balance-card-details-btn-new:active { transform: scale(1.05); }
+.security-btn-new:hover,
+.security-btn-new:active { transform: scale(1.05); }
+
+.balance-card-chip-new svg {
+  animation: shimmer 3s linear infinite;
+}
+
+/* ===================================================== */
+/* FIN FICHIER - TRANSFERWIRE v57.1                      */
+/* ===================================================== */
