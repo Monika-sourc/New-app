@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v57.8 - Code devise (PLN/EUR/USD/GBP)
+// v57.9 - Corrections demandées
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -427,10 +427,8 @@ const FireDB = {
 const ClientSession = { getActive: () => localStorage.getItem('tw_active_client'), setActive: (id) => localStorage.setItem('tw_active_client', id), clear: () => localStorage.removeItem('tw_active_client') };
 
 const CURRENCY_NAMES = { '€': 'EURO', '$': 'USD', '£': 'GBP', 'zł': 'PLN' };
-// ✅ v57.8 : Nouveau dictionnaire pour les codes devise officiels
 const CURRENCY_CODES = { '€': 'EUR', '$': 'USD', '£': 'GBP', 'zł': 'PLN' };
 function getCurrencyName(symbol) { return CURRENCY_NAMES[symbol] || 'EURO'; }
-// ✅ v57.8 : Fonction utilitaire pour obtenir le code devise (EUR, USD, GBP, PLN)
 function getCurrencyCode(symbol) { return CURRENCY_CODES[symbol] || symbol; }
 
 function generateIban(country) {
@@ -776,8 +774,9 @@ function renderTransactions(txs) {
       iconSvg = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>';
       amountClass = 'pos'; amountSign = '+';
     } else {
+      /* ✅ v57.9 : Icône profil personnel pour les virements envoyés */
       circleClass = 'out';
-      iconSvg = '<path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>';
+      iconSvg = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>';
       amountClass = 'neg'; amountSign = '−';
     }
     let iconHtml;
@@ -912,7 +911,6 @@ function renderBankingApp(client) {
           '<div class="balance-card-inner-new">' +
             '<div class="balance-card-top-new">' +
               '<div class="balance-card-type-icon-new"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg></div>' +
-              /* ✅ v57.8 : Symbole remplacé par le CODE DEVISE (EUR, USD, GBP, PLN) */
               '<div class="balance-card-type-label-new">' + t('personalLabel') + ' · <span class="curr-symbol">' + getCurrencyCode(currency) + '</span> <svg class="chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></div>' +
             '</div>' +
             '<div class="balance-card-chip-new">' +
@@ -926,11 +924,8 @@ function renderBankingApp(client) {
               return '<span class="int-part">' + intPart + '</span><span class="dec-part">' + decPart + '</span><span class="cur-part">' + currency + '</span>';
             })() + '</div>' +
             '<div class="balance-card-sub-new"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>' + t('availableBalance') + '</div>' +
+            /* ✅ v57.9 : Bloc "Compte principal" SUPPRIMÉ — seul le bouton Détails reste */
             '<div class="balance-card-bottom-new">' +
-              '<div class="balance-card-bottom-left-new">' +
-                '<span class="ic-new"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg></span>' +
-                '<span class="balance-card-account-new">' + t('mainAccount') + ' <svg class="chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></span>' +
-              '</div>' +
               '<button class="balance-card-details-btn-new" onclick="window.navigateTo(\'screen-profile\')">' + t('detailsBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button>' +
             '</div>' +
           '</div>' +
