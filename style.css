@@ -1,6 +1,6 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
-   v57.6 - FINAL
+   v57.7 - FINAL
    ===================================================== */
 
 :root {
@@ -338,7 +338,7 @@ input, select, textarea { font-family: inherit; }
 .screen { position: absolute; top: 0; left: 0; width: 100%; min-height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--bg-gray); display: none; flex-direction: column; padding-bottom: 12px; }
 .screen.active { display: flex; background: #f1f5f9; }
 
-/* ========== LEGACY DASHBOARD (compatibilité) ========== */
+/* ========== LEGACY DASHBOARD ========== */
 .greeting { padding: 14px 12px 6px 12px; font-size: 15px; color: #000000; font-weight: 700; white-space: normal; word-break: break-word; }
 .dashboard-hero { background: linear-gradient(160deg, var(--primary) 0%, var(--primary-dark) 100%); margin: 8px 12px 0 12px; border-radius: 16px; padding: 22px 14px 18px 14px; color: #fff; position: relative; overflow: hidden; box-shadow: 0 8px 24px rgba(26, 115, 232, 0.3); text-align: center; }
 .dashboard-hero::before, .dashboard-hero::after { display: none; }
@@ -762,7 +762,7 @@ input, select, textarea { font-family: inherit; }
 .receipt-row-label svg, .receipt-row-icon { fill: #64748b !important; }
 
 /* ===================================================== */
-/* INTERFACE CLIENT v57.6 (finale)                       */
+/* INTERFACE CLIENT v57.7 (FINALE)                       */
 /* ===================================================== */
 
 /* ---------- HEADER BLEU FONCÉ (NOM CENTRÉ) ---------- */
@@ -791,7 +791,6 @@ input, select, textarea { font-family: inherit; }
 }
 .header-new .hamburger-btn svg { width: 20px; height: 20px; fill: #fff; }
 
-/* ✅ Le bloc marque (logo + texte) est centré au milieu du header */
 .header-brand-new {
   position: absolute;
   left: 50%;
@@ -806,47 +805,11 @@ input, select, textarea { font-family: inherit; }
   text-align: center;
 }
 .header-logo-new { width: 26px; height: 26px; flex-shrink: 0; }
-.header-brand-text-new {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 0;
-  text-align: center;
-}
-.header-brand-title-new {
-  font-size: 13.5px;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: 0.6px;
-  line-height: 1.05;
-  font-style: italic;
-  text-align: center;
-  white-space: nowrap;
-}
-.header-brand-sub-new {
-  font-size: 7.5px;
-  font-weight: 500;
-  color: rgba(255,255,255,0.75);
-  letter-spacing: 0.2px;
-  margin-top: 2px;
-  line-height: 1.2;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-.header-actions-new {
-  display: flex; align-items: center; gap: 6px;
-  flex-shrink: 0; position: relative; z-index: 2;
-  margin-left: auto;
-}
-.header-icon-btn-new {
-  width: 30px; height: 30px; border-radius: 50%;
-  background: transparent; border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  padding: 0; position: relative;
-}
+.header-brand-text-new { display: flex; flex-direction: column; align-items: center; min-width: 0; text-align: center; }
+.header-brand-title-new { font-size: 13.5px; font-weight: 800; color: #fff; letter-spacing: 0.6px; line-height: 1.05; font-style: italic; text-align: center; white-space: nowrap; }
+.header-brand-sub-new { font-size: 7.5px; font-weight: 500; color: rgba(255,255,255,0.75); letter-spacing: 0.2px; margin-top: 2px; line-height: 1.2; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.header-actions-new { display: flex; align-items: center; gap: 6px; flex-shrink: 0; position: relative; z-index: 2; margin-left: auto; }
+.header-icon-btn-new { width: 30px; height: 30px; border-radius: 50%; background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; position: relative; }
 .header-icon-btn-new svg { width: 18px; height: 18px; fill: #fff; }
 .header-icon-btn-new.avatar-new { background: linear-gradient(135deg, #3b82f6, #2563eb); box-shadow: 0 0 0 2px rgba(255,255,255,0.2); }
 .header-icon-btn-new.avatar-new svg { width: 16px; height: 16px; }
@@ -862,7 +825,7 @@ input, select, textarea { font-family: inherit; }
 .account-status-badge-new { display: inline-flex; align-items: center; gap: 5px; background: #dcfce7; color: #166534; padding: 4px 9px; border-radius: 20px; font-size: 9px; font-weight: 700; flex-shrink: 0; white-space: nowrap; }
 .account-status-dot-new { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; flex-shrink: 0; }
 
-/* ---------- CARTE SOLDE (SUIT LE THÈME ADMIN) ---------- */
+/* ---------- CARTE SOLDE ---------- */
 .balance-card-new {
   background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 55%, var(--primary) 100%);
   border-radius: 13px;
@@ -932,7 +895,7 @@ input, select, textarea { font-family: inherit; }
 .quick-action-label-new { font-size: 9px; font-weight: 700; color: #0f172a; line-height: 1.15; white-space: normal; word-break: break-word; text-align: center; }
 .quick-action-sublabel-new { display: none !important; visibility: hidden !important; height: 0 !important; margin: 0 !important; padding: 0 !important; }
 
-/* ---------- HISTORIQUE TRANSACTIONS (MATCHING IMAGE) ---------- */
+/* ---------- HISTORIQUE TRANSACTIONS (COULEURS COMPLÈTES) ---------- */
 .transactions-section-new { margin: 0 9px 10px 9px; }
 .tx-section-header-new { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 2px 2px 7px 2px; }
 .tx-section-title-new { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: #0f172a; white-space: normal; word-break: break-word; }
@@ -964,10 +927,10 @@ input, select, textarea { font-family: inherit; }
   flex-shrink: 0; overflow: hidden;
 }
 .tx-icon-circle-new svg { width: 22px; height: 22px; }
-.tx-icon-circle-new.in { background: #dbeafe; }
-.tx-icon-circle-new.in svg { fill: #2563eb; }
-.tx-icon-circle-new.out { background: #ede9fe; }
-.tx-icon-circle-new.out svg { fill: #7c3aed; }
+.tx-icon-circle-new.in { background: #dcfce7; }
+.tx-icon-circle-new.in svg { fill: #16a34a; }
+.tx-icon-circle-new.out { background: #fee2e2; }
+.tx-icon-circle-new.out svg { fill: #dc2626; }
 .tx-icon-circle-new.cancelled { background: #ede9fe; }
 .tx-icon-circle-new.cancelled svg { fill: #8b5cf6; }
 .tx-icon-circle-new.bank-logo { background: #ffffff; border: 1px solid #e2e8f0; padding: 4px; box-sizing: border-box; }
@@ -989,6 +952,16 @@ input, select, textarea { font-family: inherit; }
   white-space: normal;
   word-break: break-word;
 }
+/* ✅ COULEUR COMPLÈTE DU TEXTE SELON LE TYPE */
+.tx-item-new:has(.tx-icon-circle-new.in) .tx-name-new,
+.tx-item-new:has(.tx-icon-circle-new.in) .tx-sub-new { color: #16a34a; }
+.tx-item-new:has(.tx-icon-circle-new.out) .tx-name-new,
+.tx-item-new:has(.tx-icon-circle-new.out) .tx-sub-new { color: #dc2626; }
+.tx-item-new:has(.tx-icon-circle-new.cancelled) .tx-name-new,
+.tx-item-new:has(.tx-icon-circle-new.cancelled) .tx-sub-new { color: #8b5cf6; }
+.tx-item-new:has(.tx-icon-circle-new.in) .tx-sub-new,
+.tx-item-new:has(.tx-icon-circle-new.out) .tx-sub-new,
+.tx-item-new:has(.tx-icon-circle-new.cancelled) .tx-sub-new { opacity: 0.85; }
 .tx-amount-box-new {
   text-align: right; flex-shrink: 0;
   display: flex; flex-direction: column; align-items: flex-end;
@@ -1001,7 +974,7 @@ input, select, textarea { font-family: inherit; }
   line-height: 1.25;
 }
 .tx-amount-value-new.pos { color: #16a34a; }
-.tx-amount-value-new.neg { color: #0f172a; }
+.tx-amount-value-new.neg { color: #dc2626; }
 .tx-amount-value-new.cancelled { color: #8b5cf6; }
 .tx-date-new {
   font-size: 10.5px;
@@ -1010,6 +983,9 @@ input, select, textarea { font-family: inherit; }
   white-space: nowrap;
   line-height: 1.25;
 }
+.tx-item-new:has(.tx-icon-circle-new.in) .tx-date-new { color: #16a34a; opacity: 0.7; }
+.tx-item-new:has(.tx-icon-circle-new.out) .tx-date-new { color: #dc2626; opacity: 0.7; }
+.tx-item-new:has(.tx-icon-circle-new.cancelled) .tx-date-new { color: #8b5cf6; opacity: 0.7; }
 .tx-chevron-new {
   width: 16px;
   height: 16px;
@@ -1018,7 +994,7 @@ input, select, textarea { font-family: inherit; }
   margin-left: 4px;
 }
 
-/* ---------- BANNIÈRE SÉCURITÉ (BLEU FONCÉ FIXE) ---------- */
+/* ---------- BANNIÈRE SÉCURITÉ (FIXE AU-DESSUS DES 4 BOUTONS) ---------- */
 .security-banner-new {
   margin: 0 9px 10px 9px;
   background: linear-gradient(135deg, #0a2540 0%, #1e3a8a 55%, #1e40af 100%);
@@ -1059,9 +1035,19 @@ input, select, textarea { font-family: inherit; }
 .nav-item-new.active span { color: #7c3aed; }
 .nav-item-new.active::after { display: none; }
 
-/* ---------- DASHBOARD : FLEX COLUMN ---------- */
-#screen-dashboard { display: flex; flex-direction: column; min-height: 100%; }
-#screen-dashboard .security-banner-new { margin-top: auto; }
+/* ---------- DASHBOARD : BANNIÈRE SÉCURITÉ STICKY EN BAS ---------- */
+#screen-dashboard {
+  display: block;
+  min-height: 100%;
+  padding-bottom: 0;
+}
+#screen-dashboard .security-banner-new {
+  position: sticky;
+  bottom: 8px;
+  z-index: 5;
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
 
 /* ---------- MODAL HISTORIQUE COMPLET ---------- */
 .full-history-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: flex-end; z-index: 2147483647; padding: 0; animation: fadeInOverlay 0.25s ease-out; }
@@ -1107,5 +1093,5 @@ input, select, textarea { font-family: inherit; }
 .security-btn-new:hover, .security-btn-new:active { transform: scale(1.05); }
 
 /* ===================================================== */
-/* FIN - TRANSFERWIRE v57.6 (VERSION FINALE)             */
+/* FIN - TRANSFERWIRE v57.7 (VERSION FINALE)             */
 /* ===================================================== */
