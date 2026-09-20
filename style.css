@@ -1,6 +1,6 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
-   v56 - Tous les textes complets (aucune coupure)
+   v57 - Nouveau layout dashboard (3 boutons en bas + date transactions)
    ===================================================== */
 
 :root {
@@ -803,3 +803,21 @@ input, select, textarea { font-family: inherit; }
 .receipt-row-icon {
   fill: #64748b !important;
 }
+
+/* ===================================================== */
+/* v57 - NOUVEAU LAYOUT DASHBOARD                        */
+/* 3 boutons déplacés en bas + date au-dessus des        */
+/* transactions + séparateur sous le titre (image 2)     */
+/* ===================================================== */
+#screen-dashboard { padding-bottom: 16px; }
+
+/* Séparateur fin sous le titre "Historique des transactions" */
+#screen-dashboard .section-title { position: relative; padding: 22px 12px 14px 12px; }
+#screen-dashboard .section-title::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: 4px; height: 1px; background: #cbd5e1; }
+
+/* En-tête de date au-dessus de la liste des transactions */
+.transaction-date-header { padding: 4px 12px 10px 12px; font-size: 11.5px; font-weight: 600; color: #64748b; letter-spacing: 0.2px; }
+
+/* Les 3 boutons (IBAN / Carte / Virement) sont maintenant sous l'historique,
+   avec un peu d'espace et une ombre plus marquée pour ressembler à l'image 2 */
+#screen-dashboard .quick-actions-block { margin: 18px 12px 24px 12px; padding: 16px 8px 14px 8px; border-radius: 16px; box-shadow: 0 3px 12px rgba(15, 23, 42, 0.12); }
