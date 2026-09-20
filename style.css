@@ -1,6 +1,6 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
-   v57.8 - FINAL
+   v58.0 - FINAL (toutes modifications intégrées)
    ===================================================== */
 
 :root {
@@ -762,10 +762,11 @@ input, select, textarea { font-family: inherit; }
 .receipt-row-label svg, .receipt-row-icon { fill: #64748b !important; }
 
 /* ===================================================== */
-/* INTERFACE CLIENT v57.8 (FINALE)                       */
+/* INTERFACE CLIENT v58.0 - FINALE                       */
 /* ===================================================== */
 
-/* ---------- HEADER BLEU FONCÉ (NOM CENTRÉ) ---------- */
+/* ---------- HEADER BLEU FONCÉ (RECTANGULAIRE + NOM CENTRÉ) ---------- */
+/* ✅ MODIFICATION 1 : Header 100% rectangulaire (border-radius: 0, pas d'effet radial) */
 .header-new {
   background: linear-gradient(135deg, #0a2540 0%, #0f2f5c 55%, #1e40af 100%);
   padding: 9px 11px;
@@ -776,8 +777,14 @@ input, select, textarea { font-family: inherit; }
   position: relative;
   overflow: hidden;
   min-height: 48px;
+  border-radius: 0;
+  width: 100%;
+  margin: 0;
 }
-.header-new::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at right top, rgba(59,130,246,0.35), transparent 60%); pointer-events: none; }
+/* ✅ MODIFICATION 1 : Effet radial courbé supprimé */
+.header-new::before {
+  display: none;
+}
 .header-new .hamburger-btn { background: none; border: none; padding: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; z-index: 2; }
 .header-new .hamburger-btn svg { width: 20px; height: 20px; fill: #fff; }
 .header-brand-new { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 8px; z-index: 2; max-width: 62%; pointer-events: none; text-align: center; }
@@ -841,12 +848,15 @@ input, select, textarea { font-family: inherit; }
 .balance-card-amount-new .cur-part { font-size: 12.5px; font-weight: 700; color: #fff; line-height: 1; margin-left: 3px; opacity: 0.95; }
 .balance-card-sub-new { font-size: 9.5px; color: rgba(255,255,255,0.85); font-weight: 500; display: flex; align-items: center; gap: 4px; margin-top: 4px; }
 .balance-card-sub-new svg { width: 11px; height: 11px; fill: rgba(255,255,255,0.9); flex-shrink: 0; }
-.balance-card-bottom-new { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: auto; padding-top: 9px; }
-.balance-card-bottom-left-new { display: flex; align-items: center; gap: 5px; min-width: 0; flex: 1; }
-.balance-card-bottom-left-new .ic-new { width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.balance-card-bottom-left-new .ic-new svg { width: 10px; height: 10px; fill: #fff; }
-.balance-card-account-new { font-size: 9.5px; font-weight: 600; color: #fff; display: inline-flex; align-items: center; gap: 3px; white-space: normal; word-break: break-word; }
-.balance-card-account-new .chev { width: 9px; height: 9px; fill: rgba(255,255,255,0.85); flex-shrink: 0; }
+/* ✅ MODIFICATION 5 : Bouton Détails aligné à droite (bloc "Compte principal" supprimé) */
+.balance-card-bottom-new {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 9px;
+}
 .balance-card-details-btn-new { background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.4); color: #fff; padding: 6px 11px; border-radius: 20px; font-size: 10px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0; font-family: inherit; white-space: nowrap; }
 .balance-card-details-btn-new svg { width: 10px; height: 10px; fill: #fff; flex-shrink: 0; }
 
@@ -864,30 +874,15 @@ input, select, textarea { font-family: inherit; }
 .quick-action-label-new { font-size: 9px; font-weight: 700; color: #0f172a; line-height: 1.15; white-space: normal; word-break: break-word; text-align: center; }
 .quick-action-sublabel-new { display: none !important; visibility: hidden !important; height: 0 !important; margin: 0 !important; padding: 0 !important; }
 
-/* ---------- HISTORIQUE TRANSACTIONS (RECTANGULAIRE) ---------- */
+/* ---------- HISTORIQUE TRANSACTIONS (RECTANGULAIRE + COULEUR MONTANT UNIQUEMENT) ---------- */
 .transactions-section-new { margin: 0 9px 10px 9px; }
 .tx-section-header-new { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 2px 2px 7px 2px; }
 .tx-section-title-new { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: #0f172a; white-space: normal; word-break: break-word; }
 .tx-section-title-new svg { width: 14px; height: 14px; fill: #2563eb; flex-shrink: 0; }
 .see-all-link-new { color: #2563eb; font-size: 10.5px; font-weight: 700; background: none; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; font-family: inherit; padding: 4px 4px; flex-shrink: 0; white-space: nowrap; }
 .see-all-link-new svg { width: 10px; height: 10px; fill: #2563eb; flex-shrink: 0; }
-.tx-list-new {
-  background: #ffffff;
-  border-radius: 6px;
-  padding: 0;
-  box-shadow: 0 2px 14px rgba(15, 23, 42, 0.06);
-  overflow: hidden;
-}
-.tx-item-new {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 15px 14px;
-  border-bottom: 1px solid #f1f5f9;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  -webkit-tap-highlight-color: transparent;
-}
+.tx-list-new { background: #ffffff; border-radius: 6px; padding: 0; box-shadow: 0 2px 14px rgba(15, 23, 42, 0.06); overflow: hidden; }
+.tx-item-new { display: flex; align-items: center; gap: 12px; padding: 15px 14px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.2s ease; -webkit-tap-highlight-color: transparent; }
 .tx-item-new:last-child { border-bottom: none; }
 .tx-item-new:active { background: #f8fafc; }
 .tx-icon-circle-new { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
@@ -901,38 +896,30 @@ input, select, textarea { font-family: inherit; }
 .tx-icon-circle-new.bank-logo { background: #ffffff; border: 1px solid #e2e8f0; padding: 4px; box-sizing: border-box; }
 .tx-icon-circle-new.bank-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
 .tx-info-new { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.tx-name-new { font-size: 14px; font-weight: 700; color: #0f172a; line-height: 1.25; white-space: normal; word-break: break-word; }
-.tx-sub-new { font-size: 12px; font-weight: 500; color: #64748b; line-height: 1.25; white-space: normal; word-break: break-word; }
-.tx-item-new:has(.tx-icon-circle-new.in) .tx-name-new,
-.tx-item-new:has(.tx-icon-circle-new.in) .tx-sub-new { color: #16a34a; }
-.tx-item-new:has(.tx-icon-circle-new.out) .tx-name-new,
-.tx-item-new:has(.tx-icon-circle-new.out) .tx-sub-new { color: #dc2626; }
-.tx-item-new:has(.tx-icon-circle-new.cancelled) .tx-name-new,
-.tx-item-new:has(.tx-icon-circle-new.cancelled) .tx-sub-new { color: #8b5cf6; }
-.tx-item-new:has(.tx-icon-circle-new.in) .tx-sub-new,
-.tx-item-new:has(.tx-icon-circle-new.out) .tx-sub-new,
-.tx-item-new:has(.tx-icon-circle-new.cancelled) .tx-sub-new { opacity: 0.85; }
+/* ✅ MODIFICATION 4 : Tous les textes sont en NOIR (peu importe le type) */
+.tx-name-new { font-size: 14px; font-weight: 700; color: #0f172a !important; line-height: 1.25; white-space: normal; word-break: break-word; }
+.tx-sub-new { font-size: 12px; font-weight: 500; color: #64748b !important; line-height: 1.25; white-space: normal; word-break: break-word; }
 .tx-amount-box-new { text-align: right; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; margin-left: 4px; }
+/* ✅ MODIFICATION 4 : Seul le MONTANT garde la couleur (vert/rouge/violet) */
 .tx-amount-value-new { font-size: 14px; font-weight: 700; white-space: nowrap; line-height: 1.25; }
 .tx-amount-value-new.pos { color: #16a34a; }
 .tx-amount-value-new.neg { color: #dc2626; }
 .tx-amount-value-new.cancelled { color: #8b5cf6; }
-.tx-date-new { font-size: 10.5px; font-weight: 500; color: #94a3b8; white-space: nowrap; line-height: 1.25; }
-.tx-item-new:has(.tx-icon-circle-new.in) .tx-date-new { color: #16a34a; opacity: 0.7; }
-.tx-item-new:has(.tx-icon-circle-new.out) .tx-date-new { color: #dc2626; opacity: 0.7; }
-.tx-item-new:has(.tx-icon-circle-new.cancelled) .tx-date-new { color: #8b5cf6; opacity: 0.7; }
+/* ✅ MODIFICATION 4 : Date en gris neutre */
+.tx-date-new { font-size: 10.5px; font-weight: 500; color: #94a3b8 !important; white-space: nowrap; line-height: 1.25; }
 .tx-chevron-new { width: 16px; height: 16px; fill: #cbd5e1; flex-shrink: 0; margin-left: 4px; }
 
-/* ---------- BANNIÈRE SÉCURITÉ FIXÉE EN BAS (JAMAIS NE BOUGE) ---------- */
+/* ---------- BANNIÈRE SÉCURITÉ (REDUITE + UNIQUEMENT PAGE ACCUEIL) ---------- */
+/* ✅ MODIFICATION 3 : Hauteur de la bannière réduite (min-height: 72px, padding réduit) */
 .security-banner-new {
   margin: 0;
   background: linear-gradient(135deg, #0a2540 0%, #1e3a8a 55%, #1e40af 100%);
   border-radius: 13px;
-  padding: 10px 11px;
+  padding: 8px 10px;
   display: flex; align-items: center; gap: 9px;
   position: relative; overflow: hidden;
   box-shadow: 0 8px 20px rgba(30, 58, 138, 0.28);
-  min-height: 92px;
+  min-height: 72px;
 }
 .security-banner-new::before {
   content: '';
@@ -941,7 +928,8 @@ input, select, textarea { font-family: inherit; }
   background: radial-gradient(ellipse at right center, rgba(59,130,246,0.4), transparent 75%);
   pointer-events: none;
 }
-.security-shield-new { position: absolute; right: -6px; top: 50%; transform: translateY(-50%); width: 78px; height: 78px; z-index: 1; pointer-events: none; opacity: 0.95; }
+/* ✅ MODIFICATION 3 : Illustration du bouclier réduite (62px au lieu de 78px) */
+.security-shield-new { position: absolute; right: -6px; top: 50%; transform: translateY(-50%); width: 62px; height: 62px; z-index: 1; pointer-events: none; opacity: 0.95; }
 .security-content-new { position: relative; z-index: 2; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; max-width: 68%; }
 .security-header-new { display: flex; align-items: center; gap: 6px; }
 .security-header-icon-new { width: 24px; height: 24px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -951,7 +939,7 @@ input, select, textarea { font-family: inherit; }
 .security-btn-new { background: #fff; color: #1e3a8a; border: none; padding: 5px 10px; border-radius: 18px; font-size: 9px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; font-family: inherit; align-self: flex-start; white-space: nowrap; }
 .security-btn-new svg { width: 9px; height: 9px; fill: #1e3a8a; flex-shrink: 0; }
 
-/* ✅ La bannière sécurité est FIXÉE en bas de #screen-dashboard */
+/* ✅ MODIFICATION 2 : La bannière n'apparaît QUE sur la page d'accueil (dashboard) */
 #screen-dashboard .security-banner-new {
   position: fixed;
   left: 9px;
@@ -961,11 +949,15 @@ input, select, textarea { font-family: inherit; }
   margin: 0;
   pointer-events: auto;
 }
+/* ✅ MODIFICATION 2 : Masquer la bannière si le dashboard n'est PAS actif */
+#screen-dashboard:not(.active) .security-banner-new {
+  display: none !important;
+}
 /* ✅ Espace réservé en bas du dashboard pour que le dernier élément ne soit pas caché */
 #screen-dashboard {
   display: block;
   min-height: 100%;
-  padding-bottom: 120px;
+  padding-bottom: 110px;
 }
 
 /* ---------- BOTTOM NAV ---------- */
@@ -1024,5 +1016,5 @@ input, select, textarea { font-family: inherit; }
 .security-btn-new:hover, .security-btn-new:active { transform: scale(1.05); }
 
 /* ===================================================== */
-/* FIN - TRANSFERWIRE v57.8 (VERSION FINALE)             */
+/* FIN - TRANSFERWIRE v58.0 (VERSION FINALE)             */
 /* ===================================================== */
