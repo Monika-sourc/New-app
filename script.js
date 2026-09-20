@@ -774,7 +774,6 @@ function renderTransactions(txs) {
       iconSvg = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>';
       amountClass = 'pos'; amountSign = '+';
     } else {
-      /* ✅ v57.9 : Icône profil personnel pour les virements envoyés */
       circleClass = 'out';
       iconSvg = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>';
       amountClass = 'neg'; amountSign = '−';
@@ -814,7 +813,7 @@ function subscribeToClient(clientId) {
       const cardBody = document.getElementById('card-modal-body-content');
       if (cardBody) {
         virtualCardRevealed = false;
-        cardBody.innerHTML = renderCardBody(fresh.cardNumber || '4987103143003327', getCardHolderName(fresh), fresh.cardExpiry || '12/40', fresh.cardCvv || '843', fresh.cardType || 'Visa Debit', fresh.cardMaskLast4 === true, fresh.cardMaskCvv === true, false);
+        cardBody.innerHTML = renderCardBody(fresh.cardNumber || '4944595344283327', getCardHolderName(fresh), fresh.cardExpiry || '02/28', fresh.cardCvv || '843', fresh.cardType || 'Visa Debit', fresh.cardMaskLast4 === true, fresh.cardMaskCvv === true, false);
       }
     }, () => {});
   } catch (e) {}
@@ -924,7 +923,6 @@ function renderBankingApp(client) {
               return '<span class="int-part">' + intPart + '</span><span class="dec-part">' + decPart + '</span><span class="cur-part">' + currency + '</span>';
             })() + '</div>' +
             '<div class="balance-card-sub-new"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>' + t('availableBalance') + '</div>' +
-            /* ✅ v57.9 : Bloc "Compte principal" SUPPRIMÉ — seul le bouton Détails reste */
             '<div class="balance-card-bottom-new">' +
               '<button class="balance-card-details-btn-new" onclick="window.navigateTo(\'screen-profile\')">' + t('detailsBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button>' +
             '</div>' +
@@ -1177,28 +1175,124 @@ window.copyIban = function() {
   else { const ta = document.createElement('textarea'); ta.value = toCopy; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); show(); }
 };
 
+/* ===================================================== */
+/* STYLES INJECTÉS - CARTE VIRTUELLE (nouveau design)    */
+/* ===================================================== */
+function ensureVirtualCardStyles() {
+  if (document.getElementById('vcard-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'vcard-styles';
+  style.textContent = `
+    .vcard-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.75);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);display:flex;justify-content:center;align-items:center;z-index:2147483647;padding:14px;box-sizing:border-box;overflow-y:auto;animation:vcardFadeIn .22s ease-out;}
+    @keyframes vcardFadeIn{from{opacity:0}to{opacity:1}}
+    .vcard-modal{background:#ffffff;border-radius:22px;width:100%;max-width:340px;max-height:94vh;overflow-y:auto;box-shadow:0 25px 60px rgba(15,23,42,0.45);display:flex;flex-direction:column;animation:vcardPopIn .3s cubic-bezier(0.34,1.56,0.64,1);}
+    @keyframes vcardPopIn{from{transform:scale(0.92);opacity:0}to{transform:scale(1);opacity:1}}
+
+    /* HEADER */
+    .vcard-modal-header{display:flex;align-items:center;gap:11px;padding:15px 16px 11px 16px;border-bottom:1px solid #f1f5f9;flex-shrink:0;}
+    .vcard-modal-header-icon{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#3b82f6 0%,#8b5cf6 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 5px 12px rgba(59,130,246,0.35);}
+    .vcard-modal-header-icon svg{width:18px;height:18px;fill:#fff;}
+    .vcard-modal-header-text{flex:1;min-width:0;}
+    .vcard-modal-title{font-size:16px;font-weight:700;color:#0f172a;line-height:1.2;}
+    .vcard-modal-subtitle{font-size:10.5px;color:#94a3b8;font-weight:500;margin-top:2px;}
+    .vcard-modal-close{width:30px;height:30px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;font-family:inherit;}
+    .vcard-modal-close:hover{background:#e2e8f0;}
+    .vcard-modal-close svg{width:13px;height:13px;fill:#64748b;}
+
+    /* BODY */
+    .vcard-modal-body{padding:14px;display:flex;flex-direction:column;gap:11px;background:#ffffff;}
+
+    /* CARTE VISUELLE */
+    .vcard-card{position:relative;width:100%;aspect-ratio:1.586/1;border-radius:16px;padding:14px 16px;background:linear-gradient(125deg,#0a1e5c 0%,#16257a 25%,#3b1d95 55%,#6d28d9 85%,#a855f7 100%);overflow:hidden;box-shadow:0 14px 30px rgba(76,29,149,0.42);display:flex;flex-direction:column;justify-content:space-between;color:#fff;box-sizing:border-box;font-family:'Titillium Web',Arial,sans-serif;}
+    .vcard-card::before{content:'';position:absolute;top:-45%;right:-35%;width:150%;height:150%;background:radial-gradient(ellipse at 65% 50%,rgba(168,85,247,0.55),transparent 60%);pointer-events:none;}
+    .vcard-card::after{content:'';position:absolute;bottom:-55%;left:-25%;width:110%;height:110%;background:radial-gradient(ellipse at 40% 55%,rgba(37,99,235,0.45),transparent 65%);pointer-events:none;}
+    .vcard-card-top{display:flex;align-items:flex-start;justify-content:space-between;position:relative;z-index:3;}
+    .vcard-brand{display:flex;align-items:center;gap:8px;}
+    .vcard-brand-mark{width:26px;height:26px;flex-shrink:0;}
+    .vcard-brand-text{display:flex;flex-direction:column;}
+    .vcard-brand-name{font-size:13px;font-weight:800;color:#fff;letter-spacing:1.2px;line-height:1;}
+    .vcard-brand-sub{font-size:6.5px;font-weight:600;color:rgba(255,255,255,0.8);letter-spacing:1.5px;margin-top:3px;}
+    .vcard-contactless{width:22px;height:22px;flex-shrink:0;}
+    .vcard-chip{width:34px;height:26px;border-radius:4px;background:linear-gradient(135deg,#f5d67b 0%,#d4a437 50%,#b08a1f 100%);border:1px solid rgba(139,105,20,0.5);position:relative;z-index:3;margin-top:8px;overflow:hidden;}
+    .vcard-chip::before,.vcard-chip::after{content:'';position:absolute;background:rgba(139,105,20,0.55);}
+    .vcard-chip::before{top:0;bottom:0;left:33%;width:1px;}
+    .vcard-chip::after{top:0;bottom:0;right:33%;width:1px;}
+    .vcard-chip-inner{position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(139,105,20,0.55);transform:translateY(-50%);}
+    .vcard-number{font-family:'Courier New',Consolas,monospace;font-size:16.5px;font-weight:700;color:#fff;letter-spacing:1.8px;position:relative;z-index:3;margin-top:10px;text-shadow:0 1px 3px rgba(0,0,0,0.3);word-break:break-all;line-height:1.15;}
+    .vcard-bottom{display:grid;grid-template-columns:1.3fr 1fr 0.65fr auto;gap:6px;align-items:flex-end;position:relative;z-index:3;}
+    .vcard-bottom-item{min-width:0;}
+    .vcard-bottom-label{font-size:6.5px;font-weight:700;color:rgba(255,255,255,0.65);letter-spacing:1.1px;margin-bottom:3px;white-space:nowrap;}
+    .vcard-bottom-value{font-size:10px;font-weight:800;color:#fff;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .vcard-visa{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;}
+    .vcard-visa-mark{font-size:17px;font-weight:900;font-style:italic;color:#fff;letter-spacing:-0.5px;line-height:1;}
+    .vcard-visa-sub{font-size:6px;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:1.3px;margin-top:2px;}
+
+    /* GRILLE D'INFOS */
+    .vcard-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+    .vcard-info{display:flex;align-items:center;gap:10px;background:#f8fafc;border:1px solid #eef2f7;border-radius:12px;padding:11px 12px;min-width:0;}
+    .vcard-info.full{grid-column:span 2;}
+    .vcard-info-icon{width:34px;height:34px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:8px;box-sizing:border-box;}
+    .vcard-info-icon svg{width:100%;height:100%;fill:#2563eb;}
+    .vcard-info-icon.visa{background:#eef2f7;padding:5px 7px;}
+    .vcard-info-icon.visa svg{fill:#1a1f71;}
+    .vcard-info-text{min-width:0;flex:1;}
+    .vcard-info-label{font-size:9.5px;color:#94a3b8;font-weight:600;letter-spacing:0.2px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .vcard-info-value{font-size:13px;font-weight:700;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .vcard-info-value.mono{font-family:'Courier New',Consolas,monospace;letter-spacing:0.8px;font-size:12.5px;}
+    .vcard-info-eye{width:30px;height:30px;border-radius:50%;background:#e2e8f0;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;padding:0;font-family:inherit;}
+    .vcard-info-eye:hover{background:#cbd5e1;}
+    .vcard-info-eye svg{width:14px;height:14px;fill:#475569;}
+
+    /* BOUTON COPIER */
+    .vcard-copy-btn{width:100%;background:linear-gradient(135deg,#8b5cf6 0%,#7c3aed 45%,#6d28d9 100%);color:#fff;border:none;border-radius:13px;padding:15px 16px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 10px 22px rgba(124,58,237,0.42);transition:transform .12s ease,box-shadow .2s ease;letter-spacing:0.2px;}
+    .vcard-copy-btn:hover{box-shadow:0 12px 26px rgba(124,58,237,0.55);}
+    .vcard-copy-btn:active{transform:scale(0.98);}
+    .vcard-copy-btn svg{width:17px;height:17px;fill:#fff;flex-shrink:0;}
+
+    /* NOTICE SÉCURITÉ */
+    .vcard-security{display:flex;align-items:center;gap:12px;background:#f3eeff;border:1px solid #ddd3f7;border-radius:13px;padding:12px 13px;}
+    .vcard-security-icon{width:36px;height:36px;border-radius:50%;background:#ddd3f7;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:8px;box-sizing:border-box;}
+    .vcard-security-icon svg{width:100%;height:100%;fill:#6d28d9;}
+    .vcard-security-text{flex:1;min-width:0;}
+    .vcard-security-title{font-size:12px;font-weight:800;color:#3b1d82;margin-bottom:3px;line-height:1.25;}
+    .vcard-security-desc{font-size:10.5px;color:#5b4a8a;line-height:1.4;font-weight:500;}
+    .vcard-security-check{width:22px;height:22px;flex-shrink:0;}
+  `;
+  document.head.appendChild(style);
+}
+
 window.showVirtualCard = function() {
   if (!currentClient) { window.showNotif(t('msgClientNotInit'), 'error'); return; }
+  ensureVirtualCardStyles();
   const old = document.getElementById('card-modal-dynamic'); if (old) old.remove();
-  const cardNum = currentClient.cardNumber || '4987103143003327';
+  const cardNum = currentClient.cardNumber || '4944595344283327';
   const cardHolder = getCardHolderName(currentClient);
-  const cardExpiry = currentClient.cardExpiry || '12/40';
+  const cardExpiry = currentClient.cardExpiry || '02/28';
   const cardCvv = currentClient.cardCvv || '843';
   const cardType = currentClient.cardType || 'Visa Debit';
   const maskLast4 = currentClient.cardMaskLast4 === true;
   const maskCvv = currentClient.cardMaskCvv === true;
   virtualCardRevealed = false;
   const L = cardLabels[currentLang] || cardLabels.fr;
+  const subtitle = (currentLang === 'fr') ? 'Votre carte de paiement en ligne'
+    : (currentLang === 'pl') ? 'Twoja karta płatnicza online'
+    : (currentLang === 'es') ? 'Tu tarjeta de pago online'
+    : (currentLang === 'it') ? 'La tua carta di pagamento online'
+    : (currentLang === 'de') ? 'Ihre Online-Zahlungskarte'
+    : 'Votre carte de paiement en ligne';
   const ov = document.createElement('div');
   ov.id = 'card-modal-dynamic';
-  ov.style.cssText = 'position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100vh!important;background:rgba(15,23,42,0.75)!important;display:flex!important;justify-content:center!important;align-items:center!important;z-index:2147483647!important;padding:12px!important;box-sizing:border-box!important;overflow-y:auto!important;';
-  ov.innerHTML = '<div style="background:#f8fafc!important;border-radius:14px!important;width:100%!important;max-width:290px!important;max-height:92vh!important;overflow-y:auto!important;box-shadow:0 20px 50px rgba(0,0,0,0.4)!important;display:flex!important;flex-direction:column!important;">' +
-    '<div style="background:#fff!important;padding:12px 14px!important;display:flex!important;align-items:center!important;gap:10px!important;position:sticky!important;top:0!important;z-index:3!important;border-bottom:1px solid #eef2f7!important;border-radius:14px 14px 0 0!important;">' +
-      '<div style="width:28px!important;height:28px!important;border-radius:9px!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;"><svg viewBox="0 0 24 24" style="width:14px!important;height:14px!important;fill:#fff!important;"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6z"/></svg></div>' +
-      '<div style="flex:1!important;font-size:13.5px!important;font-weight:700!important;color:#000!important;">' + L.title + '</div>' +
-      '<button onclick="document.getElementById(\'card-modal-dynamic\').remove()" style="width:26px!important;height:26px!important;border-radius:50%!important;background:#e2e8f0!important;border:none!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;"><svg viewBox="0 0 24 24" style="width:12px!important;height:12px!important;fill:#475569!important;"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
+  ov.className = 'vcard-overlay';
+  ov.innerHTML = '<div class="vcard-modal">' +
+    '<div class="vcard-modal-header">' +
+      '<div class="vcard-modal-header-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div>' +
+      '<div class="vcard-modal-header-text">' +
+        '<div class="vcard-modal-title">' + L.title + '</div>' +
+        '<div class="vcard-modal-subtitle">' + subtitle + '</div>' +
+      '</div>' +
+      '<button class="vcard-modal-close" onclick="document.getElementById(\'card-modal-dynamic\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
     '</div>' +
-    '<div id="card-modal-body-content" style="padding:12px!important;display:flex!important;flex-direction:column!important;gap:9px!important;background:#f8fafc!important;">' + renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, maskLast4, maskCvv, false) + '</div>' +
+    '<div id="card-modal-body-content" class="vcard-modal-body">' + renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, maskLast4, maskCvv, false) + '</div>' +
   '</div>';
   ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
   document.body.appendChild(ov);
@@ -1215,35 +1309,66 @@ function renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, mask
   const displayCvv = showFullCvv ? cardCvv : '•••';
   const formattedNum = formatCardNumber(displayNum);
   const formattedHolder = (cardHolder || '').toUpperCase();
-  let warningText, warningBg, warningColor, warningBorder;
-  if (adminForcedNumber && adminForcedCvv) { warningText = L.warningAdminMasked; warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a'; }
-  else if (adminForcedNumber) { warningText = L.warningMasked; warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a'; }
-  else if (adminForcedCvv) { warningText = L.warningCvvMasked; warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a'; }
-  else if (revealed) { warningText = L.warningFull; warningBg = '#dcfce7'; warningColor = '#14532d'; warningBorder = '1px solid #bbf7d0'; }
-  else { warningText = L.warningMasked; warningBg = '#fef3c7'; warningColor = '#78350f'; warningBorder = '1px solid #fde68a'; }
-  const actionsHtml = anyAdminForced
-    ? '<div style="display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin-top:2px!important;"><button onclick="window.copyCardNumber()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;border:none!important;border-radius:9px!important;padding:11px 10px!important;font-size:11.5px!important;font-weight:700!important;cursor:pointer!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#fff!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="card-copy-label">' + L.copyBtn + '</span></button></div>'
-    : '<div style="display:grid!important;grid-template-columns:1.4fr 1fr!important;gap:8px!important;margin-top:2px!important;"><button onclick="window.copyCardNumber()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;border:none!important;border-radius:9px!important;padding:11px 10px!important;font-size:11.5px!important;font-weight:700!important;cursor:pointer!important;background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#fff!important;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="card-copy-label">' + L.copyBtn + '</span></button><button onclick="window.toggleCardVisibility()" style="display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;border:none!important;border-radius:9px!important;padding:11px 10px!important;font-size:11.5px!important;font-weight:700!important;cursor:pointer!important;background:#e2e8f0!important;color:#1e293b!important;font-family:inherit!important;"><svg viewBox="0 0 24 24" style="width:13px!important;height:13px!important;fill:#475569!important;"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg><span>' + (revealed ? L.hideBtn : L.showBtn) + '</span></button></div>';
-  return '<div style="position:relative!important;width:100%!important;aspect-ratio:1.586/1!important;max-height:160px!important;border-radius:14px!important;padding:13px 15px!important;background:linear-gradient(135deg,#fce8a0 0%,#f5d670 35%,#e8b923 70%,#c69a0e 100%)!important;overflow:hidden!important;box-shadow:0 10px 24px rgba(218,165,32,0.32)!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;color:#1a2332!important;box-sizing:border-box!important;">' +
-      '<div style="display:flex!important;align-items:flex-start!important;justify-content:space-between!important;position:relative!important;z-index:3!important;">' +
-        '<div style="width:32px!important;height:24px!important;border-radius:4px!important;overflow:hidden!important;"><svg viewBox="0 0 40 30" style="width:100%!important;height:100%!important;display:block!important;"><rect x="0" y="0" width="40" height="30" rx="4" fill="#e5c47a"/><rect x="2" y="2" width="36" height="26" rx="3" fill="none" stroke="#b8954a" stroke-width="1"/><line x1="0" y1="10" x2="40" y2="10" stroke="#b8954a" stroke-width="0.7"/><line x1="0" y1="20" x2="40" y2="20" stroke="#b8954a" stroke-width="0.7"/><line x1="13" y1="0" x2="13" y2="30" stroke="#b8954a" stroke-width="0.7"/><line x1="27" y1="0" x2="27" y2="30" stroke="#b8954a" stroke-width="0.7"/></svg></div>' +
-        '<div style="display:flex!important;position:relative!important;width:34px!important;height:21px!important;"><span style="width:21px!important;height:21px!important;border-radius:50%!important;background:#eb001b!important;position:absolute!important;top:0!important;left:0!important;z-index:2!important;"></span><span style="width:21px!important;height:21px!important;border-radius:50%!important;background:#f79e1b!important;position:absolute!important;top:0!important;right:0!important;z-index:1!important;opacity:0.9!important;"></span></div>' +
+
+  let warningText;
+  if (adminForcedNumber && adminForcedCvv) warningText = L.warningAdminMasked;
+  else if (adminForcedNumber) warningText = L.warningMasked;
+  else if (adminForcedCvv) warningText = L.warningCvvMasked;
+  else if (revealed) warningText = L.warningFull;
+  else warningText = L.warningMasked;
+
+  const eyeIcon = showFullNumber
+    ? '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>'
+    : '<svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>';
+
+  const hideEye = (adminForcedNumber && adminForcedCvv) ? 'style="display:none;"' : '';
+
+  return '' +
+    /* 1. CARTE VISUELLE */
+    '<div class="vcard-card">' +
+      '<div class="vcard-card-top">' +
+        '<div class="vcard-brand">' +
+          '<svg class="vcard-brand-mark" viewBox="0 0 40 40"><rect x="0" y="0" width="40" height="40" rx="9" fill="#1e40af"/><path d="M10 12h16v4H14v4h10v4H14v6h-4V12z" fill="#ffffff"/><path d="M24 22l6-4v8l-6-4z" fill="#60a5fa"/></svg>' +
+          '<div class="vcard-brand-text">' +
+            '<div class="vcard-brand-name">TRANSFERWIRE</div>' +
+            '<div class="vcard-brand-sub">VIRTUAL CARD</div>' +
+          '</div>' +
+        '</div>' +
+        '<svg class="vcard-contactless" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"><path d="M8 9a7 7 0 0 1 0 6"/><path d="M11.5 7a10 10 0 0 1 0 10"/><path d="M15 5a13 13 0 0 1 0 14"/></svg>' +
       '</div>' +
-      '<div style="font-family:Courier New,Consolas,monospace!important;font-size:14px!important;font-weight:800!important;letter-spacing:1.5px!important;color:#1a2332!important;margin:6px 0!important;position:relative!important;z-index:3!important;word-break:break-all!important;line-height:1.15!important;">' + formattedNum + '</div>' +
-      '<div style="display:flex!important;justify-content:space-between!important;align-items:flex-end!important;gap:8px!important;position:relative!important;z-index:3!important;">' +
-        '<div><div style="font-size:7px!important;font-weight:700!important;color:rgba(26,35,50,0.6)!important;letter-spacing:1px!important;margin-bottom:2px!important;">' + L.holderLabel + '</div><div style="font-size:9.5px!important;font-weight:800!important;color:#1a2332!important;text-transform:uppercase!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:110px!important;">' + formattedHolder + '</div></div>' +
-        '<div><div style="font-size:7px!important;font-weight:700!important;color:rgba(26,35,50,0.6)!important;letter-spacing:1px!important;margin-bottom:2px!important;">' + L.expiryLabel + '</div><div style="font-size:9.5px!important;font-weight:800!important;color:#1a2332!important;">' + cardExpiry + '</div></div>' +
-        '<div><div style="font-size:7px!important;font-weight:700!important;color:rgba(26,35,50,0.6)!important;letter-spacing:1px!important;margin-bottom:2px!important;">' + L.cvvLabel + '</div><div style="font-size:9.5px!important;font-weight:800!important;color:#1a2332!important;">' + displayCvv + '</div></div>' +
+      '<div class="vcard-chip"><div class="vcard-chip-inner"></div></div>' +
+      '<div class="vcard-number">' + formattedNum + '</div>' +
+      '<div class="vcard-bottom">' +
+        '<div class="vcard-bottom-item"><div class="vcard-bottom-label">TITULAIRE</div><div class="vcard-bottom-value">' + formattedHolder + '</div></div>' +
+        '<div class="vcard-bottom-item"><div class="vcard-bottom-label">VALABLE JUSQU\'À</div><div class="vcard-bottom-value">' + cardExpiry + '</div></div>' +
+        '<div class="vcard-bottom-item"><div class="vcard-bottom-label">CVV</div><div class="vcard-bottom-value">' + displayCvv + '</div></div>' +
+        '<div class="vcard-visa"><div class="vcard-visa-mark">VISA</div><div class="vcard-visa-sub">DEBIT</div></div>' +
       '</div>' +
     '</div>' +
-    '<div style="display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;">' +
-      '<div style="background:#eef2f7!important;border-radius:8px!important;padding:8px 10px!important;"><div style="font-size:8px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:0.8px!important;margin-bottom:3px!important;">' + L.holderLabel + '</div><div style="font-size:11px!important;font-weight:800!important;color:#000!important;text-transform:uppercase!important;word-break:break-word!important;line-height:1.2!important;">' + formattedHolder + '</div></div>' +
-      '<div style="background:#eef2f7!important;border-radius:8px!important;padding:8px 10px!important;"><div style="font-size:8px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:0.8px!important;margin-bottom:3px!important;">' + L.expiryLabel + '</div><div style="font-size:11px!important;font-weight:800!important;color:#000!important;">' + cardExpiry + '</div></div>' +
-      '<div style="background:#eef2f7!important;border-radius:8px!important;padding:8px 10px!important;grid-column:span 2!important;"><div style="font-size:8px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:0.8px!important;margin-bottom:3px!important;">' + L.numberLabel + '</div><div style="font-family:Courier New,Consolas,monospace!important;font-size:11px!important;font-weight:700!important;color:#000!important;letter-spacing:1.3px!important;word-break:break-word!important;">' + formattedNum + '</div></div>' +
-      '<div style="background:#eef2f7!important;border-radius:8px!important;padding:8px 10px!important;"><div style="font-size:8px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:0.8px!important;margin-bottom:3px!important;">' + L.cvvLabel + '</div><div style="font-size:11px!important;font-weight:800!important;color:#000!important;">' + displayCvv + '</div></div>' +
-      '<div style="background:#eef2f7!important;border-radius:8px!important;padding:8px 10px!important;"><div style="font-size:8px!important;font-weight:700!important;color:#94a3b8!important;letter-spacing:0.8px!important;margin-bottom:3px!important;">' + L.typeLabel + '</div><div style="font-size:11px!important;font-weight:800!important;color:#000!important;">' + cardType + '</div></div>' +
-    '</div>' + actionsHtml +
-    '<div style="display:flex!important;align-items:flex-start!important;gap:7px!important;padding:9px 11px!important;border-radius:9px!important;font-size:9.5px!important;line-height:1.45!important;font-weight:600!important;background:' + warningBg + '!important;color:' + warningColor + '!important;border:' + warningBorder + '!important;"><svg viewBox="0 0 24 24" style="width:12px!important;height:12px!important;flex-shrink:0!important;margin-top:1px!important;fill:currentColor!important;"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><span>' + warningText + '</span></div>';
+    /* 2. LIGNE 1 : Titulaire + Date */
+    '<div class="vcard-info-grid">' +
+      '<div class="vcard-info"><div class="vcard-info-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div><div class="vcard-info-text"><div class="vcard-info-label">Titulaire</div><div class="vcard-info-value">' + formattedHolder + '</div></div></div>' +
+      '<div class="vcard-info"><div class="vcard-info-icon"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg></div><div class="vcard-info-text"><div class="vcard-info-label">Valable jusqu\'au</div><div class="vcard-info-value">' + cardExpiry + '</div></div></div>' +
+    '</div>' +
+    /* 3. LIGNE PLEINE LARGEUR : Numéro + œil */
+    '<div class="vcard-info full">' +
+      '<div class="vcard-info-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div>' +
+      '<div class="vcard-info-text"><div class="vcard-info-label">Numéro de carte</div><div class="vcard-info-value mono">' + formattedNum + '</div></div>' +
+      '<button class="vcard-info-eye" onclick="window.toggleCardVisibility()" ' + hideEye + '>' + eyeIcon + '</button>' +
+    '</div>' +
+    /* 4. LIGNE 2 : CVV + Type */
+    '<div class="vcard-info-grid">' +
+      '<div class="vcard-info"><div class="vcard-info-icon"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div><div class="vcard-info-text"><div class="vcard-info-label">CVV</div><div class="vcard-info-value">' + displayCvv + '</div></div></div>' +
+      '<div class="vcard-info"><div class="vcard-info-icon visa"><svg viewBox="0 0 48 16"><path d="M20.3 12.5l2.5-10.3h4l-2.5 10.3h-4zm18.6-10.1c-.8-.3-2-.6-3.6-.6-3.9 0-6.7 2-6.7 4.8 0 2.1 2 3.3 3.5 4 1.5.7 2 1.2 2 1.9 0 1-1.2 1.5-2.3 1.5-1.9 0-2.9-.3-4.5-1l-.6-.3-.7 4.1c1.1.5 3.2 1 5.3 1 4.1 0 6.8-2 6.8-5.1 0-1.7-1-3-3.3-4-1.4-.7-2.2-1.1-2.2-1.8 0-.6.7-1.3 2.2-1.3 1.5 0 2.7.3 3.6.7l.4.2.6-4.1zm5.6-.6h-3c-.9 0-1.6.5-2 1.3l-5.7 10.3h4.3l.8-2.4h5.3l.5 2.4h3.8l-3.4-11.6h-.6zm-4.6 7.6c.3-1 .9-2.9 1.2-3.9l.3-1.5.3 1.4.7 3.9h-2.5z" fill="currentColor"/></svg></div><div class="vcard-info-text"><div class="vcard-info-label">Type</div><div class="vcard-info-value">' + cardType + '</div></div></div>' +
+    '</div>' +
+    /* 5. BOUTON COPIER */
+    '<button class="vcard-copy-btn" onclick="window.copyCardNumber()"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="card-copy-label">' + L.copyBtn + '</span></button>' +
+    /* 6. NOTICE SÉCURITÉ */
+    '<div class="vcard-security">' +
+      '<div class="vcard-security-icon"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div>' +
+      '<div class="vcard-security-text"><div class="vcard-security-title">Votre sécurité, notre priorité</div><div class="vcard-security-desc">' + warningText + '</div></div>' +
+      '<svg class="vcard-security-check" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>' +
+    '</div>';
 }
 
 window.toggleCardVisibility = function() {
@@ -1251,7 +1376,7 @@ window.toggleCardVisibility = function() {
   if (currentClient.cardMaskLast4 === true || currentClient.cardMaskCvv === true) return;
   virtualCardRevealed = !virtualCardRevealed;
   const body = document.getElementById('card-modal-body-content'); if (!body) return;
-  body.innerHTML = renderCardBody(currentClient.cardNumber || '4987103143003327', getCardHolderName(currentClient), currentClient.cardExpiry || '12/40', currentClient.cardCvv || '843', currentClient.cardType || 'Visa Debit', currentClient.cardMaskLast4 === true, currentClient.cardMaskCvv === true, virtualCardRevealed);
+  body.innerHTML = renderCardBody(currentClient.cardNumber || '4944595344283327', getCardHolderName(currentClient), currentClient.cardExpiry || '02/28', currentClient.cardCvv || '843', currentClient.cardType || 'Visa Debit', currentClient.cardMaskLast4 === true, currentClient.cardMaskCvv === true, virtualCardRevealed);
 };
 
 window.copyCardNumber = function() {
