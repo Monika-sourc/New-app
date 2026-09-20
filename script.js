@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v55 - Textes 100% originaux restaurés (aucune coupure)
+// v57 - Nouvelle interface (maquette) - 5 langues
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -484,7 +484,7 @@ window.addEventListener('popstate', async (event) => {
   const target = document.getElementById(state.screen);
   if (target) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); target.classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.nav-item-new').forEach(i => i.classList.remove('active'));
     const map = { 'screen-dashboard': 'nav-dashboard', 'screen-card': 'nav-card', 'screen-profile': 'nav-profile' };
     let navId = map[state.screen];
     if (['screen-transfer', 'screen-verification', 'screen-processing', 'screen-result'].indexOf(state.screen) !== -1) navId = 'nav-transfer';
@@ -495,12 +495,32 @@ window.addEventListener('popstate', async (event) => {
 });
 
 /* ===================================================== */
-/* i18n COMPLET - TEXTES ORIGINAUX INTACTS               */
-/* AUCUNE COUPURE - Chaque phrase est complète           */
+/* i18n COMPLET - 5 LANGUES avec toutes les clés v57     */
 /* ===================================================== */
 const i18n = {
   pl: {
     loginTitle: "Zaloguj się na swoje konto", emailPh: "Twój adres e-mail", pinPh: "Twój kod dostępu", loginBtn: "Zaloguj się", loginErr: "Nieprawidłowy e-mail lub PIN.", greeting: "Witaj",
+    tagline: "Twoje pieniądze, nasz priorytet",
+    greetingSub: "Miło Cię widzieć w swojej osobistej przestrzeni",
+    accountActive: "Konto aktywne",
+    personalLabel: "Osobiste",
+    availableBalance: "Dostępne saldo",
+    mainAccount: "Konto główne",
+    detailsBtn: "Szczegóły",
+    quickIbanLabel: "Zobacz mój IBAN",
+    quickIbanSub: "Udostępnij moje dane",
+    quickCardLabel: "Karta wirtualna",
+    quickCardSub: "Zarządzaj kartą",
+    quickTransferLabel: "Wykonaj przelew",
+    quickTransferSub: "Wyślij pieniądze",
+    quickMoreLabel: "Więcej",
+    quickMoreSub: "Inne usługi",
+    seeAllBtn: "Zobacz wszystko",
+    paymentByCardLabel: "Płatność kartą",
+    securityTitle: "Twoje bezpieczeństwo, nasze zobowiązanie",
+    securityDesc: "Transakcje chronione, 24/7.",
+    learnMoreBtn: "Dowiedz się więcej",
+    navPaymentsNew: "Płatności",
     notifTitleSuccess: "Sukces", notifTitleError: "Błąd", notifTitleWarning: "Uwaga", notifTitleInfo: "Informacja",
     notifSubSuccess: "Operacja zakończona pomyślnie", notifSubError: "Wystąpił błąd", notifSubWarning: "Wymagana weryfikacja", notifSubInfo: "Powiadomienie",
     notifOkBtn: "OK", notifConfirmTitle: "Potwierdzenie", notifActionRequired: "Wymagane działanie", notifCancelBtn: "Anuluj", notifConfirmBtn: "Potwierdź",
@@ -518,6 +538,27 @@ const i18n = {
   },
   fr: {
     loginTitle: "Connectez-vous à votre compte", emailPh: "Votre adresse e-mail", pinPh: "Votre code d'accès", loginBtn: "Se connecter", loginErr: "Adresse e-mail ou code PIN incorrect.", greeting: "Bonjour",
+    tagline: "Votre argent, notre priorité",
+    greetingSub: "Ravi de vous revoir sur votre espace personnel",
+    accountActive: "Compte actif",
+    personalLabel: "Personnel",
+    availableBalance: "Solde disponible",
+    mainAccount: "Compte principal",
+    detailsBtn: "Détails",
+    quickIbanLabel: "Voir mon IBAN",
+    quickIbanSub: "Partager mes coordonnées",
+    quickCardLabel: "Carte virtuelle",
+    quickCardSub: "Gérer ma carte",
+    quickTransferLabel: "Faire un virement",
+    quickTransferSub: "Envoyer de l'argent",
+    quickMoreLabel: "Plus",
+    quickMoreSub: "Autres services",
+    seeAllBtn: "Voir tout",
+    paymentByCardLabel: "Paiement par carte",
+    securityTitle: "Votre sécurité, notre engagement",
+    securityDesc: "Des transactions protégées, 24h/24 et 7j/7.",
+    learnMoreBtn: "En savoir plus",
+    navPaymentsNew: "Paiements",
     notifTitleSuccess: "Succès", notifTitleError: "Erreur", notifTitleWarning: "Attention", notifTitleInfo: "Information",
     notifSubSuccess: "Opération réussie", notifSubError: "Une erreur est survenue", notifSubWarning: "Vérification requise", notifSubInfo: "Notification",
     notifOkBtn: "OK", notifConfirmTitle: "Confirmation", notifActionRequired: "Action requise", notifCancelBtn: "Annuler", notifConfirmBtn: "Confirmer",
@@ -535,6 +576,27 @@ const i18n = {
   },
   es: {
     loginTitle: "Inicia sesión", emailPh: "Tu correo", pinPh: "Tu código", loginBtn: "Iniciar", loginErr: "Correo o PIN incorrecto.", greeting: "Hola",
+    tagline: "Su dinero, nuestra prioridad",
+    greetingSub: "Nos alegra verte de nuevo en tu espacio personal",
+    accountActive: "Cuenta activa",
+    personalLabel: "Personal",
+    availableBalance: "Saldo disponible",
+    mainAccount: "Cuenta principal",
+    detailsBtn: "Detalles",
+    quickIbanLabel: "Ver mi IBAN",
+    quickIbanSub: "Compartir mis datos",
+    quickCardLabel: "Tarjeta virtual",
+    quickCardSub: "Gestionar mi tarjeta",
+    quickTransferLabel: "Hacer una transferencia",
+    quickTransferSub: "Enviar dinero",
+    quickMoreLabel: "Más",
+    quickMoreSub: "Otros servicios",
+    seeAllBtn: "Ver todo",
+    paymentByCardLabel: "Pago con tarjeta",
+    securityTitle: "Tu seguridad, nuestro compromiso",
+    securityDesc: "Transacciones protegidas, 24/7.",
+    learnMoreBtn: "Saber más",
+    navPaymentsNew: "Pagos",
     notifTitleSuccess: "Éxito", notifTitleError: "Error", notifTitleWarning: "Atención", notifTitleInfo: "Información",
     notifSubSuccess: "Operación exitosa", notifSubError: "Se ha producido un error", notifSubWarning: "Verificación requerida", notifSubInfo: "Notificación",
     notifOkBtn: "OK", notifConfirmTitle: "Confirmación", notifActionRequired: "Acción requerida", notifCancelBtn: "Cancelar", notifConfirmBtn: "Confirmar",
@@ -552,6 +614,27 @@ const i18n = {
   },
   it: {
     loginTitle: "Accedi", emailPh: "Email", pinPh: "Codice", loginBtn: "Accedi", loginErr: "Email o PIN errato.", greeting: "Ciao",
+    tagline: "Il tuo denaro, la nostra priorità",
+    greetingSub: "Felice di rivederti nel tuo spazio personale",
+    accountActive: "Conto attivo",
+    personalLabel: "Personale",
+    availableBalance: "Saldo disponibile",
+    mainAccount: "Conto principale",
+    detailsBtn: "Dettagli",
+    quickIbanLabel: "Vedi il mio IBAN",
+    quickIbanSub: "Condividi i miei dati",
+    quickCardLabel: "Carta virtuale",
+    quickCardSub: "Gestisci la carta",
+    quickTransferLabel: "Fai un bonifico",
+    quickTransferSub: "Invia denaro",
+    quickMoreLabel: "Altro",
+    quickMoreSub: "Altri servizi",
+    seeAllBtn: "Vedi tutto",
+    paymentByCardLabel: "Pagamento con carta",
+    securityTitle: "La tua sicurezza, il nostro impegno",
+    securityDesc: "Transazioni protette, 24/7.",
+    learnMoreBtn: "Scopri di più",
+    navPaymentsNew: "Pagamenti",
     notifTitleSuccess: "Successo", notifTitleError: "Errore", notifTitleWarning: "Attenzione", notifTitleInfo: "Informazione",
     notifSubSuccess: "Operazione riuscita", notifSubError: "Si è verificato un errore", notifSubWarning: "Verifica richiesta", notifSubInfo: "Notifica",
     notifOkBtn: "OK", notifConfirmTitle: "Conferma", notifActionRequired: "Azione richiesta", notifCancelBtn: "Annulla", notifConfirmBtn: "Conferma",
@@ -569,6 +652,27 @@ const i18n = {
   },
   de: {
     loginTitle: "Anmelden", emailPh: "E-Mail", pinPh: "Zugangscode", loginBtn: "Anmelden", loginErr: "Falsche E-Mail oder PIN.", greeting: "Hallo",
+    tagline: "Ihr Geld, unsere Priorität",
+    greetingSub: "Schön, Sie wieder in Ihrem persönlichen Bereich zu sehen",
+    accountActive: "Konto aktiv",
+    personalLabel: "Persönlich",
+    availableBalance: "Verfügbares Guthaben",
+    mainAccount: "Hauptkonto",
+    detailsBtn: "Details",
+    quickIbanLabel: "Meine IBAN anzeigen",
+    quickIbanSub: "Meine Daten teilen",
+    quickCardLabel: "Virtuelle Karte",
+    quickCardSub: "Karte verwalten",
+    quickTransferLabel: "Überweisung tätigen",
+    quickTransferSub: "Geld senden",
+    quickMoreLabel: "Mehr",
+    quickMoreSub: "Weitere Dienste",
+    seeAllBtn: "Alle anzeigen",
+    paymentByCardLabel: "Kartenzahlung",
+    securityTitle: "Ihre Sicherheit, unser Engagement",
+    securityDesc: "Geschützte Transaktionen, rund um die Uhr.",
+    learnMoreBtn: "Mehr erfahren",
+    navPaymentsNew: "Zahlungen",
     notifTitleSuccess: "Erfolg", notifTitleError: "Fehler", notifTitleWarning: "Achtung", notifTitleInfo: "Information",
     notifSubSuccess: "Vorgang erfolgreich", notifSubError: "Ein Fehler ist aufgetreten", notifSubWarning: "Verifizierung erforderlich", notifSubInfo: "Benachrichtigung",
     notifOkBtn: "OK", notifConfirmTitle: "Bestätigung", notifActionRequired: "Aktion erforderlich", notifCancelBtn: "Abbrechen", notifConfirmBtn: "Bestätigen",
@@ -641,58 +745,60 @@ function translateSubtitle(subtitle) {
   return subtitle;
 }
 
-function renderBalanceHero(client) {
-  const currency = client.currency || '€';
-  const currencyLabel = getCurrencyName(currency);
-  const parts = splitBalance(client.balance || 0, currency);
-  return '<div class="hero-bubbles"><span class="hero-bubble b1"></span><span class="hero-bubble b2"></span><span class="hero-bubble b3"></span><span class="hero-bubble b4"></span><span class="hero-bubble b5"></span><span class="hero-bubble b6"></span><span class="hero-bubble b7"></span><span class="hero-bubble b8"></span></div>' +
-    '<div class="balance-label">' + t('personalAccount') + ' · ' + currencyLabel + '</div>' +
-    '<div class="balance-big"><span class="balance-int">' + parts.intPart + '</span><span class="balance-dec">' + parts.decPart + '</span></div>' +
-    '<button class="account-pill" onclick="window.navigateTo(\'screen-profile\')">' + t('accounts') + '</button>' +
-    '<div class="dots-indicator"><span class="active"></span><span></span><span></span></div>';
-}
-
+/* ✅ NOUVELLE VERSION v57 : 4 quick actions avec cercles colorés */
 function renderQuickActions() {
-  return '<div class="quick-actions-block">' +
-    '<div class="quick-action" onclick="window.showIban()"><div class="quick-icon"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg></div><span>' + t('seeIban') + '</span></div>' +
-    '<div class="quick-action" onclick="window.showVirtualCard()"><div class="quick-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div><span>' + t('virtualCard') + '</span></div>' +
-    '<div class="quick-action" onclick="window.navigateTo(\'screen-transfer\')"><div class="quick-icon"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></div><span>' + t('makeTransferShort') + '</span></div>' +
+  return '<div class="quick-actions-row-new">' +
+    '<div class="quick-action-item-new" onclick="window.showIban()"><div class="quick-action-icon-new green"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></div><div class="quick-action-label-new">' + t('quickIbanLabel') + '</div><div class="quick-action-sublabel-new">' + t('quickIbanSub') + '</div></div>' +
+    '<div class="quick-action-item-new" onclick="window.showVirtualCard()"><div class="quick-action-icon-new blue"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div><div class="quick-action-label-new">' + t('quickCardLabel') + '</div><div class="quick-action-sublabel-new">' + t('quickCardSub') + '</div></div>' +
+    '<div class="quick-action-item-new" onclick="window.navigateTo(\'screen-transfer\')"><div class="quick-action-icon-new purple"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></div><div class="quick-action-label-new">' + t('quickTransferLabel') + '</div><div class="quick-action-sublabel-new">' + t('quickTransferSub') + '</div></div>' +
+    '<div class="quick-action-item-new" onclick="window.showNotif(\'' + t('quickMoreSub') + '\', \'info\', \'' + t('quickMoreLabel') + '\')"><div class="quick-action-icon-new teal"><svg viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></div><div class="quick-action-label-new">' + t('quickMoreLabel') + '</div><div class="quick-action-sublabel-new">' + t('quickMoreSub') + '</div></div>' +
   '</div>';
 }
 
+/* ✅ NOUVELLE VERSION v57 : Virement reçu = VERT, envoyé = ROUGE, annulé = VIOLET */
 function renderTransactions(txs) {
   currentTransactions = txs || [];
-  if (!txs || txs.length === 0) return '<p style="color:#1e293b;font-size:11px;text-align:center;padding:15px 0;font-weight:600;">' + t('noTransactions') + '</p>';
-  let h = '';
+  if (!txs || txs.length === 0) {
+    return '<p style="color:#64748b;font-size:12px;text-align:center;padding:22px 0;font-weight:600;">' + t('noTransactions') + '</p>';
+  }
+  let h = '<div class="tx-list-new">';
   txs.forEach((tx, idx) => {
     const isCancelled = tx.type === 'cancelled';
     const isIn = tx.type === 'in';
-    let ic, is, amountClass, amountSign;
+    let circleClass, iconSvg, amountClass, amountSign;
     if (isCancelled) {
-      ic = 'icon-cancelled';
-      is = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
-      amountClass = 'amount-cancelled'; amountSign = '+';
+      circleClass = 'cancelled';
+      iconSvg = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
+      amountClass = 'cancelled'; amountSign = '+';
     } else if (isIn) {
-      ic = 'icon-green';
-      is = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>';
-      amountClass = 'amount-pos'; amountSign = '+';
+      circleClass = 'in';
+      iconSvg = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>';
+      amountClass = 'pos'; amountSign = '+';
     } else {
-      ic = 'icon-professional';
-      is = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>';
-      amountClass = 'amount-neg'; amountSign = '-';
+      circleClass = 'out';
+      iconSvg = '<path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>';
+      amountClass = 'neg'; amountSign = '−';
     }
     let iconHtml;
-    if (tx.bankLogo) {
-      iconHtml = '<div class="tx-icon tx-icon-logo"><img src="' + tx.bankLogo + '" alt="bank" loading="lazy" onerror="this.onerror=null;this.src=\'' + FALLBACK_BANK_LOGO + '\';" /></div>';
+    if (tx.bankLogo && !isCancelled) {
+      iconHtml = '<div class="tx-icon-circle-new bank-logo"><img src="' + tx.bankLogo + '" alt="bank" loading="lazy" onerror="this.onerror=null;this.parentNode.classList.remove(\'bank-logo\');this.parentNode.classList.add(\'' + circleClass + '\');this.parentNode.innerHTML=\'<svg viewBox=&quot;0 0 24 24&quot;>' + iconSvg.replace(/"/g, '&quot;') + '</svg>\';" /></div>';
     } else {
-      iconHtml = '<div class="tx-icon ' + ic + '"><svg viewBox="0 0 24 24">' + is + '</svg></div>';
+      iconHtml = '<div class="tx-icon-circle-new ' + circleClass + '"><svg viewBox="0 0 24 24">' + iconSvg + '</svg></div>';
     }
     let title;
     if (tx.labelKey) { title = t(tx.labelKey); }
-    else { title = isCancelled ? t('txTransferCancelled') : (isIn ? t('txTransferReceived') : t('txTransferSent')); }
+    else if (isCancelled) { title = t('txTransferCancelled'); }
+    else if (isIn) { title = t('txTransferReceived'); }
+    else { title = t('txTransferSent'); }
     const subtitle = translateSubtitle(tx.subtitle);
-    h += '<div class="transaction-item transaction-clickable' + (isCancelled ? ' transaction-cancelled' : '') + '" onclick="window.openReceipt(' + idx + ')">' + iconHtml + '<div class="tx-details"><div class="tx-title">' + title + '</div><div class="tx-subtitle">' + subtitle + '</div></div><div class="tx-amount"><div class="' + amountClass + '">' + amountSign + tx.amount + '</div><div class="tx-date">' + tx.date + '</div></div></div>';
+    h += '<div class="tx-item-new" onclick="window.openReceipt(' + idx + ')">' +
+      iconHtml +
+      '<div class="tx-info-new"><div class="tx-name-new">' + title + '</div><div class="tx-sub-new">' + subtitle + '</div></div>' +
+      '<div class="tx-amount-box-new"><div class="tx-amount-value-new ' + amountClass + '">' + amountSign + ' ' + tx.amount + '</div><div class="tx-date-new">' + tx.date + '</div></div>' +
+      '<svg class="tx-chevron-new" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+    '</div>';
   });
+  h += '</div>';
   return h;
 }
 
@@ -704,8 +810,7 @@ function subscribeToClient(clientId) {
       const fresh = Object.assign({ id: snap.id }, snap.data());
       if (fresh.blocked) { ClientSession.clear(); if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; } initClient(); return; }
       currentClient = fresh; currentLang = fresh.language || 'fr'; applyTheme(fresh.themeColor);
-      const hero = document.getElementById('balance-hero'); if (hero) hero.innerHTML = renderBalanceHero(fresh);
-      const list = document.getElementById('transaction-list'); if (list) list.innerHTML = renderTransactions(fresh.transactions);
+      const txList = document.getElementById('transaction-list'); if (txList) txList.innerHTML = renderTransactions(fresh.transactions);
       const cardBody = document.getElementById('card-modal-body-content');
       if (cardBody) {
         virtualCardRevealed = false;
@@ -762,6 +867,7 @@ function renderLoginPage(client) {
   });
 }
 
+/* ✅ NOUVELLE VERSION v57 : header bleu foncé + dashboard maquette + bottom nav */
 function renderBankingApp(client) {
   currentClient = client;
   currentLang = client.language || 'fr';
@@ -769,13 +875,83 @@ function renderBankingApp(client) {
   const root = document.getElementById('app-root');
   const currency = client.currency || '€';
   const balanceFormatted = formatAmount(client.balance || 0, currency);
+  const balanceRaw = (parseFloat(client.balance) || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const initials = ((client.firstName || '').charAt(0) + (client.lastName || '').charAt(0)).toUpperCase();
 
   root.innerHTML = '<div class="view active" style="display:flex;flex-direction:column;height:100%;">' +
-    '<header class="app-header"><button class="icon-button menu-icon" onclick="window.ClientLogout()"><svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button><div class="header-title">TRANSFERWIRE</div><button class="icon-button" onclick="window.navigateTo(\'screen-profile\')"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></button></header>' +
+    /* ---------- HEADER BLEU FONCÉ ---------- */
+    '<header class="header-new">' +
+      '<button class="hamburger-btn" onclick="window.ClientLogout()"><svg viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button>' +
+      '<div class="header-brand-new">' +
+        '<svg class="header-logo-new" viewBox="0 0 40 40"><rect x="0" y="0" width="40" height="40" rx="9" fill="#1e40af"/><path d="M10 12h16v4H14v4h10v4H14v6h-4V12z" fill="#ffffff"/><path d="M24 22l6-4v8l-6-4z" fill="#60a5fa"/></svg>' +
+        '<div class="header-brand-text-new">' +
+          '<div class="header-brand-title-new">TRANSFERWIRE</div>' +
+          '<div class="header-brand-sub-new">' + t('tagline') + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="header-actions-new">' +
+        '<button class="header-icon-btn-new" onclick="window.showNotif(\'' + t('notifSubInfo') + '\', \'info\')"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg><span class="header-notif-dot-new"></span></button>' +
+        '<button class="header-icon-btn-new avatar-new" onclick="window.navigateTo(\'screen-profile\')"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#fff"/></svg></button>' +
+      '</div>' +
+    '</header>' +
     '<div class="screens-container">' +
-      '<div id="screen-dashboard" class="screen active"><div class="greeting">' + t('greeting') + ', ' + client.firstName + ' ' + client.lastName + '</div><div class="dashboard-hero" id="balance-hero">' + renderBalanceHero(client) + '</div>' + renderQuickActions() + '<div class="section-title">' + t('transactionHistory') + '</div><div class="transaction-list" id="transaction-list">' + renderTransactions(client.transactions) + '</div></div>' +
+      /* ---------- DASHBOARD ---------- */
+      '<div id="screen-dashboard" class="screen active">' +
+        '<div class="greeting-wrap-new">' +
+          '<div class="greeting-left-new">' +
+            '<span class="greeting-emoji-new">👋</span>' +
+            '<div class="greeting-text-new">' +
+              '<div class="greeting-title-new">' + t('greeting') + ', ' + client.firstName + ' ' + client.lastName + '</div>' +
+              '<div class="greeting-sub-new">' + t('greetingSub') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="account-status-badge-new"><span class="account-status-dot-new"></span>' + t('accountActive') + '</div>' +
+        '</div>' +
+        '<div class="balance-card-new">' +
+          '<svg class="balance-card-chart-new" viewBox="0 0 400 180" preserveAspectRatio="none"><path d="M0,150 L60,130 L120,110 L180,90 L240,105 L300,70 L360,50 L400,40" stroke="rgba(147,197,253,0.5)" stroke-width="2" fill="none"/></svg>' +
+          '<div class="balance-card-inner-new">' +
+            '<div class="balance-card-top-new">' +
+              '<div class="balance-card-type-icon-new"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg></div>' +
+              '<div class="balance-card-type-label-new">' + t('personalLabel') + ' · ' + currency + ' <svg class="chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></div>' +
+            '</div>' +
+            '<div class="balance-card-chip-new">' +
+              '<svg class="balance-card-chip-svg-new" viewBox="0 0 40 30"><rect x="0" y="0" width="40" height="30" rx="4" fill="#d4a437"/><rect x="2" y="2" width="36" height="26" rx="3" fill="none" stroke="#8a6a1a" stroke-width="1"/><line x1="0" y1="10" x2="40" y2="10" stroke="#8a6a1a" stroke-width="0.7"/><line x1="0" y1="20" x2="40" y2="20" stroke="#8a6a1a" stroke-width="0.7"/><line x1="13" y1="0" x2="13" y2="30" stroke="#8a6a1a" stroke-width="0.7"/><line x1="27" y1="0" x2="27" y2="30" stroke="#8a6a1a" stroke-width="0.7"/></svg>' +
+              '<svg class="balance-card-waves-new" viewBox="0 0 24 24"><path d="M4 8c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2v2c-2 0-2-2-4-2s-2 2-4 2-2-2-4-2-2 2-4 2V8zm0 6c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2v2c-2 0-2-2-4-2s-2 2-4 2-2-2-4-2-2 2-4 2v-2z"/></svg>' +
+            '</div>' +
+            '<div class="balance-card-amount-new"><span>' + balanceRaw + '</span><span class="cur-new">' + currency + '</span></div>' +
+            '<div class="balance-card-sub-new"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>' + t('availableBalance') + '</div>' +
+            '<div class="balance-card-bottom-new">' +
+              '<div class="balance-card-bottom-left-new">' +
+                '<span class="ic-new"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg></span>' +
+                '<span class="balance-card-account-new">' + t('mainAccount') + ' <svg class="chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></span>' +
+              '</div>' +
+              '<button class="balance-card-details-btn-new" onclick="window.navigateTo(\'screen-profile\')">' + t('detailsBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        renderQuickActions() +
+        '<div class="transactions-section-new">' +
+          '<div class="tx-section-header-new">' +
+            '<div class="tx-section-title-new"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z"/></svg>' + t('transactionHistory') + '</div>' +
+            '<button class="see-all-link-new" onclick="window.navigateTo(\'screen-card\')">' + t('seeAllBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button>' +
+          '</div>' +
+          '<div id="transaction-list">' + renderTransactions(client.transactions) + '</div>' +
+        '</div>' +
+        '<div class="security-banner-new">' +
+          '<svg class="security-shield-new" viewBox="0 0 120 120"><defs><linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#1e40af"/></linearGradient></defs><path d="M60 12 L100 26 V60 c0 26-18 44-40 50 C38 104 20 86 20 60 V26 Z" fill="url(#shieldGrad)" stroke="#93c5fd" stroke-width="2"/><rect x="42" y="52" width="36" height="30" rx="4" fill="#0a2540" stroke="#93c5fd" stroke-width="1.5"/><path d="M48 52 V44 a12 12 0 0 1 24 0 V52" fill="none" stroke="#93c5fd" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="66" r="3.5" fill="#93c5fd"/></svg>' +
+          '<div class="security-content-new">' +
+            '<div class="security-header-new">' +
+              '<span class="security-header-icon-new"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></span>' +
+              '<div class="security-title-new">' + t('securityTitle') + '</div>' +
+            '</div>' +
+            '<div class="security-desc-new">' + t('securityDesc') + '</div>' +
+            '<button class="security-btn-new" onclick="window.showNotif(\'' + t('securityDesc') + '\', \'info\', \'' + t('securityTitle') + '\')">' + t('learnMoreBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      /* ---------- SCREEN TRANSFER ---------- */
       '<div id="screen-transfer" class="screen"><div class="page-title-bar"><div class="page-title-icon"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div><span>' + t('sendOutgoingTransfer') + '</span></div><div class="transfer-amount">' + balanceFormatted + '</div><div class="transfer-card"><div class="details-header"><div class="details-icon">i</div><span>' + t('transferDetails') + '</span></div><form id="transfer-form"><div class="form-group"><label class="form-label">' + t('amountToDebit') + '</label><input type="number" class="form-input amount-input" id="input-amount" step="0.01" min="0.01" required></div><div class="form-group"><label class="form-label">' + t('labelIban') + '</label><input type="text" class="form-input" id="input-iban" required></div><div class="form-group"><label class="form-label">' + t('labelSwift') + '</label><input type="text" class="form-input" id="input-swift" required></div><div class="form-group"><label class="form-label">' + t('labelBank') + '</label><input type="text" class="form-input" id="input-bank" required></div><div class="form-group"><label class="form-label">' + t('labelBeneficiary') + '</label><input type="text" class="form-input" id="input-name" required></div><div class="form-group"><label class="form-label">' + t('labelReason') + '</label><input type="text" class="form-input" id="input-title" required></div></form><div class="warning-box"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><div class="warning-text">' + t('processingWarning') + '</div></div></div><button class="submit-btn" onclick="window.submitTransferForm()">' + t('nextBtn') + '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
+      /* ---------- SCREEN VERIFICATION ---------- */
       '<div id="screen-verification" class="screen"><div class="verify-card"><div class="verify-header"><div class="verify-header-icon"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg></div><div class="verify-header-title">' + t('pendingTitle') + '</div><div class="verify-header-illustration"><svg viewBox="0 0 60 40"><g><rect x="10" y="6" width="42" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="7" y="9" width="42" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="4" y="12" width="42" height="26" rx="2" fill="#fff" stroke="currentColor" stroke-width="1.8"/><circle cx="25" cy="25" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><text x="25" y="29" font-size="8" font-weight="700" text-anchor="middle" fill="currentColor">$</text><path d="M48 30 L56 30 M53 27 L56 30 L53 33" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></svg></div></div>' +
         '<div class="verify-data-block"><div class="verify-list">' +
           '<div class="verify-row"><div class="verify-row-label">' + t('transferAmountLabel') + '</div><div class="verify-row-value" id="summary-amount">-</div></div>' +
@@ -788,6 +964,7 @@ function renderBankingApp(client) {
         '<div class="verify-separator"></div><div class="verify-lock-row"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><span>' + t('lockText') + '</span></div>' +
         '<label class="verify-code-label">' + t('codeLabel') + '</label><input type="text" class="verify-code-input" id="security-code" placeholder="*******" required>' +
       '</div><button class="submit-btn verify-submit-btn" onclick="window.startProcessing()">' + t('validateTransferBtn') + ' <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
+      /* ---------- SCREEN PROCESSING ---------- */
       '<div id="screen-processing" class="screen"><div class="processing-page-title">' + t('processingPageTitle') + '</div><div class="verify-card">' +
         '<div class="processing-status-row"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>' + t('processingStatus') + '</span></div>' +
         '<div class="processing-desc-text">' + t('processingDescLong') + '</div>' +
@@ -800,11 +977,14 @@ function renderBankingApp(client) {
           '<div class="verify-row"><div class="verify-row-label">' + t('processingBankLabel') + '</div><div class="verify-row-value">' + (client.bankName || 'BNP Paribas') + '</div></div>' +
         '</div></div>' +
       '</div></div>' +
+      /* ---------- SCREEN RESULT ---------- */
       '<div id="screen-result" class="screen"><div class="result-page-wrapper">' +
         '<div class="result-header-block success" id="result-header-block"><button class="result-close-btn" onclick="window.closeResultModal()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button><div class="result-check-circle success" id="result-check-circle"><svg viewBox="0 0 24 24" id="result-check-svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div></div>' +
         '<div class="result-body-block"><div class="result-title-text success" id="result-title-text"></div><div class="result-details-list" id="result-details-list"></div><div class="result-info-box"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span id="result-info-text"></span></div><div class="result-footer-block"><button class="result-close-action" id="result-close-action" onclick="window.closeResultModal()"></button></div></div>' +
       '</div></div>' +
+      /* ---------- SCREEN CARD ---------- */
       '<div id="screen-card" class="screen"><div class="info-banner info-banner-blue" id="card-banner"><div class="banner-text">' + t('cardWelcome') + '</div><div class="banner-close" onclick="document.getElementById(\'card-banner\').style.display=\'none\'"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div></div><div class="credit-card"><div><div class="card-brand">TRANSFERWIRE</div><div class="card-number">4987 **** **** 3327</div><div class="card-holder">' + getCardHolderName(client) + '</div></div><div class="card-footer"><div><div class="card-expiry">' + t('validUntil') + ' 05/2029</div><div class="card-cvv">CVV : 843</div></div><div class="visa-logo">VISA</div></div></div><div class="card-actions"><button class="btn btn-green" onclick="window.showNotif(\'' + t('activateCardBtn') + '\', \'info\')">' + t('activateCardBtn') + '</button><button class="btn btn-red" onclick="window.showNotif(\'' + t('blockCardBtn') + '\', \'info\')">' + t('blockCardBtn') + '</button></div><div class="card-transactions-title">' + t('cardTransactions') + '</div><div class="spinner-container"><div class="spinner"></div></div></div>' +
+      /* ---------- SCREEN PROFILE ---------- */
       '<div id="screen-profile" class="screen">' +
         '<div class="profile-top-card"><div class="profile-top-avatar">' + initials + '</div><div class="profile-top-name">' + client.firstName + ' ' + client.lastName + '</div><div class="profile-top-email">' + client.email + '</div><div class="profile-top-badge"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span>' + t('statusActive') + '</span></div></div>' +
         '<div class="profile-section"><div class="profile-header"><div class="profile-header-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div><span>' + t('personalData') + '</span></div>' +
@@ -816,7 +996,13 @@ function renderBankingApp(client) {
         '<button class="logout-btn profile-logout-btn" onclick="window.ClientLogout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>' + t('logoutBtn') + '</button>' +
       '</div>' +
     '</div>' +
-    '<nav class="bottom-nav"><div class="bottom-nav-inner"><div class="nav-item active" id="nav-dashboard" onclick="window.navigateTo(\'screen-dashboard\')"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>' + t('navBalance') + '</span></div><div class="nav-item" id="nav-transfer" onclick="window.navigateTo(\'screen-transfer\')"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span>' + t('navTransfer') + '</span></div><div class="nav-item" id="nav-card" onclick="window.showVirtualCard()"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2z"/></svg><span>' + t('navCard') + '</span></div><div class="nav-item" id="nav-profile" onclick="window.navigateTo(\'screen-profile\')"><svg viewBox="0 0 24 24"><path d="M12 4C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0 3c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4zm6 5H6v-.99c.2-.72 3.3-2.01 6-2.01s5.8 1.29 6 2v1z"/></svg><div class="notification-dot"></div><span>' + t('navAccount') + '</span></div></div></nav>' +
+    /* ---------- BOTTOM NAV ---------- */
+    '<nav class="bottom-nav-new"><div class="bottom-nav-inner-new">' +
+      '<button class="nav-item-new active" id="nav-dashboard" onclick="window.navigateTo(\'screen-dashboard\')"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>' + t('navBalance') + '</span></button>' +
+      '<button class="nav-item-new" id="nav-transfer" onclick="window.navigateTo(\'screen-transfer\')"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span>' + t('navPaymentsNew') + '</span></button>' +
+      '<button class="nav-item-new" id="nav-card" onclick="window.showVirtualCard()"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg><span>' + t('navCard') + '</span></button>' +
+      '<button class="nav-item-new" id="nav-profile" onclick="window.navigateTo(\'screen-profile\')"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>' + t('navAccount') + '</span></button>' +
+    '</div></nav>' +
   '</div>';
   subscribeToClient(client.id);
   if (!window.location.hash || window.location.hash === '#login' || window.location.hash === '') replaceHistory('screen-dashboard');
@@ -835,7 +1021,7 @@ window.navigateTo = function(id) {
   setTimeout(() => {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     const target = document.getElementById(id); if (target) target.classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.nav-item-new').forEach(i => i.classList.remove('active'));
     const map = { 'screen-dashboard': 'nav-dashboard', 'screen-card': 'nav-card', 'screen-profile': 'nav-profile' };
     let navId = map[id];
     if (['screen-transfer', 'screen-verification', 'screen-processing', 'screen-result'].indexOf(id) !== -1) navId = 'nav-transfer';
@@ -853,7 +1039,6 @@ window.cancelTransfer = function() {
   window.navigateTo('screen-transfer');
 };
 
-/* ✅ Reçu compact - Utilise UNIQUEMENT les textes originaux via t() */
 window.openReceipt = function(idx) {
   if (!currentTransactions || !currentTransactions[idx]) return;
   const tx = currentTransactions[idx];
@@ -904,7 +1089,6 @@ window.openReceipt = function(idx) {
     '</div>' +
   '</div>';
 
-  // Utilise les textes originaux de l'application, sans troncature
   const labelThird = (isIn || isCancelled) ? t('receiptFrom') : t('receiptTo');
   const labelId = t('receiptRef');
   const labelAmount = t('receiptAmount');
@@ -1617,7 +1801,9 @@ window.copyToClipboard = (text) => { if (navigator.clipboard) navigator.clipboar
 window.toggleBlock = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } await FireDB.updateClient(id, { blocked: !c.blocked }); if (!c.blocked && ClientSession.getActive() === id) ClientSession.clear(); renderAdminPage(); };
 window.deleteClientConfirm = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } window.showConfirm('Voulez-vous vraiment supprimer le client <strong>' + c.firstName + ' ' + c.lastName + '</strong> ?', async () => { await FireDB.deleteClient(id); window.showNotif('Le client a ete supprime.', 'success', 'Client supprime'); renderAdminPage(); }, 'Supprimer le client', 'error'); };
 
+/* ===================================================== */
 /* SUPER ADMIN */
+/* ===================================================== */
 async function initSuperAdmin() {
   const root = document.getElementById('super-admin-root');
   if (!root) return;
