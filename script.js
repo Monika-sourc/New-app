@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v57 - Nouvelle interface (maquette) - 5 langues
+// v57.1 - Interface maquette + corrections demandées
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -745,17 +745,16 @@ function translateSubtitle(subtitle) {
   return subtitle;
 }
 
-/* ✅ NOUVELLE VERSION v57 : 4 quick actions avec cercles colorés */
+/* ✅ v57.1 : 3 quick actions (sans "Plus") */
 function renderQuickActions() {
   return '<div class="quick-actions-row-new">' +
     '<div class="quick-action-item-new" onclick="window.showIban()"><div class="quick-action-icon-new green"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></div><div class="quick-action-label-new">' + t('quickIbanLabel') + '</div><div class="quick-action-sublabel-new">' + t('quickIbanSub') + '</div></div>' +
     '<div class="quick-action-item-new" onclick="window.showVirtualCard()"><div class="quick-action-icon-new blue"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div><div class="quick-action-label-new">' + t('quickCardLabel') + '</div><div class="quick-action-sublabel-new">' + t('quickCardSub') + '</div></div>' +
     '<div class="quick-action-item-new" onclick="window.navigateTo(\'screen-transfer\')"><div class="quick-action-icon-new purple"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></div><div class="quick-action-label-new">' + t('quickTransferLabel') + '</div><div class="quick-action-sublabel-new">' + t('quickTransferSub') + '</div></div>' +
-    '<div class="quick-action-item-new" onclick="window.showNotif(\'' + t('quickMoreSub') + '\', \'info\', \'' + t('quickMoreLabel') + '\')"><div class="quick-action-icon-new teal"><svg viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></div><div class="quick-action-label-new">' + t('quickMoreLabel') + '</div><div class="quick-action-sublabel-new">' + t('quickMoreSub') + '</div></div>' +
   '</div>';
 }
 
-/* ✅ NOUVELLE VERSION v57 : Virement reçu = VERT, envoyé = ROUGE, annulé = VIOLET */
+/* ✅ v57.1 : Virement reçu = VERT, envoyé = ROUGE, annulé = VIOLET */
 function renderTransactions(txs) {
   currentTransactions = txs || [];
   if (!txs || txs.length === 0) {
@@ -867,7 +866,7 @@ function renderLoginPage(client) {
   });
 }
 
-/* ✅ NOUVELLE VERSION v57 : header bleu foncé + dashboard maquette + bottom nav */
+/* ✅ v57.1 : header bleu foncé + dashboard maquette + bottom nav (avec 4 items ronds) */
 function renderBankingApp(client) {
   currentClient = client;
   currentLang = client.language || 'fr';
@@ -912,13 +911,19 @@ function renderBankingApp(client) {
           '<div class="balance-card-inner-new">' +
             '<div class="balance-card-top-new">' +
               '<div class="balance-card-type-icon-new"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg></div>' +
-              '<div class="balance-card-type-label-new">' + t('personalLabel') + ' · ' + currency + ' <svg class="chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></div>' +
+              '<div class="balance-card-type-label-new">' + t('personalLabel') + ' · <span class="curr-symbol">' + currency + '</span> <svg class="chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></div>' +
             '</div>' +
             '<div class="balance-card-chip-new">' +
               '<svg class="balance-card-chip-svg-new" viewBox="0 0 40 30"><rect x="0" y="0" width="40" height="30" rx="4" fill="#d4a437"/><rect x="2" y="2" width="36" height="26" rx="3" fill="none" stroke="#8a6a1a" stroke-width="1"/><line x1="0" y1="10" x2="40" y2="10" stroke="#8a6a1a" stroke-width="0.7"/><line x1="0" y1="20" x2="40" y2="20" stroke="#8a6a1a" stroke-width="0.7"/><line x1="13" y1="0" x2="13" y2="30" stroke="#8a6a1a" stroke-width="0.7"/><line x1="27" y1="0" x2="27" y2="30" stroke="#8a6a1a" stroke-width="0.7"/></svg>' +
               '<svg class="balance-card-waves-new" viewBox="0 0 24 24"><path d="M4 8c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2v2c-2 0-2-2-4-2s-2 2-4 2-2-2-4-2-2 2-4 2V8zm0 6c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2v2c-2 0-2-2-4-2s-2 2-4 2-2-2-4-2-2 2-4 2v-2z"/></svg>' +
             '</div>' +
-            '<div class="balance-card-amount-new"><span>' + balanceRaw + '</span><span class="cur-new">' + currency + '</span></div>' +
+            /* ✅ v57.1 : décimales et devise plus petites */
+            '<div class="balance-card-amount-new">' + (function(){
+              const parts = balanceRaw.split(',');
+              const intPart = parts[0] || '0';
+              const decPart = parts[1] !== undefined ? ',' + parts[1] : ',00';
+              return '<span class="int-part">' + intPart + '</span><span class="dec-part">' + decPart + '</span><span class="cur-part">' + currency + '</span>';
+            })() + '</div>' +
             '<div class="balance-card-sub-new"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>' + t('availableBalance') + '</div>' +
             '<div class="balance-card-bottom-new">' +
               '<div class="balance-card-bottom-left-new">' +
@@ -933,7 +938,7 @@ function renderBankingApp(client) {
         '<div class="transactions-section-new">' +
           '<div class="tx-section-header-new">' +
             '<div class="tx-section-title-new"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z"/></svg>' + t('transactionHistory') + '</div>' +
-            '<button class="see-all-link-new" onclick="window.navigateTo(\'screen-card\')">' + t('seeAllBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button>' +
+            '<button class="see-all-link-new" onclick="window.showFullHistory()">' + t('seeAllBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button>' +
           '</div>' +
           '<div id="transaction-list">' + renderTransactions(client.transactions) + '</div>' +
         '</div>' +
@@ -1037,6 +1042,31 @@ window.cancelTransfer = function() {
   const codeInput = document.getElementById('security-code'); if (codeInput) codeInput.value = '';
   pendingTransferAmount = 0; pendingTransferPercent = 100;
   window.navigateTo('screen-transfer');
+};
+
+/* ✅ v57.1 : Nouvelle fonction pour afficher l'historique complet */
+window.showFullHistory = function() {
+  const old = document.getElementById('full-history-modal-dyn');
+  if (old) old.remove();
+  const txs = (currentClient && currentClient.transactions) || [];
+  let bodyHtml;
+  if (!txs || txs.length === 0) {
+    bodyHtml = '<div class="full-history-empty"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z"/></svg>' + t('noTransactions') + '</div>';
+  } else {
+    bodyHtml = renderTransactions(txs);
+  }
+  const ov = document.createElement('div');
+  ov.id = 'full-history-modal-dyn';
+  ov.className = 'full-history-overlay';
+  ov.innerHTML = '<div class="full-history-modal">' +
+    '<div class="full-history-header">' +
+      '<h3>' + t('transactionHistory') + '</h3>' +
+      '<button class="full-history-close" onclick="document.getElementById(\'full-history-modal-dyn\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
+    '</div>' +
+    '<div class="full-history-body">' + bodyHtml + '</div>' +
+  '</div>';
+  ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
+  document.body.appendChild(ov);
 };
 
 window.openReceipt = function(idx) {
