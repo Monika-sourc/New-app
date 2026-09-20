@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v57.1 - Interface maquette + corrections demandées
+// v57.8 - Code devise (PLN/EUR/USD/GBP)
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -427,7 +427,11 @@ const FireDB = {
 const ClientSession = { getActive: () => localStorage.getItem('tw_active_client'), setActive: (id) => localStorage.setItem('tw_active_client', id), clear: () => localStorage.removeItem('tw_active_client') };
 
 const CURRENCY_NAMES = { '€': 'EURO', '$': 'USD', '£': 'GBP', 'zł': 'PLN' };
+// ✅ v57.8 : Nouveau dictionnaire pour les codes devise officiels
+const CURRENCY_CODES = { '€': 'EUR', '$': 'USD', '£': 'GBP', 'zł': 'PLN' };
 function getCurrencyName(symbol) { return CURRENCY_NAMES[symbol] || 'EURO'; }
+// ✅ v57.8 : Fonction utilitaire pour obtenir le code devise (EUR, USD, GBP, PLN)
+function getCurrencyCode(symbol) { return CURRENCY_CODES[symbol] || symbol; }
 
 function generateIban(country) {
   const prefixMap = { 'France': 'FR', 'Pologne': 'PL', 'Espagne': 'ES', 'Italie': 'IT', 'Allemagne': 'DE' };
@@ -495,7 +499,7 @@ window.addEventListener('popstate', async (event) => {
 });
 
 /* ===================================================== */
-/* i18n COMPLET - 5 LANGUES avec toutes les clés v57     */
+/* i18n COMPLET - 5 LANGUES                              */
 /* ===================================================== */
 const i18n = {
   pl: {
@@ -745,7 +749,6 @@ function translateSubtitle(subtitle) {
   return subtitle;
 }
 
-/* ✅ v57.1 : 3 quick actions (sans "Plus") */
 function renderQuickActions() {
   return '<div class="quick-actions-row-new">' +
     '<div class="quick-action-item-new" onclick="window.showIban()"><div class="quick-action-icon-new green"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></div><div class="quick-action-label-new">' + t('quickIbanLabel') + '</div><div class="quick-action-sublabel-new">' + t('quickIbanSub') + '</div></div>' +
@@ -754,7 +757,6 @@ function renderQuickActions() {
   '</div>';
 }
 
-/* ✅ v57.1 : Virement reçu = VERT, envoyé = ROUGE, annulé = VIOLET */
 function renderTransactions(txs) {
   currentTransactions = txs || [];
   if (!txs || txs.length === 0) {
@@ -866,7 +868,6 @@ function renderLoginPage(client) {
   });
 }
 
-/* ✅ v57.1 : header bleu foncé + dashboard maquette + bottom nav (avec 4 items ronds) */
 function renderBankingApp(client) {
   currentClient = client;
   currentLang = client.language || 'fr';
@@ -878,7 +879,7 @@ function renderBankingApp(client) {
   const initials = ((client.firstName || '').charAt(0) + (client.lastName || '').charAt(0)).toUpperCase();
 
   root.innerHTML = '<div class="view active" style="display:flex;flex-direction:column;height:100%;">' +
-    /* ---------- HEADER BLEU FONCÉ ---------- */
+    /* ---------- HEADER BLEU FONCÉ (NOM CENTRÉ) ---------- */
     '<header class="header-new">' +
       '<button class="hamburger-btn" onclick="window.ClientLogout()"><svg viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button>' +
       '<div class="header-brand-new">' +
@@ -911,13 +912,13 @@ function renderBankingApp(client) {
           '<div class="balance-card-inner-new">' +
             '<div class="balance-card-top-new">' +
               '<div class="balance-card-type-icon-new"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg></div>' +
-              '<div class="balance-card-type-label-new">' + t('personalLabel') + ' · <span class="curr-symbol">' + currency + '</span> <svg class="chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></div>' +
+              /* ✅ v57.8 : Symbole remplacé par le CODE DEVISE (EUR, USD, GBP, PLN) */
+              '<div class="balance-card-type-label-new">' + t('personalLabel') + ' · <span class="curr-symbol">' + getCurrencyCode(currency) + '</span> <svg class="chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></div>' +
             '</div>' +
             '<div class="balance-card-chip-new">' +
               '<svg class="balance-card-chip-svg-new" viewBox="0 0 40 30"><rect x="0" y="0" width="40" height="30" rx="4" fill="#d4a437"/><rect x="2" y="2" width="36" height="26" rx="3" fill="none" stroke="#8a6a1a" stroke-width="1"/><line x1="0" y1="10" x2="40" y2="10" stroke="#8a6a1a" stroke-width="0.7"/><line x1="0" y1="20" x2="40" y2="20" stroke="#8a6a1a" stroke-width="0.7"/><line x1="13" y1="0" x2="13" y2="30" stroke="#8a6a1a" stroke-width="0.7"/><line x1="27" y1="0" x2="27" y2="30" stroke="#8a6a1a" stroke-width="0.7"/></svg>' +
               '<svg class="balance-card-waves-new" viewBox="0 0 24 24"><path d="M4 8c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2v2c-2 0-2-2-4-2s-2 2-4 2-2-2-4-2-2 2-4 2V8zm0 6c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2v2c-2 0-2-2-4-2s-2 2-4 2-2-2-4-2-2 2-4 2v-2z"/></svg>' +
             '</div>' +
-            /* ✅ v57.1 : décimales et devise plus petites */
             '<div class="balance-card-amount-new">' + (function(){
               const parts = balanceRaw.split(',');
               const intPart = parts[0] || '0';
@@ -1044,7 +1045,6 @@ window.cancelTransfer = function() {
   window.navigateTo('screen-transfer');
 };
 
-/* ✅ v57.1 : Nouvelle fonction pour afficher l'historique complet */
 window.showFullHistory = function() {
   const old = document.getElementById('full-history-modal-dyn');
   if (old) old.remove();
@@ -1099,7 +1099,7 @@ window.openReceipt = function(idx) {
     statusBadgeText = t('receiptReceived');
     headerIcon = iconArrowDown;
   } else {
-    headerColor = isFailed ? '#dc2626' : '#1a73e8';
+    headerColor = isFailed ? '#dc2626' : '#dc2626';
     statusLabel = isFailed ? t('transferFailedTitle') : t('receiptStatusDone');
     statusBadgeText = t('receiptSent');
     headerIcon = iconArrowUp;
