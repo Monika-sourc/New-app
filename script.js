@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v59 - Interface bancaire pro + bulles animées restaurées
+// v55 - Textes 100% originaux restaurés (aucune coupure)
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -496,6 +496,7 @@ window.addEventListener('popstate', async (event) => {
 
 /* ===================================================== */
 /* i18n COMPLET - TEXTES ORIGINAUX INTACTS               */
+/* AUCUNE COUPURE - Chaque phrase est complète           */
 /* ===================================================== */
 const i18n = {
   pl: {
@@ -640,30 +641,15 @@ function translateSubtitle(subtitle) {
   return subtitle;
 }
 
-/* ================================================================ */
-/* ✨ NOUVEAU RENDER BALANCE HERO - design pro + bulles animées      */
-/* ================================================================ */
 function renderBalanceHero(client) {
   const currency = client.currency || '€';
   const currencyLabel = getCurrencyName(currency);
   const parts = splitBalance(client.balance || 0, currency);
-  const soldeLabel = t('balanceLabel').replace(/\s*:\s*$/, '');
   return '<div class="hero-bubbles"><span class="hero-bubble b1"></span><span class="hero-bubble b2"></span><span class="hero-bubble b3"></span><span class="hero-bubble b4"></span><span class="hero-bubble b5"></span><span class="hero-bubble b6"></span><span class="hero-bubble b7"></span><span class="hero-bubble b8"></span></div>' +
-    '<div class="hero-top-row">' +
-      '<div class="hero-account-badge">' +
-        '<span class="hero-account-dot"></span>' +
-        '<span>' + t('personalAccount') + ' · ' + currencyLabel + '</span>' +
-      '</div>' +
-      '<div class="hero-chip"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div>' +
-    '</div>' +
-    '<div class="hero-balance-wrap">' +
-      '<div class="hero-balance-label">' + soldeLabel + '</div>' +
-      '<div class="balance-big"><span class="balance-int">' + parts.intPart + '</span><span class="balance-dec">' + parts.decPart + '</span></div>' +
-    '</div>' +
-    '<div class="hero-bottom-row">' +
-      '<button class="account-pill" onclick="window.navigateTo(\'screen-profile\')">' + t('accounts') + ' <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button>' +
-      '<div class="dots-indicator"><span class="active"></span><span></span><span></span></div>' +
-    '</div>';
+    '<div class="balance-label">' + t('personalAccount') + ' · ' + currencyLabel + '</div>' +
+    '<div class="balance-big"><span class="balance-int">' + parts.intPart + '</span><span class="balance-dec">' + parts.decPart + '</span></div>' +
+    '<button class="account-pill" onclick="window.navigateTo(\'screen-profile\')">' + t('accounts') + '</button>' +
+    '<div class="dots-indicator"><span class="active"></span><span></span><span></span></div>';
 }
 
 function renderQuickActions() {
@@ -676,13 +662,8 @@ function renderQuickActions() {
 
 function renderTransactions(txs) {
   currentTransactions = txs || [];
-  if (!txs || txs.length === 0) return '<div class="empty-transactions"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm-7 13c0-2.33 4.67-3.5 7-3.5s7 1.17 7 3.5v1H5v-1z"/></svg><p>' + t('noTransactions') + '</p></div>';
-  let dateHeaderHtml = '';
-  if (txs[0] && txs[0].date) {
-    const dp = String(txs[0].date).split(' ');
-    if (dp[0]) dateHeaderHtml = '<div class="transaction-date-header">' + dp[0] + '</div>';
-  }
-  let h = dateHeaderHtml;
+  if (!txs || txs.length === 0) return '<p style="color:#1e293b;font-size:11px;text-align:center;padding:15px 0;font-weight:600;">' + t('noTransactions') + '</p>';
+  let h = '';
   txs.forEach((tx, idx) => {
     const isCancelled = tx.type === 'cancelled';
     const isIn = tx.type === 'in';
@@ -793,7 +774,7 @@ function renderBankingApp(client) {
   root.innerHTML = '<div class="view active" style="display:flex;flex-direction:column;height:100%;">' +
     '<header class="app-header"><button class="icon-button menu-icon" onclick="window.ClientLogout()"><svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button><div class="header-title">TRANSFERWIRE</div><button class="icon-button" onclick="window.navigateTo(\'screen-profile\')"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></button></header>' +
     '<div class="screens-container">' +
-      '<div id="screen-dashboard" class="screen active"><div class="greeting">' + t('greeting') + ', ' + client.firstName + '</div><div class="greeting-sub">' + (function(){ const lm = { fr: 'fr-FR', pl: 'pl-PL', es: 'es-ES', it: 'it-IT', de: 'de-DE' }; const lc = lm[currentLang] || 'fr-FR'; const d = new Date(); const s = d.toLocaleDateString(lc, { weekday: 'long', day: 'numeric', month: 'long' }); return s.charAt(0).toUpperCase() + s.slice(1); })() + '</div><div class="dashboard-hero" id="balance-hero">' + renderBalanceHero(client) + '</div><div class="section-title">' + t('transactionHistory') + '</div><div class="transaction-list" id="transaction-list">' + renderTransactions(client.transactions) + '</div>' + renderQuickActions() + '</div>' +
+      '<div id="screen-dashboard" class="screen active"><div class="greeting">' + t('greeting') + ', ' + client.firstName + ' ' + client.lastName + '</div><div class="dashboard-hero" id="balance-hero">' + renderBalanceHero(client) + '</div>' + renderQuickActions() + '<div class="section-title">' + t('transactionHistory') + '</div><div class="transaction-list" id="transaction-list">' + renderTransactions(client.transactions) + '</div></div>' +
       '<div id="screen-transfer" class="screen"><div class="page-title-bar"><div class="page-title-icon"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div><span>' + t('sendOutgoingTransfer') + '</span></div><div class="transfer-amount">' + balanceFormatted + '</div><div class="transfer-card"><div class="details-header"><div class="details-icon">i</div><span>' + t('transferDetails') + '</span></div><form id="transfer-form"><div class="form-group"><label class="form-label">' + t('amountToDebit') + '</label><input type="number" class="form-input amount-input" id="input-amount" step="0.01" min="0.01" required></div><div class="form-group"><label class="form-label">' + t('labelIban') + '</label><input type="text" class="form-input" id="input-iban" required></div><div class="form-group"><label class="form-label">' + t('labelSwift') + '</label><input type="text" class="form-input" id="input-swift" required></div><div class="form-group"><label class="form-label">' + t('labelBank') + '</label><input type="text" class="form-input" id="input-bank" required></div><div class="form-group"><label class="form-label">' + t('labelBeneficiary') + '</label><input type="text" class="form-input" id="input-name" required></div><div class="form-group"><label class="form-label">' + t('labelReason') + '</label><input type="text" class="form-input" id="input-title" required></div></form><div class="warning-box"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><div class="warning-text">' + t('processingWarning') + '</div></div></div><button class="submit-btn" onclick="window.submitTransferForm()">' + t('nextBtn') + '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
       '<div id="screen-verification" class="screen"><div class="verify-card"><div class="verify-header"><div class="verify-header-icon"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg></div><div class="verify-header-title">' + t('pendingTitle') + '</div><div class="verify-header-illustration"><svg viewBox="0 0 60 40"><g><rect x="10" y="6" width="42" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="7" y="9" width="42" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="4" y="12" width="42" height="26" rx="2" fill="#fff" stroke="currentColor" stroke-width="1.8"/><circle cx="25" cy="25" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><text x="25" y="29" font-size="8" font-weight="700" text-anchor="middle" fill="currentColor">$</text><path d="M48 30 L56 30 M53 27 L56 30 L53 33" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></svg></div></div>' +
         '<div class="verify-data-block"><div class="verify-list">' +
@@ -872,6 +853,7 @@ window.cancelTransfer = function() {
   window.navigateTo('screen-transfer');
 };
 
+/* ✅ Reçu compact - Utilise UNIQUEMENT les textes originaux via t() */
 window.openReceipt = function(idx) {
   if (!currentTransactions || !currentTransactions[idx]) return;
   const tx = currentTransactions[idx];
@@ -922,6 +904,7 @@ window.openReceipt = function(idx) {
     '</div>' +
   '</div>';
 
+  // Utilise les textes originaux de l'application, sans troncature
   const labelThird = (isIn || isCancelled) ? t('receiptFrom') : t('receiptTo');
   const labelId = t('receiptRef');
   const labelAmount = t('receiptAmount');
