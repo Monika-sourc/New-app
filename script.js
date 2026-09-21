@@ -536,7 +536,8 @@ const i18n = {
     amountToDebit: "Kwota do obciążenia", labelIban: "IBAN / Numer konta", labelSwift: "Kod banku (BIC/SWIFT)", labelBank: "Nazwa banku", labelBeneficiary: "Nazwa beneficjenta", labelReason: "Powód przeniesienia",
     processingWarning: "Realizacja w ciągu 1-3 minut po weryfikacji końcowej.", nextBtn: "Następny", transferSummary: "Podsumowanie transferu", transferAmountLabel: "Kwota przelewu:", ibanLabel: "IBAN/numer", ibanLabelLine2: "konta:", swiftLabel: "Kod banku:", bankLabel: "Bank odbiorczy:", beneficiaryLabel: "Nazwa beneficjenta:", reasonLabel: "Powód przeniesienia:", identityVerification: "Weryfikacja tożsamości", verificationDesc: "Wprowadź kod zabezpieczający:", sendBtn: "Wyślij", wellDone: "Dobrze zrobiony!", processingDesc: "Weryfikacja zakończona pomyślnie.", amountToReceive: "Kwota do otrzymania:", processingText: "Transfer w toku...", cardWelcome: "Gratulacje, karta jest dostępna.", activateCardBtn: "Aktywuj", blockCardBtn: "Zablokuj", cardTransactions: "Transakcje kartowe", validUntil: "Ważne do:", personalData: "Dane osobowe", accountOwner: "Właściciel", emailLabel: "E-mail", phoneLabel: "Telefon", countryLabel: "Kraj", addressLabel: "Adres", accountAndTransfer: "Konto i przelew", balanceProfile: "Saldo", accountType: "Typ", accountStatus: "Stan", statusActive: "Aktywny", supportedTransfer: "Transfer", beneficiaryIban: "IBAN", accountTypeValue: "Profesjonalny", transferTypeValue: "Klasyczny", profileBanner: "Skontaktuj się z pomocą.", logoutBtn: "Rozłącz", modalSuccess: "Przeniesienie {amount} wysłane", modalFailure: "Przeniesienie {amount} nieudane", modalFailedAt: "Przelew {amount} nieudany na {percent}%", sendTime: "Czas:", closeBtn: "Zamknij", navBalance: "Pulpit", navCard: "Karta", navTransfer: "Płatności", navAccount: "Profil", txTransferSent: "Przelew wysłany", txTransferReceived: "Przelew otrzymany",
     invalidAmount: "Wpisz prawidłową kwotę.", amountExceedsBalance: "Kwota przekracza saldo.", pendingTitle: "Szczegóły oczekującego przelewu", cancelTransferBtn: "Anuluj przelew", lockText: "Wprowadź kod aktywacyjny przelewu", codeLabel: "Kod aktywacyjny", validateTransferBtn: "Zatwierdź przelew", processingPageTitle: "Twoje zlecenie przelewu w toku...", processingStatus: "Weryfikacja tożsamości zakończona pomyślnie.", processingDescLong: "Poczekaj na zakończenie przelewu środków do Twojego banku przed odświeżeniem tej strony.", processingDetailsTitle: "Szczegóły przelewu w toku", processingAmountLabel: "Kwota przelewu :", processingBeneficiaryLabel: "Nazwa beneficjenta :", processingIbanLabel: "IBAN / Numer konta :", processingBankLabel: "Nazwa banku :",
-    receiptTitle: "Potwierdzenie transakcji", receiptSent: "Przelew wysłany", receiptReceived: "Przelew otrzymany", receiptAmount: "Kwota", receiptTo: "Odbiorca", receiptFrom: "Nadawca", receiptDate: "Data", receiptStatus: "Status", receiptStatusDone: "Zrealizowany", receiptRef: "Referencja", receiptClose: "Zamknij", receiptRecipientAccount: "Konto odbiorcy", receiptSenderAccount: "Konto nadawcy"
+    receiptTitle: "Potwierdzenie transakcji", receiptSent: "Przelew wysłany", receiptReceived: "Przelew otrzymany", receiptAmount: "Kwota", receiptTo: "Odbiorca", receiptFrom: "Nadawca", receiptDate: "Data", receiptStatus: "Status", receiptStatusDone: "Zrealizowany", receiptRef: "Referencja", receiptClose: "Zamknij", receiptRecipientAccount: "Konto odbiorcy", receiptSenderAccount: "Konto nadawcy",
+    profileEditBtn: "Edytuj", profileVerified: "Profil zweryfikowany", profilePersonalData: "Dane osobowe", profilePersonalDataSub: "Twoje dane osobowe", profileAccountSub: "Szczegóły konta i przelewów", profileSecurityDesc: "Twoje dane są chronione szyfrowaniem wysokiego poziomu."
   },
   fr: {
     loginTitle: "Connectez-vous à votre compte", emailPh: "Votre adresse e-mail", pinPh: "Votre code d'accès", loginBtn: "Se connecter", loginErr: "Adresse e-mail ou code PIN incorrect.", greeting: "Bonjour",
@@ -572,9 +573,10 @@ const i18n = {
     transferDetailsTitle: "Détails du virement", txTransferCancelled: "Virement annulé", txInitialDeposit: "Dépôt initial",
     personalAccount: "Personnel", accounts: "Comptes", seeIban: "Voir mon IBAN", virtualCard: "Carte virtuelle", makeTransferShort: "Faire un virement", myIbanTitle: "Mon IBAN", copyBtn: "Copier", copied: "Copié !", balanceLabel: "Solde du compte :", transactionHistory: "Historique des transactions", noTransactions: "Aucun historique.", sendOutgoingTransfer: "Envoyer un virement sortant", transferDetails: "Détails du virement",
     amountToDebit: "Montant à débiter", labelIban: "IBAN / Numéro de compte", labelSwift: "Code banque (BIC/SWIFT)", labelBank: "Nom de la banque", labelBeneficiary: "Nom du bénéficiaire", labelReason: "Motif du virement",
-    processingWarning: "Réalisation sous 1 à 3 minutes après vérification finale.", nextBtn: "Suivant", transferSummary: "Récapitulatif", transferAmountLabel: "Montant :", ibanLabel: "IBAN/Numéro", ibanLabelLine2: "de compte :", swiftLabel: "Code banque :", bankLabel: "Banque destinataire :", beneficiaryLabel: "Nom du bénéficiaire :", reasonLabel: "Motif :", identityVerification: "Vérification d'identité", verificationDesc: "Saisissez le code de sécurité :", sendBtn: "Envoyer", wellDone: "Bien joué !", processingDesc: "Vérification réussie.", amountToReceive: "Montant à recevoir :", processingText: "Virement en cours...", cardWelcome: "Félicitations, votre carte est disponible.", activateCardBtn: "Activer ma carte", blockCardBtn: "Bloquer ma carte", cardTransactions: "Transactions par carte", validUntil: "Valable jusqu'au :", personalData: "Données personnelles", accountOwner: "Titulaire", emailLabel: "E-mail", phoneLabel: "Téléphone", countryLabel: "Pays", addressLabel: "Adresse", accountAndTransfer: "Compte et virement", balanceProfile: "Solde", accountType: "Type", accountStatus: "Statut", statusActive: "Actif", supportedTransfer: "Virement supporté", beneficiaryIban: "IBAN du bénéficiaire", accountTypeValue: "Professionnel", transferTypeValue: "Classique", profileBanner: "Contactez notre équipe d'assistance.", logoutBtn: "Se déconnecter", modalSuccess: "Virement de {amount} envoyé", modalFailure: "Virement de {amount} échoué", modalFailedAt: "Virement {amount} échoué à {percent}%", sendTime: "Heure d'envoi :", closeBtn: "Fermer", navBalance: "Accueil", navCard: "Carte virtuelle", navTransfer: "Paiements", navAccount: "Profil", txTransferSent: "Virement envoyé", txTransferReceived: "Virement reçu",
+    processingWarning: "Réalisation sous 1 à 3 minutes après vérification finale.", nextBtn: "Suivant", transferSummary: "Récapitulatif", transferAmountLabel: "Montant :", ibanLabel: "IBAN/Numéro", ibanLabelLine2: "de compte :", swiftLabel: "Code banque :", bankLabel: "Banque destinataire :", beneficiaryLabel: "Nom du bénéficiaire :", reasonLabel: "Motif :", identityVerification: "Vérification d'identité", verificationDesc: "Saisissez le code de sécurité :", sendBtn: "Envoyer", wellDone: "Bien joué !", processingDesc: "Vérification réussie.", amountToReceive: "Montant à recevoir :", processingText: "Virement en cours...", cardWelcome: "Félicitations, votre carte est disponible.", activateCardBtn: "Activer ma carte", blockCardBtn: "Bloquer ma carte", cardTransactions: "Transactions par carte", validUntil: "Valable jusqu'au :", personalData: "Données personnelles", accountOwner: "Titulaire", emailLabel: "E-mail", phoneLabel: "Téléphone", countryLabel: "Pays", addressLabel: "Adresse", accountAndTransfer: "Compte et virement", balanceProfile: "Solde", accountType: "Type de compte", accountStatus: "Statut", statusActive: "Actif", supportedTransfer: "Virement supporté", beneficiaryIban: "IBAN du bénéficiaire", accountTypeValue: "Professionnel", transferTypeValue: "Classique", profileBanner: "Contactez notre équipe d'assistance.", logoutBtn: "Se déconnecter", modalSuccess: "Virement de {amount} envoyé", modalFailure: "Virement de {amount} échoué", modalFailedAt: "Virement {amount} échoué à {percent}%", sendTime: "Heure d'envoi :", closeBtn: "Fermer", navBalance: "Accueil", navCard: "Carte virtuelle", navTransfer: "Paiements", navAccount: "Profil", txTransferSent: "Virement envoyé", txTransferReceived: "Virement reçu",
     invalidAmount: "Veuillez saisir un montant valide.", amountExceedsBalance: "Le montant dépasse votre solde disponible.", pendingTitle: "Détails du virement en attente", cancelTransferBtn: "Annuler le virement", lockText: "Veuillez saisir le code d'activation du virement", codeLabel: "Code d'activation", validateTransferBtn: "Valider le virement", processingPageTitle: "Votre ordre de virement en cours...", processingStatus: "Vérification d'identité effectuée avec succès.", processingDescLong: "Veuillez patienter la fin du virement des fonds vers votre banque avant d'actualiser cette page.", processingDetailsTitle: "Détails du virement en cours", processingAmountLabel: "Montant du virement :", processingBeneficiaryLabel: "Nom du bénéficiaire :", processingIbanLabel: "IBAN / Numéro de Compte :", processingBankLabel: "Nom de la Banque :",
-    receiptTitle: "Reçu de transaction", receiptSent: "Virement envoyé", receiptReceived: "Virement reçu", receiptAmount: "Montant", receiptTo: "Bénéficiaire", receiptFrom: "Expéditeur", receiptDate: "Date", receiptStatus: "Statut", receiptStatusDone: "Effectué", receiptRef: "Référence", receiptClose: "Fermer", receiptRecipientAccount: "Compte bénéficiaire", receiptSenderAccount: "Compte émetteur"
+    receiptTitle: "Reçu de transaction", receiptSent: "Virement envoyé", receiptReceived: "Virement reçu", receiptAmount: "Montant", receiptTo: "Bénéficiaire", receiptFrom: "Expéditeur", receiptDate: "Date", receiptStatus: "Statut", receiptStatusDone: "Effectué", receiptRef: "Référence", receiptClose: "Fermer", receiptRecipientAccount: "Compte bénéficiaire", receiptSenderAccount: "Compte émetteur",
+    profileEditBtn: "Modifier", profileVerified: "Profil vérifié", profilePersonalData: "Données personnelles", profilePersonalDataSub: "Vos informations personnelles", profileAccountSub: "Détails de votre compte et de vos virements", profileSecurityDesc: "Vos données sont protégées par un chiffrement de haute sécurité."
   },
   es: {
     loginTitle: "Inicia sesión", emailPh: "Tu correo", pinPh: "Tu código", loginBtn: "Iniciar", loginErr: "Correo o PIN incorrecto.", greeting: "Hola",
@@ -612,7 +614,8 @@ const i18n = {
     amountToDebit: "Importe a debitar", labelIban: "IBAN / Número de cuenta", labelSwift: "Código banco (BIC/SWIFT)", labelBank: "Nombre del banco", labelBeneficiary: "Nombre del beneficiario", labelReason: "Motivo",
     processingWarning: "Realización en 1-3 minutos tras verificación final.", nextBtn: "Siguiente", transferSummary: "Resumen", transferAmountLabel: "Importe:", ibanLabel: "IBAN", ibanLabelLine2: "de cuenta:", swiftLabel: "BIC:", bankLabel: "Banco:", beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:", identityVerification: "Verificación", verificationDesc: "Introduzca el código:", sendBtn: "Enviar", wellDone: "¡Bien hecho!", processingDesc: "Verificación exitosa.", amountToReceive: "Importe:", processingText: "En curso...", cardWelcome: "Tarjeta disponible.", activateCardBtn: "Activar", blockCardBtn: "Bloquear", cardTransactions: "Transacciones", validUntil: "Válida hasta:", personalData: "Datos personales", accountOwner: "Titular", emailLabel: "Correo", phoneLabel: "Teléfono", countryLabel: "País", addressLabel: "Dirección", accountAndTransfer: "Cuenta y transferencia", balanceProfile: "Saldo", accountType: "Tipo", accountStatus: "Estado", statusActive: "Activo", supportedTransfer: "Soporte", beneficiaryIban: "IBAN del beneficiario", accountTypeValue: "Profesional", transferTypeValue: "Clásico", profileBanner: "Contacte con soporte.", logoutBtn: "Salir", modalSuccess: "Transferencia de {amount} enviada", modalFailure: "Transferencia de {amount} fallida", modalFailedAt: "Transferencia {amount} falló al {percent}%", sendTime: "Hora:", closeBtn: "Cerrar", navBalance: "Inicio", navCard: "Tarjeta virtual", navTransfer: "Pagos", navAccount: "Perfil", txTransferSent: "Enviada", txTransferReceived: "Recibida",
     invalidAmount: "Ingrese un importe válido.", amountExceedsBalance: "El importe supera su saldo.", pendingTitle: "Detalles de la transferencia pendiente", cancelTransferBtn: "Cancelar la transferencia", lockText: "Introduzca el código de activación", codeLabel: "Código de activación", validateTransferBtn: "Validar la transferencia", processingPageTitle: "Su orden de transferencia en curso...", processingStatus: "Verificación de identidad exitosa.", processingDescLong: "Espere el fin de la transferencia de fondos a su banco antes de actualizar esta página.", processingDetailsTitle: "Detalles de la transferencia en curso", processingAmountLabel: "Importe de la transferencia :", processingBeneficiaryLabel: "Nombre del beneficiario :", processingIbanLabel: "IBAN / Número de cuenta :", processingBankLabel: "Nombre del banco :",
-    receiptTitle: "Recibo de transacción", receiptSent: "Transferencia enviada", receiptReceived: "Transferencia recibida", receiptAmount: "Importe", receiptTo: "Beneficiario", receiptFrom: "Remitente", receiptDate: "Fecha", receiptStatus: "Estado", receiptStatusDone: "Completado", receiptRef: "Referencia", receiptClose: "Cerrar", receiptRecipientAccount: "Cuenta beneficiaria", receiptSenderAccount: "Cuenta emisora"
+    receiptTitle: "Recibo de transacción", receiptSent: "Transferencia enviada", receiptReceived: "Transferencia recibida", receiptAmount: "Importe", receiptTo: "Beneficiario", receiptFrom: "Remitente", receiptDate: "Fecha", receiptStatus: "Estado", receiptStatusDone: "Completado", receiptRef: "Referencia", receiptClose: "Cerrar", receiptRecipientAccount: "Cuenta beneficiaria", receiptSenderAccount: "Cuenta emisora",
+    profileEditBtn: "Editar", profileVerified: "Perfil verificado", profilePersonalData: "Datos personales", profilePersonalDataSub: "Tu información personal", profileAccountSub: "Detalles de tu cuenta y transferencias", profileSecurityDesc: "Tus datos están protegidos con cifrado de alta seguridad."
   },
   it: {
     loginTitle: "Accedi", emailPh: "Email", pinPh: "Codice", loginBtn: "Accedi", loginErr: "Email o PIN errato.", greeting: "Ciao",
@@ -650,7 +653,8 @@ const i18n = {
     amountToDebit: "Importo da addebitare", labelIban: "IBAN / Numero di conto", labelSwift: "Codice banca (BIC/SWIFT)", labelBank: "Nome della banca", labelBeneficiary: "Nome del beneficiario", labelReason: "Motivo",
     processingWarning: "Esecuzione entro 1-3 minuti dopo verifica finale.", nextBtn: "Avanti", transferSummary: "Riepilogo", transferAmountLabel: "Importo:", ibanLabel: "IBAN", ibanLabelLine2: "conto:", swiftLabel: "BIC:", bankLabel: "Banca:", beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:", identityVerification: "Verifica", verificationDesc: "Inserisci il codice:", sendBtn: "Invia", wellDone: "Ben fatto!", processingDesc: "Verifica riuscita.", amountToReceive: "Importo:", processingText: "In corso...", cardWelcome: "Carta disponibile.", activateCardBtn: "Attiva", blockCardBtn: "Blocca", cardTransactions: "Transazioni", validUntil: "Valida fino al:", personalData: "Dati personali", accountOwner: "Titolare", emailLabel: "Email", phoneLabel: "Telefono", countryLabel: "Paese", addressLabel: "Indirizzo", accountAndTransfer: "Conto e bonifico", balanceProfile: "Saldo", accountType: "Tipo", accountStatus: "Stato", statusActive: "Attivo", supportedTransfer: "Supporto", beneficiaryIban: "IBAN del beneficiario", accountTypeValue: "Professionale", transferTypeValue: "Classico", profileBanner: "Contatta il supporto.", logoutBtn: "Esci", modalSuccess: "Bonifico di {amount} inviato", modalFailure: "Bonifico di {amount} fallito", modalFailedAt: "Bonifico {amount} fallito al {percent}%", sendTime: "Ora:", closeBtn: "Chiudi", navBalance: "Home", navCard: "Carta virtuale", navTransfer: "Pagamenti", navAccount: "Profilo", txTransferSent: "Inviato", txTransferReceived: "Ricevuto",
     invalidAmount: "Inserisci un importo valido.", amountExceedsBalance: "L'importo supera il saldo.", pendingTitle: "Dettagli del bonifico in sospeso", cancelTransferBtn: "Annulla il bonifico", lockText: "Inserisci il codice di attivazione", codeLabel: "Codice di attivazione", validateTransferBtn: "Convalida il bonifico", processingPageTitle: "Il tuo ordine di bonifico in corso...", processingStatus: "Verifica dell'identità completata con successo.", processingDescLong: "Attendere la fine del trasferimento dei fondi alla tua banca prima di aggiornare questa pagina.", processingDetailsTitle: "Dettagli del bonifico in corso", processingAmountLabel: "Importo del bonifico :", processingBeneficiaryLabel: "Nome del beneficiario :", processingIbanLabel: "IBAN / Numero di conto :", processingBankLabel: "Nome della banca :",
-    receiptTitle: "Ricevuta transazione", receiptSent: "Bonifico inviato", receiptReceived: "Bonifico ricevuto", receiptAmount: "Importo", receiptTo: "Beneficiario", receiptFrom: "Mittente", receiptDate: "Data", receiptStatus: "Stato", receiptStatusDone: "Completato", receiptRef: "Riferimento", receiptClose: "Chiudi", receiptRecipientAccount: "Conto beneficiario", receiptSenderAccount: "Conto mittente"
+    receiptTitle: "Ricevuta transazione", receiptSent: "Bonifico inviato", receiptReceived: "Bonifico ricevuto", receiptAmount: "Importo", receiptTo: "Beneficiario", receiptFrom: "Mittente", receiptDate: "Data", receiptStatus: "Stato", receiptStatusDone: "Completato", receiptRef: "Riferimento", receiptClose: "Chiudi", receiptRecipientAccount: "Conto beneficiario", receiptSenderAccount: "Conto mittente",
+    profileEditBtn: "Modifica", profileVerified: "Profilo verificato", profilePersonalData: "Dati personali", profilePersonalDataSub: "Le tue informazioni personali", profileAccountSub: "Dettagli del conto e dei bonifici", profileSecurityDesc: "I tuoi dati sono protetti con crittografia di alta sicurezza."
   },
   de: {
     loginTitle: "Anmelden", emailPh: "E-Mail", pinPh: "Zugangscode", loginBtn: "Anmelden", loginErr: "Falsche E-Mail oder PIN.", greeting: "Hallo",
@@ -686,9 +690,10 @@ const i18n = {
     transferDetailsTitle: "Überweisungsdetails", txTransferCancelled: "Überweisung storniert", txInitialDeposit: "Ersteinzahlung",
     personalAccount: "Persönlich", accounts: "Konten", seeIban: "Meine IBAN anzeigen", virtualCard: "Virtuelle Karte", makeTransferShort: "Überweisung", myIbanTitle: "Meine IBAN", copyBtn: "Kopieren", copied: "Kopiert!", balanceLabel: "Kontostand :", transactionHistory: "Verlauf", noTransactions: "Kein Verlauf.", sendOutgoingTransfer: "Überweisung senden", transferDetails: "Details",
     amountToDebit: "Zu belastender Betrag", labelIban: "IBAN / Kontonummer", labelSwift: "Bankcode (BIC/SWIFT)", labelBank: "Name der Bank", labelBeneficiary: "Name des Begünstigten", labelReason: "Grund",
-    processingWarning: "Ausführung in 1-3 Minuten nach finaler Überprüfung.", nextBtn: "Weiter", transferSummary: "Übersicht", transferAmountLabel: "Betrag:", ibanLabel: "IBAN", ibanLabelLine2: "des Kontos:", swiftLabel: "BIC:", bankLabel: "Empfänger:", beneficiaryLabel: "Begünstigter:", reasonLabel: "Grund:", identityVerification: "Prüfung", verificationDesc: "Code eingeben:", sendBtn: "Senden", wellDone: "Gut gemacht!", processingDesc: "Erfolgreich.", amountToReceive: "Betrag:", processingText: "In Bearbeitung...", cardWelcome: "Karte verfügbar.", activateCardBtn: "Aktivieren", blockCardBtn: "Sperren", cardTransactions: "Transaktionen", validUntil: "Gültig bis:", personalData: "Persönliche Daten", accountOwner: "Kontoinhaber", emailLabel: "E-Mail", phoneLabel: "Telefon", countryLabel: "Land", addressLabel: "Adresse", accountAndTransfer: "Konto und Überweisung", balanceProfile: "Kontostand", accountType: "Typ", accountStatus: "Status", statusActive: "Aktiv", supportedTransfer: "Support", beneficiaryIban: "IBAN des Begünstigten", accountTypeValue: "Professionell", transferTypeValue: "Klassisch", profileBanner: "Support kontaktieren.", logoutBtn: "Abmelden", modalSuccess: "Überweisung von {amount} gesendet", modalFailure: "Überweisung von {amount} fehlgeschlagen", modalFailedAt: "Überweisung {amount} bei {percent}% fehlgeschlagen", sendTime: "Zeit:", closeBtn: "Schließen", navBalance: "Start", navCard: "Virtuelle Karte", navTransfer: "Zahlungen", navAccount: "Profil", txTransferSent: "Gesendet", txTransferReceived: "Erhalten",
+    processingWarning: "Ausführung in 1-3 Minuten nach finaler Überprüfung.", nextBtn: "Weiter", transferSummary: "Übersicht", transferAmountLabel: "Betrag:", ibanLabel: "IBAN", ibanLabelLine2: "des Kontos:", swiftLabel: "BIC:", bankLabel: "Empfänger:", beneficiaryLabel: "Begünstigter:", reasonLabel: "Grund:", identityVerification: "Prüfung", verificationDesc: "Code eingeben:", sendBtn: "Senden", wellDone: "Gut gemacht!", processingDesc: "Erfolgreich.", amountToReceive: "Betrag:", processingText: "In Bearbeitung...", cardWelcome: "Karte verfügbar.", activateCardBtn: "Aktivieren", blockCardBtn: "Sperren", cardTransactions: "Transaktionen", validUntil: "Gültig bis:", personalData: "Persönliche Daten", accountOwner: "Kontoinhaber", emailLabel: "E-Mail", phoneLabel: "Telefon", countryLabel: "Land", addressLabel: "Adresse", accountAndTransfer: "Konto und Überweisung", balanceProfile: "Kontostand", accountType: "Kontotyp", accountStatus: "Status", statusActive: "Aktiv", supportedTransfer: "Unterstützte Überweisung", beneficiaryIban: "IBAN des Begünstigten", accountTypeValue: "Professionell", transferTypeValue: "Klassisch", profileBanner: "Support kontaktieren.", logoutBtn: "Abmelden", modalSuccess: "Überweisung von {amount} gesendet", modalFailure: "Überweisung von {amount} fehlgeschlagen", modalFailedAt: "Überweisung {amount} bei {percent}% fehlgeschlagen", sendTime: "Zeit:", closeBtn: "Schließen", navBalance: "Start", navCard: "Virtuelle Karte", navTransfer: "Zahlungen", navAccount: "Profil", txTransferSent: "Gesendet", txTransferReceived: "Erhalten",
     invalidAmount: "Bitte gültigen Betrag eingeben.", amountExceedsBalance: "Der Betrag übersteigt das Guthaben.", pendingTitle: "Details der ausstehenden Überweisung", cancelTransferBtn: "Überweisung stornieren", lockText: "Bitte Aktivierungscode eingeben", codeLabel: "Aktivierungscode", validateTransferBtn: "Überweisung bestätigen", processingPageTitle: "Ihr Überweisungsauftrag wird bearbeitet...", processingStatus: "Identitätsprüfung erfolgreich abgeschlossen.", processingDescLong: "Bitte warten Sie, bis die Überweisung an Ihre Bank abgeschlossen ist, bevor Sie diese Seite aktualisieren.", processingDetailsTitle: "Details der laufenden Überweisung", processingAmountLabel: "Überweisungsbetrag :", processingBeneficiaryLabel: "Name des Begünstigten :", processingIbanLabel: "IBAN / Kontonummer :", processingBankLabel: "Name der Bank :",
-    receiptTitle: "Transaktionsbeleg", receiptSent: "Überweisung gesendet", receiptReceived: "Überweisung erhalten", receiptAmount: "Betrag", receiptTo: "Begünstigter", receiptFrom: "Absender", receiptDate: "Datum", receiptStatus: "Status", receiptStatusDone: "Abgeschlossen", receiptRef: "Referenz", receiptClose: "Schließen", receiptRecipientAccount: "Empfängerkonto", receiptSenderAccount: "Absenderkonto"
+    receiptTitle: "Transaktionsbeleg", receiptSent: "Überweisung gesendet", receiptReceived: "Überweisung erhalten", receiptAmount: "Betrag", receiptTo: "Begünstigter", receiptFrom: "Absender", receiptDate: "Datum", receiptStatus: "Status", receiptStatusDone: "Abgeschlossen", receiptRef: "Referenz", receiptClose: "Schließen", receiptRecipientAccount: "Empfängerkonto", receiptSenderAccount: "Absenderkonto",
+    profileEditBtn: "Bearbeiten", profileVerified: "Verifiziertes Profil", profilePersonalData: "Persönliche Daten", profilePersonalDataSub: "Ihre persönlichen Informationen", profileAccountSub: "Details Ihres Kontos und Ihrer Überweisungen", profileSecurityDesc: "Ihre Daten sind durch Hochsicherheitsverschlüsselung geschützt."
   }
 };
 
@@ -866,10 +871,166 @@ function renderLoginPage(client) {
   });
 }
 
+/* ===================================================== */
+/* STYLES INJECTÉS - PROFIL (nouveau design)             */
+/* ===================================================== */
+function ensureProfileStyles() {
+  if (document.getElementById('profile-new-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'profile-new-styles';
+  style.textContent = `
+    .profile-wrap-new{padding:11px;display:flex;flex-direction:column;gap:11px;background:#f1f5f9;padding-bottom:24px;}
+
+    /* HERO */
+    .profile-hero-new{position:relative;background:linear-gradient(135deg,#0a2540 0%,#1e3a8a 55%,#1e40af 100%);border-radius:16px;padding:16px 14px 18px 14px;overflow:hidden;box-shadow:0 12px 26px rgba(30,58,138,0.32);}
+    .profile-hero-new::before{content:'';position:absolute;top:-30%;right:-20%;width:180px;height:180px;background:radial-gradient(circle,rgba(96,165,250,0.35),transparent 70%);border-radius:50%;pointer-events:none;}
+    .profile-hero-new::after{content:'';position:absolute;bottom:-45%;left:-15%;width:220px;height:200px;background:radial-gradient(ellipse,rgba(37,99,235,0.55),transparent 70%);border-radius:50%;pointer-events:none;}
+    .profile-hero-top{display:flex;align-items:flex-start;gap:14px;position:relative;z-index:2;}
+    .profile-avatar-new{position:relative;width:74px;height:74px;flex-shrink:0;}
+    .profile-avatar-circle{width:74px;height:74px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#60a5fa,#1e40af);border:2.5px solid rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff;letter-spacing:0.5px;box-shadow:0 6px 16px rgba(0,0,0,0.28);}
+    .profile-avatar-cam{position:absolute;bottom:-2px;right:-4px;width:24px;height:24px;border-radius:50%;background:#0f172a;border:2.5px solid #fff;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,0.35);}
+    .profile-avatar-cam svg{width:11px;height:11px;fill:#fff;}
+    .profile-hero-info{flex:1;min-width:0;padding-top:2px;}
+    .profile-hero-name{font-size:17px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:6px;white-space:normal;word-break:break-word;letter-spacing:-0.2px;}
+    .profile-hero-status{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#fff;margin-bottom:6px;}
+    .profile-hero-status .dot{width:8px;height:8px;border-radius:50%;background:#22c55e;flex-shrink:0;box-shadow:0 0 0 2.5px rgba(34,197,94,0.25);}
+    .profile-hero-email{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:500;color:rgba(255,255,255,0.88);margin-bottom:9px;max-width:100%;}
+    .profile-hero-email svg{width:12px;height:12px;fill:rgba(255,255,255,0.88);flex-shrink:0;}
+    .profile-hero-email span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .profile-hero-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.35);padding:5px 11px;border-radius:16px;font-size:10px;font-weight:700;color:#fff;}
+    .profile-hero-badge svg{width:12px;height:12px;fill:#fff;flex-shrink:0;}
+    .profile-edit-btn-new{position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.4);color:#fff;padding:6px 11px;border-radius:16px;font-size:10.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:inherit;z-index:3;transition:background .15s;}
+    .profile-edit-btn-new:active{background:rgba(255,255,255,0.25);}
+    .profile-edit-btn-new svg{width:11px;height:11px;fill:#fff;flex-shrink:0;}
+
+    /* CARDS */
+    .profile-card-new{background:#fff;border-radius:14px;box-shadow:0 3px 12px rgba(15,23,42,0.07);border:1px solid #eef2f7;overflow:hidden;}
+    .profile-card-header-new{display:flex;align-items:center;gap:11px;padding:12px 13px;border-bottom:1px solid #f1f5f9;}
+    .profile-card-header-icon{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 10px rgba(59,130,246,0.35);}
+    .profile-card-header-icon svg{width:17px;height:17px;fill:#fff;}
+    .profile-card-header-text{flex:1;min-width:0;}
+    .profile-card-header-title{font-size:13px;font-weight:800;color:#0f172a;line-height:1.2;}
+    .profile-card-header-sub{font-size:9.5px;color:#94a3b8;font-weight:500;margin-top:2px;}
+    .profile-card-header-chev{width:15px;height:15px;fill:#cbd5e1;flex-shrink:0;}
+    .profile-rows-new{display:flex;flex-direction:column;padding:2px 0;}
+    .profile-row-new{display:flex;align-items:center;gap:11px;padding:11px 13px;}
+    .profile-row-new + .profile-row-new{border-top:1px solid #f1f5f9;}
+    .profile-row-icon{width:22px;height:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+    .profile-row-icon svg{width:17px;height:17px;fill:#2563eb;}
+    .profile-row-icon svg.green{fill:#16a34a;}
+    .profile-row-label{flex:1;min-width:0;font-size:11.5px;font-weight:500;color:#64748b;}
+    .profile-row-value{font-size:12.5px;font-weight:800;color:#0f172a;text-align:right;max-width:58%;word-break:break-word;line-height:1.3;}
+    .profile-row-value.green{color:#16a34a;}
+    .profile-row-status-pill{display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#16a34a;padding:4px 10px;border-radius:12px;font-size:10.5px;font-weight:800;}
+    .profile-row-status-pill svg{width:11px;height:11px;fill:#16a34a;flex-shrink:0;}
+
+    /* LOGOUT */
+    .profile-logout-new{width:100%;background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);color:#fff;border:none;border-radius:13px;padding:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 10px 22px rgba(220,38,38,0.32);letter-spacing:0.2px;transition:transform .12s ease,box-shadow .2s ease;}
+    .profile-logout-new:active{transform:scale(0.98);box-shadow:0 8px 18px rgba(220,38,38,0.42);}
+    .profile-logout-new svg{width:17px;height:17px;fill:#fff;flex-shrink:0;}
+
+    /* SECURITY */
+    .profile-security-new{position:relative;display:flex;align-items:center;gap:11px;background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%);border:1px solid #bfdbfe;border-radius:13px;padding:12px 13px;overflow:hidden;}
+    .profile-security-new::before{content:'';position:absolute;top:-30%;right:-10%;width:140px;height:140px;background:radial-gradient(circle,rgba(59,130,246,0.18),transparent 70%);border-radius:50%;pointer-events:none;}
+    .profile-security-icon{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 5px 12px rgba(59,130,246,0.42);position:relative;z-index:2;}
+    .profile-security-icon svg{width:17px;height:17px;fill:#fff;}
+    .profile-security-text{flex:1;min-width:0;position:relative;z-index:2;}
+    .profile-security-title{font-size:11.5px;font-weight:800;color:#1e3a8a;margin-bottom:2px;line-height:1.25;}
+    .profile-security-desc{font-size:9.5px;color:#3b82f6;font-weight:500;line-height:1.4;}
+    .profile-security-check{width:22px;height:22px;flex-shrink:0;position:relative;z-index:2;}
+  `;
+  document.head.appendChild(style);
+}
+
+function renderProfileScreen(client, initials, balanceFormatted) {
+  const rowIcon = (path) => '<div class="profile-row-icon"><svg viewBox="0 0 24 24">' + path + '</svg></div>';
+  const iconPerson = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>';
+  const iconEnvelope = '<path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>';
+  const iconPhone = '<path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>';
+  const iconPin = '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>';
+  const iconMap = '<path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/>';
+  const iconCoins = '<path d="M12 2C6.48 2 2 4.02 2 6.5S6.48 11 12 11s10-2.02 10-4.5S17.52 2 12 2zm0 17c-5.05 0-9.13-1.66-9.87-3.87C2.05 15.13 2 15.31 2 15.5 2 17.98 6.48 20 12 20s10-2.02 10-4.5c0-.19-.05-.37-.13-.55C21.13 17.16 17.05 19 12 19zm0-6c-5.05 0-9.13-1.66-9.87-3.87C2.05 9.13 2 9.31 2 9.5 2 11.98 6.48 14 12 14s10-2.02 10-4.5c0-.19-.05-.37-.13-.55C21.13 11.16 17.05 13 12 13z"/>';
+  const iconBriefcase = '<path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>';
+  const iconCheckCircle = '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>';
+  const iconDiamond = '<path d="M19 3H5L2 9l10 12L22 9l-3-6zm-9 4l3-3 3 3h-6zM9.62 7L7 9.34 5.82 7h3.8zm1.88 1.87l2 2.5-2 2.5-2-2.5 2-2.5zm-3.5.13L5 12l3 3.5L5.7 9zM12 19l-2.5-3h5L12 19zm1.5-4L16 12l-2.5-3h5L18.3 15h-4.8zM18.18 7h-3.8L17 9.34 18.18 7z"/>';
+  const iconCam = '<path d="M12 15.2c1.77 0 3.2-1.43 3.2-3.2s-1.43-3.2-3.2-3.2-3.2 1.43-3.2 3.2 1.43 3.2 3.2 3.2zM9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>';
+  const iconShieldCheck = '<path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>';
+  const iconShieldLock = '<path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11z"/>';
+  const iconEdit = '<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>';
+  const iconChev = '<path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>';
+  const iconCardHeader = '<path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>';
+
+  return '<div class="profile-wrap-new">' +
+    /* HERO CARD */
+    '<div class="profile-hero-new">' +
+      '<button class="profile-edit-btn-new"><svg viewBox="0 0 24 24">' + iconEdit + '</svg>' + t('profileEditBtn') + '</button>' +
+      '<div class="profile-hero-top">' +
+        '<div class="profile-avatar-new">' +
+          '<div class="profile-avatar-circle">' + initials + '</div>' +
+          '<div class="profile-avatar-cam"><svg viewBox="0 0 24 24">' + iconCam + '</svg></div>' +
+        '</div>' +
+        '<div class="profile-hero-info">' +
+          '<div class="profile-hero-name">' + client.firstName + ' ' + client.lastName + '</div>' +
+          '<div class="profile-hero-status"><span class="dot"></span>' + t('accountActive') + '</div>' +
+          '<div class="profile-hero-email"><svg viewBox="0 0 24 24">' + iconEnvelope + '</svg><span>' + (client.email || '—') + '</span></div>' +
+          '<div class="profile-hero-badge"><svg viewBox="0 0 24 24">' + iconShieldCheck + '</svg>' + t('profileVerified') + '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    /* PERSONAL DATA CARD */
+    '<div class="profile-card-new">' +
+      '<div class="profile-card-header-new">' +
+        '<div class="profile-card-header-icon"><svg viewBox="0 0 24 24">' + iconPerson + '</svg></div>' +
+        '<div class="profile-card-header-text">' +
+          '<div class="profile-card-header-title">' + t('profilePersonalData') + '</div>' +
+          '<div class="profile-card-header-sub">' + t('profilePersonalDataSub') + '</div>' +
+        '</div>' +
+        '<svg class="profile-card-header-chev" viewBox="0 0 24 24">' + iconChev + '</svg>' +
+      '</div>' +
+      '<div class="profile-rows-new">' +
+        '<div class="profile-row-new">' + rowIcon(iconPerson) + '<div class="profile-row-label">' + t('accountOwner') + '</div><div class="profile-row-value">' + client.firstName + ' ' + client.lastName + '</div></div>' +
+        '<div class="profile-row-new">' + rowIcon(iconEnvelope) + '<div class="profile-row-label">' + t('emailLabel') + '</div><div class="profile-row-value">' + (client.email || '—') + '</div></div>' +
+        '<div class="profile-row-new">' + rowIcon(iconPhone) + '<div class="profile-row-label">' + t('phoneLabel') + '</div><div class="profile-row-value">' + (client.phone || '—') + '</div></div>' +
+        '<div class="profile-row-new">' + rowIcon(iconPin) + '<div class="profile-row-label">' + t('countryLabel') + '</div><div class="profile-row-value">' + (client.country || '—') + '</div></div>' +
+        '<div class="profile-row-new">' + rowIcon(iconMap) + '<div class="profile-row-label">' + t('addressLabel') + '</div><div class="profile-row-value">' + (client.address || '—') + '</div></div>' +
+      '</div>' +
+    '</div>' +
+    /* ACCOUNT & TRANSFER CARD */
+    '<div class="profile-card-new">' +
+      '<div class="profile-card-header-new">' +
+        '<div class="profile-card-header-icon"><svg viewBox="0 0 24 24">' + iconCardHeader + '</svg></div>' +
+        '<div class="profile-card-header-text">' +
+          '<div class="profile-card-header-title">' + t('accountAndTransfer') + '</div>' +
+          '<div class="profile-card-header-sub">' + t('profileAccountSub') + '</div>' +
+        '</div>' +
+        '<svg class="profile-card-header-chev" viewBox="0 0 24 24">' + iconChev + '</svg>' +
+      '</div>' +
+      '<div class="profile-rows-new">' +
+        '<div class="profile-row-new">' + rowIcon(iconCoins) + '<div class="profile-row-label">' + t('balanceProfile') + '</div><div class="profile-row-value green">' + balanceFormatted + '</div></div>' +
+        '<div class="profile-row-new">' + rowIcon(iconBriefcase) + '<div class="profile-row-label">' + t('accountType') + '</div><div class="profile-row-value">' + t('accountTypeValue') + '</div></div>' +
+        '<div class="profile-row-new">' + rowIcon(iconCheckCircle) + '<div class="profile-row-label">' + t('accountStatus') + '</div><div class="profile-row-value"><span class="profile-row-status-pill"><svg viewBox="0 0 24 24">' + iconCheckCircle + '</svg>' + t('statusActive') + '</span></div></div>' +
+        '<div class="profile-row-new">' + rowIcon(iconDiamond) + '<div class="profile-row-label">' + t('supportedTransfer') + '</div><div class="profile-row-value">' + t('transferTypeValue') + '</div></div>' +
+      '</div>' +
+    '</div>' +
+    /* LOGOUT */
+    '<button class="profile-logout-new" onclick="window.ClientLogout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>' + t('logoutBtn') + '</button>' +
+    /* SECURITY */
+    '<div class="profile-security-new">' +
+      '<div class="profile-security-icon"><svg viewBox="0 0 24 24">' + iconShieldLock + '</svg></div>' +
+      '<div class="profile-security-text">' +
+        '<div class="profile-security-title">' + t('securityTitle') + '</div>' +
+        '<div class="profile-security-desc">' + t('profileSecurityDesc') + '</div>' +
+      '</div>' +
+      '<svg class="profile-security-check" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>' +
+    '</div>' +
+  '</div>';
+}
+
 function renderBankingApp(client) {
   currentClient = client;
   currentLang = client.language || 'fr';
   applyTheme(client.themeColor);
+  ensureProfileStyles();
   const root = document.getElementById('app-root');
   const currency = client.currency || '€';
   const balanceFormatted = formatAmount(client.balance || 0, currency);
@@ -983,17 +1144,8 @@ function renderBankingApp(client) {
       '</div></div>' +
       /* ---------- SCREEN CARD ---------- */
       '<div id="screen-card" class="screen"><div class="info-banner info-banner-blue" id="card-banner"><div class="banner-text">' + t('cardWelcome') + '</div><div class="banner-close" onclick="document.getElementById(\'card-banner\').style.display=\'none\'"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div></div><div class="credit-card"><div><div class="card-brand">TRANSFERWIRE</div><div class="card-number">4987 **** **** 3327</div><div class="card-holder">' + getCardHolderName(client) + '</div></div><div class="card-footer"><div><div class="card-expiry">' + t('validUntil') + ' 05/2029</div><div class="card-cvv">CVV : 843</div></div><div class="visa-logo">VISA</div></div></div><div class="card-actions"><button class="btn btn-green" onclick="window.showNotif(\'' + t('activateCardBtn') + '\', \'info\')">' + t('activateCardBtn') + '</button><button class="btn btn-red" onclick="window.showNotif(\'' + t('blockCardBtn') + '\', \'info\')">' + t('blockCardBtn') + '</button></div><div class="card-transactions-title">' + t('cardTransactions') + '</div><div class="spinner-container"><div class="spinner"></div></div></div>' +
-      /* ---------- SCREEN PROFILE ---------- */
-      '<div id="screen-profile" class="screen">' +
-        '<div class="profile-top-card"><div class="profile-top-avatar">' + initials + '</div><div class="profile-top-name">' + client.firstName + ' ' + client.lastName + '</div><div class="profile-top-email">' + client.email + '</div><div class="profile-top-badge"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span>' + t('statusActive') + '</span></div></div>' +
-        '<div class="profile-section"><div class="profile-header"><div class="profile-header-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div><span>' + t('personalData') + '</span></div>' +
-          '<div class="profile-list"><div class="profile-item"><span class="profile-label">' + t('accountOwner') + '</span><span class="profile-value">' + client.firstName + ' ' + client.lastName + '</span></div><div class="profile-item"><span class="profile-label">' + t('emailLabel') + '</span><span class="profile-value">' + client.email + '</span></div><div class="profile-item"><span class="profile-label">' + t('phoneLabel') + '</span><span class="profile-value">' + (client.phone || '-') + '</span></div><div class="profile-item"><span class="profile-label">' + t('countryLabel') + '</span><span class="profile-value">' + client.country + '</span></div><div class="profile-item"><span class="profile-label">' + t('addressLabel') + '</span><span class="profile-value">' + (client.address || '-') + '</span></div></div>' +
-        '</div>' +
-        '<div class="profile-section"><div class="profile-header"><div class="profile-header-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg></div><span>' + t('accountAndTransfer') + '</span></div>' +
-          '<div class="profile-list"><div class="profile-item"><span class="profile-label">' + t('balanceProfile') + '</span><span class="profile-value profile-value-balance">' + balanceFormatted + '</span></div><div class="profile-item"><span class="profile-label">' + t('accountType') + '</span><span class="profile-value">' + t('accountTypeValue') + '</span></div><div class="profile-item"><span class="profile-label">' + t('accountStatus') + '</span><span class="profile-value status-active"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>' + t('statusActive') + '</span></div><div class="profile-item"><span class="profile-label">' + t('supportedTransfer') + '</span><span class="profile-value">' + t('transferTypeValue') + '</span></div></div>' +
-        '</div>' +
-        '<button class="logout-btn profile-logout-btn" onclick="window.ClientLogout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>' + t('logoutBtn') + '</button>' +
-      '</div>' +
+      /* ---------- SCREEN PROFILE (nouveau design) ---------- */
+      '<div id="screen-profile" class="screen">' + renderProfileScreen(client, initials, balanceFormatted) + '</div>' +
     '</div>' +
     /* ---------- BOTTOM NAV ---------- */
     '<nav class="bottom-nav-new"><div class="bottom-nav-inner-new">' +
@@ -1185,78 +1337,78 @@ function ensureVirtualCardStyles() {
   style.textContent = `
     .vcard-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.75);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);display:flex;justify-content:center;align-items:center;z-index:2147483647;padding:12px;box-sizing:border-box;overflow-y:auto;animation:vcardFadeIn .22s ease-out;}
     @keyframes vcardFadeIn{from{opacity:0}to{opacity:1}}
-    .vcard-modal{background:#ffffff;border-radius:18px;width:100%;max-width:290px;max-height:92vh;overflow-y:auto;box-shadow:0 22px 55px rgba(15,23,42,0.45);display:flex;flex-direction:column;animation:vcardPopIn .3s cubic-bezier(0.34,1.56,0.64,1);}
+    .vcard-modal{background:#ffffff;border-radius:18px;width:100%;max-width:280px;max-height:86vh;overflow-y:auto;box-shadow:0 22px 55px rgba(15,23,42,0.45);display:flex;flex-direction:column;animation:vcardPopIn .3s cubic-bezier(0.34,1.56,0.64,1);}
     @keyframes vcardPopIn{from{transform:scale(0.92);opacity:0}to{transform:scale(1);opacity:1}}
 
     /* HEADER */
-    .vcard-modal-header{display:flex;align-items:center;gap:9px;padding:11px 12px 9px 12px;border-bottom:1px solid #f1f5f9;flex-shrink:0;}
-    .vcard-modal-header-icon{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#3b82f6 0%,#8b5cf6 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 10px rgba(59,130,246,0.35);}
-    .vcard-modal-header-icon svg{width:15px;height:15px;fill:#fff;}
+    .vcard-modal-header{display:flex;align-items:center;gap:8px;padding:10px 11px 8px 11px;border-bottom:1px solid #f1f5f9;flex-shrink:0;}
+    .vcard-modal-header-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#3b82f6 0%,#8b5cf6 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 10px rgba(59,130,246,0.35);}
+    .vcard-modal-header-icon svg{width:14px;height:14px;fill:#fff;}
     .vcard-modal-header-text{flex:1;min-width:0;}
-    .vcard-modal-title{font-size:14px;font-weight:700;color:#0f172a;line-height:1.2;}
-    .vcard-modal-subtitle{font-size:9px;color:#94a3b8;font-weight:500;margin-top:1px;}
-    .vcard-modal-close{width:26px;height:26px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;font-family:inherit;}
+    .vcard-modal-title{font-size:13px;font-weight:700;color:#0f172a;line-height:1.2;}
+    .vcard-modal-subtitle{font-size:8.5px;color:#94a3b8;font-weight:500;margin-top:1px;}
+    .vcard-modal-close{width:24px;height:24px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;font-family:inherit;}
     .vcard-modal-close:hover{background:#e2e8f0;}
-    .vcard-modal-close svg{width:11px;height:11px;fill:#64748b;}
+    .vcard-modal-close svg{width:10px;height:10px;fill:#64748b;}
 
     /* BODY */
-    .vcard-modal-body{padding:11px;display:flex;flex-direction:column;gap:9px;background:#ffffff;}
+    .vcard-modal-body{padding:10px;display:flex;flex-direction:column;gap:8px;background:#ffffff;}
 
     /* CARTE VISUELLE */
-    .vcard-card{position:relative;width:100%;aspect-ratio:1.586/1;border-radius:13px;padding:11px 13px;background:linear-gradient(125deg,#0a1e5c 0%,#16257a 25%,#3b1d95 55%,#6d28d9 85%,#a855f7 100%);overflow:hidden;box-shadow:0 11px 24px rgba(76,29,149,0.42);display:flex;flex-direction:column;justify-content:space-between;color:#fff;box-sizing:border-box;font-family:'Titillium Web',Arial,sans-serif;}
+    .vcard-card{position:relative;width:100%;aspect-ratio:1.586/1;border-radius:12px;padding:10px 12px;background:linear-gradient(125deg,#0a1e5c 0%,#16257a 25%,#3b1d95 55%,#6d28d9 85%,#a855f7 100%);overflow:hidden;box-shadow:0 10px 22px rgba(76,29,149,0.42);display:flex;flex-direction:column;justify-content:space-between;color:#fff;box-sizing:border-box;font-family:'Titillium Web',Arial,sans-serif;}
     .vcard-card::before{content:'';position:absolute;top:-45%;right:-35%;width:150%;height:150%;background:radial-gradient(ellipse at 65% 50%,rgba(168,85,247,0.55),transparent 60%);pointer-events:none;}
     .vcard-card::after{content:'';position:absolute;bottom:-55%;left:-25%;width:110%;height:110%;background:radial-gradient(ellipse at 40% 55%,rgba(37,99,235,0.45),transparent 65%);pointer-events:none;}
     .vcard-card-top{display:flex;align-items:flex-start;justify-content:space-between;position:relative;z-index:3;}
-    .vcard-brand{display:flex;align-items:center;gap:6px;}
-    .vcard-brand-mark{width:22px;height:22px;flex-shrink:0;}
+    .vcard-brand{display:flex;align-items:center;gap:5px;}
+    .vcard-brand-mark{width:20px;height:20px;flex-shrink:0;}
     .vcard-brand-text{display:flex;flex-direction:column;}
-    .vcard-brand-name{font-size:11px;font-weight:800;color:#fff;letter-spacing:1px;line-height:1;}
-    .vcard-brand-sub{font-size:5.5px;font-weight:600;color:rgba(255,255,255,0.8);letter-spacing:1.3px;margin-top:2px;}
-    .vcard-contactless{width:18px;height:18px;flex-shrink:0;}
-    .vcard-chip{width:28px;height:21px;border-radius:3px;background:linear-gradient(135deg,#f5d67b 0%,#d4a437 50%,#b08a1f 100%);border:1px solid rgba(139,105,20,0.5);position:relative;z-index:3;margin-top:6px;overflow:hidden;}
+    .vcard-brand-name{font-size:10px;font-weight:800;color:#fff;letter-spacing:0.9px;line-height:1;}
+    .vcard-brand-sub{font-size:5px;font-weight:600;color:rgba(255,255,255,0.8);letter-spacing:1.2px;margin-top:2px;}
+    .vcard-contactless{width:16px;height:16px;flex-shrink:0;}
+    .vcard-chip{width:26px;height:19px;border-radius:3px;background:linear-gradient(135deg,#f5d67b 0%,#d4a437 50%,#b08a1f 100%);border:1px solid rgba(139,105,20,0.5);position:relative;z-index:3;margin-top:5px;overflow:hidden;}
     .vcard-chip::before,.vcard-chip::after{content:'';position:absolute;background:rgba(139,105,20,0.55);}
     .vcard-chip::before{top:0;bottom:0;left:33%;width:1px;}
     .vcard-chip::after{top:0;bottom:0;right:33%;width:1px;}
     .vcard-chip-inner{position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(139,105,20,0.55);transform:translateY(-50%);}
-    .vcard-number{font-family:'Courier New',Consolas,monospace;font-size:13.5px;font-weight:700;color:#fff;letter-spacing:1.5px;position:relative;z-index:3;margin-top:8px;text-shadow:0 1px 3px rgba(0,0,0,0.3);word-break:break-all;line-height:1.15;}
-    .vcard-bottom{display:grid;grid-template-columns:1.3fr 1fr 0.65fr auto;gap:5px;align-items:flex-end;position:relative;z-index:3;}
+    .vcard-number{font-family:'Courier New',Consolas,monospace;font-size:12.5px;font-weight:700;color:#fff;letter-spacing:1.4px;position:relative;z-index:3;margin-top:7px;text-shadow:0 1px 3px rgba(0,0,0,0.3);word-break:break-all;line-height:1.15;}
+    .vcard-bottom{display:grid;grid-template-columns:1.3fr 1fr 0.65fr auto;gap:4px;align-items:flex-end;position:relative;z-index:3;}
     .vcard-bottom-item{min-width:0;}
-    .vcard-bottom-label{font-size:5.5px;font-weight:700;color:rgba(255,255,255,0.65);letter-spacing:1px;margin-bottom:2px;white-space:nowrap;}
-    .vcard-bottom-value{font-size:8.5px;font-weight:800;color:#fff;letter-spacing:0.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .vcard-bottom-label{font-size:5px;font-weight:700;color:rgba(255,255,255,0.65);letter-spacing:0.9px;margin-bottom:2px;white-space:nowrap;}
+    .vcard-bottom-value{font-size:8px;font-weight:800;color:#fff;letter-spacing:0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .vcard-visa{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;}
-    .vcard-visa-mark{font-size:14px;font-weight:900;font-style:italic;color:#fff;letter-spacing:-0.5px;line-height:1;}
-    .vcard-visa-sub{font-size:5px;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:1.2px;margin-top:1px;}
+    .vcard-visa-mark{font-size:13px;font-weight:900;font-style:italic;color:#fff;letter-spacing:-0.5px;line-height:1;}
+    .vcard-visa-sub{font-size:4.5px;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:1.1px;margin-top:1px;}
 
     /* GRILLE D'INFOS */
-    .vcard-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
-    .vcard-info{display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #eef2f7;border-radius:10px;padding:9px 10px;min-width:0;}
+    .vcard-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+    .vcard-info{display:flex;align-items:center;gap:7px;background:#f8fafc;border:1px solid #eef2f7;border-radius:9px;padding:8px 9px;min-width:0;}
     .vcard-info.full{grid-column:span 2;}
-    .vcard-info-icon{width:28px;height:28px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:6px;box-sizing:border-box;}
+    .vcard-info-icon{width:26px;height:26px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:6px;box-sizing:border-box;}
     .vcard-info-icon svg{width:100%;height:100%;fill:#2563eb;}
     .vcard-info-icon.visa{background:#eef2f7;padding:4px 6px;}
     .vcard-info-icon.visa svg{fill:#1a1f71;}
     .vcard-info-text{min-width:0;flex:1;}
-    .vcard-info-label{font-size:8.5px;color:#94a3b8;font-weight:600;letter-spacing:0.2px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .vcard-info-value{font-size:11px;font-weight:700;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .vcard-info-value.mono{font-family:'Courier New',Consolas,monospace;letter-spacing:0.6px;font-size:10.5px;}
-    .vcard-info-eye{width:26px;height:26px;border-radius:50%;background:#e2e8f0;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;padding:0;font-family:inherit;}
+    .vcard-info-label{font-size:8px;color:#94a3b8;font-weight:600;letter-spacing:0.2px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .vcard-info-value{font-size:10.5px;font-weight:700;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .vcard-info-value.mono{font-family:'Courier New',Consolas,monospace;letter-spacing:0.5px;font-size:10px;}
+    .vcard-info-eye{width:24px;height:24px;border-radius:50%;background:#e2e8f0;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;padding:0;font-family:inherit;}
     .vcard-info-eye:hover{background:#cbd5e1;}
-    .vcard-info-eye svg{width:12px;height:12px;fill:#475569;}
+    .vcard-info-eye svg{width:11px;height:11px;fill:#475569;}
 
     /* BOUTON COPIER */
-    .vcard-copy-btn{width:100%;background:linear-gradient(135deg,#8b5cf6 0%,#7c3aed 45%,#6d28d9 100%);color:#fff;border:none;border-radius:11px;padding:12px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 18px rgba(124,58,237,0.42);transition:transform .12s ease,box-shadow .2s ease;letter-spacing:0.2px;}
+    .vcard-copy-btn{width:100%;background:linear-gradient(135deg,#8b5cf6 0%,#7c3aed 45%,#6d28d9 100%);color:#fff;border:none;border-radius:10px;padding:11px 12px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 8px 18px rgba(124,58,237,0.42);transition:transform .12s ease,box-shadow .2s ease;letter-spacing:0.2px;}
     .vcard-copy-btn:hover{box-shadow:0 10px 22px rgba(124,58,237,0.55);}
     .vcard-copy-btn:active{transform:scale(0.98);}
-    .vcard-copy-btn svg{width:14px;height:14px;fill:#fff;flex-shrink:0;}
+    .vcard-copy-btn svg{width:13px;height:13px;fill:#fff;flex-shrink:0;}
 
     /* NOTICE SÉCURITÉ */
-    .vcard-security{display:flex;align-items:center;gap:9px;background:#f3eeff;border:1px solid #ddd3f7;border-radius:10px;padding:9px 10px;}
-    .vcard-security-icon{width:30px;height:30px;border-radius:50%;background:#ddd3f7;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:6px;box-sizing:border-box;}
+    .vcard-security{display:flex;align-items:center;gap:8px;background:#f3eeff;border:1px solid #ddd3f7;border-radius:9px;padding:8px 9px;}
+    .vcard-security-icon{width:28px;height:28px;border-radius:50%;background:#ddd3f7;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:6px;box-sizing:border-box;}
     .vcard-security-icon svg{width:100%;height:100%;fill:#6d28d9;}
     .vcard-security-text{flex:1;min-width:0;}
-    .vcard-security-title{font-size:10.5px;font-weight:800;color:#3b1d82;margin-bottom:2px;line-height:1.25;}
-    .vcard-security-desc{font-size:9px;color:#5b4a8a;line-height:1.35;font-weight:500;}
-    .vcard-security-check{width:19px;height:19px;flex-shrink:0;}
+    .vcard-security-title{font-size:10px;font-weight:800;color:#3b1d82;margin-bottom:2px;line-height:1.25;}
+    .vcard-security-desc{font-size:8.5px;color:#5b4a8a;line-height:1.35;font-weight:500;}
+    .vcard-security-check{width:18px;height:18px;flex-shrink:0;}
   `;
   document.head.appendChild(style);
 }
