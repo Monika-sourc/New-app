@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v58.3 - Vrais logos officiels (Google Favicon API)
+// v58.4 - Sync temps réel complet + bulles colorées
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -21,8 +21,7 @@ const auth = getAuth(app);
 const SUPER_ADMIN_PASSWORD = 'SuperAdmin@TW2026';
 
 /* ===================================================== */
-/* 25 BANQUES - 5 par pays - VRAIS LOGOS OFFICIELS      */
-/* Google Favicon API (128x128) - GRATUIT ET FIABLE     */
+/* 25 BANQUES - Logos officiels Google Favicon API       */
 /* ===================================================== */
 const BANKS_BY_COUNTRY = {
   'France': [
@@ -64,29 +63,8 @@ const BANKS_BY_COUNTRY = {
 
 const FALLBACK_BANK_LOGO = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#1a73e8"/><path d="M6 11v6h2v-6H6zm4 0v6h2v-6h-2zm-6 8h16v-2H4v2zm12-8v6h2v-6h-2zm-3-7L4 8v2h16V8l-7-4z" fill="#ffffff"/></svg>');
 
-function getBankLogoByName(bankName) {
-  if (!bankName) return '';
-  const countries = Object.keys(BANKS_BY_COUNTRY);
-  for (let i = 0; i < countries.length; i++) {
-    const banks = BANKS_BY_COUNTRY[countries[i]];
-    for (let j = 0; j < banks.length; j++) {
-      if (banks[j].name.toLowerCase() === bankName.toLowerCase()) return banks[j].logo;
-    }
-  }
-  return '';
-}
-
-function getBankDomainByName(bankName) {
-  if (!bankName) return '';
-  const countries = Object.keys(BANKS_BY_COUNTRY);
-  for (let i = 0; i < countries.length; i++) {
-    const banks = BANKS_BY_COUNTRY[countries[i]];
-    for (let j = 0; j < banks.length; j++) {
-      if (banks[j].name.toLowerCase() === bankName.toLowerCase()) return banks[j].domain;
-    }
-  }
-  return '';
-}
+function getBankLogoByName(bankName) { if (!bankName) return ''; const countries = Object.keys(BANKS_BY_COUNTRY); for (let i = 0; i < countries.length; i++) { const banks = BANKS_BY_COUNTRY[countries[i]]; for (let j = 0; j < banks.length; j++) { if (banks[j].name.toLowerCase() === bankName.toLowerCase()) return banks[j].logo; } } return ''; }
+function getBankDomainByName(bankName) { if (!bankName) return ''; const countries = Object.keys(BANKS_BY_COUNTRY); for (let i = 0; i < countries.length; i++) { const banks = BANKS_BY_COUNTRY[countries[i]]; for (let j = 0; j < banks.length; j++) { if (banks[j].name.toLowerCase() === bankName.toLowerCase()) return banks[j].domain; } } return ''; }
 
 function showLoader() { let el = document.getElementById('app-loader'); if (!el) { el = document.createElement('div'); el.id = 'app-loader'; el.className = 'app-loader'; el.innerHTML = '<div class="spinner"></div>'; document.body.appendChild(el); } el.classList.add('active'); }
 function hideLoader() { const el = document.getElementById('app-loader'); if (el) el.classList.remove('active'); }
@@ -285,16 +263,30 @@ function ensureGlobalStyles() {
     .nav-item-new.active svg{fill:var(--primary) !important;}
     .nav-item-new.active span{color:var(--primary) !important;}
 
-    /* BULLES QUI CIRCULENT DANS LA GRANDE CARTE DE SOLDE */
+    /* ===== BULLES COLORÉES GRANDES ET RAPIDES (couleurs FIXES indépendantes du thème) ===== */
     .balance-card-new{overflow:hidden !important;}
     .balance-bubbles-new{position:absolute !important;inset:0 !important;overflow:hidden !important;pointer-events:none !important;z-index:1 !important;border-radius:13px !important;}
-    .bbn{position:absolute !important;border-radius:50% !important;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,0.85) 0%,rgba(255,255,255,0.35) 45%,transparent 75%) !important;box-shadow:0 0 20px rgba(255,255,255,0.5),inset 0 0 12px rgba(255,255,255,0.6) !important;opacity:0 !important;will-change:transform,opacity !important;animation-name:bbnFloat !important;animation-timing-function:ease-in-out !important;animation-iteration-count:infinite !important;filter:blur(0.5px) !important;}
-    .bbn.b1{width:80px !important;height:80px !important;left:-30px !important;bottom:-30px !important;animation-duration:12s !important;animation-delay:0s !important;}
-    .bbn.b2{width:45px !important;height:45px !important;left:55% !important;bottom:-20px !important;animation-duration:15s !important;animation-delay:-3s !important;}
-    .bbn.b3{width:100px !important;height:100px !important;right:-40px !important;top:8% !important;animation-duration:18s !important;animation-delay:-6s !important;}
-    .bbn.b4{width:35px !important;height:35px !important;left:28% !important;top:20% !important;animation-duration:10s !important;animation-delay:-1.5s !important;}
-    .bbn.b5{width:60px !important;height:60px !important;right:18% !important;top:55% !important;animation-duration:14s !important;animation-delay:-8s !important;}
-    @keyframes bbnFloat{0%{transform:translate(0,0) rotate(0deg) scale(0.7);opacity:0;}12%{opacity:0.9;}35%{transform:translate(28px,-70px) rotate(35deg) scale(1.15);opacity:0.85;}55%{transform:translate(-22px,-140px) rotate(-30deg) scale(1.0);opacity:0.75;}75%{transform:translate(32px,-210px) rotate(50deg) scale(1.2);opacity:0.5;}92%{transform:translate(-12px,-270px) rotate(-20deg) scale(1.05);opacity:0.25;}100%{transform:translate(0,-320px) rotate(25deg) scale(0.85);opacity:0;}}
+    .bbn{position:absolute !important;border-radius:50% !important;opacity:0 !important;will-change:transform,opacity !important;animation-name:bbnFloat !important;animation-timing-function:ease-in-out !important;animation-iteration-count:infinite !important;filter:blur(0.8px) !important;}
+    /* Boule rose vif */
+    .bbn.b1{width:130px !important;height:130px !important;left:-40px !important;bottom:-40px !important;background:radial-gradient(circle at 30% 30%,rgba(244,114,182,0.95) 0%,rgba(236,72,153,0.55) 40%,rgba(219,39,119,0.15) 70%,transparent 100%) !important;box-shadow:0 0 32px rgba(244,114,182,0.75),inset 0 0 22px rgba(255,255,255,0.85) !important;animation-duration:9s !important;animation-delay:0s !important;}
+    /* Boule cyan lumineux */
+    .bbn.b2{width:85px !important;height:85px !important;left:55% !important;bottom:-25px !important;background:radial-gradient(circle at 30% 30%,rgba(34,211,238,0.95) 0%,rgba(6,182,212,0.55) 40%,rgba(8,145,178,0.15) 70%,transparent 100%) !important;box-shadow:0 0 28px rgba(34,211,238,0.75),inset 0 0 20px rgba(255,255,255,0.85) !important;animation-duration:11s !important;animation-delay:-2s !important;}
+    /* Boule jaune/orange lumineuse */
+    .bbn.b3{width:150px !important;height:150px !important;right:-50px !important;top:5% !important;background:radial-gradient(circle at 30% 30%,rgba(251,191,36,0.95) 0%,rgba(245,158,11,0.55) 40%,rgba(217,119,6,0.15) 70%,transparent 100%) !important;box-shadow:0 0 34px rgba(251,191,36,0.75),inset 0 0 24px rgba(255,255,255,0.85) !important;animation-duration:10s !important;animation-delay:-4s !important;}
+    /* Boule violette */
+    .bbn.b4{width:70px !important;height:70px !important;left:25% !important;top:15% !important;background:radial-gradient(circle at 30% 30%,rgba(167,139,250,0.95) 0%,rgba(139,92,246,0.55) 40%,rgba(109,40,217,0.15) 70%,transparent 100%) !important;box-shadow:0 0 26px rgba(167,139,250,0.75),inset 0 0 18px rgba(255,255,255,0.85) !important;animation-duration:8s !important;animation-delay:-1s !important;}
+    /* Boule verte claire */
+    .bbn.b5{width:100px !important;height:100px !important;right:15% !important;top:50% !important;background:radial-gradient(circle at 30% 30%,rgba(74,222,128,0.95) 0%,rgba(34,197,94,0.55) 40%,rgba(22,163,74,0.15) 70%,transparent 100%) !important;box-shadow:0 0 30px rgba(74,222,128,0.75),inset 0 0 20px rgba(255,255,255,0.85) !important;animation-duration:12s !important;animation-delay:-6s !important;}
+    /* Trajectoire plus large et plus rapide */
+    @keyframes bbnFloat{
+      0%{transform:translate(0,0) rotate(0deg) scale(0.55);opacity:0;}
+      10%{opacity:1;}
+      30%{transform:translate(40px,-90px) rotate(45deg) scale(1.2);opacity:0.95;}
+      50%{transform:translate(-30px,-180px) rotate(-35deg) scale(1.05);opacity:0.85;}
+      70%{transform:translate(45px,-270px) rotate(60deg) scale(1.25);opacity:0.6;}
+      88%{transform:translate(-20px,-350px) rotate(-25deg) scale(1.1);opacity:0.3;}
+      100%{transform:translate(0,-420px) rotate(30deg) scale(0.9);opacity:0;}
+    }
 
     /* ESPACEMENTS CARTE SOLDE */
     .balance-card-top-new{margin-bottom:0 !important;}
@@ -304,15 +296,16 @@ function ensureGlobalStyles() {
     /* CARTE 3 BOUTONS PLUS RECTANGULAIRE */
     .quick-actions-row-new{border-radius:6px !important;}
 
-    /* VISIBILITÉ BOTTOM NAV */
-    .nav-item-new span{font-size:7.5px !important;font-weight:900 !important;color:#000000 !important;letter-spacing:0.1px !important;}
-    .nav-item-new svg{width:14px !important;height:14px !important;fill:#0f172a !important;stroke-width:2.5 !important;}
+    /* ===== VISIBILITÉ BOTTOM NAV RENFORCÉE (sans changer la taille) ===== */
+    .nav-item-new span{font-size:7.5px !important;font-weight:900 !important;color:#0a0a0a !important;letter-spacing:0.2px !important;text-shadow:0 0 0.4px #0a0a0a,0 0 0.4px #0a0a0a,0 0.3px 0.4px rgba(0,0,0,0.3) !important;}
+    .nav-item-new svg{width:14px !important;height:14px !important;fill:#0f172a !important;stroke-width:2.5 !important;filter:drop-shadow(0 0.5px 0.5px rgba(0,0,0,0.15)) !important;}
     .nav-item-new{opacity:1 !important;}
-    .nav-item-new.active span{color:var(--primary) !important;font-weight:900 !important;}
+    .nav-item-new.active span{color:var(--primary) !important;font-weight:900 !important;text-shadow:0 0 0.4px currentColor,0 0 0.4px currentColor !important;}
     .nav-item-new.active svg{fill:var(--primary) !important;}
     .bottom-nav-inner-new{box-shadow:0 4px 14px rgba(15,23,42,0.16) !important;}
+    .bottom-nav-new{background:#e2e6ec !important;}
 
-    /* ===== LOGOS BANQUES : fond blanc + ombre pour meilleure visibilité ===== */
+    /* LOGOS BANQUES : fond blanc */
     .tx-icon-circle-new.bank-logo{background:#ffffff !important;border:1px solid #e2e8f0 !important;padding:5px !important;box-shadow:0 1px 3px rgba(15,23,42,0.06) !important;}
     .tx-icon-circle-new.bank-logo img{width:100% !important;height:100% !important;object-fit:contain !important;border-radius:6px !important;display:block !important;}
   `;
@@ -327,21 +320,13 @@ function renderQuickActions() {
   '</div>';
 }
 
-/* ===================================================== */
-/* LOGO BANQUE : <img> avec fallback en cascade          */
-/* 1. Google favicon (primaire)                          */
-/* 2. DuckDuckGo icons                                   */
-/* 3. SVG fallback                                       */
-/* ===================================================== */
 function buildBankLogoHtml(tx, circleClass, iconSvg, fallbackLogo) {
   if (!tx.bankLogo) return '<div class="tx-icon-circle-new ' + circleClass + '"><svg viewBox="0 0 24 24">' + iconSvg + '</svg></div>';
   const domain = tx.bankDomain || '';
   const primary = tx.bankLogo;
   const duck = domain ? 'https://icons.duckduckgo.com/ip3/' + domain + '.ico' : '';
   const fallbackEscaped = fallbackLogo.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-  // onerror chain : essaie DuckDuckGo puis fallback SVG
-  const onerr = "this.onerror=null;" +
-    (duck ? "this.src='" + duck + "';this.onerror=function(){this.onerror=null;this.src='" + fallbackEscaped + "';};" : "this.src='" + fallbackEscaped + "';");
+  const onerr = "this.onerror=null;" + (duck ? "this.src='" + duck + "';this.onerror=function(){this.onerror=null;this.src='" + fallbackEscaped + "';};" : "this.src='" + fallbackEscaped + "';");
   return '<div class="tx-icon-circle-new bank-logo"><img src="' + primary + '" alt="bank" loading="lazy" referrerpolicy="no-referrer" onerror="' + onerr + '" /></div>';
 }
 
@@ -356,14 +341,9 @@ function renderTransactions(txs) {
     if (isCancelled) { circleClass = 'cancelled'; iconSvg = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>'; amountClass = 'cancelled'; amountSign = '+'; }
     else if (isIn) { circleClass = 'in'; iconSvg = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>'; amountClass = 'pos'; amountSign = '+'; }
     else { circleClass = 'out'; iconSvg = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>'; amountClass = 'neg'; amountSign = '−'; }
-    // Si transaction annulée ou pas de logo → icône SVG normale
-    // Sinon → <img> avec le vrai logo officiel de la banque
     let iconHtml;
-    if (tx.bankLogo && !isCancelled) {
-      iconHtml = buildBankLogoHtml(tx, circleClass, iconSvg, FALLBACK_BANK_LOGO);
-    } else {
-      iconHtml = '<div class="tx-icon-circle-new ' + circleClass + '"><svg viewBox="0 0 24 24">' + iconSvg + '</svg></div>';
-    }
+    if (tx.bankLogo && !isCancelled) { iconHtml = buildBankLogoHtml(tx, circleClass, iconSvg, FALLBACK_BANK_LOGO); }
+    else { iconHtml = '<div class="tx-icon-circle-new ' + circleClass + '"><svg viewBox="0 0 24 24">' + iconSvg + '</svg></div>'; }
     let title;
     if (tx.labelKey) { title = t(tx.labelKey); } else if (isCancelled) { title = t('txTransferCancelled'); } else if (isIn) { title = t('txTransferReceived'); } else { title = t('txTransferSent'); }
     const subtitle = translateSubtitle(tx.subtitle);
@@ -373,6 +353,88 @@ function renderTransactions(txs) {
   return h;
 }
 
+/* ===================================================== */
+/* ★★★ SYNCHRONISATION TEMPS RÉEL COMPLÈTE ★★★            */
+/* Met à jour TOUTES les parties dynamiques de l'UI     */
+/* ===================================================== */
+function syncClientUI(fresh) {
+  if (!fresh) return;
+  const previousLang = currentLang;
+  const previousCurrency = currentClient && currentClient.currency;
+  const previousTheme = currentClient && currentClient.themeColor;
+  const previousName = currentClient && (currentClient.firstName + ' ' + currentClient.lastName);
+
+  currentClient = fresh;
+  currentLang = fresh.language || 'fr';
+
+  // 1. Appliquer le thème si changé
+  if (previousTheme !== fresh.themeColor) {
+    applyTheme(fresh.themeColor);
+  } else {
+    applyTheme(fresh.themeColor); // Ré-applique toujours au cas où
+  }
+
+  const currency = fresh.currency || '€';
+  const balanceFormatted = formatAmount(fresh.balance || 0, currency);
+  const balanceRaw = (parseFloat(fresh.balance) || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  // 2. Mettre à jour le montant du solde dans la grande carte
+  const balanceAmountEl = document.querySelector('.balance-card-amount-new');
+  if (balanceAmountEl) {
+    const parts = balanceRaw.split(',');
+    const intPart = parts[0] || '0';
+    const decPart = parts[1] !== undefined ? ',' + parts[1] : ',00';
+    balanceAmountEl.innerHTML = '<span class="int-part">' + intPart + '</span><span class="dec-part">' + decPart + '</span><span class="cur-part">' + currency + '</span>';
+  }
+
+  // 3. Mettre à jour le code devise (EUR/USD) dans le badge "Personnel · EUR"
+  const currSymbolEl = document.querySelector('.balance-card-type-label-new .curr-symbol');
+  if (currSymbolEl) currSymbolEl.textContent = getCurrencyCode(currency);
+
+  // 4. Mettre à jour la liste des transactions (devise + logos + montants)
+  const txList = document.getElementById('transaction-list');
+  if (txList) txList.innerHTML = renderTransactions(fresh.transactions);
+
+  // 5. Mettre à jour le greeting (nom peut changer)
+  const greetingTitleEl = document.querySelector('.greeting-title-new');
+  if (greetingTitleEl) greetingTitleEl.textContent = t('greeting') + ', ' + fresh.firstName + ' ' + fresh.lastName;
+  const headerAvatarInitials = document.querySelector('.header-icon-btn-new.avatar-new');
+  // 6. Mettre à jour le solde affiché sur l'écran transfert
+  const transferAmountEl = document.querySelector('#screen-transfer .transfer-amount');
+  if (transferAmountEl) transferAmountEl.textContent = balanceFormatted;
+
+  // 7. Mettre à jour l'écran profil (le re-render complètement s'il existe dans le DOM)
+  const profileScreen = document.getElementById('screen-profile');
+  if (profileScreen) {
+    const initials = ((fresh.firstName || '').charAt(0) + (fresh.lastName || '').charAt(0)).toUpperCase();
+    profileScreen.innerHTML = renderProfileScreen(fresh, initials, balanceFormatted);
+  }
+
+  // 8. Mettre à jour le modal carte virtuelle s'il est ouvert
+  const cardBody = document.getElementById('card-modal-body-content');
+  if (cardBody) {
+    virtualCardRevealed = false;
+    cardBody.innerHTML = renderCardBody(fresh.cardNumber || '4944595344283327', getCardHolderName(fresh), fresh.cardExpiry || '02/28', fresh.cardCvv || '843', fresh.cardType || 'Visa Debit', fresh.cardMaskLast4 === true, fresh.cardMaskCvv === true, false);
+  }
+
+  // 9. Mettre à jour la carte bancaire (écran card)
+  const creditCard = document.querySelector('.credit-card .card-holder');
+  if (creditCard) creditCard.textContent = getCardHolderName(fresh);
+
+  // 10. Si la langue a changé, on doit rafraîchir les labels de nav et sections
+  if (previousLang !== currentLang) {
+    const navLabels = { 'nav-dashboard': 'navBalance', 'nav-transfer': 'navPaymentsNew', 'nav-card': 'navCard', 'nav-profile': 'navAccount' };
+    Object.keys(navLabels).forEach(function (navId) {
+      const el = document.getElementById(navId);
+      if (el) { const span = el.querySelector('span'); if (span) span.textContent = t(navLabels[navId]); }
+    });
+    const txTitle = document.querySelector('.tx-section-title-new');
+    if (txTitle) txTitle.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z"/></svg>' + t('transactionHistory');
+    const seeAllBtn = document.querySelector('.see-all-link-new');
+    if (seeAllBtn) seeAllBtn.innerHTML = t('seeAllBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>';
+  }
+}
+
 function subscribeToClient(clientId) {
   if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
   try {
@@ -380,12 +442,8 @@ function subscribeToClient(clientId) {
       if (!snap.exists()) { ClientSession.clear(); if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; } initClient(); return; }
       const fresh = Object.assign({ id: snap.id }, snap.data());
       if (fresh.blocked) { ClientSession.clear(); if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; } initClient(); return; }
-      currentClient = fresh; currentLang = fresh.language || 'fr'; applyTheme(fresh.themeColor);
-      const txList = document.getElementById('transaction-list'); if (txList) txList.innerHTML = renderTransactions(fresh.transactions);
-      const cardBody = document.getElementById('card-modal-body-content');
-      if (cardBody) { virtualCardRevealed = false; cardBody.innerHTML = renderCardBody(fresh.cardNumber || '4944595344283327', getCardHolderName(fresh), fresh.cardExpiry || '02/28', fresh.cardCvv || '843', fresh.cardType || 'Visa Debit', fresh.cardMaskLast4 === true, fresh.cardMaskCvv === true, false); }
-      const profileScreen = document.getElementById('screen-profile');
-      if (profileScreen && profileScreen.classList.contains('active')) { const initials = ((fresh.firstName || '').charAt(0) + (fresh.lastName || '').charAt(0)).toUpperCase(); const cur = fresh.currency || '€'; const bal = formatAmount(fresh.balance || 0, cur); profileScreen.innerHTML = renderProfileScreen(fresh, initials, bal); }
+      // ★ Appel de la fonction de sync complète
+      syncClientUI(fresh);
     }, () => {});
   } catch (e) {}
 }
