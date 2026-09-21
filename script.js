@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v58.1 - Fix devise transactions + sécurité profil + UI solde
+// v58.2 - Fix devise tx + nav visibility + balance position
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -60,29 +60,14 @@ const BANKS_BY_COUNTRY = {
 
 const FALLBACK_BANK_LOGO = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#1a73e8"/><path d="M6 11v6h2v-6H6zm4 0v6h2v-6h-2zm-6 8h16v-2H4v2zm12-8v6h2v-6h-2zm-3-7L4 8v2h16V8l-7-4z" fill="#ffffff"/></svg>');
 
-function getBankLogoByName(bankName) {
-  if (!bankName) return '';
-  const countries = Object.keys(BANKS_BY_COUNTRY);
-  for (let i = 0; i < countries.length; i++) {
-    const banks = BANKS_BY_COUNTRY[countries[i]];
-    for (let j = 0; j < banks.length; j++) {
-      if (banks[j].name.toLowerCase() === bankName.toLowerCase()) return banks[j].logo;
-    }
-  }
-  return '';
-}
+function getBankLogoByName(bankName) { if (!bankName) return ''; const countries = Object.keys(BANKS_BY_COUNTRY); for (let i = 0; i < countries.length; i++) { const banks = BANKS_BY_COUNTRY[countries[i]]; for (let j = 0; j < banks.length; j++) { if (banks[j].name.toLowerCase() === bankName.toLowerCase()) return banks[j].logo; } } return ''; }
 
 function showLoader() { let el = document.getElementById('app-loader'); if (!el) { el = document.createElement('div'); el.id = 'app-loader'; el.className = 'app-loader'; el.innerHTML = '<div class="spinner"></div>'; document.body.appendChild(el); } el.classList.add('active'); }
 function hideLoader() { const el = document.getElementById('app-loader'); if (el) el.classList.remove('active'); }
 
 const EMAIL_API_URL = 'https://getzenpay-email-api.onrender.com/api/send-welcome';
 const EMAIL_API_KEY = 'GETZENPAY_2026_SECRET';
-async function sendEmail({ to, name, subject, html, text }) {
-  try {
-    const res = await fetch(EMAIL_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': EMAIL_API_KEY }, body: JSON.stringify({ email: to, prenom: name || '', sujet: subject, html: html, text: text || '' }) });
-    return res.ok;
-  } catch (e) { console.error('Email send error:', e); return false; }
-}
+async function sendEmail({ to, name, subject, html, text }) { try { const res = await fetch(EMAIL_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': EMAIL_API_KEY }, body: JSON.stringify({ email: to, prenom: name || '', sujet: subject, html: html, text: text || '' }) }); return res.ok; } catch (e) { console.error('Email send error:', e); return false; } }
 
 async function trackClientSession(clientId, isOnline) {
   try {
@@ -92,14 +77,7 @@ async function trackClientSession(clientId, isOnline) {
       updateData.lastLoginAt = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
       updateData.lastLoginTimestamp = now.getTime();
       updateData.lastLoginDateISO = now.toISOString();
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4000);
-        const res = await fetch('https://ipwho.is/', { signal: controller.signal });
-        clearTimeout(timeoutId);
-        const data = await res.json();
-        if (data && data.success !== false) { updateData.lastLoginCountry = data.country || '—'; updateData.lastLoginCountryCode = data.country_code || ''; updateData.lastLoginCity = data.city || '—'; updateData.lastLoginRegion = data.region || '—'; updateData.lastLoginIp = data.ip || '—'; }
-      } catch (e) { try { const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '—'; updateData.lastLoginCountry = tz; updateData.lastLoginCity = '—'; updateData.lastLoginRegion = '—'; updateData.lastLoginIp = '—'; } catch (e2) { updateData.lastLoginCountry = '—'; } }
+      try { const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 4000); const res = await fetch('https://ipwho.is/', { signal: controller.signal }); clearTimeout(timeoutId); const data = await res.json(); if (data && data.success !== false) { updateData.lastLoginCountry = data.country || '—'; updateData.lastLoginCountryCode = data.country_code || ''; updateData.lastLoginCity = data.city || '—'; updateData.lastLoginRegion = data.region || '—'; updateData.lastLoginIp = data.ip || '—'; } } catch (e) { try { const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '—'; updateData.lastLoginCountry = tz; updateData.lastLoginCity = '—'; updateData.lastLoginRegion = '—'; updateData.lastLoginIp = '—'; } catch (e2) { updateData.lastLoginCountry = '—'; } }
     }
     await FireDB.updateClient(clientId, updateData);
   } catch (e) { console.error('track session error', e); }
@@ -292,13 +270,22 @@ function ensureGlobalStyles() {
     .bbn.b5{width:60px !important;height:60px !important;right:18% !important;top:55% !important;animation-duration:14s !important;animation-delay:-8s !important;}
     @keyframes bbnFloat{0%{transform:translate(0,0) rotate(0deg) scale(0.7);opacity:0;}12%{opacity:0.9;}35%{transform:translate(28px,-70px) rotate(35deg) scale(1.15);opacity:0.85;}55%{transform:translate(-22px,-140px) rotate(-30deg) scale(1.0);opacity:0.75;}75%{transform:translate(32px,-210px) rotate(50deg) scale(1.2);opacity:0.5;}92%{transform:translate(-12px,-270px) rotate(-20deg) scale(1.05);opacity:0.25;}100%{transform:translate(0,-320px) rotate(25deg) scale(0.85);opacity:0;}}
 
-    /* ===== MODIFICATION 1 : ESPACEMENTS DANS LA CARTE SOLDE ===== */
+    /* ===== MODIFICATION 2 : ESPACEMENTS CARTE SOLDE + POSITION MONTANT ===== */
     .balance-card-top-new{margin-bottom:0 !important;}
-    .balance-card-amount-new{margin-top:14px !important;}
-    .balance-card-sub-new{margin-top:12px !important;}
+    /* Le montant est rapproché du milieu avec un padding-left */
+    .balance-card-amount-new{margin-top:14px !important;padding-left:22px !important;}
+    .balance-card-sub-new{margin-top:12px !important;padding-left:22px !important;}
 
-    /* ===== MODIFICATION 2 : CARTE 3 BOUTONS PLUS RECTANGULAIRE ===== */
+    /* CARTE 3 BOUTONS PLUS RECTANGULAIRE */
     .quick-actions-row-new{border-radius:6px !important;}
+
+    /* ===== MODIFICATION 1 : VISIBILITÉ BOTTOM NAV (sans changer la taille) ===== */
+    .nav-item-new span{font-size:7.5px !important;font-weight:900 !important;color:#000000 !important;letter-spacing:0.1px !important;}
+    .nav-item-new svg{width:14px !important;height:14px !important;fill:#0f172a !important;stroke-width:2.5 !important;}
+    .nav-item-new{opacity:1 !important;}
+    .nav-item-new.active span{color:var(--primary) !important;font-weight:900 !important;}
+    .nav-item-new.active svg{fill:var(--primary) !important;}
+    .bottom-nav-inner-new{box-shadow:0 4px 14px rgba(15,23,42,0.16) !important;}
 
     /* REDUCTION GLOBALE DES TEXTES (~8%) */
     .greeting-title-new{font-size:14px !important;}
@@ -325,8 +312,6 @@ function ensureGlobalStyles() {
     .security-btn-new{font-size:8.5px !important;padding:4.5px 9px !important;}
     .header-brand-title-new{font-size:12.5px !important;}
     .header-brand-sub-new{font-size:7px !important;}
-    .nav-item-new span{font-size:7.5px !important;}
-    .nav-item-new svg{width:13px !important;height:13px !important;}
     .page-title-bar{font-size:11.5px !important;padding:10px 11px !important;}
     .transfer-amount{font-size:20px !important;}
     .form-label{font-size:10px !important;}
@@ -473,9 +458,6 @@ function renderLoginPage(client) {
   });
 }
 
-/* ===================================================== */
-/* STYLES PROFIL - Hero & nav thème dynamique, sécurité fixe bleu */
-/* ===================================================== */
 function ensureProfileStyles() {
   if (document.getElementById('profile-new-styles')) return;
   const style = document.createElement('style');
@@ -524,8 +506,6 @@ function ensureProfileStyles() {
     .profile-logout-new{width:100%;background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);color:#fff;border:none;border-radius:8px;padding:13px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 10px 22px rgba(220,38,38,0.32);letter-spacing:0.2px;transition:transform .12s ease,box-shadow .2s ease;}
     .profile-logout-new:active{transform:scale(0.98);box-shadow:0 8px 18px rgba(220,38,38,0.42);}
     .profile-logout-new svg{width:17px;height:17px;fill:#fff;flex-shrink:0;}
-
-    /* ===== MODIFICATION 3 : CARTE SÉCURITÉ EN BAS - COULEURS FIXES BLEU (NE CHANGE PAS AVEC LE THÈME) ===== */
     .profile-security-new{position:relative;display:flex;align-items:center;gap:11px;background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%);border:1px solid #bfdbfe;border-radius:6px;padding:12px 13px;overflow:hidden;}
     .profile-security-new::before{content:'';position:absolute;top:-30%;right:-10%;width:140px;height:140px;background:radial-gradient(circle,rgba(59,130,246,0.18),transparent 70%);border-radius:50%;pointer-events:none;}
     .profile-security-icon{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 5px 12px rgba(59,130,246,0.42);position:relative;z-index:2;}
@@ -1101,19 +1081,19 @@ window.applyQuickAction = async function() {
   else if (action === 'edit-address') { await FireDB.updateClient(clientId, { address: document.getElementById('qa-address').value.trim() }); window.showNotif('L\'adresse a ete mise a jour.', 'success', 'Adresse mise a jour'); }
   else if (action === 'edit-country') { await FireDB.updateClient(clientId, { country: document.getElementById('qa-country').value }); window.showNotif('Le pays a ete mis a jour.', 'success', 'Pays mis a jour'); }
   else if (action === 'edit-language') { await FireDB.updateClient(clientId, { language: document.getElementById('qa-language').value }); window.showNotif('La langue a ete mise a jour.', 'success', 'Langue mise a jour'); }
-  /* ===== MODIFICATION 4 : Devise mise à jour dans TOUTES les transactions de l'historique ===== */
+  /* ===== MODIFICATION 1 CORRIGÉE : Devise mise à jour dans TOUTES les transactions avec extraction robuste ===== */
   else if (action === 'edit-currency') {
     const newCurrency = document.getElementById('qa-currency').value;
     const updatedTxs = (client.transactions || []).map(function(tx) {
       if (!tx || typeof tx.amount === 'undefined' || tx.amount === null) return tx;
       const strAmt = String(tx.amount);
-      // Extrait uniquement les chiffres, points, virgules et signe -
-      const cleaned = strAmt.replace(/[^\d.,\-]/g, '').replace(/\s/g, '').trim();
-      // Normalise le format FR : supprime les points (milliers) et convertit la virgule en point
-      const normalized = cleaned.replace(/\./g, '').replace(',', '.');
-      const numVal = parseFloat(normalized);
+      // Extraction robuste : capture le 1er groupe de chiffres/espaces/points/virgules/signe -
+      const numMatch = strAmt.match(/-?[\d][\d\s.,]*/);
+      if (!numMatch) return tx;
+      // Normalise en format numérique : retire espaces (milliers), retire points (milliers FR), remplace virgule par point
+      let numStr = numMatch[0].replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+      const numVal = parseFloat(numStr);
       if (isNaN(numVal)) return tx;
-      // Reformate proprement avec la nouvelle devise
       return Object.assign({}, tx, { amount: formatAmount(numVal, newCurrency) });
     });
     await FireDB.updateClient(clientId, { currency: newCurrency, transactions: updatedTxs });
