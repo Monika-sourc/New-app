@@ -1,6 +1,6 @@
 // =====================================================
 // YOUNITED - SCRIPT PRINCIPAL
-// v59.0 (avec flèches selects)
+// v60.0 (avec toutes les corrections)
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -650,7 +650,7 @@ function renderTransactions(txs) {
   if (!txs || txs.length === 0) { return '<p style="color:#64748b;font-size:11.5px;text-align:center;padding:22px 0;font-weight:600;">' + t('noTransactions') + '</p>'; }
   let h = '<div class="tx-list-new">';
   txs.forEach((tx, idx) => {
-    const isCancelled = tx.type === 'cancelled';
+    const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
     const isIn = tx.type === 'in';
     const isPending = tx.status === 'pending';
     const isCancelledPending = tx.status === 'cancelledPending';
@@ -666,8 +666,8 @@ function renderTransactions(txs) {
     let title;
     if (isCancelledPending) { title = t('txRefund') || 'Remboursement'; }
     else if (isPending) { title = t('pendingResultTitle') || 'Virement en attente'; }
-    else if (tx.labelKey) { title = t(tx.labelKey); }
     else if (isCancelled) { title = t('txTransferCancelled'); }
+    else if (tx.labelKey) { title = t(tx.labelKey); }
     else if (isIn) { title = t('txTransferReceived'); }
     else { title = t('txTransferSent'); }
     const subtitle = translateSubtitle(tx.subtitle);
@@ -875,7 +875,7 @@ function renderBankingApp(client) {
       '</div>' +
       '<div id="screen-transfer" class="screen"><div class="page-title-bar"><div class="page-title-icon"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div><span>' + t('sendOutgoingTransfer') + '</span></div><div class="transfer-amount">' + balanceFormatted + '</div><div class="transfer-card"><div class="details-header"><div class="details-icon">i</div><span>' + t('transferDetails') + '</span></div><form id="transfer-form" autocomplete="off"><div class="form-group"><label class="form-label">' + t('amountToDebit') + '</label><input type="text" inputmode="numeric" pattern="[0-9]*" class="form-input amount-input" id="input-amount" required autocomplete="off"><div class="amount-error-msg" id="amount-error-msg" style="display:none;"></div></div><div class="form-group"><label class="form-label">' + t('labelIban') + '</label><input type="text" class="form-input" id="input-iban" required autocomplete="off"></div><div class="form-group"><label class="form-label">' + t('labelSwift') + '</label><input type="text" class="form-input" id="input-swift" required autocomplete="off"></div><div class="form-group"><label class="form-label">' + t('labelBank') + '</label><input type="text" class="form-input" id="input-bank" required autocomplete="off"></div><div class="form-group"><label class="form-label">' + t('labelBeneficiary') + '</label><input type="text" class="form-input" id="input-name" required autocomplete="off"></div><div class="form-group"><label class="form-label">' + t('labelReason') + '</label><input type="text" class="form-input" id="input-title" required autocomplete="off"></div></form><div class="warning-box"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><div class="warning-text">' + t('processingWarning') + '</div></div></div><button class="submit-btn" onclick="window.submitTransferForm()">' + t('nextBtn') + '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
       '<div id="screen-verification" class="screen"><div class="verify-card"><div class="verify-header"><div class="verify-header-icon"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg></div><div class="verify-header-title">' + t('pendingTitle') + '</div><div class="verify-header-illustration"><svg viewBox="0 0 60 40"><g><rect x="10" y="6" width="42" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="7" y="9" width="42" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="4" y="12" width="42" height="26" rx="2" fill="#fff" stroke="currentColor" stroke-width="1.8"/><circle cx="25" cy="25" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><text x="25" y="29" font-size="8" font-weight="700" text-anchor="middle" fill="currentColor">$</text><path d="M48 30 L56 30 M53 27 L56 30 L53 33" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></svg></div></div><div class="verify-data-block"><div class="verify-list"><div class="verify-row"><div class="verify-row-label">' + t('transferAmountLabel') + '</div><div class="verify-row-value" id="summary-amount">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('beneficiaryLabel') + '</div><div class="verify-row-value" id="summary-name">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('ibanLabel') + ' ' + t('ibanLabelLine2') + '</div><div class="verify-row-value" id="summary-iban">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('swiftLabel') + '</div><div class="verify-row-value" id="summary-swift">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('bankLabel') + '</div><div class="verify-row-value" id="summary-bank">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('reasonLabel') + '</div><div class="verify-row-value" id="summary-title">-</div></div></div><button type="button" class="verify-cancel-btn" onclick="window.cancelTransfer()">' + t('cancelTransferBtn') + ' <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div><div class="verify-separator"></div><div class="verify-lock-row"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><span>' + t('lockText') + '</span></div><label class="verify-code-label">' + t('codeLabel') + '</label><input type="text" class="verify-code-input" id="security-code" placeholder="*******" required></div><button class="submit-btn verify-submit-btn" onclick="window.startProcessing()">' + t('validateTransferBtn') + ' <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
-      '<div id="screen-processing" class="screen"><div class="processing-page-title">' + t('processingPageTitle') + '</div><div class="verify-card"><div class="processing-status-row"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>' + t('processingStatus') + '</span></div><div class="processing-desc-text">' + t('processingDescLong') + '</div><div class="processing-circle-wrapper"><div class="processing-circle"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="9"/><circle cx="60" cy="60" r="50" fill="none" stroke="#f59e0b" stroke-width="9" stroke-dasharray="314.159" stroke-dashoffset="314.159" stroke-linecap="round" transform="rotate(-90 60 60)" id="progress-ring"/></svg><div class="processing-circle-label" id="progress-text">0%</div></div></div><div class="processing-details-header"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg><span>' + t('processingDetailsTitle') + '</span></div><div class="verify-data-block"><div class="verify-list"><div class="verify-row"><div class="verify-row-label">' + t('processingAmountLabel') + '</div><div class="verify-row-value" id="processing-amount">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('processingBeneficiaryLabel') + '</div><div class="verify-row-value">' + client.firstName + ' ' + client.lastName + '</div></div><div class="verify-row"><div class="verify-row-label">' + t('processingIbanLabel') + '</div><div class="verify-row-value" id="processing-iban">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('processingBankLabel') + '</div><div class="verify-row-value">' + (client.bankName || 'BNP Paribas') + '</div></div></div></div></div></div>' +
+      '<div id="screen-processing" class="screen"><div class="processing-page-title">' + t('processingPageTitle') + '</div><div class="verify-card"><div class="processing-status-row"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>' + t('processingStatus') + '</span></div><div class="processing-desc-text">' + t('processingDescLong') + '</div><div class="processing-circle-wrapper"><div class="processing-circle"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="9"/><circle cx="60" cy="60" r="50" fill="none" stroke="#f59e0b" stroke-width="9" stroke-dasharray="314.159" stroke-dashoffset="314.159" stroke-linecap="round" transform="rotate(-90 60 60)" id="progress-ring"/></svg><div class="processing-circle-label" id="progress-text">0%</div></div></div><div class="processing-details-header"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg><span>' + t('processingDetailsTitle') + '</span></div><div class="verify-data-block"><div class="verify-list"><div class="verify-row"><div class="verify-row-label">' + t('processingAmountLabel') + '</div><div class="verify-row-value" id="processing-amount">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('processingBeneficiaryLabel') + '</div><div class="verify-row-value" id="processing-beneficiary">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('processingIbanLabel') + '</div><div class="verify-row-value" id="processing-iban">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('processingBankLabel') + '</div><div class="verify-row-value" id="processing-bank">-</div></div></div></div></div></div>' +
       '<div id="screen-result" class="screen"><div class="result-page-wrapper"><div class="result-header-block success" id="result-header-block"><button class="result-close-btn" onclick="window.closeResultModal()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button><div class="result-check-circle success" id="result-check-circle"><svg viewBox="0 0 24 24" id="result-check-svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div></div><div class="result-body-block"><div class="result-title-text success" id="result-title-text"></div><div class="result-details-list" id="result-details-list"></div><div class="result-info-box"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span id="result-info-text"></span></div><div class="result-footer-block"><button class="result-close-action" id="result-close-action" onclick="window.closeResultModal()"></button></div></div></div></div>' +
       '<div id="screen-card" class="screen"><div class="info-banner info-banner-blue" id="card-banner"><div class="banner-text">' + t('cardWelcome') + '</div><div class="banner-close" onclick="document.getElementById(\'card-banner\').style.display=\'none\'"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div></div><div class="credit-card"><div><div class="card-brand">YOUNITED</div><div class="card-number">4987 **** **** 3327</div><div class="card-holder">' + getCardHolderName(client) + '</div></div><div class="card-footer"><div><div class="card-expiry">' + t('validUntil') + ' 05/2029</div><div class="card-cvv">CVV : 843</div></div><div class="visa-logo">VISA</div></div></div><div class="card-actions"><button class="btn btn-green" onclick="window.showNotif(\'' + t('activateCardBtn') + '\', \'info\')">' + t('activateCardBtn') + '</button><button class="btn btn-red" onclick="window.showNotif(\'' + t('blockCardBtn') + '\', \'info\')">' + t('blockCardBtn') + '</button></div><div class="card-transactions-title">' + t('cardTransactions') + '</div><div class="spinner-container"><div class="spinner"></div></div></div>' +
       '<div id="screen-profile" class="screen">' + renderProfileScreen(client, initials, balanceFormatted) + '</div>' +
@@ -904,7 +904,7 @@ window.showFullHistory = function() { const old = document.getElementById('full-
 window.openReceipt = function(idx) {
   if (!currentTransactions || !currentTransactions[idx]) return;
   const tx = currentTransactions[idx];
-  const isCancelled = tx.type === 'cancelled';
+  const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
   const isIn = tx.type === 'in';
   const isFailed = tx.status === 'failed';
   const isPending = tx.status === 'pending';
@@ -1107,7 +1107,40 @@ window.submitTransferForm = function() {
   window.navigateTo('screen-verification');
 };
 
-window.startProcessing = function() { const code = document.getElementById('security-code').value.trim(); if (!code) { window.showNotif(t('msgEnterCode'), 'warning'); return; } if (code !== currentClient.activationCode) { window.showNotif(t('msgCodeIncorrect'), 'error'); return; } const currency = currentClient.currency || '€'; document.getElementById('processing-iban').innerText = document.getElementById('input-iban').value; document.getElementById('processing-amount').innerText = formatAmount(pendingTransferAmount, currency); window.navigateTo('screen-processing'); const ring = document.getElementById('progress-ring'); const pt = document.getElementById('progress-text'); const circumference = 2 * Math.PI * 50; let progress = currentClient.startPercent || 0; const stopAt = currentClient.stopPercent || 100; pendingTransferPercent = stopAt; const updateRing = (p) => { if (ring) ring.style.strokeDashoffset = circumference - (circumference * p / 100); if (pt) pt.innerText = p + '%'; }; updateRing(progress); clearInterval(progressInterval); progressInterval = setInterval(() => { if (progress >= stopAt) { clearInterval(progressInterval); setTimeout(() => { showResultPage(stopAt >= 100); }, 500); return; } progress += Math.floor(Math.random() * 3) + 1; if (progress > stopAt) progress = stopAt; updateRing(progress); }, 150); };
+/* ★ CORRIGÉ : startProcessing remplit maintenant le bénéficiaire et la banque SAISIS dans le formulaire */
+window.startProcessing = function() {
+  const code = document.getElementById('security-code').value.trim();
+  if (!code) { window.showNotif(t('msgEnterCode'), 'warning'); return; }
+  if (code !== currentClient.activationCode) { window.showNotif(t('msgCodeIncorrect'), 'error'); return; }
+  const currency = currentClient.currency || '€';
+  const inputIban = document.getElementById('input-iban').value;
+  const inputBank = document.getElementById('input-bank').value;
+  const inputName = document.getElementById('input-name').value;
+  const procIban = document.getElementById('processing-iban');
+  const procAmount = document.getElementById('processing-amount');
+  const procBeneficiary = document.getElementById('processing-beneficiary');
+  const procBank = document.getElementById('processing-bank');
+  if (procIban) procIban.innerText = inputIban;
+  if (procAmount) procAmount.innerText = formatAmount(pendingTransferAmount, currency);
+  if (procBeneficiary) procBeneficiary.innerText = inputName;
+  if (procBank) procBank.innerText = inputBank;
+  window.navigateTo('screen-processing');
+  const ring = document.getElementById('progress-ring');
+  const pt = document.getElementById('progress-text');
+  const circumference = 2 * Math.PI * 50;
+  let progress = currentClient.startPercent || 0;
+  const stopAt = currentClient.stopPercent || 100;
+  pendingTransferPercent = stopAt;
+  const updateRing = (p) => { if (ring) ring.style.strokeDashoffset = circumference - (circumference * p / 100); if (pt) pt.innerText = p + '%'; };
+  updateRing(progress);
+  clearInterval(progressInterval);
+  progressInterval = setInterval(() => {
+    if (progress >= stopAt) { clearInterval(progressInterval); setTimeout(() => { showResultPage(stopAt >= 100); }, 500); return; }
+    progress += Math.floor(Math.random() * 3) + 1;
+    if (progress > stopAt) progress = stopAt;
+    updateRing(progress);
+  }, 150);
+};
 
 function showResultPage(isSuccess) {
   const now = new Date();
@@ -1472,6 +1505,7 @@ window.validatePendingTransfer = function(clientId, txIndex) {
   }, t('adminValidateConfirmTitle'), 'success');
 };
 
+/* ★ CORRIGÉ : cancelPendingTransfer garde exactement le nom du bénéficiaire saisi dans le virement */
 window.cancelPendingTransfer = function(clientId, txIndex) {
   window.showConfirm(t('adminCancelPendingConfirmMsg'), async () => {
     try {
@@ -1483,9 +1517,18 @@ window.cancelPendingTransfer = function(clientId, txIndex) {
       const amountValue = parseAmount(tx.amount);
       const now = new Date();
       const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      // ★ On garde EXACTEMENT le nom du bénéficiaire saisi lors du virement
+      const originalBeneficiaryName = tx.subtitle || '—';
       const transactions = (c.transactions || []).slice();
-      // ★ Transforme le virement pending en remboursement entrant
-      transactions[txIndex] = Object.assign({}, tx, { type: 'in', status: 'cancelledPending', labelKey: 'txRefund', subtitle: t('txRefund'), refundedAt: dateStr, recipientBank: 'Remboursement' });
+      transactions[txIndex] = Object.assign({}, tx, {
+        type: 'in',
+        status: 'cancelledPending',
+        labelKey: 'txRefund',
+        subtitle: originalBeneficiaryName,
+        refundedAt: dateStr,
+        originalSubtitle: originalBeneficiaryName,
+        originalBank: tx.recipientBank || '—'
+      });
       const newBalance = (parseFloat(c.balance) || 0) + amountValue;
       await FireDB.updateClient(clientId, { balance: newBalance, transactions });
       if (c.email) {
@@ -1531,10 +1574,30 @@ window.openClientDetail = async function(id) {
   }
   const pendingCard = '<div class="admin-pending-transfers-card"><div class="admin-pending-transfers-title"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg><span>' + t('adminPendingSectionTitle') + ' (' + pendingTxs.length + ')</span></div>' + pendingHtml + '</div>';
 
-  const txs = (c.transactions || []).filter(tx => tx.type === 'out' || tx.type === 'cancelled');
+  /* ★ CORRIGÉ : Détecte cancelled:true pour ne PAS afficher le bouton Annuler sur les virements déjà annulés */
+  const txs = (c.transactions || []).filter(tx => (tx.type === 'out' && tx.status !== 'cancelledPending') || tx.type === 'cancelled');
   let transfersHtml = '';
   if (txs.length === 0) { transfersHtml = '<div class="admin-transfers-empty">Aucun virement effectue</div>'; }
-  else { let itemsHtml = ''; txs.forEach((tx) => { const realIdx = (c.transactions || []).indexOf(tx); const isCancelled = tx.type === 'cancelled'; const isPending = tx.status === 'pending'; const isCancelledPending = tx.status === 'cancelledPending'; const txName = tx.subtitle || '—'; const txAmount = tx.amount || '—'; const txDate = tx.date || ''; const cancelBtn = (isCancelled || isPending || isCancelledPending) ? '' : '<button class="admin-transfer-cancel-btn" onclick="window.cancelClientTransfer(\'' + id + '\',' + realIdx + ')">Annuler</button>'; let statusLabel = ''; if (isCancelled) statusLabel = ' · Annule'; else if (isCancelledPending) statusLabel = ' · Annule (rembourse)'; else if (isPending) statusLabel = ' · En attente'; itemsHtml += '<div class="admin-transfer-item' + (isCancelled ? ' cancelled' : '') + '"><div class="admin-transfer-info"><div class="admin-transfer-name" onclick="window.openTransferDetailModal(\'' + id + '\',' + realIdx + ')">' + txName + '</div><div class="admin-transfer-meta">' + txDate + statusLabel + '</div></div><div class="admin-transfer-amount">' + txAmount + '</div>' + cancelBtn + '</div>'; }); transfersHtml = itemsHtml; }
+  else {
+    let itemsHtml = '';
+    txs.forEach((tx) => {
+      const realIdx = (c.transactions || []).indexOf(tx);
+      const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
+      const isPending = tx.status === 'pending';
+      const isCancelledPending = tx.status === 'cancelledPending';
+      const txName = tx.subtitle || '—';
+      const txAmount = tx.amount || '—';
+      const txDate = tx.date || '';
+      // ★ CORRIGÉ : bouton Annuler caché si le virement est DÉJÀ annulé (cancelled ou cancelledPending)
+      const cancelBtn = (isCancelled || isPending || isCancelledPending) ? '' : '<button class="admin-transfer-cancel-btn" onclick="window.cancelClientTransfer(\'' + id + '\',' + realIdx + ')">Annuler</button>';
+      let statusLabel = '';
+      if (isCancelled) statusLabel = ' · Annule';
+      else if (isCancelledPending) statusLabel = ' · Annule (rembourse)';
+      else if (isPending) statusLabel = ' · En attente';
+      itemsHtml += '<div class="admin-transfer-item' + (isCancelled ? ' cancelled' : '') + '"><div class="admin-transfer-info"><div class="admin-transfer-name" onclick="window.openTransferDetailModal(\'' + id + '\',' + realIdx + ')">' + txName + '</div><div class="admin-transfer-meta">' + txDate + statusLabel + '</div></div><div class="admin-transfer-amount">' + txAmount + '</div>' + cancelBtn + '</div>';
+    });
+    transfersHtml = itemsHtml;
+  }
   const transfersCard = '<div class="admin-transfers-card"><div class="admin-transfers-title"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span>Virements effectues</span></div>' + transfersHtml + '</div>';
 
   const isOnline = c.isOnline === true;
@@ -1548,12 +1611,13 @@ window.openClientDetail = async function(id) {
   document.body.appendChild(ov);
 };
 
+/* ★ CORRIGÉ : openTransferDetailModal détecte cancelled:true */
 window.openTransferDetailModal = async function(clientId, txIndex) {
   const c = await FireDB.getClient(clientId); if (!c) return;
   const tx = (c.transactions || [])[txIndex]; if (!tx) return;
   const old = document.getElementById('transfer-detail-modal'); if (old) old.remove();
   const lang = c.language || 'fr'; const T = emailTexts[lang] || emailTexts.fr;
-  const isCancelled = tx.type === 'cancelled';
+  const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
   const isFailed = tx.status === 'failed';
   const isPending = tx.status === 'pending';
   const isCancelledPending = tx.status === 'cancelledPending';
@@ -1578,19 +1642,23 @@ window.openTransferDetailModal = async function(clientId, txIndex) {
   document.body.appendChild(ov);
 };
 
+/* ★ CORRIGÉ : cancelClientTransfer empêche toute double annulation et ajoute cancelled:true */
 window.cancelClientTransfer = function(clientId, txIndex) {
   window.showConfirm('Voulez-vous vraiment annuler ce virement ? Le client recevra un email de notification et le montant sera restitue.', async () => {
     const c = await FireDB.getClient(clientId);
     if (!c) { window.showNotif('Client introuvable.', 'error'); return; }
     const tx = (c.transactions || [])[txIndex];
     if (!tx) { window.showNotif('Virement introuvable.', 'error'); return; }
-    if (tx.type === 'cancelled') { window.showNotif('Ce virement est deja annule.', 'warning'); return; }
+    // ★ CORRIGÉ : Empêche la double annulation
+    if (tx.type === 'cancelled' || tx.cancelled === true) { window.showNotif('Ce virement est deja annule.', 'warning'); return; }
     if (tx.status === 'pending' || tx.status === 'cancelledPending') { window.showNotif('Ce virement a un statut special, utilisez les boutons Valider/Annuler dans la section virements en attente.', 'warning'); return; }
     const amountValue = parseAmount(tx.amount); const currency = c.currency || '€'; const now = new Date();
     const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const originalBeneficiaryName = tx.subtitle || '—';
     const transactions = (c.transactions || []).slice();
-    transactions[txIndex] = Object.assign({}, tx, { cancelled: true, cancelledAt: dateStr });
-    const newTx = { type: 'cancelled', labelKey: 'txTransferCancelled', subtitle: tx.subtitle, amount: formatAmount(amountValue, currency), date: dateStr, recipientIban: tx.recipientIban, recipientBank: tx.recipientBank, recipientSwift: tx.recipientSwift, recipientReason: tx.recipientReason, originalDate: tx.date };
+    // ★ CORRIGÉ : Marque le virement original comme cancelled pour empêcher la double annulation
+    transactions[txIndex] = Object.assign({}, tx, { cancelled: true, type: 'cancelled', cancelledAt: dateStr });
+    const newTx = { type: 'cancelled', labelKey: 'txTransferCancelled', subtitle: originalBeneficiaryName, amount: formatAmount(amountValue, currency), date: dateStr, recipientIban: tx.recipientIban, recipientBank: tx.recipientBank, recipientSwift: tx.recipientSwift, recipientReason: tx.recipientReason, originalDate: tx.date, cancelled: true };
     transactions.unshift(newTx);
     const newBalance = (parseFloat(c.balance) || 0) + amountValue;
     await FireDB.updateClient(clientId, { balance: newBalance, transactions });
