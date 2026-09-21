@@ -420,9 +420,43 @@ input, select, textarea { font-family: inherit; }
 .form-group { padding: 0 0 10px 0; }
 .form-group:last-of-type { padding-bottom: 0; }
 .form-label { display: block; font-size: 11px; font-weight: 700; color: #334155; text-transform: none; letter-spacing: 0.4px; margin-bottom: 6px; white-space: normal; word-break: break-word; line-height: 1.3; }
-.form-input { width: 100%; padding: 12px 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 12.5px; color: #000000; font-weight: 500; outline: none; background: #ffffff; font-family: inherit; min-height: 42px; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06); }
+
+/* ✅ MODIFICATION 1 : Texte saisi dans les champs EN GRAS et bien visible */
+.form-input { width: 100%; padding: 12px 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 13.5px; color: #000000; font-weight: 700; outline: none; background: #ffffff; font-family: inherit; min-height: 42px; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06); letter-spacing: 0.2px; }
 .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1); }
-.amount-input { font-size: 17px !important; font-weight: 700; padding: 13px 14px !important; color: var(--primary) !important; text-align: center; letter-spacing: 0.5px; min-height: 46px; }
+.form-input::placeholder { color: #94a3b8; font-weight: 500; letter-spacing: 0; }
+.amount-input { font-size: 18px !important; font-weight: 800; padding: 13px 14px !important; color: var(--primary) !important; text-align: center; letter-spacing: 1px; min-height: 48px; }
+
+/* ✅ MODIFICATION 2 : Message d'erreur inline pour le format du montant */
+.amount-error-msg {
+  display: none;
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: #fee2e2;
+  border: 1.5px solid #fecaca;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #b91c1c;
+  line-height: 1.45;
+  text-align: center;
+  animation: errorShake 0.4s ease-out;
+  word-break: break-word;
+}
+.amount-error-msg::before { content: '⚠ '; font-size: 13px; }
+@keyframes errorShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+.form-input.input-error {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
+  background: #fef2f2 !important;
+  color: #b91c1c !important;
+}
 
 .warning-box { background: var(--warning-light); border-radius: 10px; padding: 11px 13px; margin: 12px 0 0 0; display: flex; align-items: flex-start; gap: 7px; }
 .warning-box svg { width: 12px; height: 12px; fill: #b08d00; flex-shrink: 0; margin-top: 2px; }
@@ -766,7 +800,6 @@ input, select, textarea { font-family: inherit; }
 /* ===================================================== */
 
 /* ---------- HEADER BLEU FONCÉ (RECTANGULAIRE + NOM CENTRÉ) ---------- */
-/* ✅ MODIFICATION 1 : Header 100% rectangulaire (border-radius: 0, pas d'effet radial) */
 .header-new {
   background: linear-gradient(135deg, #0a2540 0%, #0f2f5c 55%, #1e40af 100%);
   padding: 9px 11px;
@@ -781,7 +814,6 @@ input, select, textarea { font-family: inherit; }
   width: 100%;
   margin: 0;
 }
-/* ✅ MODIFICATION 1 : Effet radial courbé supprimé */
 .header-new::before {
   display: none;
 }
@@ -848,7 +880,6 @@ input, select, textarea { font-family: inherit; }
 .balance-card-amount-new .cur-part { font-size: 12.5px; font-weight: 700; color: #fff; line-height: 1; margin-left: 3px; opacity: 0.95; }
 .balance-card-sub-new { font-size: 9.5px; color: rgba(255,255,255,0.85); font-weight: 500; display: flex; align-items: center; gap: 4px; margin-top: 4px; }
 .balance-card-sub-new svg { width: 11px; height: 11px; fill: rgba(255,255,255,0.9); flex-shrink: 0; }
-/* ✅ MODIFICATION 5 : Bouton Détails aligné à droite (bloc "Compte principal" supprimé) */
 .balance-card-bottom-new {
   display: flex;
   align-items: center;
@@ -874,7 +905,7 @@ input, select, textarea { font-family: inherit; }
 .quick-action-label-new { font-size: 9px; font-weight: 700; color: #0f172a; line-height: 1.15; white-space: normal; word-break: break-word; text-align: center; }
 .quick-action-sublabel-new { display: none !important; visibility: hidden !important; height: 0 !important; margin: 0 !important; padding: 0 !important; }
 
-/* ---------- HISTORIQUE TRANSACTIONS (RECTANGULAIRE + COULEUR MONTANT UNIQUEMENT) ---------- */
+/* ---------- HISTORIQUE TRANSACTIONS ---------- */
 .transactions-section-new { margin: 0 9px 10px 9px; }
 .tx-section-header-new { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 2px 2px 7px 2px; }
 .tx-section-title-new { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: #0f172a; white-space: normal; word-break: break-word; }
@@ -896,21 +927,17 @@ input, select, textarea { font-family: inherit; }
 .tx-icon-circle-new.bank-logo { background: #ffffff; border: 1px solid #e2e8f0; padding: 4px; box-sizing: border-box; }
 .tx-icon-circle-new.bank-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
 .tx-info-new { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-/* ✅ MODIFICATION 4 : Tous les textes sont en NOIR (peu importe le type) */
 .tx-name-new { font-size: 14px; font-weight: 700; color: #0f172a !important; line-height: 1.25; white-space: normal; word-break: break-word; }
 .tx-sub-new { font-size: 12px; font-weight: 500; color: #64748b !important; line-height: 1.25; white-space: normal; word-break: break-word; }
 .tx-amount-box-new { text-align: right; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; margin-left: 4px; }
-/* ✅ MODIFICATION 4 : Seul le MONTANT garde la couleur (vert/rouge/violet) */
 .tx-amount-value-new { font-size: 14px; font-weight: 700; white-space: nowrap; line-height: 1.25; }
 .tx-amount-value-new.pos { color: #16a34a; }
 .tx-amount-value-new.neg { color: #dc2626; }
 .tx-amount-value-new.cancelled { color: #8b5cf6; }
-/* ✅ MODIFICATION 4 : Date en gris neutre */
 .tx-date-new { font-size: 10.5px; font-weight: 500; color: #94a3b8 !important; white-space: nowrap; line-height: 1.25; }
 .tx-chevron-new { width: 16px; height: 16px; fill: #cbd5e1; flex-shrink: 0; margin-left: 4px; }
 
-/* ---------- BANNIÈRE SÉCURITÉ (REDUITE + UNIQUEMENT PAGE ACCUEIL) ---------- */
-/* ✅ MODIFICATION 3 : Hauteur de la bannière réduite (min-height: 72px, padding réduit) */
+/* ---------- BANNIÈRE SÉCURITÉ ---------- */
 .security-banner-new {
   margin: 0;
   background: linear-gradient(135deg, #0a2540 0%, #1e3a8a 55%, #1e40af 100%);
@@ -928,7 +955,6 @@ input, select, textarea { font-family: inherit; }
   background: radial-gradient(ellipse at right center, rgba(59,130,246,0.4), transparent 75%);
   pointer-events: none;
 }
-/* ✅ MODIFICATION 3 : Illustration du bouclier réduite (62px au lieu de 78px) */
 .security-shield-new { position: absolute; right: -6px; top: 50%; transform: translateY(-50%); width: 62px; height: 62px; z-index: 1; pointer-events: none; opacity: 0.95; }
 .security-content-new { position: relative; z-index: 2; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; max-width: 68%; }
 .security-header-new { display: flex; align-items: center; gap: 6px; }
@@ -939,7 +965,6 @@ input, select, textarea { font-family: inherit; }
 .security-btn-new { background: #fff; color: #1e3a8a; border: none; padding: 5px 10px; border-radius: 18px; font-size: 9px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; font-family: inherit; align-self: flex-start; white-space: nowrap; }
 .security-btn-new svg { width: 9px; height: 9px; fill: #1e3a8a; flex-shrink: 0; }
 
-/* ✅ MODIFICATION 2 : La bannière n'apparaît QUE sur la page d'accueil (dashboard) */
 #screen-dashboard .security-banner-new {
   position: fixed;
   left: 9px;
@@ -949,16 +974,10 @@ input, select, textarea { font-family: inherit; }
   margin: 0;
   pointer-events: auto;
 }
-/* ✅ MODIFICATION 2 : Masquer la bannière si le dashboard n'est PAS actif */
 #screen-dashboard:not(.active) .security-banner-new {
   display: none !important;
 }
-/* ✅ CORRECTIF : Le dashboard ne doit être affiché QUE lorsqu'il est actif.
-   Avant, "#screen-dashboard { display: block; }" (ID = spécificité forte)
-   écrasait ".screen { display: none; }" et rendait le dashboard TOUJOURS
-   visible, ce qui faisait apparaître l'historique des transactions en bas
-   de toutes les autres pages. On ajoute ".active" pour que ces styles ne
-   s'appliquent que quand le dashboard est réellement actif. */
+/* ✅ CORRECTIF : Le dashboard ne doit être affiché QUE lorsqu'il est actif. */
 #screen-dashboard.active {
   display: block;
   min-height: 100%;
