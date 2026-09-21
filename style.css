@@ -953,8 +953,13 @@ input, select, textarea { font-family: inherit; }
 #screen-dashboard:not(.active) .security-banner-new {
   display: none !important;
 }
-/* ✅ Espace réservé en bas du dashboard pour que le dernier élément ne soit pas caché */
-#screen-dashboard {
+/* ✅ CORRECTIF : Le dashboard ne doit être affiché QUE lorsqu'il est actif.
+   Avant, "#screen-dashboard { display: block; }" (ID = spécificité forte)
+   écrasait ".screen { display: none; }" et rendait le dashboard TOUJOURS
+   visible, ce qui faisait apparaître l'historique des transactions en bas
+   de toutes les autres pages. On ajoute ".active" pour que ces styles ne
+   s'appliquent que quand le dashboard est réellement actif. */
+#screen-dashboard.active {
   display: block;
   min-height: 100%;
   padding-bottom: 110px;
