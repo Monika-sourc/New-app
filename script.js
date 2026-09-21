@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v58.7 - Virement en attente : débit immédiat + statuts dynamiques
+// v58.8 - Fix : carte "Virement en attente" stylée sur admin
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -374,7 +374,7 @@ const generateShortId = () => { const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 function translateSubtitle(subtitle) { if (!subtitle) return ''; const map = { 'Depot initial': 'txInitialDeposit', 'Dépôt initial': 'txInitialDeposit', 'Virement recu': 'txTransferReceived', 'Virement reçu': 'txTransferReceived', 'Virement envoye': 'txTransferSent', 'Virement envoyé': 'txTransferSent', 'Virement annule': 'txTransferCancelled', 'Virement annulé': 'txTransferCancelled', 'Transfert recu': 'txTransferReceived', 'Transfert envoye': 'txTransferSent', 'Wplata poczatkowa': 'txInitialDeposit', 'Wpłata początkowa': 'txInitialDeposit', 'Przelew otrzymany': 'txTransferReceived', 'Przelew wyslany': 'txTransferSent', 'Przelew wysłany': 'txTransferSent', 'Przelew anulowany': 'txTransferCancelled', 'Deposito inicial': 'txInitialDeposit', 'Transferencia recibida': 'txTransferReceived', 'Transferencia enviada': 'txTransferSent', 'Transferencia cancelada': 'txTransferCancelled', 'Deposito iniziale': 'txInitialDeposit', 'Ricevuto': 'txTransferReceived', 'Inviato': 'txTransferSent', 'Bonifico annullato': 'txTransferCancelled', 'Ersteinzahlung': 'txInitialDeposit', 'Erhalten': 'txTransferReceived', 'Gesendet': 'txTransferSent', 'Uberweisung storniert': 'txTransferCancelled' }; const key = map[subtitle]; if (key) return t(key); return subtitle; }
 
 /* ===================================================== */
-/* GLOBAL STYLES                                          */
+/* GLOBAL STYLES - PARTAGÉ ENTRE CLIENT ET ADMIN          */
 /* ===================================================== */
 function ensureGlobalStyles() {
   if (document.getElementById('tw-global-styles')) return;
@@ -419,7 +419,7 @@ function ensureGlobalStyles() {
     .tx-icon-circle-new.bank-logo{background:#ffffff !important;border:1px solid #e2e8f0 !important;padding:5px !important;box-shadow:0 1px 3px rgba(15,23,42,0.06) !important;}
     .tx-icon-circle-new.bank-logo img{width:100% !important;height:100% !important;object-fit:contain !important;border-radius:6px !important;display:block !important;}
 
-    /* Styles virement en attente */
+    /* ─── Virement en attente ─── */
     .result-header-block.pending { background: linear-gradient(135deg, #f59e0b, #d97706); }
     .result-check-circle.pending svg { fill: #f59e0b; }
     .result-title-text.pending { color: #d97706; }
@@ -428,6 +428,7 @@ function ensureGlobalStyles() {
     .tx-amount-value-new.pending { color: #d97706; }
     .receipt-header-new.pending { background: linear-gradient(135deg, #f59e0b, #d97706); }
 
+    /* ─── CARTE "VIREMENT EN ATTENTE" (admin) ─── */
     .pending-transfer-card { background: #fffbeb; border-radius: 4px; padding: 14px; margin-bottom: 13px; border: 1.5px solid #fde68a; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1); }
     .pending-transfer-card .pt-title { display: inline-block; background: #fef3c7; border: 1.5px solid #fde68a; color: #78350f; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: 700; margin-bottom: 14px; }
     .pending-transfer-card .pt-title svg { width: 13px; height: 13px; fill: #d97706; vertical-align: middle; margin-right: 4px; margin-top: -2px; }
@@ -437,7 +438,9 @@ function ensureGlobalStyles() {
     .pending-transfer-status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.3px; }
     .pending-transfer-status-badge.enabled { background: #dcfce7; color: #16a34a; }
     .pending-transfer-status-badge.disabled { background: #fee2e2; color: #dc2626; }
+    .pending-transfer-card .btn-admin-submit { margin-top: 4px; }
 
+    /* ─── Section "Virements en attente" dans le détail client admin ─── */
     .admin-pending-transfers-card { background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 4px; padding: 12px; margin: 12px 0 8px 0; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.08); }
     .admin-pending-transfers-title { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #d97706; letter-spacing: 0.5px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1.5px solid #fef3c7; }
     .admin-pending-transfers-title svg { width: 14px; height: 14px; fill: #d97706; flex-shrink: 0; }
@@ -475,7 +478,6 @@ function buildBankLogoHtml(tx, circleClass, iconSvg, fallbackLogo) {
   return '<div class="tx-icon-circle-new bank-logo"><img src="' + primary + '" alt="bank" loading="lazy" referrerpolicy="no-referrer" onerror="' + onerr + '" /></div>';
 }
 
-/* ★ MODIFIÉ : renderTransactions prend en compte les 3 états du virement en attente */
 function renderTransactions(txs) {
   currentTransactions = txs || [];
   if (!txs || txs.length === 0) { return '<p style="color:#64748b;font-size:11.5px;text-align:center;padding:22px 0;font-weight:600;">' + t('noTransactions') + '</p>'; }
@@ -486,23 +488,18 @@ function renderTransactions(txs) {
     const isPending = tx.status === 'pending';
     const isCancelledPending = tx.status === 'cancelledPending';
     let circleClass, iconSvg, amountClass, amountSign;
-    /* Priorité 1 : virement en attente ANNULÉ (violet + remboursé) */
     if (isCancelledPending) {
       circleClass = 'cancelled'; iconSvg = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>'; amountClass = 'cancelled'; amountSign = '+';
     }
-    /* Priorité 2 : virement en attente ACTIF (orange) */
     else if (isPending) {
       circleClass = 'pending'; iconSvg = '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>'; amountClass = 'pending'; amountSign = '−';
     }
-    /* Priorité 3 : annulé classique (violet) */
     else if (isCancelled) {
       circleClass = 'cancelled'; iconSvg = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>'; amountClass = 'cancelled'; amountSign = '+';
     }
-    /* Priorité 4 : entrant (vert) */
     else if (isIn) {
       circleClass = 'in'; iconSvg = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>'; amountClass = 'pos'; amountSign = '+';
     }
-    /* Priorité 5 : sortant normal (rouge) */
     else {
       circleClass = 'out'; iconSvg = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>'; amountClass = 'neg'; amountSign = '−';
     }
@@ -1014,7 +1011,6 @@ function showResultPage(isSuccess) {
   window.navigateTo('screen-result');
 }
 
-/* ★ MODIFIÉ : Débit du solde dans TOUS les cas de succès (y compris pending) */
 window.closeResultModal = async function() {
   const isSuccess = window.currentTransferSuccess;
   const isPending = window.currentTransferPending === true;
@@ -1032,7 +1028,7 @@ window.closeResultModal = async function() {
 
   const newTx = { type: 'out', labelKey: 'txTransferSent', subtitle: recipientName || (fresh.firstName + ' ' + fresh.lastName), amount: formatAmount(amt, currency), date: dateStr, recipientIban, recipientBank, recipientSwift, recipientReason, status: txStatus, percent };
 
-  /* ★ MODIFIÉ : Débit IMMÉDIAT du solde, que ce soit un virement normal OU en attente */
+  /* Débit IMMÉDIAT du solde dans tous les cas de succès (y compris pending) */
   if (isSuccess) {
     const newBalance = Math.max(0, (parseFloat(fresh.balance) || 0) - amt);
     const transactions = fresh.transactions || []; transactions.unshift(newTx);
@@ -1082,6 +1078,7 @@ let authUnsubscribe = null;
 async function initAdmin() {
   const root = document.getElementById('admin-root');
   if (!root) return;
+  ensureGlobalStyles(); /* ★ FIX : charge les styles (carte "virement en attente" incluse) */
   root.innerHTML = '<div class="view active" style="display:flex;align-items:center;justify-content:center;height:100%;"><div class="spinner"></div></div>';
   authUnsubscribe = onAuthStateChanged(auth, async (user) => {
     if (user) { try { const adminDoc = await getDoc(doc(db, 'admin_users', user.uid)); if (!adminDoc.exists() || adminDoc.data().blocked === true) { await signOut(auth); currentAdmin = null; renderAuthScreen(); setTimeout(() => { window.showNotif('Votre compte administrateur a ete bloque ou supprime.', 'error', 'Acces refuse'); }, 300); return; } } catch (e) {} currentAdmin = { uid: user.uid, email: user.email }; renderAdminPage(); }
@@ -1111,6 +1108,7 @@ function renderAuthScreen(mode) {
 
 async function renderAdminPage() {
   if (!currentAdmin || !currentAdmin.uid) { renderAuthScreen(); return; }
+  ensureGlobalStyles(); /* ★ FIX : garantit les styles à chaque render */
   const root = document.getElementById('admin-root');
   root.innerHTML = '<div class="view active" style="display:flex;align-items:center;justify-content:center;height:100%;"><div class="spinner"></div></div>';
   const clients = await FireDB.getMyClients(currentAdmin.uid);
@@ -1280,7 +1278,6 @@ window.togglePendingTransfer = async function() {
   setTimeout(() => renderAdminPage(), 400);
 };
 
-/* ★ MODIFIÉ : Valider = changer statut en 'done' (rouge) — PAS de changement de solde */
 window.validatePendingTransfer = function(clientId, txIndex) {
   window.showConfirm(t('adminValidateConfirmMsg'), async () => {
     try {
@@ -1292,8 +1289,6 @@ window.validatePendingTransfer = function(clientId, txIndex) {
       const now = new Date();
       const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
       const transactions = (c.transactions || []).slice();
-      /* ★ MODIFICATION : La transaction devient un virement normal (rouge).
-         Le solde reste tel quel (déjà débité côté client). */
       transactions[txIndex] = Object.assign({}, tx, { status: 'done', validatedAt: dateStr });
       await FireDB.updateClient(clientId, { transactions });
       if (c.email) {
@@ -1316,7 +1311,6 @@ window.validatePendingTransfer = function(clientId, txIndex) {
   }, t('adminValidateConfirmTitle'), 'success');
 };
 
-/* ★ MODIFIÉ : Annuler = statut 'cancelledPending' (violet) + REMBOURSEMENT du solde */
 window.cancelPendingTransfer = function(clientId, txIndex) {
   window.showConfirm(t('adminCancelPendingConfirmMsg'), async () => {
     try {
@@ -1329,7 +1323,6 @@ window.cancelPendingTransfer = function(clientId, txIndex) {
       const now = new Date();
       const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
       const transactions = (c.transactions || []).slice();
-      /* ★ MODIFICATION : La transaction devient violette + remboursement automatique */
       transactions[txIndex] = Object.assign({}, tx, { status: 'cancelledPending', cancelledAt: dateStr });
       const newBalance = (parseFloat(c.balance) || 0) + amountValue;
       await FireDB.updateClient(clientId, { balance: newBalance, transactions });
