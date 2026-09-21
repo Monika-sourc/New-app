@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v58.2 - Fix devise tx + nav visibility + balance position
+// v58.3 - Vrais logos officiels (Google Favicon API)
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -20,47 +20,73 @@ const auth = getAuth(app);
 
 const SUPER_ADMIN_PASSWORD = 'SuperAdmin@TW2026';
 
+/* ===================================================== */
+/* 25 BANQUES - 5 par pays - VRAIS LOGOS OFFICIELS      */
+/* Google Favicon API (128x128) - GRATUIT ET FIABLE     */
+/* ===================================================== */
 const BANKS_BY_COUNTRY = {
   'France': [
-    { name: 'BNP Paribas', initials: 'BNP', color: '#00915a', domain: 'bnpparibas.com', logo: 'https://logo.clearbit.com/bnpparibas.com' },
-    { name: 'Société Générale', initials: 'SG', color: '#e60028', domain: 'societegenerale.com', logo: 'https://logo.clearbit.com/societegenerale.com' },
-    { name: 'Crédit Agricole', initials: 'CA', color: '#006f3c', domain: 'credit-agricole.com', logo: 'https://logo.clearbit.com/credit-agricole.com' },
-    { name: 'LCL', initials: 'LCL', color: '#002f6c', domain: 'lcl.fr', logo: 'https://logo.clearbit.com/lcl.fr' },
-    { name: 'Caisse d\'Épargne', initials: 'CE', color: '#e2001a', domain: 'caisse-epargne.fr', logo: 'https://logo.clearbit.com/caisse-epargne.fr' }
+    { name: 'BNP Paribas', initials: 'BNP', color: '#00915a', domain: 'bnpparibas.com', logo: 'https://www.google.com/s2/favicons?domain=bnpparibas.com&sz=128' },
+    { name: 'Société Générale', initials: 'SG', color: '#e60028', domain: 'societegenerale.com', logo: 'https://www.google.com/s2/favicons?domain=societegenerale.com&sz=128' },
+    { name: 'Crédit Agricole', initials: 'CA', color: '#006f3c', domain: 'credit-agricole.com', logo: 'https://www.google.com/s2/favicons?domain=credit-agricole.com&sz=128' },
+    { name: 'LCL', initials: 'LCL', color: '#002f6c', domain: 'lcl.fr', logo: 'https://www.google.com/s2/favicons?domain=lcl.fr&sz=128' },
+    { name: 'Caisse d\'Épargne', initials: 'CE', color: '#e2001a', domain: 'caisse-epargne.fr', logo: 'https://www.google.com/s2/favicons?domain=caisse-epargne.fr&sz=128' }
   ],
   'Pologne': [
-    { name: 'PKO Bank Polski', initials: 'PKO', color: '#003580', domain: 'pkobp.pl', logo: 'https://logo.clearbit.com/pkobp.pl' },
-    { name: 'Bank Pekao', initials: 'PEO', color: '#e30613', domain: 'pekao.com.pl', logo: 'https://logo.clearbit.com/pekao.com.pl' },
-    { name: 'mBank', initials: 'mB', color: '#ff5f00', domain: 'mbank.pl', logo: 'https://logo.clearbit.com/mbank.pl' },
-    { name: 'ING Bank Śląski', initials: 'ING', color: '#ff6200', domain: 'ing.pl', logo: 'https://logo.clearbit.com/ing.pl' },
-    { name: 'Santander Polska', initials: 'SAN', color: '#ec0000', domain: 'santander.pl', logo: 'https://logo.clearbit.com/santander.pl' }
+    { name: 'PKO Bank Polski', initials: 'PKO', color: '#003580', domain: 'pkobp.pl', logo: 'https://www.google.com/s2/favicons?domain=pkobp.pl&sz=128' },
+    { name: 'Bank Pekao', initials: 'PEO', color: '#e30613', domain: 'pekao.com.pl', logo: 'https://www.google.com/s2/favicons?domain=pekao.com.pl&sz=128' },
+    { name: 'mBank', initials: 'mB', color: '#ff5f00', domain: 'mbank.pl', logo: 'https://www.google.com/s2/favicons?domain=mbank.pl&sz=128' },
+    { name: 'ING Bank Śląski', initials: 'ING', color: '#ff6200', domain: 'ing.pl', logo: 'https://www.google.com/s2/favicons?domain=ing.pl&sz=128' },
+    { name: 'Santander Polska', initials: 'SAN', color: '#ec0000', domain: 'santander.pl', logo: 'https://www.google.com/s2/favicons?domain=santander.pl&sz=128' }
   ],
   'Espagne': [
-    { name: 'BBVA', initials: 'BBVA', color: '#004481', domain: 'bbva.com', logo: 'https://logo.clearbit.com/bbva.com' },
-    { name: 'Banco Santander', initials: 'SAN', color: '#ec0000', domain: 'santander.com', logo: 'https://logo.clearbit.com/santander.com' },
-    { name: 'CaixaBank', initials: 'CX', color: '#006cb6', domain: 'caixabank.com', logo: 'https://logo.clearbit.com/caixabank.com' },
-    { name: 'Bankinter', initials: 'BK', color: '#ff6600', domain: 'bankinter.com', logo: 'https://logo.clearbit.com/bankinter.com' },
-    { name: 'Banco Sabadell', initials: 'SAB', color: '#00447c', domain: 'bancsabadell.com', logo: 'https://logo.clearbit.com/bancsabadell.com' }
+    { name: 'BBVA', initials: 'BBVA', color: '#004481', domain: 'bbva.com', logo: 'https://www.google.com/s2/favicons?domain=bbva.com&sz=128' },
+    { name: 'Banco Santander', initials: 'SAN', color: '#ec0000', domain: 'santander.com', logo: 'https://www.google.com/s2/favicons?domain=santander.com&sz=128' },
+    { name: 'CaixaBank', initials: 'CX', color: '#006cb6', domain: 'caixabank.com', logo: 'https://www.google.com/s2/favicons?domain=caixabank.com&sz=128' },
+    { name: 'Bankinter', initials: 'BK', color: '#ff6600', domain: 'bankinter.com', logo: 'https://www.google.com/s2/favicons?domain=bankinter.com&sz=128' },
+    { name: 'Banco Sabadell', initials: 'SAB', color: '#00447c', domain: 'bancsabadell.com', logo: 'https://www.google.com/s2/favicons?domain=bancsabadell.com&sz=128' }
   ],
   'Italie': [
-    { name: 'Intesa Sanpaolo', initials: 'ISP', color: '#006b3c', domain: 'intesasanpaolo.com', logo: 'https://logo.clearbit.com/intesasanpaolo.com' },
-    { name: 'UniCredit', initials: 'UC', color: '#d40000', domain: 'unicreditgroup.eu', logo: 'https://logo.clearbit.com/unicreditgroup.eu' },
-    { name: 'Banco BPM', initials: 'BPM', color: '#003087', domain: 'bancobpm.it', logo: 'https://logo.clearbit.com/bancobpm.it' },
-    { name: 'BPER Banca', initials: 'BPER', color: '#00693e', domain: 'bper.it', logo: 'https://logo.clearbit.com/bper.it' },
-    { name: 'Mediobanca', initials: 'MB', color: '#001f5b', domain: 'mediobanca.com', logo: 'https://logo.clearbit.com/mediobanca.com' }
+    { name: 'Intesa Sanpaolo', initials: 'ISP', color: '#006b3c', domain: 'intesasanpaolo.com', logo: 'https://www.google.com/s2/favicons?domain=intesasanpaolo.com&sz=128' },
+    { name: 'UniCredit', initials: 'UC', color: '#d40000', domain: 'unicreditgroup.eu', logo: 'https://www.google.com/s2/favicons?domain=unicreditgroup.eu&sz=128' },
+    { name: 'Banco BPM', initials: 'BPM', color: '#003087', domain: 'bancobpm.it', logo: 'https://www.google.com/s2/favicons?domain=bancobpm.it&sz=128' },
+    { name: 'BPER Banca', initials: 'BPER', color: '#00693e', domain: 'bper.it', logo: 'https://www.google.com/s2/favicons?domain=bper.it&sz=128' },
+    { name: 'Mediobanca', initials: 'MB', color: '#001f5b', domain: 'mediobanca.com', logo: 'https://www.google.com/s2/favicons?domain=mediobanca.com&sz=128' }
   ],
   'Allemagne': [
-    { name: 'Deutsche Bank', initials: 'DB', color: '#0018a8', domain: 'db.com', logo: 'https://logo.clearbit.com/db.com' },
-    { name: 'Commerzbank', initials: 'CB', color: '#ffcc00', domain: 'commerzbank.com', logo: 'https://logo.clearbit.com/commerzbank.com' },
-    { name: 'DZ Bank', initials: 'DZ', color: '#0066b3', domain: 'dzbank.de', logo: 'https://logo.clearbit.com/dzbank.de' },
-    { name: 'KfW', initials: 'KfW', color: '#0061a0', domain: 'kfw.de', logo: 'https://logo.clearbit.com/kfw.de' },
-    { name: 'HypoVereinsbank', initials: 'HVB', color: '#003d7a', domain: 'hypovereinsbank.de', logo: 'https://logo.clearbit.com/hypovereinsbank.de' }
+    { name: 'Deutsche Bank', initials: 'DB', color: '#0018a8', domain: 'db.com', logo: 'https://www.google.com/s2/favicons?domain=db.com&sz=128' },
+    { name: 'Commerzbank', initials: 'CB', color: '#ffcc00', domain: 'commerzbank.com', logo: 'https://www.google.com/s2/favicons?domain=commerzbank.com&sz=128' },
+    { name: 'DZ Bank', initials: 'DZ', color: '#0066b3', domain: 'dzbank.de', logo: 'https://www.google.com/s2/favicons?domain=dzbank.de&sz=128' },
+    { name: 'KfW', initials: 'KfW', color: '#0061a0', domain: 'kfw.de', logo: 'https://www.google.com/s2/favicons?domain=kfw.de&sz=128' },
+    { name: 'HypoVereinsbank', initials: 'HVB', color: '#003d7a', domain: 'hypovereinsbank.de', logo: 'https://www.google.com/s2/favicons?domain=hypovereinsbank.de&sz=128' }
   ]
 };
 
 const FALLBACK_BANK_LOGO = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#1a73e8"/><path d="M6 11v6h2v-6H6zm4 0v6h2v-6h-2zm-6 8h16v-2H4v2zm12-8v6h2v-6h-2zm-3-7L4 8v2h16V8l-7-4z" fill="#ffffff"/></svg>');
 
-function getBankLogoByName(bankName) { if (!bankName) return ''; const countries = Object.keys(BANKS_BY_COUNTRY); for (let i = 0; i < countries.length; i++) { const banks = BANKS_BY_COUNTRY[countries[i]]; for (let j = 0; j < banks.length; j++) { if (banks[j].name.toLowerCase() === bankName.toLowerCase()) return banks[j].logo; } } return ''; }
+function getBankLogoByName(bankName) {
+  if (!bankName) return '';
+  const countries = Object.keys(BANKS_BY_COUNTRY);
+  for (let i = 0; i < countries.length; i++) {
+    const banks = BANKS_BY_COUNTRY[countries[i]];
+    for (let j = 0; j < banks.length; j++) {
+      if (banks[j].name.toLowerCase() === bankName.toLowerCase()) return banks[j].logo;
+    }
+  }
+  return '';
+}
+
+function getBankDomainByName(bankName) {
+  if (!bankName) return '';
+  const countries = Object.keys(BANKS_BY_COUNTRY);
+  for (let i = 0; i < countries.length; i++) {
+    const banks = BANKS_BY_COUNTRY[countries[i]];
+    for (let j = 0; j < banks.length; j++) {
+      if (banks[j].name.toLowerCase() === bankName.toLowerCase()) return banks[j].domain;
+    }
+  }
+  return '';
+}
 
 function showLoader() { let el = document.getElementById('app-loader'); if (!el) { el = document.createElement('div'); el.id = 'app-loader'; el.className = 'app-loader'; el.innerHTML = '<div class="spinner"></div>'; document.body.appendChild(el); } el.classList.add('active'); }
 function hideLoader() { const el = document.getElementById('app-loader'); if (el) el.classList.remove('active'); }
@@ -270,16 +296,15 @@ function ensureGlobalStyles() {
     .bbn.b5{width:60px !important;height:60px !important;right:18% !important;top:55% !important;animation-duration:14s !important;animation-delay:-8s !important;}
     @keyframes bbnFloat{0%{transform:translate(0,0) rotate(0deg) scale(0.7);opacity:0;}12%{opacity:0.9;}35%{transform:translate(28px,-70px) rotate(35deg) scale(1.15);opacity:0.85;}55%{transform:translate(-22px,-140px) rotate(-30deg) scale(1.0);opacity:0.75;}75%{transform:translate(32px,-210px) rotate(50deg) scale(1.2);opacity:0.5;}92%{transform:translate(-12px,-270px) rotate(-20deg) scale(1.05);opacity:0.25;}100%{transform:translate(0,-320px) rotate(25deg) scale(0.85);opacity:0;}}
 
-    /* ===== MODIFICATION 2 : ESPACEMENTS CARTE SOLDE + POSITION MONTANT ===== */
+    /* ESPACEMENTS CARTE SOLDE */
     .balance-card-top-new{margin-bottom:0 !important;}
-    /* Le montant est rapproché du milieu avec un padding-left */
     .balance-card-amount-new{margin-top:14px !important;padding-left:22px !important;}
     .balance-card-sub-new{margin-top:12px !important;padding-left:22px !important;}
 
     /* CARTE 3 BOUTONS PLUS RECTANGULAIRE */
     .quick-actions-row-new{border-radius:6px !important;}
 
-    /* ===== MODIFICATION 1 : VISIBILITÉ BOTTOM NAV (sans changer la taille) ===== */
+    /* VISIBILITÉ BOTTOM NAV */
     .nav-item-new span{font-size:7.5px !important;font-weight:900 !important;color:#000000 !important;letter-spacing:0.1px !important;}
     .nav-item-new svg{width:14px !important;height:14px !important;fill:#0f172a !important;stroke-width:2.5 !important;}
     .nav-item-new{opacity:1 !important;}
@@ -287,81 +312,9 @@ function ensureGlobalStyles() {
     .nav-item-new.active svg{fill:var(--primary) !important;}
     .bottom-nav-inner-new{box-shadow:0 4px 14px rgba(15,23,42,0.16) !important;}
 
-    /* REDUCTION GLOBALE DES TEXTES (~8%) */
-    .greeting-title-new{font-size:14px !important;}
-    .greeting-sub-new{font-size:9px !important;}
-    .account-status-badge-new{font-size:8.5px !important;padding:3.5px 8px !important;}
-    .balance-card-amount-new .int-part{font-size:24px !important;}
-    .balance-card-amount-new .dec-part{font-size:11.5px !important;}
-    .balance-card-amount-new .cur-part{font-size:11.5px !important;}
-    .balance-card-type-label-new{font-size:9.5px !important;}
-    .balance-card-sub-new{font-size:9px !important;}
-    .balance-card-details-btn-new{font-size:9px !important;padding:5px 10px !important;}
-    .quick-action-label-new{font-size:8.5px !important;}
-    .tx-section-title-new{font-size:11px !important;}
-    .see-all-link-new{font-size:9.5px !important;}
-    .tx-name-new{font-size:12.5px !important;}
-    .tx-sub-new{font-size:10.5px !important;}
-    .tx-amount-value-new{font-size:12.5px !important;}
-    .tx-date-new{font-size:9.5px !important;}
-    .tx-icon-circle-new{width:40px !important;height:40px !important;}
-    .tx-icon-circle-new svg{width:20px !important;height:20px !important;}
-    .tx-item-new{padding:13px 12px !important;gap:11px !important;}
-    .security-title-new{font-size:9px !important;}
-    .security-desc-new{font-size:8px !important;}
-    .security-btn-new{font-size:8.5px !important;padding:4.5px 9px !important;}
-    .header-brand-title-new{font-size:12.5px !important;}
-    .header-brand-sub-new{font-size:7px !important;}
-    .page-title-bar{font-size:11.5px !important;padding:10px 11px !important;}
-    .transfer-amount{font-size:20px !important;}
-    .form-label{font-size:10px !important;}
-    .form-input{font-size:11.5px !important;}
-    .amount-input{font-size:15.5px !important;}
-    .submit-btn{font-size:11.5px !important;padding:11px 13px !important;}
-    .profile-top-name{font-size:16px !important;}
-    .profile-top-email{font-size:11px !important;}
-    .profile-top-badge{font-size:10px !important;}
-    .profile-header{font-size:12px !important;}
-    .profile-label{font-size:10px !important;}
-    .profile-value{font-size:11.5px !important;}
-    .profile-item{padding:10px 14px !important;}
-    .verify-header-title{font-size:11.5px !important;}
-    .verify-row-label{font-size:10.5px !important;}
-    .verify-row-value{font-size:12px !important;}
-    .verify-code-input{font-size:13px !important;}
-    .processing-page-title{font-size:14.5px !important;}
-    .processing-status-row{font-size:12.5px !important;}
-    .processing-desc-text{font-size:11px !important;}
-    .result-title-text{font-size:14px !important;}
-    .result-detail-label,.result-detail-value{font-size:11.5px !important;}
-    .receipt-header-amount{font-size:18.5px !important;}
-    .receipt-line-value{font-size:11.5px !important;}
-    .receipt-line-label{font-size:9px !important;}
-    .receipt-header-status{font-size:9px !important;padding:3.5px 11px !important;}
-    .modal-title{font-size:12px !important;}
-    .transaction-details{font-size:10.5px !important;}
-    .login-title{font-size:15.5px !important;}
-    .login-input-group input{font-size:13px !important;}
-    .login-btn{font-size:14px !important;padding:14px 15px !important;}
-    .info-card h2{font-size:12px !important;}
-    .info-card p,.info-details{font-size:11px !important;}
-    .sa-login-title{font-size:18px !important;}
-    .sa-login-sub{font-size:11px !important;}
-    .sa-admin-email{font-size:12px !important;}
-    .sa-admin-meta{font-size:9.5px !important;}
-    .admin-section-title{font-size:10.5px !important;}
-    .stat-card .val{font-size:13px !important;}
-    .stat-card .lbl{font-size:8.5px !important;}
-    .client-line-name{font-size:11.5px !important;}
-    .client-line-balance{font-size:11px !important;}
-    .qac-title{font-size:11px !important;padding:5px 10px !important;}
-    .qac-subtitle{font-size:10.5px !important;}
-    .detail-name{font-size:14px !important;}
-    .detail-email{font-size:10px !important;}
-    .detail-row-label{font-size:10.5px !important;}
-    .detail-row-value{font-size:11.5px !important;}
-    .detail-status-value{font-size:12.5px !important;}
-    .detail-status-label{font-size:8.5px !important;}
+    /* ===== LOGOS BANQUES : fond blanc + ombre pour meilleure visibilité ===== */
+    .tx-icon-circle-new.bank-logo{background:#ffffff !important;border:1px solid #e2e8f0 !important;padding:5px !important;box-shadow:0 1px 3px rgba(15,23,42,0.06) !important;}
+    .tx-icon-circle-new.bank-logo img{width:100% !important;height:100% !important;object-fit:contain !important;border-radius:6px !important;display:block !important;}
   `;
   document.head.appendChild(style);
 }
@@ -372,6 +325,24 @@ function renderQuickActions() {
     '<div class="quick-action-item-new" onclick="window.showVirtualCard()"><div class="quick-action-icon-new blue"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div><div class="quick-action-label-new">' + t('quickCardLabel') + '</div><div class="quick-action-sublabel-new">' + t('quickCardSub') + '</div></div>' +
     '<div class="quick-action-item-new" onclick="window.navigateTo(\'screen-transfer\')"><div class="quick-action-icon-new purple"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></div><div class="quick-action-label-new">' + t('quickTransferLabel') + '</div><div class="quick-action-sublabel-new">' + t('quickTransferSub') + '</div></div>' +
   '</div>';
+}
+
+/* ===================================================== */
+/* LOGO BANQUE : <img> avec fallback en cascade          */
+/* 1. Google favicon (primaire)                          */
+/* 2. DuckDuckGo icons                                   */
+/* 3. SVG fallback                                       */
+/* ===================================================== */
+function buildBankLogoHtml(tx, circleClass, iconSvg, fallbackLogo) {
+  if (!tx.bankLogo) return '<div class="tx-icon-circle-new ' + circleClass + '"><svg viewBox="0 0 24 24">' + iconSvg + '</svg></div>';
+  const domain = tx.bankDomain || '';
+  const primary = tx.bankLogo;
+  const duck = domain ? 'https://icons.duckduckgo.com/ip3/' + domain + '.ico' : '';
+  const fallbackEscaped = fallbackLogo.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+  // onerror chain : essaie DuckDuckGo puis fallback SVG
+  const onerr = "this.onerror=null;" +
+    (duck ? "this.src='" + duck + "';this.onerror=function(){this.onerror=null;this.src='" + fallbackEscaped + "';};" : "this.src='" + fallbackEscaped + "';");
+  return '<div class="tx-icon-circle-new bank-logo"><img src="' + primary + '" alt="bank" loading="lazy" referrerpolicy="no-referrer" onerror="' + onerr + '" /></div>';
 }
 
 function renderTransactions(txs) {
@@ -385,9 +356,14 @@ function renderTransactions(txs) {
     if (isCancelled) { circleClass = 'cancelled'; iconSvg = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>'; amountClass = 'cancelled'; amountSign = '+'; }
     else if (isIn) { circleClass = 'in'; iconSvg = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>'; amountClass = 'pos'; amountSign = '+'; }
     else { circleClass = 'out'; iconSvg = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>'; amountClass = 'neg'; amountSign = '−'; }
+    // Si transaction annulée ou pas de logo → icône SVG normale
+    // Sinon → <img> avec le vrai logo officiel de la banque
     let iconHtml;
-    if (tx.bankLogo && !isCancelled) { iconHtml = '<div class="tx-icon-circle-new bank-logo"><img src="' + tx.bankLogo + '" alt="bank" loading="lazy" onerror="this.onerror=null;this.parentNode.classList.remove(\'bank-logo\');this.parentNode.classList.add(\'' + circleClass + '\');this.parentNode.innerHTML=\'<svg viewBox=&quot;0 0 24 24&quot;>' + iconSvg.replace(/"/g, '&quot;') + '</svg>\';" /></div>'; }
-    else { iconHtml = '<div class="tx-icon-circle-new ' + circleClass + '"><svg viewBox="0 0 24 24">' + iconSvg + '</svg></div>'; }
+    if (tx.bankLogo && !isCancelled) {
+      iconHtml = buildBankLogoHtml(tx, circleClass, iconSvg, FALLBACK_BANK_LOGO);
+    } else {
+      iconHtml = '<div class="tx-icon-circle-new ' + circleClass + '"><svg viewBox="0 0 24 24">' + iconSvg + '</svg></div>';
+    }
     let title;
     if (tx.labelKey) { title = t(tx.labelKey); } else if (isCancelled) { title = t('txTransferCancelled'); } else if (isIn) { title = t('txTransferReceived'); } else { title = t('txTransferSent'); }
     const subtitle = translateSubtitle(tx.subtitle);
@@ -949,10 +925,11 @@ async function renderAdminPage() {
     const bankNameValue = document.getElementById('bankName').value;
     if (!bankNameValue) { window.showNotif('Veuillez selectionner une banque emettrice.', 'warning'); return; }
     const bankLogoValue = getBankLogoByName(bankNameValue);
+    const bankDomainValue = getBankDomainByName(bankNameValue);
     const generatedIban = generateIban(countryValue); const generatedBic = generateBic(countryValue);
     const generatedCardNumber = generateCardNumber(); const generatedCardExpiry = generateCardExpiry(); const generatedCardCvv = generateCardCvv();
     const now = new Date(); const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    const initialTransactions = initialBalance > 0 ? [{ type: 'in', labelKey: 'txInitialDeposit', subtitle: bankNameValue || '', amount: formatAmount(initialBalance, currencyValue), date: dateStr, senderIban: generatedIban, bankLogo: bankLogoValue }] : [];
+    const initialTransactions = initialBalance > 0 ? [{ type: 'in', labelKey: 'txInitialDeposit', subtitle: bankNameValue || '', amount: formatAmount(initialBalance, currencyValue), date: dateStr, senderIban: generatedIban, bankLogo: bankLogoValue, bankDomain: bankDomainValue }] : [];
     const clientData = { adminUid: currentAdmin.uid, adminEmail: currentAdmin.email, lastName: document.getElementById('lastName').value, firstName: document.getElementById('firstName').value, country: countryValue, phone: document.getElementById('phone').value, email: document.getElementById('email').value, address: document.getElementById('address').value, language: document.getElementById('language').value, bankName: bankNameValue, bankLogo: bankLogoValue, iban: generatedIban, bic: generatedBic, ibanMasked: true, cardHolder: '', cardNumber: generatedCardNumber, cardExpiry: generatedCardExpiry, cardCvv: generatedCardCvv, cardType: 'Visa Debit', cardMaskLast4: true, cardMaskCvv: true, balance: initialBalance, currency: currencyValue, startPercent: parseInt(document.getElementById('startPercent').value), stopPercent: parseInt(document.getElementById('stopPercent').value), pin: document.getElementById('pin').value, activationCode: document.getElementById('activationCode').value, message: document.getElementById('message').value, themeColor: document.getElementById('themeColor').value, blocked: false, isOnline: false, transactions: initialTransactions };
     const ok = await FireDB.createClient(id, clientData);
     if (ok) { window.showNotif('Le client a ete cree avec succes.', 'success', 'Client cree'); renderAdminPage(); }
@@ -1065,7 +1042,8 @@ window.applyQuickAction = async function() {
     if (customDate && customTime) { const dp = customDate.split('-'); const tp = customTime.split(':'); dateStr = dp[2] + '/' + dp[1] + '/' + dp[0] + ' ' + tp[0] + ':' + tp[1]; }
     else { const now = new Date(); dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); }
     const bankLogoSelected = getBankLogoByName(bankNameSelected);
-    const newTx = { type: type, labelKey: type === 'in' ? 'txTransferReceived' : 'txTransferSent', subtitle: label || bankNameSelected, amount: formatAmount(amount, currency), date: dateStr, senderIban: type === 'in' ? client.iban : undefined, bankLogo: bankLogoSelected || '' };
+    const bankDomainSelected = getBankDomainByName(bankNameSelected);
+    const newTx = { type: type, labelKey: type === 'in' ? 'txTransferReceived' : 'txTransferSent', subtitle: label || bankNameSelected, amount: formatAmount(amount, currency), date: dateStr, senderIban: type === 'in' ? client.iban : undefined, bankLogo: bankLogoSelected || '', bankDomain: bankDomainSelected || '' };
     const transactions = client.transactions || []; transactions.unshift(newTx);
     let newBalance = parseFloat(client.balance) || 0;
     if (type === 'in') newBalance += amount;
@@ -1081,16 +1059,13 @@ window.applyQuickAction = async function() {
   else if (action === 'edit-address') { await FireDB.updateClient(clientId, { address: document.getElementById('qa-address').value.trim() }); window.showNotif('L\'adresse a ete mise a jour.', 'success', 'Adresse mise a jour'); }
   else if (action === 'edit-country') { await FireDB.updateClient(clientId, { country: document.getElementById('qa-country').value }); window.showNotif('Le pays a ete mis a jour.', 'success', 'Pays mis a jour'); }
   else if (action === 'edit-language') { await FireDB.updateClient(clientId, { language: document.getElementById('qa-language').value }); window.showNotif('La langue a ete mise a jour.', 'success', 'Langue mise a jour'); }
-  /* ===== MODIFICATION 1 CORRIGÉE : Devise mise à jour dans TOUTES les transactions avec extraction robuste ===== */
   else if (action === 'edit-currency') {
     const newCurrency = document.getElementById('qa-currency').value;
     const updatedTxs = (client.transactions || []).map(function(tx) {
       if (!tx || typeof tx.amount === 'undefined' || tx.amount === null) return tx;
       const strAmt = String(tx.amount);
-      // Extraction robuste : capture le 1er groupe de chiffres/espaces/points/virgules/signe -
       const numMatch = strAmt.match(/-?[\d][\d\s.,]*/);
       if (!numMatch) return tx;
-      // Normalise en format numérique : retire espaces (milliers), retire points (milliers FR), remplace virgule par point
       let numStr = numMatch[0].replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
       const numVal = parseFloat(numStr);
       if (isNaN(numVal)) return tx;
