@@ -1,6 +1,6 @@
 // =====================================================
 // TRANSFERWIRE - SCRIPT PRINCIPAL
-// v58.9 - Bordures renforcées + Tri par date + Adresse résidence + PDF fix
+// v59.0 - Partie 1/2 (avec flèches selects)
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -69,7 +69,6 @@ function hideLoader() { const el = document.getElementById('app-loader'); if (el
 const EMAIL_API_URL = 'https://getzenpay-email-api.onrender.com/api/send-welcome';
 const EMAIL_API_KEY = 'GETZENPAY_2026_SECRET';
 
-/* ★ MODIFIÉ : envoi d'email avec support multi-format pour les pièces jointes */
 async function sendEmail({ to, name, subject, html, text, attachment }) {
   try {
     const body = { email: to, prenom: name || '', sujet: subject, html: html, text: text || '' };
@@ -82,7 +81,6 @@ async function sendEmail({ to, name, subject, html, text, attachment }) {
         type: 'application/pdf',
         mimeType: 'application/pdf'
       };
-      /* Envoie sous plusieurs noms possibles au cas où l'API attend un format spécifique */
       body.attachment = att;
       body.attachments = [att];
       body.pieceJointe = att;
@@ -191,7 +189,6 @@ async function loadJsPdf() {
   });
 }
 
-/* ★ MODIFIÉ : extraction base64 plus robuste */
 async function generatePdfReceiptBase64(client, tx, lang) {
   try {
     const { jsPDF } = await loadJsPdf();
@@ -255,7 +252,6 @@ async function generatePdfReceiptBase64(client, tx, lang) {
     doc.text('Document genere le ' + new Date().toLocaleDateString('fr-FR') + ' a ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }), W / 2, 280, { align: 'center' });
     doc.text('Ce recu est emis par TRANSFERWIRE et fait foi de la validation du virement.', W / 2, 285, { align: 'center' });
 
-    /* ★ Extraction base64 robuste */
     let dataUri = doc.output('datauristring');
     let base64 = '';
     const idx = dataUri.indexOf('base64,');
@@ -405,7 +401,7 @@ const generateShortId = () => { const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 function translateSubtitle(subtitle) { if (!subtitle) return ''; const map = { 'Depot initial': 'txInitialDeposit', 'Dépôt initial': 'txInitialDeposit', 'Virement recu': 'txTransferReceived', 'Virement reçu': 'txTransferReceived', 'Virement envoye': 'txTransferSent', 'Virement envoyé': 'txTransferSent', 'Virement annule': 'txTransferCancelled', 'Virement annulé': 'txTransferCancelled', 'Transfert recu': 'txTransferReceived', 'Transfert envoye': 'txTransferSent', 'Wplata poczatkowa': 'txInitialDeposit', 'Wpłata początkowa': 'txInitialDeposit', 'Przelew otrzymany': 'txTransferReceived', 'Przelew wyslany': 'txTransferSent', 'Przelew wysłany': 'txTransferSent', 'Przelew anulowany': 'txTransferCancelled', 'Deposito inicial': 'txInitialDeposit', 'Transferencia recibida': 'txTransferReceived', 'Transferencia enviada': 'txTransferSent', 'Transferencia cancelada': 'txTransferCancelled', 'Deposito iniziale': 'txInitialDeposit', 'Ricevuto': 'txTransferReceived', 'Inviato': 'txTransferSent', 'Bonifico annullato': 'txTransferCancelled', 'Ersteinzahlung': 'txInitialDeposit', 'Erhalten': 'txTransferReceived', 'Gesendet': 'txTransferSent', 'Uberweisung storniert': 'txTransferCancelled' }; const key = map[subtitle]; if (key) return t(key); return subtitle; }
 
 /* ===================================================== */
-/* GLOBAL STYLES - CLIENT + ADMIN + BORDURES RENFORCÉES */
+/* GLOBAL STYLES - CLIENT + ADMIN + BORDURES RENFORCÉES  */
 /* ===================================================== */
 function ensureGlobalStyles() {
   if (document.getElementById('tw-global-styles')) return;
@@ -450,7 +446,6 @@ function ensureGlobalStyles() {
     .tx-icon-circle-new.bank-logo{background:#ffffff !important;border:1px solid #e2e8f0 !important;padding:5px !important;box-shadow:0 1px 3px rgba(15,23,42,0.06) !important;}
     .tx-icon-circle-new.bank-logo img{width:100% !important;height:100% !important;object-fit:contain !important;border-radius:6px !important;display:block !important;}
 
-    /* ─── Virement en attente ─── */
     .result-header-block.pending { background: linear-gradient(135deg, #f59e0b, #d97706); }
     .result-check-circle.pending svg { fill: #f59e0b; }
     .result-title-text.pending { color: #d97706; }
@@ -459,7 +454,6 @@ function ensureGlobalStyles() {
     .tx-amount-value-new.pending { color: #d97706; }
     .receipt-header-new.pending { background: linear-gradient(135deg, #f59e0b, #d97706); }
 
-    /* ─── CARTE "VIREMENT EN ATTENTE" (admin) ─── */
     .pending-transfer-card { background: #fffbeb; border-radius: 4px; padding: 14px; margin-bottom: 13px; border: 2px solid #f59e0b; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15); }
     .pending-transfer-card .pt-title { display: inline-block; background: #fef3c7; border: 2px solid #f59e0b; color: #78350f; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: 700; margin-bottom: 14px; }
     .pending-transfer-card .pt-title svg { width: 13px; height: 13px; fill: #d97706; vertical-align: middle; margin-right: 4px; margin-top: -2px; }
@@ -471,7 +465,6 @@ function ensureGlobalStyles() {
     .pending-transfer-status-badge.disabled { background: #fee2e2; color: #dc2626; border-color: #dc2626; }
     .pending-transfer-card .btn-admin-submit { margin-top: 4px; }
 
-    /* ─── Section "Virements en attente" dans le détail client admin ─── */
     .admin-pending-transfers-card { background: #fffbeb; border: 2px solid #f59e0b; border-radius: 4px; padding: 12px; margin: 12px 0 8px 0; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.12); }
     .admin-pending-transfers-title { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #d97706; letter-spacing: 0.5px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid #fef3c7; }
     .admin-pending-transfers-title svg { width: 14px; height: 14px; fill: #d97706; flex-shrink: 0; }
@@ -488,11 +481,6 @@ function ensureGlobalStyles() {
     .admin-pending-btn.cancel { background: #dc2626; color: #fff; border-color: #991b1b; }
     .admin-pending-btn svg { width: 12px; height: 12px; fill: #fff; flex-shrink: 0; }
 
-    /* ═══════════════════════════════════════════════════════════ */
-    /* ★ BORDURES RENFORCÉES — TOUTE LA PAGE ADMIN                */
-    /* ═══════════════════════════════════════════════════════════ */
-
-    /* Cartes admin : bordure épaisse et visible */
     .admin-section,
     .quick-actions-card,
     .stat-card,
@@ -512,7 +500,6 @@ function ensureGlobalStyles() {
     .admin-identity-card { border-color: #1a73e8 !important; }
     .connection-status-card { border-color: #94a3b8 !important; }
 
-    /* Inputs, selects, textareas : bordure plus foncée et épaisse */
     .admin-group input,
     .admin-group select,
     .admin-group textarea,
@@ -555,7 +542,6 @@ function ensureGlobalStyles() {
       box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.18) !important;
     }
 
-    /* Boutons admin : bordure visible */
     .btn-admin-submit,
     .client-line-btn,
     .admin-pending-btn,
@@ -594,7 +580,6 @@ function ensureGlobalStyles() {
     .iban-new-close { border-color: rgba(255,255,255,0.6) !important; }
     .vcard-modal-close { border-color: #cbd5e1 !important; }
 
-    /* Modale détail client : bordures internes renforcées */
     #client-detail-modal .detail-header {
       border: 2px solid #1a73e8 !important;
       border-bottom: none !important;
@@ -610,14 +595,42 @@ function ensureGlobalStyles() {
     #client-detail-modal .admin-transfers-card { border: 2px solid #8b5cf6 !important; }
     #client-detail-modal .connection-status-card { border: 2px solid #94a3b8 !important; }
 
-    /* Switch QA : bordure renforcée */
     .qa-switch { border-width: 2px !important; border-color: #94a3b8 !important; }
     .qa-switch:hover { border-color: #1a73e8 !important; }
 
-    /* Modale transfert détail (admin) */
     .transfer-detail-modal-new { border: 2px solid #94a3b8 !important; }
     .transfer-detail-footer { border-top: 2px solid #cbd5e1 !important; }
     .transfer-detail-btn-close { border-color: #94a3b8 !important; }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* ★ FLÈCHES VISIBLES SUR TOUS LES SELECT (admin)             */
+    /* ═══════════════════════════════════════════════════════════ */
+    select,
+    .admin-group select,
+    .quick-actions-card select,
+    .pending-transfer-card select,
+    #qa-client-select,
+    #qa-action-select,
+    #qa-transfer-type,
+    #qa-transfer-bank,
+    #qa-country,
+    #qa-language,
+    #qa-currency,
+    #pt-client-select,
+    #country,
+    #currency,
+    #bankName,
+    #language {
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a73e8'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 10px center !important;
+      background-size: 20px !important;
+      padding-right: 36px !important;
+      appearance: none !important;
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+      cursor: pointer !important;
+    }
   `;
   document.head.appendChild(style);
 }
@@ -889,9 +902,8 @@ window.cancelTransfer = function() { const form = document.getElementById('trans
 window.showFullHistory = function() { const old = document.getElementById('full-history-modal-dyn'); if (old) old.remove(); const txs = (currentClient && currentClient.transactions) || []; let bodyHtml; if (!txs || txs.length === 0) { bodyHtml = '<div class="full-history-empty"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z"/></svg>' + t('noTransactions') + '</div>'; } else { bodyHtml = renderTransactions(txs); } const ov = document.createElement('div'); ov.id = 'full-history-modal-dyn'; ov.className = 'full-history-overlay'; ov.innerHTML = '<div class="full-history-modal"><div class="full-history-header"><h3>' + t('transactionHistory') + '</h3><button class="full-history-close" onclick="document.getElementById(\'full-history-modal-dyn\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div><div class="full-history-body">' + bodyHtml + '</div></div>'; ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); }); document.body.appendChild(ov); };
 
 /* ═══════════════════════════════════════════════════════════════════ */
-/* ✂️ PARTIE 1/2 terminée. La PARTIE 2/2 (window.openReceipt,         */
-/*    window.closeResultModal, ADMIN complet avec tri par date de     */
-/*    création + validation PDF) sera envoyée dans le message suivant. */
+/* ✂️ FIN DE LA PARTIE 1/2.                                           */
+/* Coller ensuite la PARTIE 2/2 (qui commence par window.openReceipt) */
 /* ═══════════════════════════════════════════════════════════════════ */
 /* ═══════════════════════════════════════════════════════════════════ */
 /* PARTIE 2/2 - Suite du fichier script.js                            */
@@ -1066,17 +1078,8 @@ window.copyCardNumber = function() { const adminForcedNumber = currentClient.car
 function showAmountError(message) {
   const errEl = document.getElementById('amount-error-msg');
   const amountEl = document.getElementById('input-amount');
-  if (errEl) {
-    errEl.textContent = message;
-    errEl.style.display = 'block';
-    errEl.style.animation = 'none';
-    void errEl.offsetWidth;
-    errEl.style.animation = '';
-  }
-  if (amountEl) {
-    amountEl.classList.add('input-error');
-    try { amountEl.focus(); } catch (e) {}
-  }
+  if (errEl) { errEl.textContent = message; errEl.style.display = 'block'; errEl.style.animation = 'none'; void errEl.offsetWidth; errEl.style.animation = ''; }
+  if (amountEl) { amountEl.classList.add('input-error'); try { amountEl.focus(); } catch (e) {} }
 }
 
 function hideAmountError() {
@@ -1258,21 +1261,21 @@ async function renderAdminPage() {
   const list = Object.keys(clients);
   const active = list.filter(id => !clients[id].blocked).length;
 
-  /* ★ TRI ALPHABÉTIQUE UNIQUEMENT pour les dropdowns (plus pratique) */
-  const sortedForSelect = list.slice().sort((a, b) => { const na = ((clients[a].lastName || '') + ' ' + (clients[a].firstName || '')).toLowerCase(); const nb = ((clients[b].lastName || '') + ' ' + (clients[b].firstName || '')).toLowerCase(); return na.localeCompare(nb); });
-  let clientOptionsHtml = '<option value="">Liste de vos flash compte client(s)</option>';
-  sortedForSelect.forEach(id => { const c = clients[id]; clientOptionsHtml += '<option value="' + id + '">' + c.firstName + ' ' + c.lastName + ' - ' + c.email + '</option>'; });
-
-  let ptClientOptionsHtml = '<option value="">Selectionnez un client</option>';
-  sortedForSelect.forEach(id => { const c = clients[id]; ptClientOptionsHtml += '<option value="' + id + '">' + c.firstName + ' ' + c.lastName + ' - ' + c.email + '</option>'; });
-
-  /* ★ TRI PAR DATE DE CRÉATION (nouveau en premier) pour la LISTE affichée en bas */
+  /* ★ TRI PAR DATE DE CRÉATION (nouveau en premier) — utilisé PARTOUT */
   const sortedByCreation = list.slice().sort((a, b) => {
     const sa = getCreatedAtSeconds(clients[a]);
     const sb = getCreatedAtSeconds(clients[b]);
-    if (sa !== sb) return sb - sa; /* décroissant : plus récent en premier */
-    return b.localeCompare(a); /* fallback par ID */
+    if (sa !== sb) return sb - sa;
+    return b.localeCompare(a);
   });
+
+  /* Dropdown 1 : carte "Virement en attente" */
+  let ptClientOptionsHtml = '<option value="">Selectionnez un client</option>';
+  sortedByCreation.forEach(id => { const c = clients[id]; ptClientOptionsHtml += '<option value="' + id + '">' + c.firstName + ' ' + c.lastName + ' - ' + c.email + '</option>'; });
+
+  /* Dropdown 2 : carte "Mettre à jour un accès client" */
+  let clientOptionsHtml = '<option value="">Liste de vos flash compte client(s)</option>';
+  sortedByCreation.forEach(id => { const c = clients[id]; clientOptionsHtml += '<option value="' + id + '">' + c.firstName + ' ' + c.lastName + ' - ' + c.email + '</option>'; });
 
   const pendingTransferCardHtml = '<div class="pending-transfer-card"><div class="pt-title"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>' + t('adminPendingCardTitle') + '</div><div class="pt-subtitle">' + t('adminPendingCardSubtitle') + '</div><div class="admin-group"><label>Selectionner le client <span class="req">*</span></label><select id="pt-client-select">' + ptClientOptionsHtml + '</select></div><div id="pt-status-container" style="display:none;margin-bottom:12px;"><div class="pt-status-line"><span class="pt-status-label">Statut actuel :</span><span class="pending-transfer-status-badge disabled" id="pt-status-badge">' + t('adminPendingOff') + '</span></div></div><button class="btn-admin-submit" id="pt-toggle-btn" onclick="window.togglePendingTransfer()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span id="pt-toggle-text">' + t('adminPendingEnableBtn') + '</span></button></div>';
 
@@ -1442,7 +1445,6 @@ window.togglePendingTransfer = async function() {
   setTimeout(() => renderAdminPage(), 400);
 };
 
-/* ★ VALIDATION PDF - robuste avec logs */
 window.validatePendingTransfer = function(clientId, txIndex) {
   window.showConfirm(t('adminValidateConfirmMsg'), async () => {
     try {
