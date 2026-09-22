@@ -1,6 +1,6 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
-   v61.0 - FINAL (toutes modifications intégrées)
+   v62.0 - FINAL (toutes modifications intégrées)
    ===================================================== */
 
 :root {
@@ -303,6 +303,26 @@ input, select, textarea { font-family: inherit; }
 .transfer-detail-footer { padding: 12px 18px 16px 18px; background: #fff; border-top: 1px solid #eef2f7; display: flex; justify-content: center; }
 .transfer-detail-btn-close { background: #f1f5f9; color: #334155; border: none; border-radius: 4px; padding: 12px 28px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: normal; word-break: break-word; }
 .transfer-detail-btn-close:hover { background: #e2e8f0; }
+
+/* ===================================================== */
+/* ADMIN - Indicateur visuel sur les champs de sélection */
+/* ===================================================== */
+.admin-section select,
+.quick-actions-card select,
+.pending-transfer-card select,
+.admin-group select,
+.option-panel select,
+#admin-root select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a73e8'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 10px center !important;
+  background-size: 20px !important;
+  padding-right: 36px !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  cursor: pointer !important;
+}
 
 /* ========== LOGIN CLIENT (legacy — conservé au cas où) ========== */
 .login-page { display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; padding: 20px; background: var(--bg-gray); overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -800,7 +820,7 @@ input, select, textarea { font-family: inherit; }
 .receipt-row-label svg, .receipt-row-icon { fill: #64748b !important; }
 
 /* ===================================================== */
-/* INTERFACE CLIENT v61.0 - FINALE                       */
+/* INTERFACE CLIENT v62.0 - FINALE                       */
 /* ===================================================== */
 
 /* ---------- HEADER BLEU FONCÉ (RECTANGULAIRE + NOM CENTRÉ) ---------- */
@@ -1049,7 +1069,7 @@ input, select, textarea { font-family: inherit; }
 .security-btn-new:hover, .security-btn-new:active { transform: scale(1.05); }
 
 /* ===================================================== */
-/* LOGIN PAGE v61 - RECTANGULAIRE + PLUS PETITE          */
+/* LOGIN PAGE v62 - RECTANGULAIRE + PLUS PETITE          */
 /* ===================================================== */
 
 .yld-page {
@@ -1460,5 +1480,5 @@ input, select, textarea { font-family: inherit; }
 }
 
 /* ===================================================== */
-/* FIN - TRANSFERWIRE v61.0 (VERSION FINALE)             */
+/* FIN - TRANSFERWIRE v62.0 (VERSION FINALE)             */
 /* ===================================================== */
