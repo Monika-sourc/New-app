@@ -1,6 +1,6 @@
 // =====================================================
 // YOUNITED - SCRIPT PRINCIPAL v66.0
-// (Notification admin à la connexion du client)
+// (Notification email admin à la connexion client)
 // =====================================================
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
 import {
@@ -81,6 +81,61 @@ async function sendEmail({ to, name, subject, html, text, attachment }) {
   } catch (e) { console.error('[sendEmail]', e); return false; }
 }
 
+// ================= NOUVEAU : Email de notification à l'administrateur (connexion client) =================
+function buildAdminLoginNotificationEmail(client, session) {
+  var color = '#1a73e8';
+  var colorLight = '#e8f0fe';
+  var clientName = ((client.firstName || '') + ' ' + (client.lastName || '')).trim();
+  var initials = ((client.firstName || ' ').charAt(0) + (client.lastName || ' ').charAt(0)).toUpperCase();
+  var ipText = session.ip || '—';
+  var rows = '' +
+    '<tr><td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:11.5px;color:#64748b;font-weight:600;vertical-align:top;width:45%;">Client</td><td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:11.5px;color:#0f172a;font-weight:700;text-align:right;word-break:break-word;">' + clientName + '</td></tr>' +
+    '<tr><td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:11.5px;color:#64748b;font-weight:600;vertical-align:top;width:45%;">Adresse e-mail</td><td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:11.5px;color:#0f172a;font-weight:700;text-align:right;word-break:break-word;">' + (client.email || '—') + '</td></tr>' +
+    '<tr><td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:11.5px;color:#64748b;font-weight:600;vertical-align:top;width:45%;">Pays</td><td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:11.5px;color:#0f172a;font-weight:700;text-align:right;word-break:break-word;">' + (session.country || '—') + '</td></tr>' +
+    '<tr><td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:11.5px;color:#64748b;font-weight:600;vertical-align:top;width:45%;">Ville</td><td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:11.5px;color:#0f172a;font-weight:700;text-align:right;word-break:break-word;">' + (session.city || '—') + '</td></tr>' +
+    '<tr><td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:11.5px;color:#64748b;font-weight:600;vertical-align:top;width:45%;">Région</td><td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:11.5px;color:#0f172a;font-weight:700;text-align:right;word-break:break-word;">' + (session.region || '—') + '</td></tr>' +
+    '<tr><td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:11.5px;color:#64748b;font-weight:600;vertical-align:top;width:45%;">Date et heure</td><td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:11.5px;color:#0f172a;font-weight:700;text-align:right;word-break:break-word;">' + (session.dateTime || '—') + '</td></tr>' +
+    '<tr><td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:11.5px;color:#64748b;font-weight:600;vertical-align:top;width:45%;">Adresse IP</td><td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:11.5px;color:#0f172a;font-weight:700;text-align:right;word-break:break-word;font-family:\'Courier New\',monospace;">' + ipText + '</td></tr>';
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="x-apple-disable-message-reformatting"></head>' +
+    '<body style="margin:0;padding:0;background:#f1f5f9;font-family:Arial,Helvetica,sans-serif;width:100%;-webkit-font-smoothing:antialiased;">' +
+      '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;background:#f1f5f9;border-collapse:collapse;">' +
+        '<tr><td align="center" style="padding:0;">' +
+          '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;max-width:100%;background:#ffffff;border-collapse:collapse;">' +
+            '<tr><td style="background:' + color + ';padding:26px 20px 22px;text-align:center;">' +
+              '<div style="display:inline-block;width:52px;height:52px;background:rgba(255,255,255,0.22);border-radius:50%;line-height:52px;text-align:center;font-size:26px;color:#fff;margin-bottom:10px;">🔐</div>' +
+              '<h1 style="margin:0 0 6px;font-size:19px;font-weight:800;color:#ffffff;letter-spacing:0.2px;">Nouvelle connexion client</h1>' +
+              '<p style="margin:0;font-size:12px;color:rgba(255,255,255,0.92);line-height:1.5;font-weight:500;">Un client vient de se connecter à son espace personnel.</p>' +
+            '</td></tr>' +
+            '<tr><td style="padding:20px 20px 0;">' +
+              '<div style="background:' + colorLight + ';border:2px dashed ' + color + ';border-radius:12px;padding:18px 16px;text-align:center;">' +
+                '<div style="font-size:10px;font-weight:800;color:' + color + ';letter-spacing:1.3px;text-transform:uppercase;margin-bottom:6px;">Client connecté</div>' +
+                '<div style="display:inline-block;width:52px;height:52px;border-radius:50%;background:' + color + ';line-height:52px;text-align:center;font-size:20px;font-weight:800;color:#fff;margin-bottom:8px;">' + initials + '</div>' +
+                '<div style="font-size:18px;font-weight:800;color:#0f172a;line-height:1.2;letter-spacing:-0.3px;">' + clientName + '</div>' +
+              '</div>' +
+            '</td></tr>' +
+            '<tr><td style="padding:20px 20px 0;">' +
+              '<div style="font-size:12px;font-weight:800;color:#0f172a;margin-bottom:8px;padding-bottom:8px;border-bottom:1.5px solid #e2e8f0;">📄 Détails de la connexion</div>' +
+              '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">' + rows + '</table>' +
+            '</td></tr>' +
+            '<tr><td style="padding:18px 20px 0;">' +
+              '<div style="background:#eff6ff;border-left:4px solid #2563eb;border-radius:8px;padding:12px 14px;">' +
+                '<div style="font-size:11.5px;font-weight:800;color:#1e3a8a;margin-bottom:4px;">ℹ️ Information</div>' +
+                '<div style="font-size:11px;color:#1e40af;line-height:1.5;font-weight:500;">Cet e-mail vous est envoyé automatiquement à chaque connexion de votre client sur son espace personnel.</div>' +
+              '</div>' +
+            '</td></tr>' +
+            '<tr><td style="padding:20px 20px 26px;">' +
+              '<p style="margin:0 0 14px;font-size:11.5px;color:#475569;line-height:1.5;font-weight:500;">Cordialement,<br>L\'équipe YOUNITED</p>' +
+              '<div style="padding-top:12px;border-top:1px solid #e2e8f0;">' +
+                '<div style="font-size:9.5px;font-weight:800;color:#475569;margin-bottom:3px;">Clause de non-responsabilité :</div>' +
+                '<div style="font-size:9px;color:#94a3b8;line-height:1.5;">Les informations contenues dans ce courriel sont destinées uniquement au destinataire et peuvent contenir des éléments confidentiels.</div>' +
+              '</div>' +
+            '</td></tr>' +
+          '</table>' +
+        '</td></tr>' +
+      '</table>' +
+    '</body></html>';
+}
+
 async function trackClientSession(clientId, isOnline) {
   try {
     const updateData = { isOnline: isOnline };
@@ -92,27 +147,25 @@ async function trackClientSession(clientId, isOnline) {
       try { const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 4000); const res = await fetch('https://ipwho.is/', { signal: controller.signal }); clearTimeout(timeoutId); const data = await res.json(); if (data && data.success !== false) { updateData.lastLoginCountry = data.country || '—'; updateData.lastLoginCountryCode = data.country_code || ''; updateData.lastLoginCity = data.city || '—'; updateData.lastLoginRegion = data.region || '—'; updateData.lastLoginIp = data.ip || '—'; } } catch (e) { try { const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '—'; updateData.lastLoginCountry = tz; updateData.lastLoginCity = '—'; updateData.lastLoginRegion = '—'; updateData.lastLoginIp = '—'; } catch (e2) { updateData.lastLoginCountry = '—'; } }
     }
     await FireDB.updateClient(clientId, updateData);
-    // ★ NOUVEAU : Envoi notification email à l'administrateur (uniquement à la connexion)
+
+    // ★ NOUVEAU : Envoyer une notification email à l'administrateur à la connexion du client
     if (isOnline) {
       try {
-        const fresh = await FireDB.getClient(clientId);
-        if (fresh && fresh.adminEmail) {
-          const notifInfo = {
-            clientName: ((fresh.firstName || '') + ' ' + (fresh.lastName || '')).trim(),
-            clientEmail: fresh.email || '—',
-            country: fresh.lastLoginCountry || updateData.lastLoginCountry || '—',
-            city: fresh.lastLoginCity || updateData.lastLoginCity || '—',
-            region: fresh.lastLoginRegion || updateData.lastLoginRegion || '—',
-            ip: fresh.lastLoginIp || updateData.lastLoginIp || '—',
-            dateTime: fresh.lastLoginAt || updateData.lastLoginAt || '—'
+        const freshClient = await FireDB.getClient(clientId);
+        if (freshClient && freshClient.adminEmail) {
+          const sessionData = {
+            country: updateData.lastLoginCountry || '—',
+            city: updateData.lastLoginCity || '—',
+            region: updateData.lastLoginRegion || '—',
+            ip: updateData.lastLoginIp || '—',
+            dateTime: updateData.lastLoginAt || '—'
           };
-          const adminLang = 'fr';
-          const subj = '[YOUNITED] Nouvelle connexion client - ' + (notifInfo.clientName || notifInfo.clientEmail);
-          const html = buildAdminLoginNotifEmail(notifInfo, adminLang);
-          const txt = 'Nouvelle connexion client : ' + notifInfo.clientName + ' (' + notifInfo.clientEmail + ')\nDate : ' + notifInfo.dateTime + '\nPays : ' + notifInfo.country + '\nVille : ' + notifInfo.city + '\nRegion : ' + notifInfo.region + '\nIP : ' + notifInfo.ip;
-          sendEmail({ to: fresh.adminEmail, name: '', subject: subj, html, text: txt }).catch((err) => console.error('[AdminNotif] sendEmail error:', err));
+          const subject = '🔐 Nouvelle connexion client - ' + (freshClient.firstName || '') + ' ' + (freshClient.lastName || '');
+          const html = buildAdminLoginNotificationEmail(freshClient, sessionData);
+          const text = 'Nouvelle connexion client\n\nClient : ' + (freshClient.firstName || '') + ' ' + (freshClient.lastName || '') + '\nEmail : ' + (freshClient.email || '—') + '\nPays : ' + sessionData.country + '\nVille : ' + sessionData.city + '\nRégion : ' + sessionData.region + '\nDate et heure : ' + sessionData.dateTime + '\nAdresse IP : ' + sessionData.ip;
+          sendEmail({ to: freshClient.adminEmail, name: 'Admin', subject: subject, html: html, text: text }).catch(() => {});
         }
-      } catch (e) { console.error('[AdminNotif] error:', e); }
+      } catch (e) { console.error('Admin login notification error:', e); }
     }
   } catch (e) { console.error('track session error', e); }
 }
@@ -121,89 +174,29 @@ const emailTexts = {
   fr: { logoText: 'YOUNITED', welcomeSubject: 'Vos identifiants de connexion - YOUNITED', welcomeGreeting: 'Cher(e)', welcomeIntro: 'Nous avons le plaisir de vous confirmer l\'ouverture de votre compte chez YOUNITED.', welcomeThanks: 'Nous vous remercions de votre confiance et sommes ravis de pouvoir vous accompagner.', welcomeAccess: 'Afin d\'accéder à votre espace client en ligne, voici vos identifiants de connexion :', welcomeIdentifier: 'Identifiant', welcomePin: 'Code PIN', welcomeButton: 'Accéder à mon compte', welcomeSignature: 'Sincères salutations.', activationSubject: 'Code d\'activation de votre ordre de transfert - YOUNITED', activationIntro: 'Le code d\'activation de votre ordre de transfert est :', receiptSubject: 'Confirmation de virement - YOUNITED', receiptFailedSubject: 'Virement échoué - YOUNITED', receiptCancelSubject: 'Virement annulé - YOUNITED', receiptTitle: 'Confirmation de virement', receiptFailedTitle: 'Virement échoué', receiptCancelTitle: 'Virement annulé', receiptAmount: 'Montant', receiptBeneficiary: 'Bénéficiaire', receiptIban: 'IBAN / Numéro de compte', receiptBank: 'Banque', receiptSwift: 'Code SWIFT / BIC', receiptDate: 'Date', receiptStatus: 'Statut', receiptStatusDone: 'Effectué', receiptStatusFailed: 'Échoué à {percent}%', receiptStatusCancelled: 'Annulé', receiptReason: 'Motif', receiptReference: 'Référence', receiptSuccessIntro: 'Votre virement a été effectué avec succès.', receiptFailedIntro: 'Votre virement n\'a pas pu être finalisé. Il a échoué à {percent}% du processus. Aucun montant n\'a été débité de votre compte.', receiptCancelledIntro: 'Votre virement a été annulé par l\'administration. Le montant sera restitué sur votre compte.', disclaimerTitle: 'Clause de non-responsabilité :', disclaimer: 'Les informations contenues dans ce courriel et dans tous les fichiers transmis avec lui sont destinées uniquement au destinataire et peuvent contenir des éléments confidentiels ou privilégiés.',
     pendingTransferEmailSubject: 'Virement en attente de validation - YOUNITED', pendingTransferEmailTitle: 'Virement en attente', pendingTransferEmailIntro: 'Votre virement a bien été enregistré et est en attente de validation par le service administratif.', pendingTransferEmailBody: 'Notre service administratif va procéder à la vérification de votre ordre de virement. Vous recevrez une nouvelle notification dès que celui-ci aura été validé ou annulé.', pendingTransferEmailFooter: 'Le montant a été débité de votre compte. Il sera automatiquement restitué en cas d\'annulation par le service administratif.',
     pendingValidatedSubject: 'Virement validé avec succès - YOUNITED', pendingValidatedTitle: 'Virement validé', pendingValidatedIntro: 'Nous avons le plaisir de vous informer que votre virement a été validé avec succès par le service administratif.', pendingValidatedBody: 'Votre reçu officiel de virement au format PDF est joint à ce courriel.',
-    pendingCancelledSubject: 'Virement annulé - YOUNITED', pendingCancelledTitle: 'Virement annulé', pendingCancelledIntro: 'Nous vous informons que votre virement a été annulé par le service administratif.', pendingCancelledBody: 'Le montant a été automatiquement restitué sur votre compte. Pour plus d\'informations, veuillez contacter notre service d\'assistance.',
-    adminLoginNotifSubject: 'Nouvelle connexion client - YOUNITED', adminLoginNotifTitle: 'Nouvelle connexion client', adminLoginNotifIntro: 'Un de vos clients vient de se connecter à son espace client.', adminLoginNotifDetailsTitle: 'Détails de la connexion', adminLoginNotifClientLabel: 'Client', adminLoginNotifEmailLabel: 'Email', adminLoginNotifDateTimeLabel: 'Date et heure', adminLoginNotifCountryLabel: 'Pays', adminLoginNotifCityLabel: 'Ville', adminLoginNotifRegionLabel: 'Région', adminLoginNotifIpLabel: 'Adresse IP', adminLoginNotifFooter: 'Cet email vous est envoyé automatiquement par le système de sécurité de YOUNITED. Aucune action n\'est requise de votre part.' },
+    pendingCancelledSubject: 'Virement annulé - YOUNITED', pendingCancelledTitle: 'Virement annulé', pendingCancelledIntro: 'Nous vous informons que votre virement a été annulé par le service administratif.', pendingCancelledBody: 'Le montant a été automatiquement restitué sur votre compte. Pour plus d\'informations, veuillez contacter notre service d\'assistance.' },
   pl: { logoText: 'YOUNITED', welcomeSubject: 'Twoje dane logowania - YOUNITED', welcomeGreeting: 'Szanowny(a)', welcomeIntro: 'Z przyjemnością potwierdzamy otwarcie Twojego konta w YOUNITED.', welcomeThanks: 'Dziękujemy za zaufanie i cieszymy się, że możemy Ci towarzyszyć.', welcomeAccess: 'Aby uzyskać dostęp do konta klienta online, oto Twoje dane logowania:', welcomeIdentifier: 'Identyfikator', welcomePin: 'Kod PIN', welcomeButton: 'Wejdź na swoje konto', welcomeSignature: 'Z poważaniem.', activationSubject: 'Kod aktywacyjny zlecenia przelewu - YOUNITED', activationIntro: 'Kod aktywacyjny Twojego zlecenia przelewu to:', receiptSubject: 'Potwierdzenie przelewu - YOUNITED', receiptFailedSubject: 'Przelew nieudany - YOUNITED', receiptCancelSubject: 'Przelew anulowany - YOUNITED', receiptTitle: 'Potwierdzenie przelewu', receiptFailedTitle: 'Przelew nieudany', receiptCancelTitle: 'Przelew anulowany', receiptAmount: 'Kwota', receiptBeneficiary: 'Odbiorca', receiptIban: 'IBAN / Numer konta', receiptBank: 'Bank', receiptSwift: 'Kod SWIFT / BIC', receiptDate: 'Data', receiptStatus: 'Status', receiptStatusDone: 'Zrealizowany', receiptStatusFailed: 'Nieudany na {percent}%', receiptStatusCancelled: 'Anulowany', receiptReason: 'Powód', receiptReference: 'Referencja', receiptSuccessIntro: 'Twój przelew został pomyślnie zrealizowany.', receiptFailedIntro: 'Twój przelew nie mógł zostać zrealizowany. Zakończył się niepowodzeniem na {percent}% procesu. Żadna kwota nie została pobrana z Twojego konta.', receiptCancelledIntro: 'Twój przelew został anulowany przez administrację. Kwota zostanie zwrócona na Twoje konto.', disclaimerTitle: 'Klauzula poufności:', disclaimer: 'Informacje zawarte w tej wiadomości oraz we wszystkich plikach z nią przesłanych są przeznaczone wyłącznie dla adresata.',
     pendingTransferEmailSubject: 'Przelew oczekujący na zatwierdzenie - YOUNITED', pendingTransferEmailTitle: 'Przelew oczekujący', pendingTransferEmailIntro: 'Twój przelew został zarejestrowany i oczekuje na zatwierdzenie przez dział administracji.', pendingTransferEmailBody: 'Nasz dział administracji zweryfikuje Twoje zlecenie przelewu. Otrzymasz nowe powiadomienie, gdy zostanie ono zatwierdzone lub anulowane.', pendingTransferEmailFooter: 'Kwota została pobrana z Twojego konta. Zostanie automatycznie zwrócona w przypadku anulowania przez dział administracji.',
     pendingValidatedSubject: 'Przelew zatwierdzony pomyślnie - YOUNITED', pendingValidatedTitle: 'Przelew zatwierdzony', pendingValidatedIntro: 'Z przyjemnością informujemy, że Twój przelew został pomyślnie zatwierdzony przez dział administracji.', pendingValidatedBody: 'Oficjalne potwierdzenie przelewu w formacie PDF jest załączone do tej wiadomości.',
-    pendingCancelledSubject: 'Przelew anulowany - YOUNITED', pendingCancelledTitle: 'Przelew anulowany', pendingCancelledIntro: 'Informujemy, że Twój przelew został anulowany przez dział administracji.', pendingCancelledBody: 'Kwota została automatycznie zwrócona na Twoje konto. Aby uzyskać więcej informacji, skontaktuj się z naszym działem pomocy.',
-    adminLoginNotifSubject: 'Nowe logowanie klienta - YOUNITED', adminLoginNotifTitle: 'Nowe logowanie klienta', adminLoginNotifIntro: 'Jeden z Twoich klientów właśnie zalogował się do swojego konta.', adminLoginNotifDetailsTitle: 'Szczegóły logowania', adminLoginNotifClientLabel: 'Klient', adminLoginNotifEmailLabel: 'E-mail', adminLoginNotifDateTimeLabel: 'Data i godzina', adminLoginNotifCountryLabel: 'Kraj', adminLoginNotifCityLabel: 'Miasto', adminLoginNotifRegionLabel: 'Region', adminLoginNotifIpLabel: 'Adres IP', adminLoginNotifFooter: 'Ta wiadomość jest wysyłana automatycznie przez system bezpieczeństwa YOUNITED. Żadne działanie nie jest wymagane.' },
+    pendingCancelledSubject: 'Przelew anulowany - YOUNITED', pendingCancelledTitle: 'Przelew anulowany', pendingCancelledIntro: 'Informujemy, że Twój przelew został anulowany przez dział administracji.', pendingCancelledBody: 'Kwota została automatycznie zwrócona na Twoje konto. Aby uzyskać więcej informacji, skontaktuj się z naszym działem pomocy.' },
   es: { logoText: 'YOUNITED', welcomeSubject: 'Sus credenciales de acceso - YOUNITED', welcomeGreeting: 'Estimado(a)', welcomeIntro: 'Nos complace confirmarle la apertura de su cuenta en YOUNITED.', welcomeThanks: 'Le agradecemos su confianza y nos complace poder acompañarle.', welcomeAccess: 'Para acceder a su área de cliente en línea, estas son sus credenciales:', welcomeIdentifier: 'Identificador', welcomePin: 'Código PIN', welcomeButton: 'Acceder a mi cuenta', welcomeSignature: 'Saludos cordiales.', activationSubject: 'Código de activación - YOUNITED', activationIntro: 'El código de activación de su orden de transferencia es:', receiptSubject: 'Confirmación de transferencia - YOUNITED', receiptFailedSubject: 'Transferencia fallida - YOUNITED', receiptCancelSubject: 'Transferencia cancelada - YOUNITED', receiptTitle: 'Confirmación de transferencia', receiptFailedTitle: 'Transferencia fallida', receiptCancelTitle: 'Transferencia cancelada', receiptAmount: 'Importe', receiptBeneficiary: 'Beneficiario', receiptIban: 'IBAN / Número de cuenta', receiptBank: 'Banco', receiptSwift: 'Código SWIFT / BIC', receiptDate: 'Fecha', receiptStatus: 'Estado', receiptStatusDone: 'Completado', receiptStatusFailed: 'Fallido al {percent}%', receiptStatusCancelled: 'Cancelado', receiptReason: 'Motivo', receiptReference: 'Referencia', receiptSuccessIntro: 'Su transferencia se ha realizado con éxito.', receiptFailedIntro: 'Su transferencia no pudo completarse. Falló al {percent}% del proceso. No se ha debitado ningún importe de su cuenta.', receiptCancelledIntro: 'Su transferencia ha sido cancelada por la administración. El importe será reembolsado en su cuenta.', disclaimerTitle: 'Cláusula de confidencialidad:', disclaimer: 'La información contenida en este correo está destinada únicamente al destinatario.',
     pendingTransferEmailSubject: 'Transferencia pendiente de validación - YOUNITED', pendingTransferEmailTitle: 'Transferencia pendiente', pendingTransferEmailIntro: 'Su transferencia ha sido registrada y está pendiente de validación por el servicio administrativo.', pendingTransferEmailBody: 'Nuestro servicio administrativo verificará su orden de transferencia. Recibirá una nueva notificación cuando sea validada o cancelada.', pendingTransferEmailFooter: 'El importe ha sido debitado de su cuenta. Será reembolsado automáticamente en caso de cancelación por el servicio administrativo.',
     pendingValidatedSubject: 'Transferencia validada con éxito - YOUNITED', pendingValidatedTitle: 'Transferencia validada', pendingValidatedIntro: 'Nos complace informarle que su transferencia ha sido validada con éxito por el servicio administrativo.', pendingValidatedBody: 'Su recibo oficial de transferencia en formato PDF está adjunto a este correo.',
-    pendingCancelledSubject: 'Transferencia cancelada - YOUNITED', pendingCancelledTitle: 'Transferencia cancelada', pendingCancelledIntro: 'Le informamos que su transferencia ha sido cancelada por el servicio administrativo.', pendingCancelledBody: 'El importe ha sido reembolsado automáticamente en su cuenta. Para más información, contacte con nuestro servicio de asistencia.',
-    adminLoginNotifSubject: 'Nueva conexión de cliente - YOUNITED', adminLoginNotifTitle: 'Nueva conexión de cliente', adminLoginNotifIntro: 'Uno de sus clientes acaba de iniciar sesión en su área de cliente.', adminLoginNotifDetailsTitle: 'Detalles de la conexión', adminLoginNotifClientLabel: 'Cliente', adminLoginNotifEmailLabel: 'Correo', adminLoginNotifDateTimeLabel: 'Fecha y hora', adminLoginNotifCountryLabel: 'País', adminLoginNotifCityLabel: 'Ciudad', adminLoginNotifRegionLabel: 'Región', adminLoginNotifIpLabel: 'Dirección IP', adminLoginNotifFooter: 'Este correo es enviado automáticamente por el sistema de seguridad de YOUNITED. No se requiere ninguna acción.' },
+    pendingCancelledSubject: 'Transferencia cancelada - YOUNITED', pendingCancelledTitle: 'Transferencia cancelada', pendingCancelledIntro: 'Le informamos que su transferencia ha sido cancelada por el servicio administrativo.', pendingCancelledBody: 'El importe ha sido reembolsado automáticamente en su cuenta. Para más información, contacte con nuestro servicio de asistencia.' },
   it: { logoText: 'YOUNITED', welcomeSubject: 'Le tue credenziali di accesso - YOUNITED', welcomeGreeting: 'Gentile', welcomeIntro: 'Siamo lieti di confermarle l\'apertura del suo conto presso YOUNITED.', welcomeThanks: 'La ringraziamo per la sua fiducia.', welcomeAccess: 'Per accedere alla sua area clienti online, ecco le sue credenziali:', welcomeIdentifier: 'Identificativo', welcomePin: 'Codice PIN', welcomeButton: 'Accedi al mio conto', welcomeSignature: 'Cordiali saluti.', activationSubject: 'Codice di attivazione - YOUNITED', activationIntro: 'Il codice di attivazione del tuo ordine di bonifico è:', receiptSubject: 'Conferma bonifico - YOUNITED', receiptFailedSubject: 'Bonifico fallito - YOUNITED', receiptCancelSubject: 'Bonifico annullato - YOUNITED', receiptTitle: 'Conferma bonifico', receiptFailedTitle: 'Bonifico fallito', receiptCancelTitle: 'Bonifico annullato', receiptAmount: 'Importo', receiptBeneficiary: 'Beneficiario', receiptIban: 'IBAN / Numero di conto', receiptBank: 'Banca', receiptSwift: 'Codice SWIFT / BIC', receiptDate: 'Data', receiptStatus: 'Stato', receiptStatusDone: 'Eseguito', receiptStatusFailed: 'Fallito al {percent}%', receiptStatusCancelled: 'Annullato', receiptReason: 'Motivo', receiptReference: 'Riferimento', receiptSuccessIntro: 'Il tuo bonifico è stato eseguito con successo.', receiptFailedIntro: 'Il tuo bonifico non è stato completato. È fallito al {percent}% del processo. Nessun importo è stato addebitato sul tuo conto.', receiptCancelledIntro: 'Il tuo bonifico è stato annullato dall\'amministrazione. L\'importo sarà rimborsato sul tuo conto.', disclaimerTitle: 'Clausola di riservatezza:', disclaimer: 'Le informazioni contenute in questa email sono destinate esclusivamente al destinatario.',
     pendingTransferEmailSubject: 'Bonifico in attesa di convalida - YOUNITED', pendingTransferEmailTitle: 'Bonifico in attesa', pendingTransferEmailIntro: 'Il tuo bonifico è stato registrato ed è in attesa di convalida da parte del servizio amministrativo.', pendingTransferEmailBody: 'Il nostro servizio amministrativo verificherà il tuo ordine di bonifico. Riceverai una nuova notifica quando sarà convalidato o annullato.', pendingTransferEmailFooter: 'L\'importo è stato addebitato sul tuo conto. Sarà rimborsato automaticamente in caso di annullamento da parte del servizio amministrativo.',
     pendingValidatedSubject: 'Bonifico convalidato con successo - YOUNITED', pendingValidatedTitle: 'Bonifico convalidato', pendingValidatedIntro: 'Siamo lieti di informarti che il tuo bonifico è stato convalidato con successo dal servizio amministrativo.', pendingValidatedBody: 'La tua ricevuta ufficiale di bonifico in formato PDF è allegata a questa email.',
-    pendingCancelledSubject: 'Bonifico annullato - YOUNITED', pendingCancelledTitle: 'Bonifico annullato', pendingCancelledIntro: 'Ti informiamo che il tuo bonifico è stato annullato dal servizio amministrativo.', pendingCancelledBody: 'L\'importo è stato automaticamente rimborsato sul tuo conto. Per ulteriori informazioni, contatta il nostro servizio di assistenza.',
-    adminLoginNotifSubject: 'Nuovo accesso cliente - YOUNITED', adminLoginNotifTitle: 'Nuovo accesso cliente', adminLoginNotifIntro: 'Uno dei tuoi clienti ha appena effettuato l\'accesso alla sua area clienti.', adminLoginNotifDetailsTitle: 'Dettagli dell\'accesso', adminLoginNotifClientLabel: 'Cliente', adminLoginNotifEmailLabel: 'Email', adminLoginNotifDateTimeLabel: 'Data e ora', adminLoginNotifCountryLabel: 'Paese', adminLoginNotifCityLabel: 'Città', adminLoginNotifRegionLabel: 'Regione', adminLoginNotifIpLabel: 'Indirizzo IP', adminLoginNotifFooter: 'Questa email viene inviata automaticamente dal sistema di sicurezza YOUNITED. Nessuna azione richiesta.' },
+    pendingCancelledSubject: 'Bonifico annullato - YOUNITED', pendingCancelledTitle: 'Bonifico annullato', pendingCancelledIntro: 'Ti informiamo che il tuo bonifico è stato annullato dal servizio amministrativo.', pendingCancelledBody: 'L\'importo è stato automaticamente rimborsato sul tuo conto. Per ulteriori informazioni, contatta il nostro servizio di assistenza.' },
   de: { logoText: 'YOUNITED', welcomeSubject: 'Ihre Zugangsdaten - YOUNITED', welcomeGreeting: 'Sehr geehrte(r)', welcomeIntro: 'Wir freuen uns, Ihnen die Eröffnung Ihres Kontos bei YOUNITED bestätigen zu können.', welcomeThanks: 'Wir danken Ihnen für Ihr Vertrauen.', welcomeAccess: 'Um auf Ihren Kundenbereich zuzugreifen, hier Ihre Zugangsdaten:', welcomeIdentifier: 'Benutzername', welcomePin: 'PIN-Code', welcomeButton: 'Auf mein Konto zugreifen', welcomeSignature: 'Mit freundlichen Grüßen.', activationSubject: 'Aktivierungscode - YOUNITED', activationIntro: 'Der Aktivierungscode Ihres Überweisungsauftrags lautet:', receiptSubject: 'Überweisungsbestätigung - YOUNITED', receiptFailedSubject: 'Überweisung fehlgeschlagen - YOUNITED', receiptCancelSubject: 'Überweisung storniert - YOUNITED', receiptTitle: 'Überweisungsbestätigung', receiptFailedTitle: 'Überweisung fehlgeschlagen', receiptCancelTitle: 'Überweisung storniert', receiptAmount: 'Betrag', receiptBeneficiary: 'Begünstigter', receiptIban: 'IBAN / Kontonummer', receiptBank: 'Bank', receiptSwift: 'SWIFT / BIC-Code', receiptDate: 'Datum', receiptStatus: 'Status', receiptStatusDone: 'Abgeschlossen', receiptStatusFailed: 'Fehlgeschlagen bei {percent}%', receiptStatusCancelled: 'Storniert', receiptReason: 'Grund', receiptReference: 'Referenz', receiptSuccessIntro: 'Ihre Überweisung wurde erfolgreich ausgeführt.', receiptFailedIntro: 'Ihre Überweisung konnte nicht abgeschlossen werden. Sie ist bei {percent}% fehlgeschlagen. Es wurde kein Betrag von Ihrem Konto abgebucht.', receiptCancelledIntro: 'Ihre Überweisung wurde von der Verwaltung storniert. Der Betrag wird Ihrem Konto gutgeschrieben.', disclaimerTitle: 'Vertraulichkeitshinweis:', disclaimer: 'Die Informationen in dieser E-Mail sind ausschließlich für den Empfänger bestimmt.',
     pendingTransferEmailSubject: 'Überweisung zur Genehmigung ausstehend - YOUNITED', pendingTransferEmailTitle: 'Ausstehende Überweisung', pendingTransferEmailIntro: 'Ihre Überweisung wurde registriert und wartet auf die Genehmigung durch die Verwaltungsabteilung.', pendingTransferEmailBody: 'Unsere Verwaltungsabteilung wird Ihren Überweisungsauftrag überprüfen. Sie erhalten eine neue Benachrichtigung, sobald dieser genehmigt oder storniert wurde.', pendingTransferEmailFooter: 'Der Betrag wurde von Ihrem Konto abgebucht. Er wird bei einer Stornierung durch die Verwaltungsabteilung automatisch zurückerstattet.',
     pendingValidatedSubject: 'Überweisung erfolgreich genehmigt - YOUNITED', pendingValidatedTitle: 'Überweisung genehmigt', pendingValidatedIntro: 'Wir freuen uns, Ihnen mitteilen zu können, dass Ihre Überweisung erfolgreich von der Verwaltungsabteilung genehmigt wurde.', pendingValidatedBody: 'Ihre offizielle Überweisungsquittung im PDF-Format ist dieser E-Mail beigefügt.',
-    pendingCancelledSubject: 'Überweisung storniert - YOUNITED', pendingCancelledTitle: 'Überweisung storniert', pendingCancelledIntro: 'Wir informieren Sie, dass Ihre Überweisung von der Verwaltungsabteilung storniert wurde.', pendingCancelledBody: 'Der Betrag wurde automatisch auf Ihr Konto zurückerstattet. Für weitere Informationen wenden Sie sich bitte an unseren Support.',
-    adminLoginNotifSubject: 'Neue Kundenanmeldung - YOUNITED', adminLoginNotifTitle: 'Neue Kundenanmeldung', adminLoginNotifIntro: 'Einer Ihrer Kunden hat sich gerade in seinem Kundenbereich angemeldet.', adminLoginNotifDetailsTitle: 'Anmeldedetails', adminLoginNotifClientLabel: 'Kunde', adminLoginNotifEmailLabel: 'E-Mail', adminLoginNotifDateTimeLabel: 'Datum und Uhrzeit', adminLoginNotifCountryLabel: 'Land', adminLoginNotifCityLabel: 'Stadt', adminLoginNotifRegionLabel: 'Region', adminLoginNotifIpLabel: 'IP-Adresse', adminLoginNotifFooter: 'Diese E-Mail wird automatisch vom YOUNITED-Sicherheitssystem gesendet. Es ist keine Aktion erforderlich.' }
+    pendingCancelledSubject: 'Überweisung storniert - YOUNITED', pendingCancelledTitle: 'Überweisung storniert', pendingCancelledIntro: 'Wir informieren Sie, dass Ihre Überweisung von der Verwaltungsabteilung storniert wurde.', pendingCancelledBody: 'Der Betrag wurde automatisch auf Ihr Konto zurückerstattet. Für weitere Informationen wenden Sie sich bitte an unseren Support.' }
 };
 
 function buildEmailWrapper(themeColor, bodyContent, T) { return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body style="margin:0;padding:0;background:#ffffff;font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased;width:100%;"><table cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;background:#ffffff;border-collapse:collapse;"><tr><td style="background:' + themeColor + ';padding:26px 24px;text-align:center;width:100%;"><div style="font-size:24px;font-weight:800;color:#ffffff;letter-spacing:3px;font-style:italic;">' + T.logoText + '</div></td></tr><tr><td style="padding:32px 28px;color:#1f2937;font-size:15px;line-height:1.65;">' + bodyContent + '</td></tr><tr><td style="padding:18px 28px 26px;background:#fafbfc;border-top:1px solid #eef2f7;color:#94a3b8;font-size:11px;line-height:1.55;"><div style="font-weight:700;color:#475569;margin-bottom:6px;">' + T.disclaimerTitle + '</div><div>' + T.disclaimer + '</div></td></tr></table></body></html>'; }
 
-// ========== NOUVEAU : Email notification admin à la connexion client ==========
-function buildAdminLoginNotifEmail(info, lang) {
-  var T = emailTexts[lang] || emailTexts.fr;
-  var color = '#1e40af';
-  var colorLight = '#dbeafe';
-  var icon = '🔐';
-  var rows = '';
-  var data = [
-    [T.adminLoginNotifClientLabel, info.clientName || '—', false],
-    [T.adminLoginNotifEmailLabel, info.clientEmail || '—', false],
-    [T.adminLoginNotifDateTimeLabel, info.dateTime || '—', false],
-    [T.adminLoginNotifCountryLabel, info.country || '—', false],
-    [T.adminLoginNotifCityLabel, info.city || '—', false],
-    [T.adminLoginNotifRegionLabel, info.region || '—', false],
-    [T.adminLoginNotifIpLabel, info.ip || '—', true]
-  ];
-  data.forEach(function (r) {
-    rows += '<tr>' +
-      '<td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:11.5px;color:#64748b;font-weight:600;vertical-align:top;width:42%;">' + r[0] + '</td>' +
-      '<td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:11.5px;color:#0f172a;font-weight:700;text-align:right;word-break:break-word;' + (r[2] ? "font-family:'Courier New',monospace;" : '') + '">' + r[1] + '</td>' +
-    '</tr>';
-  });
-  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="x-apple-disable-message-reformatting"></head>' +
-    '<body style="margin:0;padding:0;background:#f1f5f9;font-family:Arial,Helvetica,sans-serif;width:100%;-webkit-font-smoothing:antialiased;">' +
-      '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;background:#f1f5f9;border-collapse:collapse;">' +
-        '<tr><td align="center" style="padding:0;">' +
-          '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;max-width:100%;background:#ffffff;border-collapse:collapse;">' +
-            '<tr><td style="background:' + color + ';padding:26px 20px 22px;text-align:center;">' +
-              '<div style="display:inline-block;width:52px;height:52px;background:rgba(255,255,255,0.22);border-radius:50%;line-height:52px;text-align:center;font-size:26px;color:#fff;margin-bottom:10px;">' + icon + '</div>' +
-              '<h1 style="margin:0 0 6px;font-size:19px;font-weight:800;color:#ffffff;letter-spacing:0.2px;">' + T.adminLoginNotifTitle + '</h1>' +
-              '<p style="margin:0;font-size:12px;color:rgba(255,255,255,0.92);line-height:1.5;font-weight:500;">' + T.adminLoginNotifIntro + '</p>' +
-            '</td></tr>' +
-            '<tr><td style="padding:20px 20px 0;">' +
-              '<div style="font-size:12px;font-weight:800;color:#0f172a;margin-bottom:8px;padding-bottom:8px;border-bottom:1.5px solid #e2e8f0;">📋 ' + T.adminLoginNotifDetailsTitle + '</div>' +
-              '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">' + rows + '</table>' +
-            '</td></tr>' +
-            '<tr><td style="padding:18px 20px 0;">' +
-              '<div style="background:#eff6ff;border-left:4px solid #2563eb;border-radius:8px;padding:12px 14px;">' +
-                '<div style="font-size:11px;color:#1e40af;line-height:1.5;font-weight:500;">' + T.adminLoginNotifFooter + '</div>' +
-              '</div>' +
-            '</td></tr>' +
-            '<tr><td style="padding:20px 20px 26px;">' +
-              '<div style="padding-top:12px;border-top:1px solid #e2e8f0;">' +
-                '<div style="font-size:9.5px;font-weight:800;color:#475569;margin-bottom:3px;">' + T.disclaimerTitle + '</div>' +
-                '<div style="font-size:9px;color:#94a3b8;line-height:1.5;">' + T.disclaimer + '</div>' +
-              '</div>' +
-            '</td></tr>' +
-          '</table>' +
-        '</td></tr>' +
-      '</table>' +
-    '</body></html>';
-}
-
-// ========== EMAIL IDENTIFIANTS ==========
 function buildCredentialsEmail(client, appBaseUrl, lang) { const T = emailTexts[lang] || emailTexts.fr; const theme = client.themeColor || '#1a73e8'; const clientLink = appBaseUrl + '?id=' + client.id; const body = '<p style="margin:0 0 20px;font-size:16px;">' + T.welcomeGreeting + ' <strong style="color:#0f172a;">' + client.firstName + ' ' + client.lastName + '</strong>,</p><p style="margin:0 0 14px;">' + T.welcomeIntro + '</p><p style="margin:0 0 22px;">' + T.welcomeThanks + '</p><p style="margin:0 0 16px;">' + T.welcomeAccess + '</p><table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;"><tr><td style="padding:8px 0;"><div style="font-weight:700;color:#0f172a;font-size:14px;">&bull; ' + T.welcomeIdentifier + ' :</div><div style="margin-top:4px;"><a href="mailto:' + client.email + '" style="color:' + theme + ';font-weight:700;text-decoration:none;font-size:15px;">' + client.email + '</a></div></td></tr><tr><td style="padding:8px 0;"><div style="font-weight:700;color:#0f172a;font-size:14px;">&bull; ' + T.welcomePin + ' : <strong style="color:#0f172a;font-size:18px;letter-spacing:2px;">' + client.pin + '</strong></div></td></tr></table><table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:22px 0 26px;"><tr><td align="center"><a href="' + clientLink + '" style="display:inline-block;background:#f59e0b;color:#ffffff;padding:14px 36px;border-radius:30px;font-weight:700;font-size:15px;text-decoration:none;">' + T.welcomeButton + ' &rarr;</a></td></tr></table><p style="margin:22px 0 0;">' + T.welcomeSignature + '</p>'; return buildEmailWrapper(theme, body, T); }
 
-// ========== EMAIL CODE D'ACTIVATION ==========
 function buildActivationEmail(client, lang) { const T = emailTexts[lang] || emailTexts.fr; const theme = client.themeColor || '#1a73e8'; const body = '<p style="margin:0 0 20px;font-size:16px;">' + T.welcomeGreeting + ' <strong style="color:#0f172a;">' + client.firstName + ' ' + client.lastName + '</strong>,</p><p style="margin:0 0 30px;">' + T.activationIntro + '</p><table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:30px 0;"><tr><td align="center"><div style="font-size:38px;font-weight:800;color:#f59e0b;letter-spacing:6px;padding:22px 24px;border-bottom:4px solid #f59e0b;display:inline-block;min-width:260px;font-family:Courier New,monospace;">' + client.activationCode + '</div></td></tr></table><p style="margin:38px 0 0;">' + T.welcomeSignature + '</p>'; return buildEmailWrapper(theme, body, T); }
 
 function buildTransferEmailShell(o) {
