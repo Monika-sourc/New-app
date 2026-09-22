@@ -1,6 +1,6 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
-   v60.0 - FINAL (toutes modifications intégrées)
+   v61.0 - FINAL (toutes modifications intégrées)
    ===================================================== */
 
 :root {
@@ -297,6 +297,8 @@ input, select, textarea { font-family: inherit; }
 .transfer-detail-status-badge.done { background: #dcfce7; color: #16a34a; }
 .transfer-detail-status-badge.failed { background: #fee2e2; color: #dc2626; }
 .transfer-detail-status-badge.cancelled { background: #ede9fe; color: #8b5cf6; }
+.transfer-detail-status-badge.refund { background: #dbeafe; color: #2563eb; }
+.transfer-detail-status-badge.pending { background: #fef3c7; color: #d97706; }
 .transfer-detail-status-badge svg { width: 11px; height: 11px; fill: currentColor; flex-shrink: 0; }
 .transfer-detail-footer { padding: 12px 18px 16px 18px; background: #fff; border-top: 1px solid #eef2f7; display: flex; justify-content: center; }
 .transfer-detail-btn-close { background: #f1f5f9; color: #334155; border: none; border-radius: 4px; padding: 12px 28px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: normal; word-break: break-word; }
@@ -507,16 +509,19 @@ input, select, textarea { font-family: inherit; }
 .result-header-block { padding: 26px 18px 20px 18px; display: flex; justify-content: center; align-items: center; position: relative; }
 .result-header-block.success { background: linear-gradient(135deg, #26a69a, #00897b); }
 .result-header-block.failure { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.result-header-block.pending { background: linear-gradient(135deg, #f59e0b, #d97706); }
 .result-close-btn { position: absolute; top: 10px; right: 10px; width: 26px; height: 26px; border-radius: 50%; background: rgba(255, 255, 255, 0.25); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .result-close-btn svg { width: 12px; height: 12px; fill: #fff; }
 .result-check-circle { background: #fff; width: 54px; height: 54px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
 .result-check-circle svg { width: 28px; height: 28px; }
 .result-check-circle.success svg { fill: #26a69a; }
 .result-check-circle.failure svg { fill: #ef4444; }
+.result-check-circle.pending svg { fill: #f59e0b; }
 .result-body-block { padding: 18px 16px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
 .result-title-text { font-size: 15px; font-weight: 700; text-align: center; line-height: 1.4; white-space: normal; word-break: break-word; }
 .result-title-text.success { color: #00897b; }
 .result-title-text.failure { color: #dc2626; }
+.result-title-text.pending { color: #d97706; }
 .result-details-list { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: #1e293b; line-height: 1.6; }
 .result-detail-row { display: flex; flex-wrap: wrap; gap: 4px; white-space: normal; word-break: break-word; }
 .result-detail-label { font-weight: 700; color: #64748b; white-space: normal; word-break: break-word; }
@@ -531,6 +536,7 @@ input, select, textarea { font-family: inherit; }
 .receipt-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 2147483647; padding: 16px; box-sizing: border-box; animation: notifFadeIn 0.2s ease-out; }
 .receipt-modal-new { background: #fff; border-radius: 14px; width: 100%; max-width: 300px; max-height: 92vh; overflow-y: auto; box-shadow: 0 15px 40px rgba(15, 23, 42, 0.4); animation: notifPopIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; flex-direction: column; }
 .receipt-header-new { padding: 18px 14px 16px 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; color: #fff; flex-shrink: 0; }
+.receipt-header-new.pending { background: linear-gradient(135deg, #f59e0b, #d97706); }
 .receipt-close-new { position: absolute; top: 9px; right: 9px; width: 22px; height: 22px; border-radius: 50%; background: rgba(255, 255, 255, 0.22); border: 1px solid rgba(255, 255, 255, 0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .receipt-close-new svg { width: 10px; height: 10px; fill: #fff; }
 .receipt-close-new:active { background: rgba(255, 255, 255, 0.35); }
@@ -794,7 +800,7 @@ input, select, textarea { font-family: inherit; }
 .receipt-row-label svg, .receipt-row-icon { fill: #64748b !important; }
 
 /* ===================================================== */
-/* INTERFACE CLIENT v60.0 - FINALE                       */
+/* INTERFACE CLIENT v61.0 - FINALE                       */
 /* ===================================================== */
 
 /* ---------- HEADER BLEU FONCÉ (RECTANGULAIRE + NOM CENTRÉ) ---------- */
@@ -922,6 +928,10 @@ input, select, textarea { font-family: inherit; }
 .tx-icon-circle-new.out svg { fill: #dc2626; }
 .tx-icon-circle-new.cancelled { background: #ede9fe; }
 .tx-icon-circle-new.cancelled svg { fill: #8b5cf6; }
+.tx-icon-circle-new.refund { background: #dbeafe; }
+.tx-icon-circle-new.refund svg { fill: #2563eb; }
+.tx-icon-circle-new.pending { background: #fef3c7; }
+.tx-icon-circle-new.pending svg { fill: #d97706; }
 .tx-icon-circle-new.bank-logo { background: #ffffff; border: 1px solid #e2e8f0; padding: 4px; box-sizing: border-box; }
 .tx-icon-circle-new.bank-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
 .tx-info-new { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
@@ -932,6 +942,8 @@ input, select, textarea { font-family: inherit; }
 .tx-amount-value-new.pos { color: #16a34a; }
 .tx-amount-value-new.neg { color: #dc2626; }
 .tx-amount-value-new.cancelled { color: #8b5cf6; }
+.tx-amount-value-new.refund { color: #2563eb; }
+.tx-amount-value-new.pending { color: #d97706; }
 .tx-date-new { font-size: 10.5px; font-weight: 500; color: #94a3b8 !important; white-space: nowrap; line-height: 1.25; }
 .tx-chevron-new { width: 16px; height: 16px; fill: #cbd5e1; flex-shrink: 0; margin-left: 4px; }
 
@@ -1037,7 +1049,7 @@ input, select, textarea { font-family: inherit; }
 .security-btn-new:hover, .security-btn-new:active { transform: scale(1.05); }
 
 /* ===================================================== */
-/* LOGIN PAGE - NOUVEAU DESIGN v60 (comme l'image)       */
+/* LOGIN PAGE v61 - RECTANGULAIRE + PLUS PETITE          */
 /* ===================================================== */
 
 .yld-page {
@@ -1046,7 +1058,7 @@ input, select, textarea { font-family: inherit; }
   justify-content: center;
   min-height: 100vh;
   width: 100%;
-  padding: 20px 16px;
+  padding: 14px 12px;
   background: #e5e7eb;
   position: relative;
   overflow: hidden;
@@ -1087,21 +1099,21 @@ input, select, textarea { font-family: inherit; }
 .yld-card {
   position: relative;
   width: 100%;
-  max-width: 400px;
+  max-width: 320px;
   background: #ffffff;
-  border-radius: 20px;
-  padding: 26px 22px 0;
+  border-radius: 6px;
+  padding: 18px 16px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 22px 55px rgba(15,23,42,0.18), 0 4px 12px rgba(15,23,42,0.06);
+  box-shadow: 0 18px 42px rgba(15,23,42,0.16), 0 3px 10px rgba(15,23,42,0.06);
   z-index: 1;
   box-sizing: border-box;
   overflow: hidden;
-  animation: yldCardIn 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: yldCardIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @keyframes yldCardIn {
-  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
@@ -1109,15 +1121,15 @@ input, select, textarea { font-family: inherit; }
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 22px;
-  animation: yldFadeUp 0.5s ease-out 0.15s both;
+  gap: 8px;
+  margin-bottom: 14px;
+  animation: yldFadeUp 0.5s ease-out 0.1s both;
 }
 .yld-logo-mark {
-  width: 50px;
-  height: 50px;
+  width: 38px;
+  height: 38px;
   flex-shrink: 0;
-  animation: yldLogoPop 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+  animation: yldLogoPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both;
 }
 @keyframes yldLogoPop {
   0% { transform: rotate(-25deg) scale(0.4); opacity: 0; }
@@ -1152,7 +1164,7 @@ input, select, textarea { font-family: inherit; }
 
 .yld-logo-text {
   font-family: 'Titillium Web', sans-serif;
-  font-size: 26px;
+  font-size: 21px;
   font-weight: 800;
   letter-spacing: 0.5px;
   color: #0b2b6b;
@@ -1162,16 +1174,16 @@ input, select, textarea { font-family: inherit; }
 .yld-hero {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 22px;
+  gap: 10px;
+  margin-bottom: 14px;
   width: 100%;
-  animation: yldFadeUp 0.5s ease-out 0.22s both;
+  animation: yldFadeUp 0.5s ease-out 0.16s both;
 }
 .yld-hero-icon {
-  width: 78px;
-  height: 78px;
+  width: 58px;
+  height: 58px;
   flex-shrink: 0;
-  animation: yldHeroPop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s both;
+  animation: yldHeroPop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
 }
 @keyframes yldHeroPop {
   0% { transform: scale(0.4) rotate(-8deg); opacity: 0; }
@@ -1191,7 +1203,7 @@ input, select, textarea { font-family: inherit; }
   min-width: 0;
 }
 .yld-hero-title {
-  font-size: 22px;
+  font-size: 17px;
   font-weight: 800;
   color: #0b2b6b;
   line-height: 1.18;
@@ -1204,26 +1216,26 @@ input, select, textarea { font-family: inherit; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   background: #eef2f7;
   color: #1e3a8a;
-  padding: 8px 20px;
-  border-radius: 24px;
-  font-size: 11.5px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 0.7px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
-  margin-bottom: 22px;
+  margin-bottom: 14px;
   max-width: 100%;
-  animation: yldBadgeIn 0.5s ease-out 0.3s both;
+  animation: yldBadgeIn 0.5s ease-out 0.24s both;
 }
 @keyframes yldBadgeIn {
   from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
 }
 .yld-badge svg {
-  width: 16px;
-  height: 16px;
+  width: 13px;
+  height: 13px;
   fill: #1e3a8a;
   flex-shrink: 0;
 }
@@ -1238,23 +1250,22 @@ input, select, textarea { font-family: inherit; }
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  animation: yldFadeUp 0.5s ease-out 0.36s both;
+  gap: 9px;
+  animation: yldFadeUp 0.5s ease-out 0.3s both;
 }
 
 .yld-input-group {
   display: flex;
   align-items: stretch;
   border: 1.5px solid #dbeafe;
-  border-radius: 14px;
+  border-radius: 8px;
   overflow: hidden;
   background: #ffffff;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 .yld-input-group:focus-within {
   border-color: #2563eb;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
-  transform: translateY(-1px);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .yld-input-icon {
@@ -1263,17 +1274,17 @@ input, select, textarea { font-family: inherit; }
   justify-content: center;
   background: #eff6ff;
   border-right: 1.5px solid #dbeafe;
-  padding: 0 16px;
+  padding: 0 12px;
   flex-shrink: 0;
-  min-width: 54px;
+  min-width: 44px;
   transition: background 0.2s ease;
 }
 .yld-input-group:focus-within .yld-input-icon {
   background: #dbeafe;
 }
 .yld-input-icon svg {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   fill: #2563eb;
 }
 
@@ -1281,8 +1292,8 @@ input, select, textarea { font-family: inherit; }
   flex: 1;
   border: none;
   outline: none;
-  padding: 15px 14px;
-  font-size: 14px;
+  padding: 11px 12px;
+  font-size: 13px;
   color: #0f172a;
   background: transparent;
   min-width: 0;
@@ -1298,7 +1309,7 @@ input, select, textarea { font-family: inherit; }
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 0 14px;
+  padding: 0 11px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1308,8 +1319,8 @@ input, select, textarea { font-family: inherit; }
 }
 .yld-eye:active { opacity: 0.6; }
 .yld-eye svg {
-  width: 20px;
-  height: 20px;
+  width: 17px;
+  height: 17px;
   fill: none;
   stroke: #94a3b8;
   stroke-width: 1.9;
@@ -1321,10 +1332,10 @@ input, select, textarea { font-family: inherit; }
   display: none;
   background: #fee2e2;
   color: #dc2626;
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 700;
-  padding: 10px 12px;
-  border-radius: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
   text-align: center;
   line-height: 1.5;
   white-space: normal;
@@ -1347,34 +1358,34 @@ input, select, textarea { font-family: inherit; }
   background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
   color: #ffffff;
   border: none;
-  border-radius: 14px;
-  padding: 16px 18px;
-  font-size: 16px;
+  border-radius: 8px;
+  padding: 13px 14px;
+  font-size: 14px;
   font-weight: 800;
   letter-spacing: 0.2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 9px;
   cursor: pointer;
-  margin-top: 6px;
+  margin-top: 4px;
   transition: transform 0.12s ease, box-shadow 0.2s ease;
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.32);
   white-space: normal;
   word-break: break-word;
   font-family: inherit;
 }
 .yld-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.42);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
 }
 .yld-btn:active {
   transform: translateY(1px) scale(0.99);
   box-shadow: 0 5px 14px rgba(37, 99, 235, 0.32);
 }
 .yld-btn svg {
-  width: 20px;
-  height: 20px;
+  width: 17px;
+  height: 17px;
   fill: #ffffff;
   flex-shrink: 0;
   transition: transform 0.2s ease;
@@ -1384,28 +1395,28 @@ input, select, textarea { font-family: inherit; }
 }
 
 .yld-footer {
-  width: calc(100% + 44px);
-  margin: 22px -22px 0;
-  padding: 14px 12px;
+  width: calc(100% + 32px);
+  margin: 16px -16px 0;
+  padding: 11px 10px;
   background: #ffffff;
   border-top: 1px solid #eef2f7;
   display: flex;
   align-items: center;
   justify-content: space-around;
-  gap: 6px;
-  animation: yldFadeUp 0.5s ease-out 0.42s both;
+  gap: 5px;
+  animation: yldFadeUp 0.5s ease-out 0.36s both;
 }
 .yld-footer-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   flex: 1;
   min-width: 0;
   justify-content: center;
 }
 .yld-footer-item svg {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
   fill: none;
   stroke: #2563eb;
@@ -1414,17 +1425,17 @@ input, select, textarea { font-family: inherit; }
   stroke-linejoin: round;
 }
 .yld-footer-item span {
-  font-size: 9.5px;
+  font-size: 8.5px;
   font-weight: 600;
   color: #334155;
   line-height: 1.3;
   white-space: normal;
   word-break: break-word;
-  max-width: 95px;
+  max-width: 82px;
 }
 .yld-footer-divider {
   width: 1px;
-  height: 28px;
+  height: 24px;
   background: #e2e8f0;
   flex-shrink: 0;
 }
@@ -1435,19 +1446,19 @@ input, select, textarea { font-family: inherit; }
 }
 
 @media (max-height: 720px) {
-  .yld-card { padding: 20px 18px 0; }
-  .yld-logo { margin-bottom: 16px; }
-  .yld-logo-mark { width: 42px; height: 42px; }
-  .yld-logo-text { font-size: 22px; }
-  .yld-hero { margin-bottom: 16px; }
-  .yld-hero-icon { width: 62px; height: 62px; }
-  .yld-hero-title { font-size: 18px; }
-  .yld-badge { margin-bottom: 16px; padding: 7px 14px; }
-  .yld-input-group input { padding: 12px; }
-  .yld-btn { padding: 13px 14px; font-size: 15px; }
-  .yld-footer { padding: 12px 10px; margin-top: 16px; width: calc(100% + 36px); margin-left: -18px; margin-right: -18px; }
+  .yld-card { padding: 14px 14px 0; max-width: 300px; }
+  .yld-logo { margin-bottom: 10px; }
+  .yld-logo-mark { width: 34px; height: 34px; }
+  .yld-logo-text { font-size: 18px; }
+  .yld-hero { margin-bottom: 10px; }
+  .yld-hero-icon { width: 50px; height: 50px; }
+  .yld-hero-title { font-size: 15px; }
+  .yld-badge { margin-bottom: 10px; padding: 5px 12px; font-size: 9.5px; }
+  .yld-input-group input { padding: 10px; }
+  .yld-btn { padding: 11px 12px; font-size: 13px; }
+  .yld-footer { padding: 9px 10px; margin-top: 12px; width: calc(100% + 28px); margin-left: -14px; margin-right: -14px; }
 }
 
 /* ===================================================== */
-/* FIN - TRANSFERWIRE v60.0 (VERSION FINALE)             */
+/* FIN - TRANSFERWIRE v61.0 (VERSION FINALE)             */
 /* ===================================================== */
