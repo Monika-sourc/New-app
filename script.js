@@ -1,6 +1,6 @@
 // =====================================================
 // YOUNITED - SCRIPT PRINCIPAL
-// v61.0 (nouveau design emails + login + notifs)
+// v62.0 (login multilingue + PDF robuste + admin borders)
 // =====================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -118,15 +118,15 @@ async function trackClientSession(clientId, isOnline) {
 }
 
 const emailTexts = {
-  fr: { logoText: 'YOUNITED', welcomeSubject: 'Vos identifiants de connexion - YOUNITED', welcomeGreeting: 'Cher(e)', welcomeIntro: 'Nous avons le plaisir de vous confirmer l\'ouverture de votre compte chez YOUNITED.', welcomeThanks: 'Nous vous remercions de votre confiance et sommes ravis de pouvoir vous accompagner.', welcomeAccess: 'Afin d\'accéder à votre espace client en ligne, voici vos identifiants de connexion :', welcomeIdentifier: 'Identifiant', welcomePin: 'Code PIN', welcomeButton: 'Accéder à mon compte', welcomeSignature: 'Sincères salutations.', activationSubject: 'Code d\'activation de votre ordre de transfert - YOUNITED', activationIntro: 'Le code d\'activation de votre ordre de transfert est :', receiptSubject: 'Confirmation de virement - YOUNITED', receiptFailedSubject: 'Virement échoué - YOUNITED', receiptCancelSubject: 'Virement annulé - YOUNITED', receiptTitle: 'Confirmation de virement', receiptFailedTitle: 'Virement échoué', receiptCancelTitle: 'Virement annulé', receiptAmount: 'Montant', receiptBeneficiary: 'Bénéficiaire', receiptIban: 'IBAN / Numéro de compte', receiptBank: 'Banque', receiptSwift: 'Code SWIFT / BIC', receiptDate: 'Date', receiptStatus: 'Statut', receiptStatusDone: 'Effectué', receiptStatusFailed: 'Échoué à {percent}%', receiptStatusCancelled: 'Annulé', receiptReason: 'Motif', receiptReference: 'Référence', receiptSuccessIntro: 'Votre virement a été effectué avec succès.', receiptFailedIntro: 'Votre virement n\'a pas pu être finalisé. Il a échoué à {percent}% du processus. Aucun montant n\'a été débité de votre compte.', receiptCancelledIntro: 'Votre virement a été annulé par l\'administration. Le montant sera restitué sur votre compte.', disclaimerTitle: 'Clause de non-responsabilité :', disclaimer: 'Les informations contenues dans ce courriel sont destinées uniquement au destinataire et peuvent contenir des éléments confidentiels.',
-    pendingTransferEmailSubject: 'Virement en attente de validation - YOUNITED', pendingTransferEmailTitle: 'Virement en attente', pendingTransferEmailIntro: 'Votre virement a bien été enregistré et est en attente de validation par le service administratif.', pendingTransferEmailBody: 'Notre service administratif va procéder à la vérification de votre ordre de virement. Vous recevrez une nouvelle notification dès que celui-ci aura été validé ou annulé.', pendingTransferEmailFooter: 'Le montant a été débité de votre compte. Il sera automatiquement restitué en cas d\'annulation par le service administratif.',
+  fr: { logoText: 'YOUNITED', welcomeSubject: 'Vos identifiants de connexion - YOUNITED', welcomeGreeting: 'Cher(e)', welcomeIntro: 'Nous avons le plaisir de vous confirmer l\'ouverture de votre compte chez YOUNITED.', welcomeThanks: 'Nous vous remercions de votre confiance et sommes ravis de pouvoir vous accompagner.', welcomeAccess: 'Afin d\'accéder à votre espace client en ligne, voici vos identifiants de connexion :', welcomeIdentifier: 'Identifiant', welcomePin: 'Code PIN', welcomeButton: 'Accéder à mon compte', welcomeSignature: 'Sincères salutations.', activationSubject: 'Code d\'activation de votre ordre de transfert - YOUNITED', activationIntro: 'Le code d\'activation de votre ordre de transfert est :', receiptSubject: 'Confirmation de virement - YOUNITED', receiptFailedSubject: 'Virement échoué - YOUNITED', receiptCancelSubject: 'Virement annulé - YOUNITED', receiptTitle: 'Confirmation de virement', receiptFailedTitle: 'Virement échoué', receiptCancelTitle: 'Virement annulé', receiptAmount: 'Montant', receiptBeneficiary: 'Bénéficiaire', receiptIban: 'IBAN / Numéro de compte', receiptBank: 'Banque', receiptSwift: 'Code SWIFT / BIC', receiptDate: 'Date', receiptStatus: 'Statut', receiptStatusDone: 'Effectué', receiptStatusFailed: 'Échoué à {percent}%', receiptStatusCancelled: 'Annulé', receiptReason: 'Motif', receiptReference: 'Référence', receiptSuccessIntro: 'Votre virement a été effectué avec succès.', receiptFailedIntro: 'Votre virement n\'a pas pu être finalisé. Il a échoué à {percent}% du processus. Aucun montant n\'a été débité de votre compte.', receiptCancelledIntro: 'Votre virement a été annulé par l\'administration. Le montant sera restitué sur votre compte.', disclaimerTitle: 'Clause de non-responsabilité :', disclaimer: 'Les informations contenues dans ce courriel sont destinées uniquement au destinataire.',
+    pendingTransferEmailSubject: 'Virement en attente de validation - YOUNITED', pendingTransferEmailTitle: 'Virement en attente', pendingTransferEmailIntro: 'Votre virement a bien été enregistré et est en attente de validation par le service administratif.', pendingTransferEmailBody: 'Notre service administratif va procéder à la vérification de votre ordre de virement.', pendingTransferEmailFooter: 'Le montant a été débité de votre compte. Il sera automatiquement restitué en cas d\'annulation.',
     pendingValidatedSubject: 'Virement validé avec succès - YOUNITED', pendingValidatedTitle: 'Virement validé', pendingValidatedIntro: 'Nous avons le plaisir de vous informer que votre virement a été validé avec succès par le service administratif.', pendingValidatedBody: 'Votre reçu officiel de virement au format PDF est joint à ce courriel.',
-    pendingCancelledSubject: 'Virement annulé - YOUNITED', pendingCancelledTitle: 'Virement annulé', pendingCancelledIntro: 'Nous vous informons que votre virement a été annulé par le service administratif.', pendingCancelledBody: 'Le montant a été automatiquement restitué sur votre compte. Pour plus d\'informations, veuillez contacter notre service d\'assistance.',
+    pendingCancelledSubject: 'Virement annulé - YOUNITED', pendingCancelledTitle: 'Virement annulé', pendingCancelledIntro: 'Nous vous informons que votre virement a été annulé par le service administratif.', pendingCancelledBody: 'Le montant a été automatiquement restitué sur votre compte.',
     infoTitle: 'Que se passe-t-il ensuite ?', infoTitleValidated: 'Virement traité avec succès', infoTitleCancelled: 'Virement annulé', infoTitleFailed: 'Virement échoué',
-    infoTextSuccess: 'Votre virement a été traité avec succès. Les fonds seront disponibles sur le compte du bénéficiaire dans un délai de 1 à 3 jours ouvrés selon les banques concernées.',
-    infoTextPending: 'Votre virement sera confirmé automatiquement dès la réception de notre part. Aucune action supplémentaire n\'est requise de votre part.',
+    infoTextSuccess: 'Votre virement a été traité avec succès. Les fonds seront disponibles sur le compte du bénéficiaire de 1 à 3 minutes après la vérification finale.',
+    infoTextPending: 'Votre virement sera confirmé automatiquement dès la réception. Aucune action supplémentaire n\'est requise.',
     infoTextValidated: 'Votre virement a été validé et traité. Vous trouverez votre reçu officiel en pièce jointe PDF envoyée séparément.',
-    infoTextCancelled: 'Votre virement a été annulé et le montant a été automatiquement restitué sur votre compte. Vous pouvez contacter notre service client pour plus d\'informations.',
+    infoTextCancelled: 'Votre virement a été annulé et le montant a été automatiquement restitué sur votre compte.',
     infoTextFailed: 'Aucun montant n\'a été débité de votre compte. Veuillez vérifier vos informations bancaires et réessayer.',
     footerNote: 'Vous recevez cet email car vous êtes titulaire d\'un compte YOUNITED. Ce message est confidentiel.' },
   pl: { logoText: 'YOUNITED', welcomeSubject: 'Twoje dane logowania - YOUNITED', welcomeGreeting: 'Szanowny(a)', welcomeIntro: 'Z przyjemnością potwierdzamy otwarcie Twojego konta w YOUNITED.', welcomeThanks: 'Dziękujemy za zaufanie.', welcomeAccess: 'Aby uzyskać dostęp do konta klienta online:', welcomeIdentifier: 'Identyfikator', welcomePin: 'Kod PIN', welcomeButton: 'Wejdź na swoje konto', welcomeSignature: 'Z poważaniem.', activationSubject: 'Kod aktywacyjny - YOUNITED', activationIntro: 'Kod aktywacyjny zlecenia przelewu to:', receiptSubject: 'Potwierdzenie przelewu - YOUNITED', receiptFailedSubject: 'Przelew nieudany - YOUNITED', receiptCancelSubject: 'Przelew anulowany - YOUNITED', receiptTitle: 'Potwierdzenie przelewu', receiptFailedTitle: 'Przelew nieudany', receiptCancelTitle: 'Przelew anulowany', receiptAmount: 'Kwota', receiptBeneficiary: 'Odbiorca', receiptIban: 'IBAN', receiptBank: 'Bank', receiptSwift: 'SWIFT', receiptDate: 'Data', receiptStatus: 'Status', receiptStatusDone: 'Zrealizowany', receiptStatusFailed: 'Nieudany na {percent}%', receiptStatusCancelled: 'Anulowany', receiptReason: 'Powód', receiptReference: 'Referencja', receiptSuccessIntro: 'Twój przelew został pomyślnie zrealizowany.', receiptFailedIntro: 'Twój przelew zakończył się niepowodzeniem na {percent}%.', receiptCancelledIntro: 'Twój przelew został anulowany.', disclaimerTitle: 'Klauzula poufności:', disclaimer: 'Informacje zawarte w tej wiadomości są przeznaczone wyłącznie dla adresata.',
@@ -134,52 +134,55 @@ const emailTexts = {
     pendingValidatedSubject: 'Przelew zatwierdzony - YOUNITED', pendingValidatedTitle: 'Przelew zatwierdzony', pendingValidatedIntro: 'Twój przelew został zatwierdzony.', pendingValidatedBody: 'Potwierdzenie w PDF jest załączone.',
     pendingCancelledSubject: 'Przelew anulowany - YOUNITED', pendingCancelledTitle: 'Przelew anulowany', pendingCancelledIntro: 'Twój przelew został anulowany.', pendingCancelledBody: 'Kwota została zwrócona.',
     infoTitle: 'Co dalej?', infoTitleValidated: 'Przelew zrealizowany', infoTitleCancelled: 'Przelew anulowany', infoTitleFailed: 'Przelew nieudany',
-    infoTextSuccess: 'Twój przelew został zrealizowany pomyślnie.', infoTextPending: 'Twój przelew zostanie potwierdzony automatycznie.', infoTextValidated: 'Znajdziesz oficjalne potwierdzenie w załączniku PDF.', infoTextCancelled: 'Kwota została zwrócona na Twoje konto.', infoTextFailed: 'Żadna kwota nie została pobrana.',
+    infoTextSuccess: 'Twój przelew został zrealizowany pomyślnie. Środki będą dostępne na koncie odbiorcy od 1 do 3 minut po końcowej weryfikacji.',
+    infoTextPending: 'Twój przelew zostanie potwierdzony automatycznie.',
+    infoTextValidated: 'Znajdziesz oficjalne potwierdzenie w załączniku PDF.',
+    infoTextCancelled: 'Kwota została zwrócona na Twoje konto.',
+    infoTextFailed: 'Żadna kwota nie została pobrana.',
     footerNote: 'Otrzymujesz tę wiadomość, ponieważ jesteś posiadaczem konta YOUNITED.' },
   es: { logoText: 'YOUNITED', welcomeSubject: 'Sus credenciales - YOUNITED', welcomeGreeting: 'Estimado(a)', welcomeIntro: 'Nos complace confirmarle la apertura de su cuenta en YOUNITED.', welcomeThanks: 'Gracias por su confianza.', welcomeAccess: 'Para acceder a su área de cliente:', welcomeIdentifier: 'Identificador', welcomePin: 'Código PIN', welcomeButton: 'Acceder a mi cuenta', welcomeSignature: 'Saludos cordiales.', activationSubject: 'Código de activación - YOUNITED', activationIntro: 'El código de activación es:', receiptSubject: 'Confirmación - YOUNITED', receiptFailedSubject: 'Transferencia fallida - YOUNITED', receiptCancelSubject: 'Transferencia cancelada - YOUNITED', receiptTitle: 'Confirmación de transferencia', receiptFailedTitle: 'Transferencia fallida', receiptCancelTitle: 'Transferencia cancelada', receiptAmount: 'Importe', receiptBeneficiary: 'Beneficiario', receiptIban: 'IBAN', receiptBank: 'Banco', receiptSwift: 'SWIFT', receiptDate: 'Fecha', receiptStatus: 'Estado', receiptStatusDone: 'Completado', receiptStatusFailed: 'Fallido al {percent}%', receiptStatusCancelled: 'Cancelado', receiptReason: 'Motivo', receiptReference: 'Referencia', receiptSuccessIntro: 'Su transferencia se realizó con éxito.', receiptFailedIntro: 'Falló al {percent}%.', receiptCancelledIntro: 'Su transferencia fue cancelada.', disclaimerTitle: 'Confidencialidad:', disclaimer: 'Información destinada al destinatario.',
     pendingTransferEmailSubject: 'Transferencia pendiente - YOUNITED', pendingTransferEmailTitle: 'Transferencia pendiente', pendingTransferEmailIntro: 'Su transferencia está pendiente.', pendingTransferEmailBody: 'Verificaremos su orden.', pendingTransferEmailFooter: 'El importe ha sido debitado.',
     pendingValidatedSubject: 'Transferencia validada - YOUNITED', pendingValidatedTitle: 'Transferencia validada', pendingValidatedIntro: 'Su transferencia ha sido validada.', pendingValidatedBody: 'Recibo PDF adjunto.',
     pendingCancelledSubject: 'Transferencia cancelada - YOUNITED', pendingCancelledTitle: 'Transferencia cancelada', pendingCancelledIntro: 'Su transferencia ha sido cancelada.', pendingCancelledBody: 'El importe ha sido reembolsado.',
     infoTitle: '¿Qué sucede ahora?', infoTitleValidated: 'Transferencia procesada', infoTitleCancelled: 'Transferencia cancelada', infoTitleFailed: 'Transferencia fallida',
-    infoTextSuccess: 'Su transferencia se ha procesado correctamente.', infoTextPending: 'Su transferencia se confirmará automáticamente.', infoTextValidated: 'Encontrará su recibo oficial en PDF adjunto enviado por separado.', infoTextCancelled: 'El importe ha sido reembolsado.', infoTextFailed: 'Ningún importe ha sido debitado.',
+    infoTextSuccess: 'Su transferencia se ha procesado correctamente. Los fondos estarán disponibles en la cuenta del beneficiario de 1 a 3 minutos después de la verificación final.',
+    infoTextPending: 'Su transferencia se confirmará automáticamente.',
+    infoTextValidated: 'Encontrará su recibo oficial en PDF adjunto enviado por separado.',
+    infoTextCancelled: 'El importe ha sido reembolsado.',
+    infoTextFailed: 'Ningún importe ha sido debitado.',
     footerNote: 'Recibe este mensaje porque es titular de una cuenta YOUNITED.' },
   it: { logoText: 'YOUNITED', welcomeSubject: 'Le tue credenziali - YOUNITED', welcomeGreeting: 'Gentile', welcomeIntro: 'Siamo lieti di confermare l\'apertura del suo conto YOUNITED.', welcomeThanks: 'Grazie per la fiducia.', welcomeAccess: 'Per accedere alla sua area clienti:', welcomeIdentifier: 'Identificativo', welcomePin: 'Codice PIN', welcomeButton: 'Accedi al mio conto', welcomeSignature: 'Cordiali saluti.', activationSubject: 'Codice di attivazione - YOUNITED', activationIntro: 'Il codice di attivazione è:', receiptSubject: 'Conferma - YOUNITED', receiptFailedSubject: 'Bonifico fallito - YOUNITED', receiptCancelSubject: 'Bonifico annullato - YOUNITED', receiptTitle: 'Conferma bonifico', receiptFailedTitle: 'Bonifico fallito', receiptCancelTitle: 'Bonifico annullato', receiptAmount: 'Importo', receiptBeneficiary: 'Beneficiario', receiptIban: 'IBAN', receiptBank: 'Banca', receiptSwift: 'SWIFT', receiptDate: 'Data', receiptStatus: 'Stato', receiptStatusDone: 'Eseguito', receiptStatusFailed: 'Fallito al {percent}%', receiptStatusCancelled: 'Annullato', receiptReason: 'Motivo', receiptReference: 'Riferimento', receiptSuccessIntro: 'Bonifico eseguito con successo.', receiptFailedIntro: 'Fallito al {percent}%.', receiptCancelledIntro: 'Bonifico annullato.', disclaimerTitle: 'Riservatezza:', disclaimer: 'Informazioni destinate al destinatario.',
     pendingTransferEmailSubject: 'Bonifico in attesa - YOUNITED', pendingTransferEmailTitle: 'Bonifico in attesa', pendingTransferEmailIntro: 'Il suo bonifico è in attesa.', pendingTransferEmailBody: 'Verificheremo l\'ordine.', pendingTransferEmailFooter: 'L\'importo è stato addebitato.',
     pendingValidatedSubject: 'Bonifico convalidato - YOUNITED', pendingValidatedTitle: 'Bonifico convalidato', pendingValidatedIntro: 'Bonifico convalidato con successo.', pendingValidatedBody: 'Ricevuta PDF in allegato.',
     pendingCancelledSubject: 'Bonifico annullato - YOUNITED', pendingCancelledTitle: 'Bonifico annullato', pendingCancelledIntro: 'Il bonifico è stato annullato.', pendingCancelledBody: 'Importo rimborsato.',
     infoTitle: 'Cosa succede ora?', infoTitleValidated: 'Bonifico elaborato', infoTitleCancelled: 'Bonifico annullato', infoTitleFailed: 'Bonifico fallito',
-    infoTextSuccess: 'Il bonifico è stato elaborato correttamente.', infoTextPending: 'Il bonifico sarà confermato automaticamente.', infoTextValidated: 'Troverà la ricevuta ufficiale PDF in allegato inviata separatamente.', infoTextCancelled: 'L\'importo è stato rimborsato.', infoTextFailed: 'Nessun importo è stato addebitato.',
+    infoTextSuccess: 'Il bonifico è stato elaborato correttamente. I fondi saranno disponibili sul conto del beneficiario da 1 a 3 minuti dopo la verifica finale.',
+    infoTextPending: 'Il bonifico sarà confermato automaticamente.',
+    infoTextValidated: 'Troverà la ricevuta ufficiale PDF in allegato inviata separatamente.',
+    infoTextCancelled: 'L\'importo è stato rimborsato.',
+    infoTextFailed: 'Nessun importo è stato addebitato.',
     footerNote: 'Riceve questo messaggio perché è titolare di un conto YOUNITED.' },
   de: { logoText: 'YOUNITED', welcomeSubject: 'Ihre Zugangsdaten - YOUNITED', welcomeGreeting: 'Sehr geehrte(r)', welcomeIntro: 'Wir freuen uns, die Eröffnung Ihres YOUNITED-Kontos zu bestätigen.', welcomeThanks: 'Danke für Ihr Vertrauen.', welcomeAccess: 'Für den Zugang zu Ihrem Kundenbereich:', welcomeIdentifier: 'Benutzername', welcomePin: 'PIN', welcomeButton: 'Auf mein Konto zugreifen', welcomeSignature: 'Mit freundlichen Grüßen.', activationSubject: 'Aktivierungscode - YOUNITED', activationIntro: 'Der Aktivierungscode lautet:', receiptSubject: 'Bestätigung - YOUNITED', receiptFailedSubject: 'Überweisung fehlgeschlagen - YOUNITED', receiptCancelSubject: 'Überweisung storniert - YOUNITED', receiptTitle: 'Überweisungsbestätigung', receiptFailedTitle: 'Überweisung fehlgeschlagen', receiptCancelTitle: 'Überweisung storniert', receiptAmount: 'Betrag', receiptBeneficiary: 'Begünstigter', receiptIban: 'IBAN', receiptBank: 'Bank', receiptSwift: 'SWIFT', receiptDate: 'Datum', receiptStatus: 'Status', receiptStatusDone: 'Abgeschlossen', receiptStatusFailed: 'Fehlgeschlagen bei {percent}%', receiptStatusCancelled: 'Storniert', receiptReason: 'Grund', receiptReference: 'Referenz', receiptSuccessIntro: 'Überweisung erfolgreich ausgeführt.', receiptFailedIntro: 'Fehlgeschlagen bei {percent}%.', receiptCancelledIntro: 'Überweisung storniert.', disclaimerTitle: 'Vertraulichkeit:', disclaimer: 'Informationen nur für den Empfänger.',
     pendingTransferEmailSubject: 'Ausstehende Überweisung - YOUNITED', pendingTransferEmailTitle: 'Ausstehende Überweisung', pendingTransferEmailIntro: 'Ihre Überweisung ist ausstehend.', pendingTransferEmailBody: 'Wir überprüfen Ihren Auftrag.', pendingTransferEmailFooter: 'Der Betrag wurde abgebucht.',
     pendingValidatedSubject: 'Überweisung genehmigt - YOUNITED', pendingValidatedTitle: 'Überweisung genehmigt', pendingValidatedIntro: 'Ihre Überweisung wurde genehmigt.', pendingValidatedBody: 'PDF-Beleg beigefügt.',
     pendingCancelledSubject: 'Überweisung storniert - YOUNITED', pendingCancelledTitle: 'Überweisung storniert', pendingCancelledIntro: 'Ihre Überweisung wurde storniert.', pendingCancelledBody: 'Betrag zurückerstattet.',
     infoTitle: 'Was passiert als Nächstes?', infoTitleValidated: 'Überweisung bearbeitet', infoTitleCancelled: 'Überweisung storniert', infoTitleFailed: 'Überweisung fehlgeschlagen',
-    infoTextSuccess: 'Ihre Überweisung wurde erfolgreich bearbeitet.', infoTextPending: 'Ihre Überweisung wird automatisch bestätigt.', infoTextValidated: 'Ihren offiziellen PDF-Beleg finden Sie im separat versendeten Anhang.', infoTextCancelled: 'Der Betrag wurde zurückerstattet.', infoTextFailed: 'Es wurde kein Betrag abgebucht.',
+    infoTextSuccess: 'Ihre Überweisung wurde erfolgreich bearbeitet. Die Mittel sind 1 bis 3 Minuten nach der endgültigen Überprüfung auf dem Konto des Begünstigten verfügbar.',
+    infoTextPending: 'Ihre Überweisung wird automatisch bestätigt.',
+    infoTextValidated: 'Ihren offiziellen PDF-Beleg finden Sie im separat versendeten Anhang.',
+    infoTextCancelled: 'Der Betrag wurde zurückerstattet.',
+    infoTextFailed: 'Es wurde kein Betrag abgebucht.',
     footerNote: 'Sie erhalten diese Nachricht, weil Sie Inhaber eines YOUNITED-Kontos sind.' }
 };
 
 /* ═══════════════════════════════════════════════════════════════════ */
-/* ★ NOUVEAU CONSTRUCTEUR D'EMAIL MODERNE (design Payment Pending)   */
+/* ★ CONSTRUCTEUR EMAIL MODERNE — PLEINE LARGEUR GMAIL                */
 /* ═══════════════════════════════════════════════════════════════════ */
 function buildModernEmail(opts) {
   const {
-    color,          // couleur principale (hex)
-    colorLight,     // couleur claire pour fond
-    colorDark,      // couleur foncée
-    icon,           // chemin SVG (path)
-    title,          // titre principal
-    subtitle,       // sous-titre
-    amountLabel,    // libellé au-dessus du montant
-    amount,         // montant formaté (ex: "1 000,00 €")
-    statusLabel,    // statut (ex: "PENDING", "COMPLETED")
-    statusColor,    // couleur du statut
-    statusLight,    // fond du statut
-    details,        // [{label, value, mono?}, ...]
-    infoTitle,      // titre de la zone info
-    infoText,       // texte d'info
-    footerNote,     // note de bas de page
-    T               // textes
+    color, colorLight, colorDark, icon, title, subtitle,
+    amountLabel, amount, statusLabel, statusColor, statusLight,
+    details, infoTitle, infoText, footerNote, T
   } = opts;
 
   const detailRowsHtml = (details || []).map(function(d, i) {
@@ -191,77 +194,50 @@ function buildModernEmail(opts) {
   }).join('');
 
   return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>' + title + '</title></head>' +
-  '<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;">' +
-  '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f1f5f9;padding:24px 12px;">' +
-  '<tr><td align="center">' +
-  '<table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 8px 30px rgba(15,23,42,0.08);">' +
-
-  // Header coloré
-  '<tr><td style="background:' + color + ';padding:22px 24px;text-align:center;">' +
+  '<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;width:100%;">' +
+  '<div style="width:100%;background:#f1f5f9;padding:0;margin:0;box-sizing:border-box;">' +
+  '<div style="width:100%;background:#ffffff;margin:0;padding:0;box-sizing:border-box;">' +
+  '<div style="background:' + color + ';padding:22px 24px;text-align:center;width:100%;box-sizing:border-box;">' +
     '<div style="font-size:20px;font-weight:800;color:#ffffff;letter-spacing:3px;font-style:italic;">YOUNITED</div>' +
-  '</td></tr>' +
-
-  // Icône ronde
-  '<tr><td align="center" style="padding:32px 24px 12px 24px;">' +
-    '<div style="display:inline-block;width:76px;height:76px;border-radius:50%;background:' + colorLight + ';text-align:center;line-height:76px;">' +
-      '<div style="display:inline-block;width:54px;height:54px;border-radius:50%;background:' + color + ';text-align:center;line-height:54px;margin:11px;">' +
-        '<svg width="28" height="28" viewBox="0 0 24 24" fill="#ffffff" style="display:inline-block;vertical-align:middle;margin-top:-4px;">' + icon + '</svg>' +
+  '</div>' +
+  '<div style="padding:32px 24px 12px 24px;width:100%;box-sizing:border-box;">' +
+    '<div style="max-width:600px;margin:0 auto;">' +
+    '<div style="text-align:center;">' +
+      '<div style="display:inline-block;width:76px;height:76px;border-radius:50%;background:' + colorLight + ';text-align:center;line-height:76px;">' +
+        '<div style="display:inline-block;width:54px;height:54px;border-radius:50%;background:' + color + ';text-align:center;line-height:54px;margin:11px;">' +
+          '<svg width="28" height="28" viewBox="0 0 24 24" fill="#ffffff" style="display:inline-block;vertical-align:middle;margin-top:-4px;">' + icon + '</svg>' +
+        '</div>' +
       '</div>' +
+      '<div style="font-size:24px;font-weight:800;color:#0f172a;letter-spacing:-0.3px;line-height:1.25;margin-top:18px;">' + title + '</div>' +
+      '<div style="font-size:13px;color:#64748b;line-height:1.55;font-weight:500;margin-top:8px;">' + subtitle + '</div>' +
     '</div>' +
-  '</td></tr>' +
-
-  // Titre
-  '<tr><td align="center" style="padding:8px 30px 4px 30px;">' +
-    '<div style="font-size:24px;font-weight:800;color:#0f172a;letter-spacing:-0.3px;line-height:1.25;">' + title + '</div>' +
-  '</td></tr>' +
-
-  // Sous-titre
-  '<tr><td align="center" style="padding:0 30px 24px 30px;">' +
-    '<div style="font-size:13px;color:#64748b;line-height:1.55;font-weight:500;">' + subtitle + '</div>' +
-  '</td></tr>' +
-
-  // Box montant
-  '<tr><td style="padding:0 30px;">' +
-    '<div style="background:' + colorLight + ';border:2px dashed ' + color + ';border-radius:14px;padding:22px 20px;text-align:center;">' +
+    '<div style="margin-top:24px;background:' + colorLight + ';border:2px dashed ' + color + ';border-radius:14px;padding:22px 20px;text-align:center;">' +
       '<div style="font-size:11px;font-weight:800;color:' + color + ';text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">' + amountLabel + '</div>' +
       '<div style="font-size:38px;font-weight:800;color:#0f172a;letter-spacing:-1px;line-height:1.1;margin-bottom:6px;word-break:break-all;">' + amount + '</div>' +
       '<div style="display:inline-block;background:' + statusLight + ';color:' + statusColor + ';font-size:11px;font-weight:800;padding:5px 14px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;border:1.5px solid ' + statusColor + ';">' + statusLabel + '</div>' +
     '</div>' +
-  '</td></tr>' +
-
-  // Détails
-  '<tr><td style="padding:26px 30px 0 30px;">' +
-    '<table width="100%" cellpadding="0" cellspacing="0" border="0">' +
-      '<tr><td style="padding-bottom:4px;">' +
-        '<div style="font-size:14px;font-weight:800;color:#0f172a;margin-bottom:8px;">' +
-          '<span style="display:inline-block;width:8px;height:8px;background:' + color + ';border-radius:50%;margin-right:8px;vertical-align:middle;"></span>' +
-          'Détails de la transaction' +
-        '</div>' +
-        '<div style="height:2px;background:' + colorLight + ';border-radius:2px;margin-bottom:4px;"></div>' +
-      '</td></tr>' +
-      detailRowsHtml +
-    '</table>' +
-  '</td></tr>' +
-
-  // Info box
-  '<tr><td style="padding:22px 30px 28px 30px;">' +
-    '<div style="background:' + colorLight + ';border:1.5px solid ' + color + ';border-radius:12px;padding:16px 18px;">' +
+    '<div style="margin-top:26px;">' +
+      '<div style="font-size:14px;font-weight:800;color:#0f172a;margin-bottom:8px;">' +
+        '<span style="display:inline-block;width:8px;height:8px;background:' + color + ';border-radius:50%;margin-right:8px;vertical-align:middle;"></span>' +
+        'Détails de la transaction' +
+      '</div>' +
+      '<div style="height:2px;background:' + colorLight + ';border-radius:2px;margin-bottom:4px;"></div>' +
+      '<table width="100%" cellpadding="0" cellspacing="0" border="0">' + detailRowsHtml + '</table>' +
+    '</div>' +
+    '<div style="margin-top:22px;background:' + colorLight + ';border:1.5px solid ' + color + ';border-radius:12px;padding:16px 18px;">' +
       '<div style="font-size:13px;font-weight:800;color:' + colorDark + ';margin-bottom:6px;letter-spacing:0.2px;">ℹ&nbsp; ' + infoTitle + '</div>' +
       '<div style="font-size:12.5px;color:' + colorDark + ';line-height:1.55;font-weight:500;">' + infoText + '</div>' +
     '</div>' +
-  '</td></tr>' +
-
-  // Footer
-  '<tr><td style="background:#f8fafc;padding:20px 30px;border-top:1px solid #e2e8f0;">' +
-    '<div style="font-size:10.5px;color:#94a3b8;line-height:1.55;text-align:center;font-weight:500;">' + (footerNote || (T ? T.footerNote : '')) + '</div>' +
-  '</td></tr>' +
-
-  '</table>' +
-  '</td></tr></table>' +
+    '</div>' +
+  '</div>' +
+  '<div style="background:#f8fafc;padding:20px 24px;border-top:1px solid #e2e8f0;width:100%;box-sizing:border-box;">' +
+    '<div style="font-size:10.5px;color:#94a3b8;line-height:1.55;text-align:center;font-weight:500;max-width:600px;margin:0 auto;">' + (footerNote || (T ? T.footerNote : '')) + '</div>' +
+  '</div>' +
+  '</div>' +
+  '</div>' +
   '</body></html>';
 }
 
-/* Couleurs par action */
 const ACTION_COLORS = {
   success:  { color: '#10b981', light: '#d1fae5', dark: '#065f46' },
   pending:  { color: '#f59e0b', light: '#fef3c7', dark: '#78350f' },
@@ -269,7 +245,6 @@ const ACTION_COLORS = {
   cancelled:{ color: '#8b5cf6', light: '#ede9fe', dark: '#4c1d95' }
 };
 
-/* Icônes SVG */
 const EMAIL_ICONS = {
   check: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',
   clock: '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>',
@@ -277,10 +252,6 @@ const EMAIL_ICONS = {
   user: '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>',
   lock: '<path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>'
 };
-
-/* ═══════════════════════════════════════════════════════════════════ */
-/* ★ EMAILS REDESIGNÉS                                                */
-/* ═══════════════════════════════════════════════════════════════════ */
 
 function buildCredentialsEmail(client, appBaseUrl, lang) {
   const T = emailTexts[lang] || emailTexts.fr;
@@ -309,9 +280,7 @@ function buildCredentialsEmail(client, appBaseUrl, lang) {
 function buildActivationEmail(client, lang) {
   const T = emailTexts[lang] || emailTexts.fr;
   const C = ACTION_COLORS.pending;
-  const details = [
-    { label: 'Code d\'activation', value: client.activationCode, mono: true }
-  ];
+  const details = [{ label: 'Code d\'activation', value: client.activationCode, mono: true }];
   return buildModernEmail({
     color: C.color, colorLight: C.light, colorDark: C.dark,
     icon: EMAIL_ICONS.lock,
@@ -334,32 +303,17 @@ function buildReceiptEmail(client, tx, status, lang, percent) {
   const amount = tx.amount || '-';
   let C, iconPath, title, subtitle, statusLabel, statusColor, statusLight, infoTitle, infoText;
   if (status === 'done') {
-    C = ACTION_COLORS.success;
-    iconPath = EMAIL_ICONS.check;
-    title = 'Virement confirmé';
-    subtitle = T.receiptSuccessIntro;
-    statusLabel = 'CONFIRMÉ';
-    statusColor = '#10b981'; statusLight = '#d1fae5';
-    infoTitle = T.infoTitleValidated;
-    infoText = T.infoTextSuccess;
+    C = ACTION_COLORS.success; iconPath = EMAIL_ICONS.check; title = 'Virement confirmé'; subtitle = T.receiptSuccessIntro;
+    statusLabel = 'CONFIRMÉ'; statusColor = '#10b981'; statusLight = '#d1fae5';
+    infoTitle = T.infoTitleValidated; infoText = T.infoTextSuccess;
   } else if (status === 'cancelled') {
-    C = ACTION_COLORS.cancelled;
-    iconPath = EMAIL_ICONS.x;
-    title = T.receiptCancelTitle;
-    subtitle = T.receiptCancelledIntro;
-    statusLabel = 'ANNULÉ';
-    statusColor = '#8b5cf6'; statusLight = '#ede9fe';
-    infoTitle = T.infoTitleCancelled;
-    infoText = T.infoTextCancelled;
+    C = ACTION_COLORS.cancelled; iconPath = EMAIL_ICONS.x; title = T.receiptCancelTitle; subtitle = T.receiptCancelledIntro;
+    statusLabel = 'ANNULÉ'; statusColor = '#8b5cf6'; statusLight = '#ede9fe';
+    infoTitle = T.infoTitleCancelled; infoText = T.infoTextCancelled;
   } else {
-    C = ACTION_COLORS.failed;
-    iconPath = EMAIL_ICONS.x;
-    title = T.receiptFailedTitle;
-    subtitle = T.receiptFailedIntro.replace('{percent}', percent || 0);
-    statusLabel = 'ÉCHOUÉ';
-    statusColor = '#ef4444'; statusLight = '#fee2e2';
-    infoTitle = T.infoTitleFailed;
-    infoText = T.infoTextFailed;
+    C = ACTION_COLORS.failed; iconPath = EMAIL_ICONS.x; title = T.receiptFailedTitle; subtitle = T.receiptFailedIntro.replace('{percent}', percent || 0);
+    statusLabel = 'ÉCHOUÉ'; statusColor = '#ef4444'; statusLight = '#fee2e2';
+    infoTitle = T.infoTitleFailed; infoText = T.infoTextFailed;
   }
   const details = [
     { label: 'Transaction ID', value: ref, mono: true },
@@ -372,16 +326,10 @@ function buildReceiptEmail(client, tx, status, lang, percent) {
   ];
   return buildModernEmail({
     color: C.color, colorLight: C.light, colorDark: C.dark,
-    icon: iconPath,
-    title: title,
-    subtitle: subtitle,
-    amountLabel: 'MONTANT DU VIREMENT',
-    amount: amount,
-    statusLabel: statusLabel,
-    statusColor: statusColor, statusLight: statusLight,
-    details: details,
-    infoTitle: infoTitle,
-    infoText: infoText,
+    icon: iconPath, title: title, subtitle: subtitle,
+    amountLabel: 'MONTANT DU VIREMENT', amount: amount,
+    statusLabel: statusLabel, statusColor: statusColor, statusLight: statusLight,
+    details: details, infoTitle: infoTitle, infoText: infoText,
     footerNote: T.footerNote, T: T
   });
 }
@@ -405,13 +353,9 @@ function buildPendingTransferEmail(client, tx, lang) {
     icon: EMAIL_ICONS.clock,
     title: T.pendingTransferEmailTitle || 'Virement en attente',
     subtitle: T.pendingTransferEmailIntro,
-    amountLabel: 'MONTANT EN ATTENTE',
-    amount: amount,
-    statusLabel: 'EN ATTENTE',
-    statusColor: '#f59e0b', statusLight: '#fef3c7',
-    details: details,
-    infoTitle: T.infoTitle,
-    infoText: T.infoTextPending,
+    amountLabel: 'MONTANT EN ATTENTE', amount: amount,
+    statusLabel: 'EN ATTENTE', statusColor: '#f59e0b', statusLight: '#fef3c7',
+    details: details, infoTitle: T.infoTitle, infoText: T.infoTextPending,
     footerNote: T.footerNote, T: T
   });
 }
@@ -435,13 +379,9 @@ function buildPendingValidatedEmail(client, tx, lang) {
     icon: EMAIL_ICONS.check,
     title: T.pendingValidatedTitle || 'Virement validé',
     subtitle: T.pendingValidatedIntro,
-    amountLabel: 'MONTANT VALIDÉ',
-    amount: amount,
-    statusLabel: 'VALIDÉ',
-    statusColor: '#10b981', statusLight: '#d1fae5',
-    details: details,
-    infoTitle: T.infoTitleValidated,
-    infoText: T.infoTextValidated,
+    amountLabel: 'MONTANT VALIDÉ', amount: amount,
+    statusLabel: 'VALIDÉ', statusColor: '#10b981', statusLight: '#d1fae5',
+    details: details, infoTitle: T.infoTitleValidated, infoText: T.infoTextValidated,
     footerNote: T.footerNote, T: T
   });
 }
@@ -464,20 +404,13 @@ function buildPendingCancelledEmail(client, tx, lang) {
     icon: EMAIL_ICONS.x,
     title: T.pendingCancelledTitle || 'Virement annulé',
     subtitle: T.pendingCancelledIntro,
-    amountLabel: 'MONTANT REMBOURSÉ',
-    amount: amount,
-    statusLabel: 'REMBOURSÉ',
-    statusColor: '#8b5cf6', statusLight: '#ede9fe',
-    details: details,
-    infoTitle: T.infoTitleCancelled,
-    infoText: T.infoTextCancelled,
+    amountLabel: 'MONTANT REMBOURSÉ', amount: amount,
+    statusLabel: 'REMBOURSÉ', statusColor: '#8b5cf6', statusLight: '#ede9fe',
+    details: details, infoTitle: T.infoTitleCancelled, infoText: T.infoTextCancelled,
     footerNote: T.footerNote, T: T
   });
 }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* ★ EMAIL PDF RECEIPT (séparé)                                       */
-/* ═══════════════════════════════════════════════════════════════════ */
 function buildPdfEmailHtml(client, tx, lang) {
   const T = emailTexts[lang] || emailTexts.fr;
   const C = ACTION_COLORS.success;
@@ -495,10 +428,8 @@ function buildPdfEmailHtml(client, tx, lang) {
     icon: EMAIL_ICONS.check,
     title: 'Votre reçu PDF est prêt',
     subtitle: 'Votre reçu officiel de virement au format PDF est joint à ce courriel.',
-    amountLabel: 'MONTANT CONFIRMÉ',
-    amount: amount,
-    statusLabel: 'REÇU PDF',
-    statusColor: '#10b981', statusLight: '#d1fae5',
+    amountLabel: 'MONTANT CONFIRMÉ', amount: amount,
+    statusLabel: 'REÇU PDF', statusColor: '#10b981', statusLight: '#d1fae5',
     details: details,
     infoTitle: 'Pièce jointe',
     infoText: 'Vous trouverez votre reçu officiel signé électroniquement en pièce jointe de cet email.',
@@ -506,9 +437,6 @@ function buildPdfEmailHtml(client, tx, lang) {
   });
 }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* ★ NOTIFICATIONS IN-APP (plus grandes, bords colorés)              */
-/* ═══════════════════════════════════════════════════════════════════ */
 window.showNotif = function(message, type, title) {
   type = type || 'info';
   const i18n_ = (typeof i18n !== 'undefined' && i18n[currentLang]) || (typeof i18n !== 'undefined' ? i18n.fr : null);
@@ -605,15 +533,27 @@ window.addEventListener('popstate', async (event) => {
 });
 
 const i18n = {
-  fr: { loginTitle: "Connectez-vous à votre compte", emailPh: "Votre adresse e-mail", pinPh: "Votre code d'accès", loginBtn: "Se connecter", loginErr: "Adresse e-mail ou code PIN incorrect.", greeting: "Bonjour", tagline: "", greetingSub: "", accountActive: "Compte actif", personalLabel: "Personnel", availableBalance: "Solde disponible", mainAccount: "Compte principal", detailsBtn: "Détails", quickIbanLabel: "Voir mon IBAN", quickIbanSub: "Partager mes coordonnées", quickCardLabel: "Carte virtuelle", quickCardSub: "Gérer ma carte", quickTransferLabel: "Faire un virement", quickTransferSub: "Envoyer de l'argent", quickMoreLabel: "Plus", quickMoreSub: "Autres services", seeAllBtn: "Voir tout", paymentByCardLabel: "Paiement par carte", securityTitle: "Votre sécurité, notre engagement", securityDesc: "Des transactions protégées, 24h/24 et 7j/7.", learnMoreBtn: "En savoir plus", navPaymentsNew: "Paiements", notifTitleSuccess: "Succès", notifTitleError: "Erreur", notifTitleWarning: "Attention", notifTitleInfo: "Information", notifSubSuccess: "Opération réussie", notifSubError: "Une erreur est survenue", notifSubWarning: "Vérification requise", notifSubInfo: "Notification", notifOkBtn: "OK", notifConfirmTitle: "Confirmation", notifActionRequired: "Action requise", notifCancelBtn: "Annuler", notifConfirmBtn: "Confirmer", msgInvalidLink: "Lien invalide.", msgAccountSuspended: "Compte suspendu.", msgFillAllFields: "Veuillez remplir tous les champs.", msgEnterCode: "Veuillez saisir le code.", msgCodeIncorrect: "Code incorrect.", msgClientNotInit: "Client non initialisé.", msgAccountDeleted: "Compte supprimé.", transferSentTitle: "Virement envoyé", transferSentMsg: "Virement de <b>{amount}</b> envoyé avec succès à <b>{name}</b>.<br>Compte bénéficiaire : <b>{iban}</b>", transferFailedTitle: "Virement échoué", transferFailedMsg: "Virement de <b>{amount}</b> à <b>{name}</b> a échoué à <b>{percent}%</b>.<br>Compte : <b>{iban}</b>", transferCancelledTitle: "Virement annulé", transferCancelledMsg: "Virement de <b>{amount}</b> à <b>{name}</b> a été annulé.<br>Compte : <b>{iban}</b>", adminTransfersTitle: "Virements effectués", adminCancelBtn: "Annuler", adminCancelConfirmTitle: "Annuler le virement ?", adminCancelConfirmMsg: "Voulez-vous vraiment annuler ce virement ? Le client recevra un email de notification.", transferDetailsTitle: "Détails du virement", txTransferCancelled: "Virement annulé", txInitialDeposit: "Dépôt initial", txRefund: "Remboursement", personalAccount: "Personnel", accounts: "Comptes", seeIban: "Voir mon IBAN", virtualCard: "Carte virtuelle", makeTransferShort: "Faire un virement", myIbanTitle: "Mon IBAN", copyBtn: "Copier", copied: "Copié !", balanceLabel: "Solde du compte :", transactionHistory: "Historique des transactions", noTransactions: "Aucun historique.", sendOutgoingTransfer: "Envoyer un virement sortant", transferDetails: "Détails du virement", amountToDebit: "Montant à débiter", labelIban: "IBAN / Numéro de compte", labelSwift: "Code banque (BIC/SWIFT)", labelBank: "Nom de la banque", labelBeneficiary: "Nom du bénéficiaire", labelReason: "Motif du virement", processingWarning: "Réalisation sous 1 à 3 minutes après vérification finale.", nextBtn: "Suivant", transferSummary: "Récapitulatif", transferAmountLabel: "Montant :", ibanLabel: "IBAN/Numéro", ibanLabelLine2: "de compte :", swiftLabel: "Code banque :", bankLabel: "Banque destinataire :", beneficiaryLabel: "Nom du bénéficiaire :", reasonLabel: "Motif :", identityVerification: "Vérification d'identité", verificationDesc: "Saisissez le code de sécurité :", sendBtn: "Envoyer", wellDone: "Bien joué !", processingDesc: "Vérification réussie.", amountToReceive: "Montant à recevoir :", processingText: "Virement en cours...", cardWelcome: "Félicitations, votre carte est disponible.", activateCardBtn: "Activer ma carte", blockCardBtn: "Bloquer ma carte", cardTransactions: "Transactions par carte", validUntil: "Valable jusqu'au :", personalData: "Données personnelles", accountOwner: "Titulaire", emailLabel: "E-mail", phoneLabel: "Téléphone", countryLabel: "Pays", addressLabel: "Adresse de résidence", accountAndTransfer: "Compte et virement", balanceProfile: "Solde", accountType: "Type de compte", accountStatus: "Statut", statusActive: "Actif", supportedTransfer: "Virement supporté", beneficiaryIban: "IBAN du bénéficiaire", accountTypeValue: "Professionnel", transferTypeValue: "Classique", profileBanner: "Contactez notre équipe d'assistance.", logoutBtn: "Se déconnecter", modalSuccess: "Virement de {amount} envoyé", modalFailure: "Virement de {amount} échoué", modalFailedAt: "Virement {amount} échoué à {percent}%", sendTime: "Heure d'envoi :", closeBtn: "Fermer", navBalance: "Accueil", navCard: "Carte virtuelle", navTransfer: "Paiements", navAccount: "Profil", txTransferSent: "Virement envoyé", txTransferReceived: "Virement reçu", invalidAmount: "Veuillez saisir un montant valide.", invalidAmountFormat: "Veuillez saisir le montant au format correct (uniquement des chiffres, sans virgule, sans point, sans espace). Exemple : 3000", amountExceedsBalance: "Le montant dépasse votre solde disponible.", pendingTitle: "Détails du virement en attente", cancelTransferBtn: "Annuler le virement", lockText: "Veuillez saisir le code d'activation du virement", codeLabel: "Code d'activation", validateTransferBtn: "Valider le virement", processingPageTitle: "Votre ordre de virement en cours...", processingStatus: "Vérification d'identité effectuée avec succès.", processingDescLong: "Veuillez patienter la fin du virement des fonds vers votre banque avant d'actualiser cette page.", processingDetailsTitle: "Détails du virement en cours", processingAmountLabel: "Montant du virement :", processingBeneficiaryLabel: "Nom du bénéficiaire :", processingIbanLabel: "IBAN / Numéro de Compte :", processingBankLabel: "Nom de la Banque :", receiptTitle: "Reçu de transaction", receiptSent: "Virement envoyé", receiptReceived: "Virement reçu", receiptAmount: "Montant", receiptTo: "Bénéficiaire", receiptFrom: "Expéditeur", receiptDate: "Date", receiptStatus: "Statut", receiptStatusDone: "Effectué", receiptRef: "Référence", receiptClose: "Fermer", receiptRecipientAccount: "Compte bénéficiaire", receiptSenderAccount: "Compte émetteur", profileEditBtn: "Modifier", profileVerified: "Profil vérifié", profilePersonalData: "Données personnelles", profilePersonalDataSub: "Vos informations personnelles", profileAccountSub: "Détails de votre compte et de vos virements", profileSecurityDesc: "Vos données sont protégées par un chiffrement de haute sécurité.", pendingResultTitle: "Virement en attente de validation", pendingResultMsg: "Votre virement a bien été enregistré et est en attente de validation par le service administratif.", pendingNotifTitle: "Virement en attente", pendingNotifMsg: "Votre virement <b>{amount}</b> est en cours de vérification par le service administratif.", adminPendingCardTitle: "Virement en attente", adminPendingCardSubtitle: "Activez le mode virement en attente pour le client sélectionné.", adminPendingOn: "Activé", adminPendingOff: "Désactivé", adminPendingEnableBtn: "Activer le virement en attente", adminPendingDisableBtn: "Désactiver le virement en attente", adminPendingSectionTitle: "Virements en attente", adminPendingEmpty: "Aucun virement en attente", adminPendingValidateBtn: "Valider", adminPendingCancelBtn: "Annuler", adminValidateConfirmTitle: "Valider le virement ?", adminValidateConfirmMsg: "Voulez-vous vraiment valider ce virement ? Le client recevra un email de confirmation avec le reçu PDF. La transaction passera au rouge.", adminCancelPendingConfirmTitle: "Annuler le virement ?", adminCancelPendingConfirmMsg: "Voulez-vous vraiment annuler ce virement ? Le montant sera automatiquement restitué au client et un email de notification lui sera envoyé.", pendingValidatedNotifTitle: "Virement validé", pendingValidatedNotifMsg: "Le virement <b>{amount}</b> a été validé. Le client recevra un email avec le reçu PDF.", pendingCancelledNotifTitle: "Virement annulé", pendingCancelledNotifMsg: "Le virement <b>{amount}</b> a été annulé. Le montant a été automatiquement restitué au client." }
+  fr: { loginTitle: "Connectez-vous à votre compte", loginPageTitle: "Connectez-vous<br>à votre compte", loginDataProtected: "Vos données sont protégées", loginSecureConnection: "Connexion 100% sécurisée", loginSupport: "Assistance à votre écoute", emailPh: "Votre adresse e-mail", pinPh: "Votre code d'accès", loginBtn: "Se connecter", loginErr: "Adresse e-mail ou code PIN incorrect.", greeting: "Bonjour", tagline: "", greetingSub: "", accountActive: "Compte actif", personalLabel: "Personnel", availableBalance: "Solde disponible", mainAccount: "Compte principal", detailsBtn: "Détails", quickIbanLabel: "Voir mon IBAN", quickIbanSub: "Partager mes coordonnées", quickCardLabel: "Carte virtuelle", quickCardSub: "Gérer ma carte", quickTransferLabel: "Faire un virement", quickTransferSub: "Envoyer de l'argent", quickMoreLabel: "Plus", quickMoreSub: "Autres services", seeAllBtn: "Voir tout", paymentByCardLabel: "Paiement par carte", securityTitle: "Votre sécurité, notre engagement", securityDesc: "Des transactions protégées, 24h/24 et 7j/7.", learnMoreBtn: "En savoir plus", navPaymentsNew: "Paiements", notifTitleSuccess: "Succès", notifTitleError: "Erreur", notifTitleWarning: "Attention", notifTitleInfo: "Information", notifSubSuccess: "Opération réussie", notifSubError: "Une erreur est survenue", notifSubWarning: "Vérification requise", notifSubInfo: "Notification", notifOkBtn: "OK", notifConfirmTitle: "Confirmation", notifActionRequired: "Action requise", notifCancelBtn: "Annuler", notifConfirmBtn: "Confirmer", msgInvalidLink: "Lien invalide.", msgAccountSuspended: "Compte suspendu.", msgFillAllFields: "Veuillez remplir tous les champs.", msgEnterCode: "Veuillez saisir le code.", msgCodeIncorrect: "Code incorrect.", msgClientNotInit: "Client non initialisé.", msgAccountDeleted: "Compte supprimé.", transferSentTitle: "Virement envoyé", transferSentMsg: "Virement de <b>{amount}</b> envoyé avec succès à <b>{name}</b>.<br>Compte bénéficiaire : <b>{iban}</b>", transferFailedTitle: "Virement échoué", transferFailedMsg: "Virement de <b>{amount}</b> à <b>{name}</b> a échoué à <b>{percent}%</b>.<br>Compte : <b>{iban}</b>", transferCancelledTitle: "Virement annulé", transferCancelledMsg: "Virement de <b>{amount}</b> à <b>{name}</b> a été annulé.<br>Compte : <b>{iban}</b>", adminTransfersTitle: "Virements effectués", adminCancelBtn: "Annuler", adminCancelConfirmTitle: "Annuler le virement ?", adminCancelConfirmMsg: "Voulez-vous vraiment annuler ce virement ? Le client recevra un email de notification.", transferDetailsTitle: "Détails du virement", txTransferCancelled: "Virement annulé", txInitialDeposit: "Dépôt initial", txRefund: "Remboursement", personalAccount: "Personnel", accounts: "Comptes", seeIban: "Voir mon IBAN", virtualCard: "Carte virtuelle", makeTransferShort: "Faire un virement", myIbanTitle: "Mon IBAN", copyBtn: "Copier", copied: "Copié !", balanceLabel: "Solde du compte :", transactionHistory: "Historique des transactions", noTransactions: "Aucun historique.", sendOutgoingTransfer: "Envoyer un virement sortant", transferDetails: "Détails du virement", amountToDebit: "Montant à débiter", labelIban: "IBAN / Numéro de compte", labelSwift: "Code banque (BIC/SWIFT)", labelBank: "Nom de la banque", labelBeneficiary: "Nom du bénéficiaire", labelReason: "Motif du virement", processingWarning: "Réalisation sous 1 à 3 minutes après vérification finale.", nextBtn: "Suivant", transferSummary: "Récapitulatif", transferAmountLabel: "Montant :", ibanLabel: "IBAN/Numéro", ibanLabelLine2: "de compte :", swiftLabel: "Code banque :", bankLabel: "Banque destinataire :", beneficiaryLabel: "Nom du bénéficiaire :", reasonLabel: "Motif :", identityVerification: "Vérification d'identité", verificationDesc: "Saisissez le code de sécurité :", sendBtn: "Envoyer", wellDone: "Bien joué !", processingDesc: "Vérification réussie.", amountToReceive: "Montant à recevoir :", processingText: "Virement en cours...", cardWelcome: "Félicitations, votre carte est disponible.", activateCardBtn: "Activer ma carte", blockCardBtn: "Bloquer ma carte", cardTransactions: "Transactions par carte", validUntil: "Valable jusqu'au :", personalData: "Données personnelles", accountOwner: "Titulaire", emailLabel: "E-mail", phoneLabel: "Téléphone", countryLabel: "Pays", addressLabel: "Adresse de résidence", accountAndTransfer: "Compte et virement", balanceProfile: "Solde", accountType: "Type de compte", accountStatus: "Statut", statusActive: "Actif", supportedTransfer: "Virement supporté", beneficiaryIban: "IBAN du bénéficiaire", accountTypeValue: "Professionnel", transferTypeValue: "Classique", profileBanner: "Contactez notre équipe d'assistance.", logoutBtn: "Se déconnecter", modalSuccess: "Virement de {amount} envoyé", modalFailure: "Virement de {amount} échoué", modalFailedAt: "Virement {amount} échoué à {percent}%", sendTime: "Heure d'envoi :", closeBtn: "Fermer", navBalance: "Accueil", navCard: "Carte virtuelle", navTransfer: "Paiements", navAccount: "Profil", txTransferSent: "Virement envoyé", txTransferReceived: "Virement reçu", invalidAmount: "Veuillez saisir un montant valide.", invalidAmountFormat: "Veuillez saisir le montant au format correct (uniquement des chiffres). Exemple : 3000", amountExceedsBalance: "Le montant dépasse votre solde disponible.", pendingTitle: "Détails du virement en attente", cancelTransferBtn: "Annuler le virement", lockText: "Veuillez saisir le code d'activation du virement", codeLabel: "Code d'activation", validateTransferBtn: "Valider le virement", processingPageTitle: "Votre ordre de virement en cours...", processingStatus: "Vérification d'identité effectuée avec succès.", processingDescLong: "Veuillez patienter la fin du virement des fonds vers votre banque avant d'actualiser cette page.", processingDetailsTitle: "Détails du virement en cours", processingAmountLabel: "Montant du virement :", processingBeneficiaryLabel: "Nom du bénéficiaire :", processingIbanLabel: "IBAN / Numéro de Compte :", processingBankLabel: "Nom de la Banque :", receiptTitle: "Reçu de transaction", receiptSent: "Virement envoyé", receiptReceived: "Virement reçu", receiptAmount: "Montant", receiptTo: "Bénéficiaire", receiptFrom: "Expéditeur", receiptDate: "Date", receiptStatus: "Statut", receiptStatusDone: "Effectué", receiptRef: "Référence", receiptClose: "Fermer", receiptRecipientAccount: "Compte bénéficiaire", receiptSenderAccount: "Compte émetteur", profileEditBtn: "Modifier", profileVerified: "Profil vérifié", profilePersonalData: "Données personnelles", profilePersonalDataSub: "Vos informations personnelles", profileAccountSub: "Détails de votre compte et de vos virements", profileSecurityDesc: "Vos données sont protégées par un chiffrement de haute sécurité.", pendingResultTitle: "Virement en attente de validation", pendingResultMsg: "Votre virement a bien été enregistré et est en attente de validation par le service administratif.", pendingNotifTitle: "Virement en attente", pendingNotifMsg: "Votre virement <b>{amount}</b> est en cours de vérification par le service administratif.", adminPendingCardTitle: "Virement en attente", adminPendingCardSubtitle: "Activez le mode virement en attente pour le client sélectionné.", adminPendingOn: "Activé", adminPendingOff: "Désactivé", adminPendingEnableBtn: "Activer le virement en attente", adminPendingDisableBtn: "Désactiver le virement en attente", adminPendingSectionTitle: "Virements en attente", adminPendingEmpty: "Aucun virement en attente", adminPendingValidateBtn: "Valider", adminPendingCancelBtn: "Annuler", adminValidateConfirmTitle: "Valider le virement ?", adminValidateConfirmMsg: "Voulez-vous vraiment valider ce virement ? Le client recevra un email de confirmation avec le reçu PDF.", adminCancelPendingConfirmTitle: "Annuler le virement ?", adminCancelPendingConfirmMsg: "Voulez-vous vraiment annuler ce virement ? Le montant sera automatiquement restitué au client et un email de notification lui sera envoyé.", pendingValidatedNotifTitle: "Virement validé", pendingValidatedNotifMsg: "Le virement <b>{amount}</b> a été validé. Le client recevra un email avec le reçu PDF.", pendingCancelledNotifTitle: "Virement annulé", pendingCancelledNotifMsg: "Le virement <b>{amount}</b> a été annulé. Le montant a été automatiquement restitué au client." },
+  pl: { loginTitle: "Zaloguj się na swoje konto", loginPageTitle: "Zaloguj się<br>do swojego konta", loginDataProtected: "Twoje dane są chronione", loginSecureConnection: "Połączenie 100% bezpieczne", loginSupport: "Pomoc na Twojej linii", emailPh: "Twój adres e-mail", pinPh: "Twój kod dostępu", loginBtn: "Zaloguj się", loginErr: "Nieprawidłowy e-mail lub PIN.", greeting: "Witaj", tagline: "", greetingSub: "", accountActive: "Konto aktywne", personalLabel: "Osobiste", availableBalance: "Dostępne saldo", mainAccount: "Konto główne", detailsBtn: "Szczegóły", quickIbanLabel: "Zobacz mój IBAN", quickIbanSub: "Udostępnij moje dane", quickCardLabel: "Karta wirtualna", quickCardSub: "Zarządzaj kartą", quickTransferLabel: "Wykonaj przelew", quickTransferSub: "Wyślij pieniądze", quickMoreLabel: "Więcej", quickMoreSub: "Inne usługi", seeAllBtn: "Zobacz wszystko", paymentByCardLabel: "Płatność kartą", securityTitle: "Twoje bezpieczeństwo, nasze zobowiązanie", securityDesc: "Transakcje chronione, 24/7.", learnMoreBtn: "Dowiedz się więcej", navPaymentsNew: "Płatności", notifTitleSuccess: "Sukces", notifTitleError: "Błąd", notifTitleWarning: "Uwaga", notifTitleInfo: "Informacja", notifSubSuccess: "Operacja zakończona pomyślnie", notifSubError: "Wystąpił błąd", notifSubWarning: "Wymagana weryfikacja", notifSubInfo: "Powiadomienie", notifOkBtn: "OK", notifConfirmTitle: "Potwierdzenie", notifActionRequired: "Wymagane działanie", notifCancelBtn: "Anuluj", notifConfirmBtn: "Potwierdź", msgInvalidLink: "Nieprawidłowy link.", msgAccountSuspended: "Konto zawieszone.", msgFillAllFields: "Proszę wypełnić wszystkie pola.", msgEnterCode: "Proszę wprowadzić kod.", msgCodeIncorrect: "Nieprawidłowy kod.", msgClientNotInit: "Klient nie zainicjowany.", msgAccountDeleted: "Konto usunięte.", transferSentTitle: "Przelew wysłany", transferSentMsg: "Przelew <b>{amount}</b> został pomyślnie wysłany do <b>{name}</b>.<br>Konto: <b>{iban}</b>", transferFailedTitle: "Przelew nieudany", transferFailedMsg: "Przelew <b>{amount}</b> do <b>{name}</b> nie powiódł się na <b>{percent}%</b>.<br>Konto: <b>{iban}</b>", transferCancelledTitle: "Przelew anulowany", transferCancelledMsg: "Przelew <b>{amount}</b> do <b>{name}</b> został anulowany.<br>Konto: <b>{iban}</b>", adminTransfersTitle: "Zrealizowane przelewy", adminCancelBtn: "Anuluj", adminCancelConfirmTitle: "Anulować przelew?", adminCancelConfirmMsg: "Czy na pewno chcesz anulować ten przelew? Klient otrzyma powiadomienie e-mail.", transferDetailsTitle: "Szczegóły przelewu", txTransferCancelled: "Przelew anulowany", txInitialDeposit: "Wpłata początkowa", txRefund: "Zwrot", personalAccount: "Osobiste", accounts: "Konta", seeIban: "Zobacz mój IBAN", virtualCard: "Karta wirtualna", makeTransferShort: "Wykonaj przelew", myIbanTitle: "Mój IBAN", copyBtn: "Kopiuj", copied: "Skopiowano!", balanceLabel: "Saldo konta :", transactionHistory: "Historia transakcji", noTransactions: "Brak historii transakcji.", sendOutgoingTransfer: "Wyślij przelew wychodzący", transferDetails: "Szczegóły przelewu", amountToDebit: "Kwota do obciążenia", labelIban: "IBAN / Numer konta", labelSwift: "Kod banku (BIC/SWIFT)", labelBank: "Nazwa banku", labelBeneficiary: "Nazwa beneficjenta", labelReason: "Powód przeniesienia", processingWarning: "Realizacja w ciągu 1-3 minut po weryfikacji końcowej.", nextBtn: "Następny", transferSummary: "Podsumowanie transferu", transferAmountLabel: "Kwota przelewu:", ibanLabel: "IBAN/numer", ibanLabelLine2: "konta:", swiftLabel: "Kod banku:", bankLabel: "Bank odbiorczy:", beneficiaryLabel: "Nazwa beneficjenta:", reasonLabel: "Powód przeniesienia:", identityVerification: "Weryfikacja tożsamości", verificationDesc: "Wprowadź kod zabezpieczający:", sendBtn: "Wyślij", wellDone: "Dobrze zrobiony!", processingDesc: "Weryfikacja zakończona pomyślnie.", amountToReceive: "Kwota do otrzymania:", processingText: "Transfer w toku...", cardWelcome: "Gratulacje, karta jest dostępna.", activateCardBtn: "Aktywuj", blockCardBtn: "Zablokuj", cardTransactions: "Transakcje kartowe", validUntil: "Ważne do:", personalData: "Dane osobowe", accountOwner: "Właściciel", emailLabel: "E-mail", phoneLabel: "Telefon", countryLabel: "Kraj", addressLabel: "Adres zamieszkania", accountAndTransfer: "Konto i przelew", balanceProfile: "Saldo", accountType: "Typ", accountStatus: "Stan", statusActive: "Aktywny", supportedTransfer: "Transfer", beneficiaryIban: "IBAN", accountTypeValue: "Profesjonalny", transferTypeValue: "Klasyczny", profileBanner: "Skontaktuj się z pomocą.", logoutBtn: "Rozłącz", modalSuccess: "Przeniesienie {amount} wysłane", modalFailure: "Przeniesienie {amount} nieudane", modalFailedAt: "Przelew {amount} nieudany na {percent}%", sendTime: "Czas:", closeBtn: "Zamknij", navBalance: "Pulpit", navCard: "Karta", navTransfer: "Płatności", navAccount: "Profil", txTransferSent: "Przelew wysłany", txTransferReceived: "Przelew otrzymany", invalidAmount: "Wpisz prawidłową kwotę.", invalidAmountFormat: "Wpisz kwotę w prawidłowym formacie (tylko cyfry). Przykład: 3000", amountExceedsBalance: "Kwota przekracza saldo.", pendingTitle: "Szczegóły oczekującego przelewu", cancelTransferBtn: "Anuluj przelew", lockText: "Wprowadź kod aktywacyjny przelewu", codeLabel: "Kod aktywacyjny", validateTransferBtn: "Zatwierdź przelew", processingPageTitle: "Twoje zlecenie przelewu w toku...", processingStatus: "Weryfikacja tożsamości zakończona pomyślnie.", processingDescLong: "Poczekaj na zakończenie przelewu środków do Twojego banku przed odświeżeniem tej strony.", processingDetailsTitle: "Szczegóły przelewu w toku", processingAmountLabel: "Kwota przelewu :", processingBeneficiaryLabel: "Nazwa beneficjenta :", processingIbanLabel: "IBAN / Numer konta :", processingBankLabel: "Nazwa banku :", receiptTitle: "Potwierdzenie transakcji", receiptSent: "Przelew wysłany", receiptReceived: "Przelew otrzymany", receiptAmount: "Kwota", receiptTo: "Odbiorca", receiptFrom: "Nadawca", receiptDate: "Data", receiptStatus: "Status", receiptStatusDone: "Zrealizowany", receiptRef: "Referencja", receiptClose: "Zamknij", receiptRecipientAccount: "Konto odbiorcy", receiptSenderAccount: "Konto nadawcy", profileEditBtn: "Edytuj", profileVerified: "Profil zweryfikowany", profilePersonalData: "Dane osobowe", profilePersonalDataSub: "Twoje dane osobowe", profileAccountSub: "Szczegóły konta i przelewów", profileSecurityDesc: "Twoje dane są chronione szyfrowaniem wysokiego poziomu.", pendingResultTitle: "Przelew oczekujący na zatwierdzenie", pendingResultMsg: "Twój przelew został zarejestrowany i oczekuje na weryfikację przez dział administracji.", pendingNotifTitle: "Przelew oczekujący", pendingNotifMsg: "Twój przelew <b>{amount}</b> jest w trakcie weryfikacji przez dział administracji.", adminPendingCardTitle: "Virement en attente", adminPendingCardSubtitle: "Aktywuj tryb oczekującego przelewu dla wybranego klienta.", adminPendingOn: "Włączony", adminPendingOff: "Wyłączony", adminPendingEnableBtn: "Włącz oczekujący przelew", adminPendingDisableBtn: "Wyłącz oczekujący przelew", adminPendingSectionTitle: "Przelewy oczekujące", adminPendingEmpty: "Brak oczekujących przelewów", adminPendingValidateBtn: "Zatwierdź", adminPendingCancelBtn: "Anuluj", adminValidateConfirmTitle: "Zatwierdzić przelew?", adminValidateConfirmMsg: "Czy na pewno chcesz zatwierdzić ten przelew? Klient otrzyma e-mail z potwierdzeniem i plikiem PDF.", adminCancelPendingConfirmTitle: "Anulować przelew?", adminCancelPendingConfirmMsg: "Czy na pewno chcesz anulować ten przelew? Kwota zostanie automatycznie zwrócona klientowi, a on otrzyma e-mail.", pendingValidatedNotifTitle: "Przelew zatwierdzony", pendingValidatedNotifMsg: "Przelew <b>{amount}</b> został zatwierdzony. Klient otrzyma e-mail z potwierdzeniem i PDF.", pendingCancelledNotifTitle: "Przelew anulowany", pendingCancelledNotifMsg: "Przelew <b>{amount}</b> został anulowany. Kwota została automatycznie zwrócona klientowi." },
+  es: { loginTitle: "Inicia sesión", loginPageTitle: "Conéctate<br>a tu cuenta", loginDataProtected: "Tus datos están protegidos", loginSecureConnection: "Conexión 100% segura", loginSupport: "Asistencia a tu disposición", emailPh: "Tu correo", pinPh: "Tu código", loginBtn: "Iniciar", loginErr: "Correo o PIN incorrecto.", greeting: "Hola", tagline: "", greetingSub: "", accountActive: "Cuenta activa", personalLabel: "Personal", availableBalance: "Saldo disponible", mainAccount: "Cuenta principal", detailsBtn: "Detalles", quickIbanLabel: "Ver mi IBAN", quickIbanSub: "Compartir mis datos", quickCardLabel: "Tarjeta virtual", quickCardSub: "Gestionar mi tarjeta", quickTransferLabel: "Hacer una transferencia", quickTransferSub: "Enviar dinero", quickMoreLabel: "Más", quickMoreSub: "Otros servicios", seeAllBtn: "Ver todo", paymentByCardLabel: "Pago con tarjeta", securityTitle: "Tu seguridad, nuestro compromiso", securityDesc: "Transacciones protegidas, 24/7.", learnMoreBtn: "Saber más", navPaymentsNew: "Pagos", notifTitleSuccess: "Éxito", notifTitleError: "Error", notifTitleWarning: "Atención", notifTitleInfo: "Información", notifSubSuccess: "Operación exitosa", notifSubError: "Se ha producido un error", notifSubWarning: "Verificación requerida", notifSubInfo: "Notificación", notifOkBtn: "OK", notifConfirmTitle: "Confirmación", notifActionRequired: "Acción requerida", notifCancelBtn: "Cancelar", notifConfirmBtn: "Confirmar", msgInvalidLink: "Enlace inválido.", msgAccountSuspended: "Cuenta suspendida.", msgFillAllFields: "Complete todos los campos.", msgEnterCode: "Introduzca el código.", msgCodeIncorrect: "Código incorrecto.", msgClientNotInit: "Cliente no inicializado.", msgAccountDeleted: "Cuenta eliminada.", transferSentTitle: "Transferencia enviada", transferSentMsg: "Transferencia de <b>{amount}</b> enviada con éxito a <b>{name}</b>.<br>Cuenta: <b>{iban}</b>", transferFailedTitle: "Transferencia fallida", transferFailedMsg: "Transferencia de <b>{amount}</b> a <b>{name}</b> falló al <b>{percent}%</b>.<br>Cuenta: <b>{iban}</b>", transferCancelledTitle: "Transferencia cancelada", transferCancelledMsg: "Transferencia de <b>{amount}</b> a <b>{name}</b> fue cancelada.<br>Cuenta: <b>{iban}</b>", adminTransfersTitle: "Transferencias realizadas", adminCancelBtn: "Cancelar", adminCancelConfirmTitle: "¿Cancelar la transferencia?", adminCancelConfirmMsg: "¿Desea cancelar esta transferencia? El cliente recibirá una notificación por correo.", transferDetailsTitle: "Detalles de la transferencia", txTransferCancelled: "Transferencia cancelada", txInitialDeposit: "Depósito inicial", txRefund: "Reembolso", personalAccount: "Personal", accounts: "Cuentas", seeIban: "Ver mi IBAN", virtualCard: "Tarjeta virtual", makeTransferShort: "Hacer transferencia", myIbanTitle: "Mi IBAN", copyBtn: "Copiar", copied: "¡Copiado!", balanceLabel: "Saldo :", transactionHistory: "Historial", noTransactions: "Sin historial.", sendOutgoingTransfer: "Enviar transferencia", transferDetails: "Detalles", amountToDebit: "Importe a debitar", labelIban: "IBAN / Número de cuenta", labelSwift: "Código banco (BIC/SWIFT)", labelBank: "Nombre del banco", labelBeneficiary: "Nombre del beneficiario", labelReason: "Motivo", processingWarning: "Realización en 1-3 minutos tras verificación final.", nextBtn: "Siguiente", transferSummary: "Resumen", transferAmountLabel: "Importe:", ibanLabel: "IBAN", ibanLabelLine2: "de cuenta:", swiftLabel: "BIC:", bankLabel: "Banco:", beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:", identityVerification: "Verificación", verificationDesc: "Introduzca el código:", sendBtn: "Enviar", wellDone: "¡Bien hecho!", processingDesc: "Verificación exitosa.", amountToReceive: "Importe:", processingText: "En curso...", cardWelcome: "Tarjeta disponible.", activateCardBtn: "Activar", blockCardBtn: "Bloquear", cardTransactions: "Transacciones", validUntil: "Válida hasta:", personalData: "Datos personales", accountOwner: "Titular", emailLabel: "Correo", phoneLabel: "Teléfono", countryLabel: "País", addressLabel: "Dirección de residencia", accountAndTransfer: "Cuenta y transferencia", balanceProfile: "Saldo", accountType: "Tipo", accountStatus: "Estado", statusActive: "Activo", supportedTransfer: "Soporte", beneficiaryIban: "IBAN del beneficiario", accountTypeValue: "Profesional", transferTypeValue: "Clásico", profileBanner: "Contacte con soporte.", logoutBtn: "Salir", modalSuccess: "Transferencia de {amount} enviada", modalFailure: "Transferencia de {amount} fallida", modalFailedAt: "Transferencia {amount} falló al {percent}%", sendTime: "Hora:", closeBtn: "Cerrar", navBalance: "Inicio", navCard: "Tarjeta virtual", navTransfer: "Pagos", navAccount: "Perfil", txTransferSent: "Enviada", txTransferReceived: "Recibida", invalidAmount: "Ingrese un importe válido.", invalidAmountFormat: "Ingrese el importe en el formato correcto (solo dígitos). Ejemplo: 3000", amountExceedsBalance: "El importe supera su saldo.", pendingTitle: "Detalles de la transferencia pendiente", cancelTransferBtn: "Cancelar la transferencia", lockText: "Introduzca el código de activación", codeLabel: "Código de activación", validateTransferBtn: "Validar la transferencia", processingPageTitle: "Su orden de transferencia en curso...", processingStatus: "Verificación de identidad exitosa.", processingDescLong: "Espere el fin de la transferencia de fondos a su banco antes de actualizar esta página.", processingDetailsTitle: "Detalles de la transferencia en curso", processingAmountLabel: "Importe de la transferencia :", processingBeneficiaryLabel: "Nombre del beneficiario :", processingIbanLabel: "IBAN / Número de cuenta :", processingBankLabel: "Nombre del banco :", receiptTitle: "Recibo de transacción", receiptSent: "Transferencia enviada", receiptReceived: "Transferencia recibida", receiptAmount: "Importe", receiptTo: "Beneficiario", receiptFrom: "Remitente", receiptDate: "Fecha", receiptStatus: "Estado", receiptStatusDone: "Completado", receiptRef: "Referencia", receiptClose: "Cerrar", receiptRecipientAccount: "Cuenta beneficiaria", receiptSenderAccount: "Cuenta emisora", profileEditBtn: "Editar", profileVerified: "Perfil verificado", profilePersonalData: "Datos personales", profilePersonalDataSub: "Tu información personal", profileAccountSub: "Detalles de tu cuenta y transferencias", profileSecurityDesc: "Tus datos están protegidos con cifrado de alta seguridad.", pendingResultTitle: "Transferencia pendiente de validación", pendingResultMsg: "Su transferencia ha sido registrada y está pendiente de validación por el servicio administrativo.", pendingNotifTitle: "Transferencia pendiente", pendingNotifMsg: "Su transferencia <b>{amount}</b> está siendo verificada por el servicio administrativo.", adminPendingCardTitle: "Transferencia pendiente", adminPendingCardSubtitle: "Active el modo transferencia pendiente para el cliente seleccionado.", adminPendingOn: "Activado", adminPendingOff: "Desactivado", adminPendingEnableBtn: "Activar transferencia pendiente", adminPendingDisableBtn: "Desactivar transferencia pendiente", adminPendingSectionTitle: "Transferencias pendientes", adminPendingEmpty: "Sin transferencias pendientes", adminPendingValidateBtn: "Validar", adminPendingCancelBtn: "Cancelar", adminValidateConfirmTitle: "¿Validar la transferencia?", adminValidateConfirmMsg: "¿Desea validar esta transferencia? El cliente recibirá un correo de confirmación con el recibo PDF.", adminCancelPendingConfirmTitle: "¿Cancelar la transferencia?", adminCancelPendingConfirmMsg: "¿Desea cancelar esta transferencia? El importe se restituirá automáticamente al cliente y recibirá un correo de notificación.", pendingValidatedNotifTitle: "Transferencia validada", pendingValidatedNotifMsg: "La transferencia <b>{amount}</b> ha sido validada. El cliente recibirá un correo con el recibo PDF.", pendingCancelledNotifTitle: "Transferencia cancelada", pendingCancelledNotifMsg: "La transferencia <b>{amount}</b> ha sido cancelada. El importe ha sido restituido automáticamente al cliente." },
+  it: { loginTitle: "Accedi", loginPageTitle: "Accedi<br>al tuo conto", loginDataProtected: "I tuoi dati sono protetti", loginSecureConnection: "Connessione 100% sicura", loginSupport: "Assistenza al tuo servizio", emailPh: "Email", pinPh: "Codice", loginBtn: "Accedi", loginErr: "Email o PIN errato.", greeting: "Ciao", tagline: "", greetingSub: "", accountActive: "Conto attivo", personalLabel: "Personale", availableBalance: "Saldo disponibile", mainAccount: "Conto principale", detailsBtn: "Dettagli", quickIbanLabel: "Vedi il mio IBAN", quickIbanSub: "Condividi i miei dati", quickCardLabel: "Carta virtuale", quickCardSub: "Gestisci la carta", quickTransferLabel: "Fai un bonifico", quickTransferSub: "Invia denaro", quickMoreLabel: "Altro", quickMoreSub: "Altri servizi", seeAllBtn: "Vedi tutto", paymentByCardLabel: "Pagamento con carta", securityTitle: "La tua sicurezza, il nostro impegno", securityDesc: "Transazioni protette, 24/7.", learnMoreBtn: "Scopri di più", navPaymentsNew: "Pagamenti", notifTitleSuccess: "Successo", notifTitleError: "Errore", notifTitleWarning: "Attenzione", notifTitleInfo: "Informazione", notifSubSuccess: "Operazione riuscita", notifSubError: "Si è verificato un errore", notifSubWarning: "Verifica richiesta", notifSubInfo: "Notifica", notifOkBtn: "OK", notifConfirmTitle: "Conferma", notifActionRequired: "Azione richiesta", notifCancelBtn: "Annulla", notifConfirmBtn: "Conferma", msgInvalidLink: "Link non valido.", msgAccountSuspended: "Conto sospeso.", msgFillAllFields: "Compila tutti i campi.", msgEnterCode: "Inserisci il codice.", msgCodeIncorrect: "Codice errato.", msgClientNotInit: "Cliente non inizializzato.", msgAccountDeleted: "Conto eliminato.", transferSentTitle: "Bonifico inviato", transferSentMsg: "Bonifico di <b>{amount}</b> inviato con successo a <b>{name}</b>.<br>Conto beneficiario: <b>{iban}</b>", transferFailedTitle: "Bonifico fallito", transferFailedMsg: "Bonifico di <b>{amount}</b> a <b>{name}</b> fallito al <b>{percent}%</b>.<br>Conto: <b>{iban}</b>", transferCancelledTitle: "Bonifico annullato", transferCancelledMsg: "Bonifico di <b>{amount}</b> a <b>{name}</b> è stato annullato.<br>Conto: <b>{iban}</b>", adminTransfersTitle: "Bonifici effettuati", adminCancelBtn: "Annulla", adminCancelConfirmTitle: "Annullare il bonifico?", adminCancelConfirmMsg: "Vuoi davvero annullare questo bonifico? Il cliente riceverà un'email di notifica.", transferDetailsTitle: "Dettagli del bonifico", txTransferCancelled: "Bonifico annullato", txInitialDeposit: "Deposito iniziale", txRefund: "Rimborso", personalAccount: "Personale", accounts: "Conti", seeIban: "Vedi il mio IBAN", virtualCard: "Carta virtuale", makeTransferShort: "Fai un bonifico", myIbanTitle: "Il mio IBAN", copyBtn: "Copia", copied: "Copiato!", balanceLabel: "Saldo :", transactionHistory: "Cronologia", noTransactions: "Nessuna cronologia.", sendOutgoingTransfer: "Invia bonifico", transferDetails: "Dettagli", amountToDebit: "Importo da addebitare", labelIban: "IBAN / Numero di conto", labelSwift: "Codice banca (BIC/SWIFT)", labelBank: "Nome della banca", labelBeneficiary: "Nome del beneficiario", labelReason: "Motivo", processingWarning: "Esecuzione entro 1-3 minuti dopo verifica finale.", nextBtn: "Avanti", transferSummary: "Riepilogo", transferAmountLabel: "Importo:", ibanLabel: "IBAN", ibanLabelLine2: "conto:", swiftLabel: "BIC:", bankLabel: "Banca:", beneficiaryLabel: "Beneficiario:", reasonLabel: "Motivo:", identityVerification: "Verifica", verificationDesc: "Inserisci il codice:", sendBtn: "Invia", wellDone: "Ben fatto!", processingDesc: "Verifica riuscita.", amountToReceive: "Importo:", processingText: "In corso...", cardWelcome: "Carta disponibile.", activateCardBtn: "Attiva", blockCardBtn: "Blocca", cardTransactions: "Transazioni", validUntil: "Valida fino al:", personalData: "Dati personali", accountOwner: "Titolare", emailLabel: "Email", phoneLabel: "Telefono", countryLabel: "Paese", addressLabel: "Indirizzo di residenza", accountAndTransfer: "Conto e bonifico", balanceProfile: "Saldo", accountType: "Tipo", accountStatus: "Stato", statusActive: "Attivo", supportedTransfer: "Supporto", beneficiaryIban: "IBAN del beneficiario", accountTypeValue: "Professionale", transferTypeValue: "Classico", profileBanner: "Contatta il supporto.", logoutBtn: "Esci", modalSuccess: "Bonifico di {amount} inviato", modalFailure: "Bonifico di {amount} fallito", modalFailedAt: "Bonifico {amount} fallito al {percent}%", sendTime: "Ora:", closeBtn: "Chiudi", navBalance: "Home", navCard: "Carta virtuale", navTransfer: "Pagamenti", navAccount: "Profilo", txTransferSent: "Inviato", txTransferReceived: "Ricevuto", invalidAmount: "Inserisci un importo valido.", invalidAmountFormat: "Inserisci l'importo nel formato corretto (solo cifre). Esempio: 3000", amountExceedsBalance: "L'importo supera il saldo.", pendingTitle: "Dettagli del bonifico in sospeso", cancelTransferBtn: "Annulla il bonifico", lockText: "Inserisci il codice di attivazione", codeLabel: "Codice di attivazione", validateTransferBtn: "Convalida il bonifico", processingPageTitle: "Il tuo ordine di bonifico in corso...", processingStatus: "Verifica dell'identità completata con successo.", processingDescLong: "Attendere la fine del trasferimento dei fondi alla tua banca prima di aggiornare questa pagina.", processingDetailsTitle: "Dettagli del bonifico in corso", processingAmountLabel: "Importo del bonifico :", processingBeneficiaryLabel: "Nome del beneficiario :", processingIbanLabel: "IBAN / Numero di conto :", processingBankLabel: "Nome della banca :", receiptTitle: "Ricevuta transazione", receiptSent: "Bonifico inviato", receiptReceived: "Bonifico ricevuto", receiptAmount: "Importo", receiptTo: "Beneficiario", receiptFrom: "Mittente", receiptDate: "Data", receiptStatus: "Stato", receiptStatusDone: "Completato", receiptRef: "Riferimento", receiptClose: "Chiudi", receiptRecipientAccount: "Conto beneficiario", receiptSenderAccount: "Conto mittente", profileEditBtn: "Modifica", profileVerified: "Profilo verificato", profilePersonalData: "Dati personali", profilePersonalDataSub: "Le tue informazioni personali", profileAccountSub: "Dettagli del conto e dei bonifici", profileSecurityDesc: "I tuoi dati sono protetti con crittografia di alta sicurezza.", pendingResultTitle: "Bonifico in attesa di convalida", pendingResultMsg: "Il tuo bonifico è stato registrato ed è in attesa di convalida da parte del servizio amministrativo.", pendingNotifTitle: "Bonifico in attesa", pendingNotifMsg: "Il tuo bonifico <b>{amount}</b> è in fase di verifica dal servizio amministrativo.", adminPendingCardTitle: "Bonifico in attesa", adminPendingCardSubtitle: "Attiva la modalità bonifico in attesa per il cliente selezionato.", adminPendingOn: "Attivato", adminPendingOff: "Disattivato", adminPendingEnableBtn: "Attiva bonifico in attesa", adminPendingDisableBtn: "Disattiva bonifico in attesa", adminPendingSectionTitle: "Bonifici in attesa", adminPendingEmpty: "Nessun bonifico in attesa", adminPendingValidateBtn: "Convalida", adminPendingCancelBtn: "Annulla", adminValidateConfirmTitle: "Convalidare il bonifico?", adminValidateConfirmMsg: "Vuoi convalidare questo bonifico? Il cliente riceverà un'email di conferma con la ricevuta PDF.", adminCancelPendingConfirmTitle: "Annullare il bonifico?", adminCancelPendingConfirmMsg: "Vuoi annullare questo bonifico? L'importo sarà automaticamente rimborsato al cliente e riceverà un'email di notifica.", pendingValidatedNotifTitle: "Bonifico convalidato", pendingValidatedNotifMsg: "Il bonifico <b>{amount}</b> è stato convalidato. Il cliente riceverà un'email con la ricevuta PDF.", pendingCancelledNotifTitle: "Bonifico annullato", pendingCancelledNotifMsg: "Il bonifico <b>{amount}</b> è stato annullato. L'importo è stato automaticamente rimborsato al cliente." },
+  de: { loginTitle: "Anmelden", loginPageTitle: "Melden Sie sich<br>bei Ihrem Konto an", loginDataProtected: "Ihre Daten sind geschützt", loginSecureConnection: "100% sichere Verbindung", loginSupport: "Unterstützung für Sie", emailPh: "E-Mail", pinPh: "Zugangscode", loginBtn: "Anmelden", loginErr: "Falsche E-Mail oder PIN.", greeting: "Hallo", tagline: "", greetingSub: "", accountActive: "Konto aktiv", personalLabel: "Persönlich", availableBalance: "Verfügbares Guthaben", mainAccount: "Hauptkonto", detailsBtn: "Details", quickIbanLabel: "Meine IBAN anzeigen", quickIbanSub: "Meine Daten teilen", quickCardLabel: "Virtuelle Karte", quickCardSub: "Karte verwalten", quickTransferLabel: "Überweisung tätigen", quickTransferSub: "Geld senden", quickMoreLabel: "Mehr", quickMoreSub: "Weitere Dienste", seeAllBtn: "Alle anzeigen", paymentByCardLabel: "Kartenzahlung", securityTitle: "Ihre Sicherheit, unser Engagement", securityDesc: "Geschützte Transaktionen, rund um die Uhr.", learnMoreBtn: "Mehr erfahren", navPaymentsNew: "Zahlungen", notifTitleSuccess: "Erfolg", notifTitleError: "Fehler", notifTitleWarning: "Achtung", notifTitleInfo: "Information", notifSubSuccess: "Vorgang erfolgreich", notifSubError: "Ein Fehler ist aufgetreten", notifSubWarning: "Verifizierung erforderlich", notifSubInfo: "Benachrichtigung", notifOkBtn: "OK", notifConfirmTitle: "Bestätigung", notifActionRequired: "Aktion erforderlich", notifCancelBtn: "Abbrechen", notifConfirmBtn: "Bestätigen", msgInvalidLink: "Ungültiger Link.", msgAccountSuspended: "Konto gesperrt.", msgFillAllFields: "Bitte alle Felder ausfüllen.", msgEnterCode: "Bitte Code eingeben.", msgCodeIncorrect: "Falscher Code.", msgClientNotInit: "Kunde nicht initialisiert.", msgAccountDeleted: "Konto gelöscht.", transferSentTitle: "Überweisung gesendet", transferSentMsg: "Überweisung von <b>{amount}</b> erfolgreich an <b>{name}</b>.<br>Empfängerkonto: <b>{iban}</b>", transferFailedTitle: "Überweisung fehlgeschlagen", transferFailedMsg: "Überweisung von <b>{amount}</b> an <b>{name}</b> bei <b>{percent}%</b> fehlgeschlagen.<br>Konto: <b>{iban}</b>", transferCancelledTitle: "Überweisung storniert", transferCancelledMsg: "Überweisung von <b>{amount}</b> an <b>{name}</b> wurde storniert.<br>Konto: <b>{iban}</b>", adminTransfersTitle: "Ausgeführte Überweisungen", adminCancelBtn: "Stornieren", adminCancelConfirmTitle: "Überweisung stornieren?", adminCancelConfirmMsg: "Möchten Sie diese Überweisung wirklich stornieren? Der Kunde erhält eine E-Mail-Benachrichtigung.", transferDetailsTitle: "Überweisungsdetails", txTransferCancelled: "Überweisung storniert", txInitialDeposit: "Ersteinzahlung", txRefund: "Rückerstattung", personalAccount: "Persönlich", accounts: "Konten", seeIban: "Meine IBAN anzeigen", virtualCard: "Virtuelle Karte", makeTransferShort: "Überweisung", myIbanTitle: "Meine IBAN", copyBtn: "Kopieren", copied: "Kopiert!", balanceLabel: "Kontostand :", transactionHistory: "Verlauf", noTransactions: "Kein Verlauf.", sendOutgoingTransfer: "Überweisung senden", transferDetails: "Details", amountToDebit: "Zu belastender Betrag", labelIban: "IBAN / Kontonummer", labelSwift: "Bankcode (BIC/SWIFT)", labelBank: "Name der Bank", labelBeneficiary: "Name des Begünstigten", labelReason: "Grund", processingWarning: "Ausführung in 1-3 Minuten nach finaler Überprüfung.", nextBtn: "Weiter", transferSummary: "Übersicht", transferAmountLabel: "Betrag:", ibanLabel: "IBAN", ibanLabelLine2: "des Kontos:", swiftLabel: "BIC:", bankLabel: "Empfänger:", beneficiaryLabel: "Begünstigter:", reasonLabel: "Grund:", identityVerification: "Prüfung", verificationDesc: "Code eingeben:", sendBtn: "Senden", wellDone: "Gut gemacht!", processingDesc: "Erfolgreich.", amountToReceive: "Betrag:", processingText: "In Bearbeitung...", cardWelcome: "Karte verfügbar.", activateCardBtn: "Aktivieren", blockCardBtn: "Sperren", cardTransactions: "Transaktionen", validUntil: "Gültig bis:", personalData: "Persönliche Daten", accountOwner: "Kontoinhaber", emailLabel: "E-Mail", phoneLabel: "Telefon", countryLabel: "Land", addressLabel: "Wohnadresse", accountAndTransfer: "Konto und Überweisung", balanceProfile: "Kontostand", accountType: "Kontotyp", accountStatus: "Status", statusActive: "Aktiv", supportedTransfer: "Unterstützte Überweisung", beneficiaryIban: "IBAN des Begünstigten", accountTypeValue: "Professionell", transferTypeValue: "Klassisch", profileBanner: "Support kontaktieren.", logoutBtn: "Abmelden", modalSuccess: "Überweisung von {amount} gesendet", modalFailure: "Überweisung von {amount} fehlgeschlagen", modalFailedAt: "Überweisung {amount} bei {percent}% fehlgeschlagen", sendTime: "Zeit:", closeBtn: "Schließen", navBalance: "Start", navCard: "Virtuelle Karte", navTransfer: "Zahlungen", navAccount: "Profil", txTransferSent: "Gesendet", txTransferReceived: "Erhalten", invalidAmount: "Bitte gültigen Betrag eingeben.", invalidAmountFormat: "Bitte geben Sie den Betrag im richtigen Format ein (nur Ziffern). Beispiel: 3000", amountExceedsBalance: "Der Betrag übersteigt das Guthaben.", pendingTitle: "Details der ausstehenden Überweisung", cancelTransferBtn: "Überweisung stornieren", lockText: "Bitte Aktivierungscode eingeben", codeLabel: "Aktivierungscode", validateTransferBtn: "Überweisung bestätigen", processingPageTitle: "Ihr Überweisungsauftrag wird bearbeitet...", processingStatus: "Identitätsprüfung erfolgreich abgeschlossen.", processingDescLong: "Bitte warten Sie, bis die Überweisung an Ihre Bank abgeschlossen ist, bevor Sie diese Seite aktualisieren.", processingDetailsTitle: "Details der laufenden Überweisung", processingAmountLabel: "Überweisungsbetrag :", processingBeneficiaryLabel: "Name des Begünstigten :", processingIbanLabel: "IBAN / Kontonummer :", processingBankLabel: "Name der Bank :", receiptTitle: "Transaktionsbeleg", receiptSent: "Überweisung gesendet", receiptReceived: "Überweisung erhalten", receiptAmount: "Betrag", receiptTo: "Begünstigter", receiptFrom: "Absender", receiptDate: "Datum", receiptStatus: "Status", receiptStatusDone: "Abgeschlossen", receiptRef: "Referenz", receiptClose: "Schließen", receiptRecipientAccount: "Empfängerkonto", receiptSenderAccount: "Absenderkonto", profileEditBtn: "Bearbeiten", profileVerified: "Verifiziertes Profil", profilePersonalData: "Persönliche Daten", profilePersonalDataSub: "Ihre persönlichen Informationen", profileAccountSub: "Details Ihres Kontos und Ihrer Überweisungen", profileSecurityDesc: "Ihre Daten sind durch Hochsicherheitsverschlüsselung geschützt.", pendingResultTitle: "Überweisung zur Genehmigung ausstehend", pendingResultMsg: "Ihre Überweisung wurde registriert und wartet auf die Genehmigung durch die Verwaltungsabteilung.", pendingNotifTitle: "Ausstehende Überweisung", pendingNotifMsg: "Ihre Überweisung <b>{amount}</b> wird derzeit von der Verwaltungsabteilung überprüft.", adminPendingCardTitle: "Ausstehende Überweisung", adminPendingCardSubtitle: "Aktivieren Sie den Modus für ausstehende Überweisungen für den ausgewählten Kunden.", adminPendingOn: "Aktiviert", adminPendingOff: "Deaktiviert", adminPendingEnableBtn: "Ausstehende Überweisung aktivieren", adminPendingDisableBtn: "Ausstehende Überweisung deaktivieren", adminPendingSectionTitle: "Ausstehende Überweisungen", adminPendingEmpty: "Keine ausstehenden Überweisungen", adminPendingValidateBtn: "Genehmigen", adminPendingCancelBtn: "Stornieren", adminValidateConfirmTitle: "Überweisung genehmigen?", adminValidateConfirmMsg: "Möchten Sie diese Überweisung genehmigen? Der Kunde erhält eine Bestätigungs-E-Mail mit PDF-Beleg.", adminCancelPendingConfirmTitle: "Überweisung stornieren?", adminCancelPendingConfirmMsg: "Möchten Sie diese Überweisung stornieren? Der Betrag wird dem Kunden automatisch zurückerstattet und er erhält eine Benachrichtigungs-E-Mail.", pendingValidatedNotifTitle: "Überweisung genehmigt", pendingValidatedNotifMsg: "Die Überweisung <b>{amount}</b> wurde genehmigt. Der Kunde erhält eine E-Mail mit PDF-Beleg.", pendingCancelledNotifTitle: "Überweisung storniert", pendingCancelledNotifMsg: "Die Überweisung <b>{amount}</b> wurde storniert. Der Betrag wurde dem Kunden automatisch zurückerstattet." }
 };
 
 const ibanLabels = {
-  fr: { title: "Détails du compte", numberLabel: "Numéro IBAN", ownerLabel: "Titulaire", bicLabel: "BIC / SWIFT", warning: "Pour des raisons de sécurité, certains caractères de l'IBAN ont été masqués." }
+  pl: { title: "Dane konta", numberLabel: "Numer IBAN", ownerLabel: "Właściciel", bicLabel: "BIC / SWIFT", warning: "Ze względów bezpieczeństwa niektóre znaki IBAN zostały zamaskowane." },
+  fr: { title: "Détails du compte", numberLabel: "Numéro IBAN", ownerLabel: "Titulaire", bicLabel: "BIC / SWIFT", warning: "Pour des raisons de sécurité, certains caractères de l'IBAN ont été masqués." },
+  es: { title: "Detalles de la cuenta", numberLabel: "Número IBAN", ownerLabel: "Titular", bicLabel: "BIC / SWIFT", warning: "Por razones de seguridad, algunos caracteres del IBAN han sido enmascarados." },
+  it: { title: "Dettagli del conto", numberLabel: "Numero IBAN", ownerLabel: "Titolare", bicLabel: "BIC / SWIFT", warning: "Per motivi di sicurezza, alcuni caratteri dell'IBAN sono stati mascherati." },
+  de: { title: "Kontodetails", numberLabel: "IBAN-Nummer", ownerLabel: "Inhaber", bicLabel: "BIC / SWIFT", warning: "Aus Sicherheitsgründen wurden einige IBAN-Zeichen maskiert." }
 };
 
 const cardLabels = {
-  fr: { title: "Carte virtuelle", holderLabel: "Titulaire", expiryLabel: "Valable jusqu'au", cvvLabel: "CVV", numberLabel: "Numéro de carte", typeLabel: "Type", copyBtn: "Copier le numéro", showBtn: "Afficher", hideBtn: "Masquer", warningMasked: "Les 4 derniers chiffres sont masqués par l'administrateur.", warningCvvMasked: "Le CVV est masqué par l'administrateur.", warningFull: "Carte complètement visible.", warningAdminMasked: "Les 4 derniers chiffres et le CVV sont masqués par l'administrateur." }
+  pl: { title: "Karta wirtualna", holderLabel: "Posiadacz", expiryLabel: "Ważna do", cvvLabel: "CVV", numberLabel: "Numer karty", typeLabel: "Typ", copyBtn: "Kopiuj numer", showBtn: "Pokaż", hideBtn: "Ukryj", warningMasked: "Ostatnie 4 cyfry są ukryte przez administratora.", warningCvvMasked: "CVV jest ukryty przez administratora.", warningFull: "Karta w pełni widoczna.", warningAdminMasked: "Ostatnie 4 cyfry i CVV są ukryte przez administratora." },
+  fr: { title: "Carte virtuelle", holderLabel: "Titulaire", expiryLabel: "Valable jusqu'au", cvvLabel: "CVV", numberLabel: "Numéro de carte", typeLabel: "Type", copyBtn: "Copier le numéro", showBtn: "Afficher", hideBtn: "Masquer", warningMasked: "Les 4 derniers chiffres sont masqués par l'administrateur.", warningCvvMasked: "Le CVV est masqué par l'administrateur.", warningFull: "Carte complètement visible.", warningAdminMasked: "Les 4 derniers chiffres et le CVV sont masqués par l'administrateur." },
+  es: { title: "Tarjeta virtual", holderLabel: "Titular", expiryLabel: "Válida hasta", cvvLabel: "CVV", numberLabel: "Número de tarjeta", typeLabel: "Tipo", copyBtn: "Copiar número", showBtn: "Mostrar", hideBtn: "Ocultar", warningMasked: "Los últimos 4 dígitos están ocultos por el administrador.", warningCvvMasked: "El CVV está oculto por el administrador.", warningFull: "Tarjeta completamente visible.", warningAdminMasked: "Los últimos 4 dígitos y el CVV están ocultos por el administrador." },
+  it: { title: "Carta virtuale", holderLabel: "Titolare", expiryLabel: "Valida fino al", cvvLabel: "CVV", numberLabel: "Numero carta", typeLabel: "Tipo", copyBtn: "Copia numero", showBtn: "Mostra", hideBtn: "Nascondi", warningMasked: "Le ultime 4 cifre sono nascoste dall'amministratore.", warningCvvMasked: "Il CVV è nascosto dall'amministratore.", warningFull: "Carta completamente visibile.", warningAdminMasked: "Le ultime 4 cifre e il CVV sono nascosti dall'amministratore." },
+  de: { title: "Virtuelle Karte", holderLabel: "Inhaber", expiryLabel: "Gültig bis", cvvLabel: "CVV", numberLabel: "Kartennummer", typeLabel: "Typ", copyBtn: "Nummer kopieren", showBtn: "Anzeigen", hideBtn: "Verbergen", warningMasked: "Die letzten 4 Ziffern sind vom Administrator ausgeblendet.", warningCvvMasked: "CVV ist vom Administrator ausgeblendet.", warningFull: "Karte vollständig sichtbar.", warningAdminMasked: "Die letzten 4 Ziffern und der CVV sind vom Administrator ausgeblendet." }
 };
 
 let currentLang = 'fr';
@@ -629,11 +569,8 @@ const t = (k) => { const d = i18n[currentLang] || i18n.fr; return d[k] !== undef
 const formatAmount = (a, c) => a.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + c;
 const generateShortId = () => { const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let r = ''; for (let i = 0; i < 6; i++) r += c.charAt(Math.floor(Math.random() * c.length)); return r; };
 
-function translateSubtitle(subtitle) { if (!subtitle) return ''; const map = { 'Depot initial': 'txInitialDeposit', 'Dépôt initial': 'txInitialDeposit', 'Virement recu': 'txTransferReceived', 'Virement reçu': 'txTransferReceived', 'Virement envoye': 'txTransferSent', 'Virement envoyé': 'txTransferSent', 'Virement annule': 'txTransferCancelled', 'Virement annulé': 'txTransferCancelled', 'Wplata poczatkowa': 'txInitialDeposit', 'Wpłata początkowa': 'txInitialDeposit', 'Przelew otrzymany': 'txTransferReceived', 'Przelew wyslany': 'txTransferSent', 'Przelew wysłany': 'txTransferSent', 'Przelew anulowany': 'txTransferCancelled', 'Deposito inicial': 'txInitialDeposit', 'Transferencia recibida': 'txTransferReceived', 'Transferencia enviada': 'txTransferSent', 'Transferencia cancelada': 'txTransferCancelled', 'Deposito iniziale': 'txInitialDeposit', 'Ricevuto': 'txTransferReceived', 'Inviato': 'txTransferSent', 'Bonifico annullato': 'txTransferCancelled', 'Ersteinzahlung': 'txInitialDeposit', 'Erhalten': 'txTransferReceived', 'Gesendet': 'txTransferSent', 'Uberweisung storniert': 'txTransferCancelled' }; const key = map[subtitle]; if (key) return t(key); return subtitle; }
+function translateSubtitle(subtitle) { if (!subtitle) return ''; const map = { 'Depot initial': 'txInitialDeposit', 'Dépôt initial': 'txInitialDeposit', 'Virement recu': 'txTransferReceived', 'Virement reçu': 'txTransferReceived', 'Virement envoye': 'txTransferSent', 'Virement envoyé': 'txTransferSent', 'Virement annule': 'txTransferCancelled', 'Virement annulé': 'txTransferCancelled', 'Transfert recu': 'txTransferReceived', 'Transfert envoye': 'txTransferSent', 'Wplata poczatkowa': 'txInitialDeposit', 'Wpłata początkowa': 'txInitialDeposit', 'Przelew otrzymany': 'txTransferReceived', 'Przelew wyslany': 'txTransferSent', 'Przelew wysłany': 'txTransferSent', 'Przelew anulowany': 'txTransferCancelled', 'Deposito inicial': 'txInitialDeposit', 'Transferencia recibida': 'txTransferReceived', 'Transferencia enviada': 'txTransferSent', 'Transferencia cancelada': 'txTransferCancelled', 'Deposito iniziale': 'txInitialDeposit', 'Ricevuto': 'txTransferReceived', 'Inviato': 'txTransferSent', 'Bonifico annullato': 'txTransferCancelled', 'Ersteinzahlung': 'txInitialDeposit', 'Erhalten': 'txTransferReceived', 'Gesendet': 'txTransferSent', 'Uberweisung storniert': 'txTransferCancelled' }; const key = map[subtitle]; if (key) return t(key); return subtitle; }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* ★ GLOBAL STYLES                                                   */
-/* ═══════════════════════════════════════════════════════════════════ */
 function ensureGlobalStyles() {
   if (document.getElementById('tw-global-styles')) return;
   const style = document.createElement('style');
@@ -651,10 +588,20 @@ function ensureGlobalStyles() {
     .bbn.b3{width:200px !important;height:200px !important;right:-60px !important;top:-30px !important;background:radial-gradient(circle at 30% 30%,rgba(251,191,36,0.95) 0%,rgba(245,158,11,0.55) 40%,rgba(217,119,6,0.15) 70%,transparent 100%) !important;box-shadow:0 0 55px rgba(251,191,36,0.7),inset 0 0 38px rgba(255,255,255,0.85) !important;animation-duration:9s !important;animation-delay:-4s !important;}
     .bbn.b4{width:110px !important;height:110px !important;left:35% !important;top:25% !important;background:radial-gradient(circle at 30% 30%,rgba(167,139,250,0.95) 0%,rgba(139,92,246,0.55) 40%,rgba(109,40,217,0.15) 70%,transparent 100%) !important;box-shadow:0 0 40px rgba(167,139,250,0.7),inset 0 0 26px rgba(255,255,255,0.85) !important;animation-duration:11s !important;animation-delay:-6s !important;}
     .bbn.b5{width:150px !important;height:150px !important;right:5% !important;bottom:10% !important;background:radial-gradient(circle at 30% 30%,rgba(74,222,128,0.95) 0%,rgba(34,197,94,0.55) 40%,rgba(22,163,74,0.15) 70%,transparent 100%) !important;box-shadow:0 0 46px rgba(74,222,128,0.7),inset 0 0 32px rgba(255,255,255,0.85) !important;animation-duration:12s !important;animation-delay:-3s !important;}
-    @keyframes bbnFloat{
-      0%, 100% { transform: translate(0, 0) rotate(0deg) scale(0.95); opacity: 0.75; }
-      50% { transform: translate(20px, -30px) rotate(15deg) scale(1.1); opacity: 1; }
-    }
+    @keyframes bbnFloat{0%,100%{transform:translate(0,0) rotate(0deg) scale(0.95);opacity:0.75;}50%{transform:translate(20px,-30px) rotate(15deg) scale(1.1);opacity:1;}}
+
+    .balance-card-top-new{margin-bottom:0 !important;}
+    .balance-card-amount-new{margin-top:14px !important;padding-left:22px !important;}
+    .balance-card-sub-new{margin-top:12px !important;padding-left:22px !important;}
+    .quick-actions-row-new{border-radius:6px !important;}
+
+    .nav-item-new span{font-size:7.5px !important;font-weight:900 !important;color:#0a0a0a !important;letter-spacing:0.2px !important;text-shadow:0 0 0.4px #0a0a0a,0 0 0.4px #0a0a0a,0 0.3px 0.4px rgba(0,0,0,0.3) !important;}
+    .nav-item-new svg{width:14px !important;height:14px !important;fill:#0f172a !important;stroke-width:2.5 !important;filter:drop-shadow(0 0.5px 0.5px rgba(0,0,0,0.15)) !important;}
+    .nav-item-new{opacity:1 !important;}
+    .nav-item-new.active span{color:var(--primary) !important;font-weight:900 !important;text-shadow:0 0 0.4px currentColor,0 0 0.4px currentColor !important;}
+    .nav-item-new.active svg{fill:var(--primary) !important;}
+    .bottom-nav-inner-new{box-shadow:0 4px 14px rgba(15,23,42,0.16) !important;}
+    .bottom-nav-new{background:#e2e6ec !important;}
 
     .tx-icon-circle-new.bank-logo{background:#ffffff !important;border:1px solid #e2e8f0 !important;padding:5px !important;}
     .tx-icon-circle-new.bank-logo img{width:100% !important;height:100% !important;object-fit:contain !important;border-radius:6px !important;display:block !important;}
@@ -667,8 +614,8 @@ function ensureGlobalStyles() {
     .tx-amount-value-new.pending { color: #d97706; }
     .receipt-header-new.pending { background: linear-gradient(135deg, #f59e0b, #d97706); }
 
-    .pending-transfer-card { background: #fffbeb; border-radius: 4px; padding: 14px; margin-bottom: 13px; border: 2px solid #f59e0b; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15); }
-    .pending-transfer-card .pt-title { display: inline-block; background: #fef3c7; border: 2px solid #f59e0b; color: #78350f; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: 700; margin-bottom: 14px; }
+    .pending-transfer-card { background: #fffbeb; border-radius: 4px; padding: 14px; margin-bottom: 13px; border: 3px solid #d97706; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15); }
+    .pending-transfer-card .pt-title { display: inline-block; background: #fef3c7; border: 2px solid #d97706; color: #78350f; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: 700; margin-bottom: 14px; }
     .pending-transfer-card .pt-title svg { width: 13px; height: 13px; fill: #d97706; vertical-align: middle; margin-right: 4px; margin-top: -2px; }
     .pending-transfer-card .pt-subtitle { font-size: 11px; color: #78350f; line-height: 1.5; margin-bottom: 12px; font-weight: 600; }
     .pending-transfer-card .pt-status-line { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding: 8px 10px; background: #fff; border-radius: 4px; border: 2px solid #f59e0b; }
@@ -677,7 +624,7 @@ function ensureGlobalStyles() {
     .pending-transfer-status-badge.enabled { background: #dcfce7; color: #16a34a; border-color: #16a34a; }
     .pending-transfer-status-badge.disabled { background: #fee2e2; color: #dc2626; border-color: #dc2626; }
 
-    .admin-pending-transfers-card { background: #fffbeb; border: 2px solid #f59e0b; border-radius: 4px; padding: 12px; margin: 12px 0 8px 0; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.12); }
+    .admin-pending-transfers-card { background: #fffbeb; border: 3px solid #d97706; border-radius: 4px; padding: 12px; margin: 12px 0 8px 0; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.12); }
     .admin-pending-transfers-title { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #d97706; letter-spacing: 0.5px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid #fef3c7; }
     .admin-pending-transfers-title svg { width: 14px; height: 14px; fill: #d97706; flex-shrink: 0; }
     .admin-pending-empty { font-size: 11px; color: #a16207; text-align: center; padding: 16px 10px; font-weight: 600; }
@@ -686,15 +633,150 @@ function ensureGlobalStyles() {
     .admin-pending-meta { font-size: 10px; color: #a16207; font-weight: 600; line-height: 1.3; margin-bottom: 6px; }
     .admin-pending-amount { font-size: 14px; font-weight: 700; color: #d97706; margin-bottom: 10px; }
     .admin-pending-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-    .admin-pending-btn { border: 2px solid; border-radius: 4px; padding: 9px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 5px; }
+    .admin-pending-btn { border: 3px solid; border-radius: 4px; padding: 9px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 5px; }
     .admin-pending-btn.validate { background: #16a34a; color: #fff; border-color: #15803d; }
     .admin-pending-btn.cancel { background: #dc2626; color: #fff; border-color: #991b1b; }
     .admin-pending-btn svg { width: 12px; height: 12px; fill: #fff; flex-shrink: 0; }
 
-    select, .admin-group select, .quick-actions-card select,
-    #qa-client-select, #qa-action-select, #qa-transfer-type, #qa-transfer-bank,
-    #qa-country, #qa-language, #qa-currency, #pt-client-select,
-    #country, #currency, #bankName, #language {
+    .admin-section,
+    .quick-actions-card,
+    .stat-card,
+    .client-list-card,
+    .pending-transfer-card,
+    .admin-transfers-card,
+    .admin-pending-transfers-card,
+    .connection-status-card,
+    .admin-identity-card,
+    .option-panel {
+      border: 3px solid #64748b !important;
+    }
+
+    .stat-card { border-color: #94a3b8 !important; border-width: 3px !important; }
+    .quick-actions-card { border-color: #64748b !important; border-width: 3px !important; }
+    .admin-section { border-color: #64748b !important; border-width: 3px !important; }
+    .admin-identity-card { border-color: #1a73e8 !important; border-width: 3px !important; }
+    .connection-status-card { border-color: #64748b !important; border-width: 3px !important; }
+    .client-list-card { border-color: #64748b !important; border-width: 3px !important; }
+    .admin-transfers-card { border-color: #7c3aed !important; border-width: 3px !important; }
+    .admin-pending-transfers-card { border-color: #d97706 !important; border-width: 3px !important; }
+
+    .admin-group input,
+    .admin-group select,
+    .admin-group textarea,
+    .quick-actions-card input,
+    .quick-actions-card select,
+    .quick-actions-card textarea,
+    .admin-auth input,
+    .sa-login-input,
+    #qa-transfer-amount,
+    #qa-iban-value,
+    #qa-bic-value,
+    #qa-card-holder,
+    #qa-card-number,
+    #qa-card-expiry,
+    #qa-card-cvv,
+    #qa-card-type,
+    #qa-pin,
+    #qa-activation-code,
+    #qa-lastName,
+    #qa-firstName,
+    #qa-email,
+    #qa-phone,
+    #qa-address,
+    #qa-message,
+    #qa-startPercent,
+    #qa-stopPercent,
+    #qa-themeColorHex {
+      border: 2px solid #94a3b8 !important;
+      background: #f8fafc !important;
+    }
+
+    .admin-group input:focus,
+    .admin-group select:focus,
+    .admin-group textarea:focus,
+    .quick-actions-card input:focus,
+    .quick-actions-card select:focus,
+    .quick-actions-card textarea:focus {
+      border-color: #1a73e8 !important;
+      background: #fff !important;
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.18) !important;
+    }
+
+    .btn-admin-submit,
+    .client-line-btn,
+    .admin-pending-btn,
+    .sa-action-btn,
+    .admin-transfer-cancel-btn,
+    .detail-footer-btn,
+    .transfer-detail-btn-close,
+    .verify-cancel-btn,
+    .submit-btn,
+    .btn-auth,
+    .admin-topbar .icon-btn,
+    .sa-logout-btn,
+    .close-btn-edit,
+    .result-close-action,
+    .full-history-close,
+    .iban-new-copy,
+    .iban-new-close,
+    .vcard-copy-btn,
+    .vcard-modal-close {
+      border-width: 3px !important;
+      border-style: solid !important;
+    }
+
+    .btn-admin-submit { border-color: #1557b0 !important; }
+    .client-line-btn.block { border-color: #991b1b !important; }
+    .client-line-btn.unblock { border-color: #15803d !important; }
+    .client-line-btn.del { border-color: #475569 !important; }
+    .admin-topbar .icon-btn { border-color: rgba(255,255,255,0.55) !important; }
+    .close-btn-edit { border: 3px solid #cbd5e1 !important; padding: 4px !important; }
+    .result-close-action { border-color: #94a3b8 !important; }
+    .full-history-close { border-color: rgba(255,255,255,0.5) !important; }
+    .detail-footer-btn.copy { border-color: #1a73e8 !important; }
+    .detail-footer-btn.send-credentials { border-color: #b45309 !important; }
+    .detail-footer-btn.send-activation { border-color: #16a34a !important; }
+    .iban-new-close { border-color: rgba(255,255,255,0.6) !important; }
+    .vcard-modal-close { border-color: #cbd5e1 !important; }
+
+    #client-detail-modal .detail-header {
+      border: 3px solid #1a73e8 !important;
+      border-bottom: none !important;
+    }
+    #client-detail-modal .detail-body {
+      border: 3px solid #64748b !important;
+      border-top: none !important;
+    }
+    #client-detail-modal .detail-status-box.active { border: 3px solid #16a34a !important; }
+    #client-detail-modal .detail-status-box.blocked { border: 3px solid #dc2626 !important; }
+    #client-detail-modal .detail-status-box.balance { border: 3px solid #1a73e8 !important; }
+    #client-detail-modal .detail-link-box { border: 3px dashed #64748b !important; }
+    #client-detail-modal .admin-transfers-card { border: 3px solid #8b5cf6 !important; }
+    #client-detail-modal .connection-status-card { border: 3px solid #94a3b8 !important; }
+
+    .qa-switch { border-width: 3px !important; border-color: #94a3b8 !important; }
+    .qa-switch:hover { border-color: #1a73e8 !important; }
+
+    .transfer-detail-modal-new { border: 3px solid #64748b !important; }
+    .transfer-detail-footer { border-top: 3px solid #cbd5e1 !important; }
+    .transfer-detail-btn-close { border-color: #64748b !important; border-width: 3px !important; }
+
+    select,
+    .admin-group select,
+    .quick-actions-card select,
+    .pending-transfer-card select,
+    #qa-client-select,
+    #qa-action-select,
+    #qa-transfer-type,
+    #qa-transfer-bank,
+    #qa-country,
+    #qa-language,
+    #qa-currency,
+    #pt-client-select,
+    #country,
+    #currency,
+    #bankName,
+    #language {
       background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a73e8'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important;
       background-repeat: no-repeat !important;
       background-position: right 10px center !important;
@@ -702,195 +784,75 @@ function ensureGlobalStyles() {
       padding-right: 36px !important;
       appearance: none !important;
       -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+      cursor: pointer !important;
     }
   `;
   document.head.appendChild(style);
 }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* ★ LOGIN STYLES (nouveau design YOUNITED)                          */
-/* ═══════════════════════════════════════════════════════════════════ */
 function ensureLoginStyles() {
   if (document.getElementById('yl-login-styles')) return;
   const style = document.createElement('style');
   style.id = 'yl-login-styles';
   style.textContent = `
-    .yl-page {
-      display: flex; align-items: center; justify-content: center;
-      height: 100%; width: 100%; padding: 20px;
-      background: linear-gradient(160deg, #e0f2fe 0%, #f0f9ff 40%, #dbeafe 100%);
-      overflow-y: auto; -webkit-overflow-scrolling: touch;
-      position: relative;
-    }
-    .yl-page::before {
-      content: ''; position: absolute; top: -80px; right: -80px;
-      width: 280px; height: 280px;
-      background: radial-gradient(circle, rgba(37, 99, 235, 0.18), transparent 70%);
-      border-radius: 50%; pointer-events: none;
-      animation: ylFloat1 12s ease-in-out infinite;
-    }
-    .yl-page::after {
-      content: ''; position: absolute; bottom: -100px; left: -60px;
-      width: 240px; height: 240px;
-      background: radial-gradient(circle, rgba(30, 64, 175, 0.15), transparent 70%);
-      border-radius: 50%; pointer-events: none;
-      animation: ylFloat2 15s ease-in-out infinite;
-    }
+    .yl-page { display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; padding: 20px; background: linear-gradient(160deg, #e0f2fe 0%, #f0f9ff 40%, #dbeafe 100%); overflow-y: auto; -webkit-overflow-scrolling: touch; position: relative; }
+    .yl-page::before { content: ''; position: absolute; top: -80px; right: -80px; width: 280px; height: 280px; background: radial-gradient(circle, rgba(37, 99, 235, 0.18), transparent 70%); border-radius: 50%; pointer-events: none; animation: ylFloat1 12s ease-in-out infinite; }
+    .yl-page::after { content: ''; position: absolute; bottom: -100px; left: -60px; width: 240px; height: 240px; background: radial-gradient(circle, rgba(30, 64, 175, 0.15), transparent 70%); border-radius: 50%; pointer-events: none; animation: ylFloat2 15s ease-in-out infinite; }
     @keyframes ylFloat1 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-20px, 30px) scale(1.1); } }
     @keyframes ylFloat2 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(25px, -25px) scale(1.15); } }
 
-    .yl-card {
-      width: 100%; max-width: 380px; background: #ffffff;
-      border-radius: 24px; padding: 30px 26px 24px;
-      display: flex; flex-direction: column; align-items: center;
-      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12), 0 2px 8px rgba(15, 23, 42, 0.04);
-      animation: ylCardIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-      position: relative; z-index: 2;
-    }
-    @keyframes ylCardIn {
-      from { opacity: 0; transform: translateY(20px) scale(0.98); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
+    .yl-card { width: 100%; max-width: 380px; background: #ffffff; border-radius: 6px; border: 3px solid #cbd5e1; padding: 30px 26px 24px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12), 0 2px 8px rgba(15, 23, 42, 0.04); animation: ylCardIn 0.5s cubic-bezier(0.22, 1, 0.36, 1); position: relative; z-index: 2; }
+    @keyframes ylCardIn { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
-    .yl-logo {
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 26px; animation: ylFadeIn 0.6s 0.15s backwards;
-    }
+    .yl-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; animation: ylFadeIn 0.6s 0.15s backwards; }
     .yl-logo-dots { width: 52px; height: 52px; animation: ylSpinDots 20s linear infinite; }
     @keyframes ylSpinDots { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    .yl-logo-text {
-      font-family: 'Titillium Web', Arial, sans-serif;
-      font-size: 26px; font-weight: 800; letter-spacing: 0.5px;
-      color: #1e40af;
-      background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-      -webkit-background-clip: text; background-clip: text;
-      -webkit-text-fill-color: transparent; white-space: nowrap;
-    }
+    .yl-logo-text { font-family: 'Titillium Web', Arial, sans-serif; font-size: 26px; font-weight: 800; letter-spacing: 0.5px; color: #1e40af; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; white-space: nowrap; }
 
-    .yl-header {
-      display: flex; align-items: center; gap: 14px;
-      width: 100%; margin-bottom: 24px;
-      animation: ylFadeIn 0.6s 0.25s backwards;
-    }
+    .yl-header { display: flex; align-items: center; gap: 14px; width: 100%; margin-bottom: 24px; animation: ylFadeIn 0.6s 0.25s backwards; }
     .yl-shield-wrap { position: relative; width: 74px; height: 74px; flex-shrink: 0; }
-    .yl-shield-bg {
-      position: absolute; inset: 0;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.18), transparent 70%);
-      border-radius: 50%; animation: ylPulse 2.8s ease-in-out infinite;
-    }
-    @keyframes ylPulse {
-      0%, 100% { transform: scale(1); opacity: 0.7; }
-      50%      { transform: scale(1.15); opacity: 1; }
-    }
-    .yl-shield-icon {
-      position: relative; z-index: 1; width: 74px; height: 74px;
-      display: flex; align-items: center; justify-content: center;
-    }
+    .yl-shield-bg { position: absolute; inset: 0; background: radial-gradient(circle, rgba(59, 130, 246, 0.18), transparent 70%); border-radius: 50%; animation: ylPulse 2.8s ease-in-out infinite; }
+    @keyframes ylPulse { 0%, 100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.15); opacity: 1; } }
+    .yl-shield-icon { position: relative; z-index: 1; width: 74px; height: 74px; display: flex; align-items: center; justify-content: center; }
     .yl-shield-icon svg { width: 100%; height: 100%; }
-    .yl-title {
-      font-size: 22px; font-weight: 800; color: #0f172a;
-      line-height: 1.15; letter-spacing: -0.3px; flex: 1;
-    }
+    .yl-title { font-size: 22px; font-weight: 800; color: #0f172a; line-height: 1.15; letter-spacing: -0.3px; flex: 1; }
 
-    .yl-user-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af;
-      padding: 10px 22px; border-radius: 30px;
-      font-size: 12px; font-weight: 800; letter-spacing: 1.2px;
-      text-transform: uppercase; margin-bottom: 22px; max-width: 100%;
-      animation: ylFadeIn 0.6s 0.35s backwards;
-    }
-    .yl-user-badge svg { width: 16px; height: 16px; fill: #2563eb; flex-shrink: 0; }
-    .yl-user-badge span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .yl-user-badge { display: inline-flex; align-items: center; gap: 8px; background: #eff6ff; border: 2px solid #bfdbfe; color: #1e40af; padding: 8px 18px 8px 10px; border-radius: 30px; font-size: 12px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 22px; max-width: 100%; animation: ylFadeIn 0.6s 0.35s backwards; }
+    .yl-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1e40af); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .yl-avatar svg { width: 15px; height: 15px; fill: #fff; }
+    .yl-user-badge span.yl-user-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    @keyframes ylFadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes ylFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     #login-form { width: 100%; display: flex; flex-direction: column; gap: 14px; animation: ylFadeIn 0.6s 0.45s backwards; }
-    .yl-input-group {
-      display: flex; align-items: stretch;
-      border: 1.5px solid #e2e8f0; border-radius: 12px;
-      overflow: hidden; background: #ffffff;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
+    .yl-input-group { display: flex; align-items: stretch; border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: #ffffff; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
     .yl-input-group:focus-within { border-color: #2563eb; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
-    .yl-input-icon {
-      display: flex; align-items: center; justify-content: center;
-      background: #eff6ff; border-right: 1.5px solid #e2e8f0;
-      padding: 0 16px; flex-shrink: 0; min-width: 54px;
-      transition: background 0.2s ease;
-    }
+    .yl-input-icon { display: flex; align-items: center; justify-content: center; background: #eff6ff; border-right: 2px solid #e2e8f0; padding: 0 16px; flex-shrink: 0; min-width: 54px; transition: background 0.2s ease; }
     .yl-input-group:focus-within .yl-input-icon { background: #dbeafe; }
     .yl-input-icon svg { width: 20px; height: 20px; fill: #2563eb; }
-    .yl-input-group input {
-      flex: 1; border: none; outline: none; padding: 16px 14px;
-      font-size: 14px; color: #0f172a; background: transparent;
-      min-width: 0; font-weight: 600;
-    }
+    .yl-input-group input { flex: 1; border: none; outline: none; padding: 16px 14px; font-size: 14px; color: #0f172a; background: transparent; min-width: 0; font-weight: 600; }
     .yl-input-group input::placeholder { color: #94a3b8; font-weight: 500; }
-    .yl-toggle-pwd {
-      background: transparent; border: none; cursor: pointer;
-      padding: 0 14px; display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
+    .yl-toggle-pwd { background: transparent; border: none; cursor: pointer; padding: 0 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .yl-toggle-pwd svg { width: 18px; height: 18px; fill: #64748b; }
 
-    .yl-error {
-      display: none; background: #fee2e2; color: #b91c1c;
-      font-size: 11.5px; font-weight: 700; padding: 10px 12px;
-      border-radius: 8px; text-align: center; line-height: 1.5;
-      border: 1px solid #fecaca; animation: ylShake 0.4s ease;
-    }
+    .yl-error { display: none; background: #fee2e2; color: #b91c1c; font-size: 11.5px; font-weight: 700; padding: 10px 12px; border-radius: 8px; text-align: center; line-height: 1.5; border: 2px solid #fecaca; animation: ylShake 0.4s ease; }
     .yl-error.show { display: block; }
-    @keyframes ylShake {
-      0%, 100% { transform: translateX(0); }
-      20% { transform: translateX(-5px); }
-      40% { transform: translateX(5px); }
-      60% { transform: translateX(-3px); }
-      80% { transform: translateX(3px); }
-    }
+    @keyframes ylShake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-5px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(3px); } }
 
-    .yl-submit-btn {
-      width: 100%;
-      background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-      color: #ffffff; border: none; border-radius: 12px;
-      padding: 16px 18px; font-size: 15px; font-weight: 800;
-      letter-spacing: 0.3px; display: flex; align-items: center;
-      justify-content: center; gap: 12px; cursor: pointer; margin-top: 6px;
-      transition: transform 0.15s ease, box-shadow 0.25s ease;
-      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
-      font-family: inherit;
-    }
+    .yl-submit-btn { width: 100%; background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); color: #ffffff; border: 3px solid #1e40af; border-radius: 12px; padding: 16px 18px; font-size: 15px; font-weight: 800; letter-spacing: 0.3px; display: flex; align-items: center; justify-content: center; gap: 12px; cursor: pointer; margin-top: 6px; transition: transform 0.15s ease, box-shadow 0.25s ease; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3); font-family: inherit; }
     .yl-submit-btn:hover, .yl-submit-btn:active { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(37, 99, 235, 0.4); }
     .yl-submit-btn:active { transform: translateY(1px); }
     .yl-submit-btn svg { width: 18px; height: 18px; fill: #fff; flex-shrink: 0; transition: transform 0.2s ease; }
     .yl-submit-btn:hover svg { transform: translateX(4px); }
 
-    .yl-divider {
-      width: 100%; height: 1px; background: #e2e8f0;
-      margin: 22px 0 18px; animation: ylFadeIn 0.6s 0.55s backwards;
-    }
+    .yl-divider { width: 100%; height: 2px; background: #cbd5e1; margin: 22px 0 18px; animation: ylFadeIn 0.6s 0.55s backwards; }
 
-    .yl-features {
-      display: grid; grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px; width: 100%; animation: ylFadeIn 0.6s 0.65s backwards;
-    }
-    .yl-feature {
-      display: flex; align-items: center; gap: 6px;
-      padding: 8px 4px; position: relative;
-    }
-    .yl-feature:not(:last-child)::after {
-      content: ''; position: absolute; right: -4px;
-      top: 20%; bottom: 20%; width: 1px; background: #e2e8f0;
-    }
+    .yl-features { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; width: 100%; animation: ylFadeIn 0.6s 0.65s backwards; }
+    .yl-feature { display: flex; align-items: center; gap: 6px; padding: 8px 4px; position: relative; }
+    .yl-feature:not(:last-child)::after { content: ''; position: absolute; right: -4px; top: 20%; bottom: 20%; width: 1px; background: #e2e8f0; }
     .yl-feature svg { width: 22px; height: 22px; flex-shrink: 0; }
-    .yl-feature span {
-      font-size: 9.5px; color: #334155; font-weight: 700;
-      line-height: 1.25; white-space: normal; word-break: break-word;
-      text-align: left;
-    }
+    .yl-feature span { font-size: 9.5px; color: #334155; font-weight: 700; line-height: 1.25; white-space: normal; word-break: break-word; text-align: left; }
 
     @media (max-height: 720px) {
       .yl-card { padding: 22px 20px 18px; }
@@ -900,65 +862,44 @@ function ensureLoginStyles() {
       .yl-header { margin-bottom: 18px; }
       .yl-shield-wrap, .yl-shield-icon { width: 60px; height: 60px; }
       .yl-title { font-size: 19px; }
-      .yl-user-badge { margin-bottom: 16px; padding: 8px 18px; }
+      .yl-user-badge { margin-bottom: 16px; padding: 6px 14px 6px 8px; }
       .yl-input-group input { padding: 13px 12px; }
       .yl-submit-btn { padding: 14px 16px; font-size: 14px; }
       .yl-divider { margin: 16px 0 14px; }
     }
 
-    /* ★ NOTIFICATIONS IN-APP */
-    .notif-overlay {
-      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65);
-      backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-      display: flex; justify-content: center; align-items: center;
-      z-index: 2147483647; padding: 16px; box-sizing: border-box;
-      animation: notifFadeIn 0.2s ease-out;
-    }
-    .notif-modal {
-      background: #fff; border-radius: 18px; width: 100%; max-width: 420px;
-      max-height: 92vh; overflow: hidden;
-      box-shadow: 0 25px 60px rgba(15, 23, 42, 0.4);
-      animation: notifPopIn 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
-      display: flex; flex-direction: column; border: 3px solid;
-    }
+    .notif-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 2147483647; padding: 10px; box-sizing: border-box; animation: notifFadeIn 0.2s ease-out; }
+    .notif-modal { background: #fff; border-radius: 8px; width: 100%; max-width: 155px; max-height: 70vh; overflow: hidden; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.35); animation: notifPopIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; flex-direction: column; border: 1.5px solid; }
     .notif-modal.border-success { border-color: #10b981; }
-    .notif-modal.border-error   { border-color: #ef4444; }
+    .notif-modal.border-error { border-color: #ef4444; }
     .notif-modal.border-warning { border-color: #f59e0b; }
-    .notif-modal.border-info    { border-color: #3b82f6; }
-    .notif-modal.border-purple  { border-color: #8b5cf6; }
-    .notif-header { padding: 18px 56px 16px 18px; display: flex; align-items: center; gap: 14px; position: relative; color: #fff; flex-shrink: 0; }
+    .notif-modal.border-info { border-color: #3b82f6; }
+    .notif-modal.border-purple { border-color: #8b5cf6; }
+    .notif-header { padding: 6px 18px 6px 6px; display: flex; align-items: center; gap: 5px; position: relative; color: #fff; flex-shrink: 0; }
     .notif-header.success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-    .notif-header.error   { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+    .notif-header.error { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
     .notif-header.warning { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-    .notif-header.info    { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
-    .notif-header.purple  { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
-    .notif-icon-wrap {
-      width: 46px; height: 46px; border-radius: 14px;
-      background: rgba(255, 255, 255, 0.24);
-      border: 1.5px solid rgba(255, 255, 255, 0.35);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      animation: notifIconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
+    .notif-header.info { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+    .notif-header.purple { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+    .notif-icon-wrap { width: 16px; height: 16px; border-radius: 5px; background: rgba(255, 255, 255, 0.24); border: 1px solid rgba(255, 255, 255, 0.35); display: flex; align-items: center; justify-content: center; flex-shrink: 0; animation: notifIconPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
     @keyframes notifIconPop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .notif-icon-wrap svg { width: 24px; height: 24px; fill: #fff; }
+    .notif-icon-wrap svg { width: 9px; height: 9px; fill: #fff; }
     .notif-header-text { flex: 1; min-width: 0; }
-    .notif-title { font-size: 16px; font-weight: 800; color: #fff; line-height: 1.25; white-space: normal; word-break: break-word; }
-    .notif-subtitle { font-size: 10.5px; font-weight: 700; color: #ffffff; opacity: 0.92; margin-top: 4px; letter-spacing: 0.5px; text-transform: uppercase; white-space: normal; word-break: break-word; }
-    .notif-close { position: absolute; top: 14px; right: 14px; width: 28px; height: 28px; border-radius: 50%; background: rgba(0, 0, 0, 0.25); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .notif-close svg { width: 13px; height: 13px; fill: #fff; }
-    .notif-body { padding: 22px 20px 10px 20px; font-size: 14px; color: #1e293b; line-height: 1.55; font-weight: 600; text-align: center; word-break: break-word; white-space: normal; }
-    .notif-footer { padding: 14px 18px 18px 18px; display: flex; justify-content: center; }
-    .notif-footer.two-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .notif-btn { border: none; border-radius: 10px; padding: 13px 26px; font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit; color: #fff; letter-spacing: 0.3px; min-width: 120px; transition: transform 0.12s ease; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: normal; word-break: break-word; text-align: center; }
+    .notif-title { font-size: 8px; font-weight: 800; color: #fff; line-height: 1.15; white-space: normal; word-break: break-word; }
+    .notif-subtitle { font-size: 5.5px; font-weight: 700; color: #ffffff; opacity: 0.92; margin-top: 1px; letter-spacing: 0.2px; text-transform: uppercase; white-space: normal; word-break: break-word; }
+    .notif-close { position: absolute; top: 4px; right: 4px; width: 12px; height: 12px; border-radius: 50%; background: rgba(0, 0, 0, 0.25); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .notif-close svg { width: 6px; height: 6px; fill: #fff; }
+    .notif-body { padding: 7px 7px 3px 7px; font-size: 7.5px; color: #1e293b; line-height: 1.4; font-weight: 600; text-align: center; word-break: break-word; white-space: normal; }
+    .notif-footer { padding: 5px 6px 6px 6px; display: flex; justify-content: center; }
+    .notif-footer.two-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+    .notif-btn { border: none; border-radius: 4px; padding: 5px 9px; font-size: 7px; font-weight: 800; cursor: pointer; font-family: inherit; color: #fff; letter-spacing: 0.1px; min-width: 45px; transition: transform 0.12s ease; display: inline-flex; align-items: center; justify-content: center; gap: 2px; white-space: normal; word-break: break-word; text-align: center; }
     .notif-btn:active { transform: scale(0.97); }
-    .notif-btn.success { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35); }
-    .notif-btn.error   { background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35); }
-    .notif-btn.warning { background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35); }
-    .notif-btn.info    { background: linear-gradient(135deg, #3b82f6, #1d4ed8); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35); }
-    .notif-btn.purple  { background: linear-gradient(135deg, #8b5cf6, #7c3aed); box-shadow: 0 4px 12px rgba(139, 92, 246, 0.35); }
-    .notif-btn.cancel  { background: #e2e8f0; color: #334155; box-shadow: none; }
-    .notif-btn.cancel:hover { background: #cbd5e1; }
+    .notif-btn.success { background: linear-gradient(135deg, #10b981, #059669); }
+    .notif-btn.error { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .notif-btn.warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .notif-btn.info { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+    .notif-btn.purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+    .notif-btn.cancel { background: #e2e8f0; color: #334155; }
     @keyframes notifFadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes notifPopIn { from { transform: scale(0.88); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   `;
@@ -984,10 +925,11 @@ function buildBankLogoHtml(tx, circleClass, iconSvg, fallbackLogo) {
 }
 
 function renderTransactions(txs) {
-  currentTransactions = txs || [];
-  if (!txs || txs.length === 0) { return '<p style="color:#64748b;font-size:11.5px;text-align:center;padding:22px 0;font-weight:600;">' + t('noTransactions') + '</p>'; }
+  const filteredTxs = (txs || []).filter(function(tx) { return tx.hidden !== true; });
+  currentTransactions = filteredTxs;
+  if (!filteredTxs || filteredTxs.length === 0) { return '<p style="color:#64748b;font-size:11.5px;text-align:center;padding:22px 0;font-weight:600;">' + t('noTransactions') + '</p>'; }
   let h = '<div class="tx-list-new">';
-  txs.forEach((tx, idx) => {
+  filteredTxs.forEach((tx, idx) => {
     const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
     const isIn = tx.type === 'in';
     const isPending = tx.status === 'pending';
@@ -1071,17 +1013,12 @@ async function initClient() {
   else renderLoginPage(client);
 }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* ★ NOUVELLE PAGE DE CONNEXION YOUNITED                             */
-/* ═══════════════════════════════════════════════════════════════════ */
 function renderLoginPage(client) {
   currentLang = client.language || 'fr';
   applyTheme(client.themeColor);
   ensureGlobalStyles();
   ensureLoginStyles();
   const root = document.getElementById('app-root');
-
-  // SVG du logo YOUNITED (points colorés en cercle)
   const logoSvg = '<svg class="yl-logo-dots" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">' +
     '<circle cx="30" cy="6" r="3" fill="#10b981"/><circle cx="44" cy="10" r="2.6" fill="#22c55e"/>' +
     '<circle cx="53" cy="20" r="2.4" fill="#84cc16"/><circle cx="54" cy="32" r="2.6" fill="#06b6d4"/>' +
@@ -1093,8 +1030,6 @@ function renderLoginPage(client) {
     '<circle cx="34" cy="42" r="2.2" fill="#0d9488"/><circle cx="24" cy="38" r="2" fill="#22c55e"/>' +
     '<circle cx="22" cy="28" r="1.8" fill="#5eead4"/><circle cx="30" cy="32" r="1.6" fill="#a7f3d0"/>' +
     '</svg>';
-
-  // SVG du bouclier avec cadenas
   const shieldSvg = '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">' +
     '<defs><linearGradient id="shieldGrad2" x1="0%" y1="0%" x2="100%" y2="100%">' +
       '<stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#2563eb"/>' +
@@ -1106,29 +1041,19 @@ function renderLoginPage(client) {
     '<rect x="48.5" y="58" width="3" height="6" fill="#2563eb"/>' +
     '<path d="M70 15 L72 20 L77 22 L72 24 L70 29 L68 24 L63 22 L68 20 Z" fill="#3b82f6"/>' +
   '</svg>';
-
-  // SVG scan (user badge)
-  const scanSvg = '<svg viewBox="0 0 24 24"><path d="M4 4h4V2H4c-1.1 0-2 .9-2 2v4h2V4zm12 0h4v4h2V4c0-1.1-.9-2-2-2h-4v2zm4 12v4h-4v2h4c1.1 0 2-.9 2-2v-4h-2zm-14 4H4v-4H2v4c0 1.1.9 2 2 2h4v-2zM12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>';
-
-  // SVG envelope
+  const profileSvg = '<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
   const envelopeSvg = '<svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>';
-
-  // SVG lock pour password
   const lockSvg = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>';
-
-  // SVG eye off (toggle password)
   const eyeOffSvg = '<svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27z"/></svg>';
   const eyeOnSvg = '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>';
-
-  // SVG footer badges
   const shieldCheckSvg = '<svg viewBox="0 0 24 24" fill="none"><path d="M12 2 L20 5 v7 c0 5-3.5 9-8 10.5 C7.5 21 4 17 4 12 V5 Z" stroke="#2563eb" stroke-width="1.8" fill="#dbeafe"/><path d="M9 12 l2 2 l4-4" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
   const lockBlueSvg = '<svg viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="11" rx="2" stroke="#2563eb" stroke-width="1.8" fill="#dbeafe"/><path d="M8 10 V7 a4 4 0 0 1 8 0 V10" stroke="#2563eb" stroke-width="1.8" fill="none"/><circle cx="12" cy="15" r="1.3" fill="#2563eb"/></svg>';
   const headsetSvg = '<svg viewBox="0 0 24 24" fill="none"><path d="M4 13 a8 8 0 0 1 16 0" stroke="#2563eb" stroke-width="1.8" fill="none"/><rect x="3" y="13" width="4" height="7" rx="2" fill="#2563eb"/><rect x="17" y="13" width="4" height="7" rx="2" fill="#2563eb"/><path d="M20 20 a3 3 0 0 1 -3 3 h-3" stroke="#2563eb" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>';
 
   root.innerHTML = '<div class="view active"><div class="yl-page"><div class="yl-card">' +
     '<div class="yl-logo">' + logoSvg + '<span class="yl-logo-text">YOUNITED</span></div>' +
-    '<div class="yl-header"><div class="yl-shield-wrap"><div class="yl-shield-bg"></div><div class="yl-shield-icon">' + shieldSvg + '</div></div><div class="yl-title">Connectez-vous<br>à votre compte</div></div>' +
-    '<div class="yl-user-badge">' + scanSvg + '<span>' + (client.firstName + ' ' + client.lastName).toUpperCase() + '</span></div>' +
+    '<div class="yl-header"><div class="yl-shield-wrap"><div class="yl-shield-bg"></div><div class="yl-shield-icon">' + shieldSvg + '</div></div><div class="yl-title">' + t('loginPageTitle') + '</div></div>' +
+    '<div class="yl-user-badge"><span class="yl-avatar">' + profileSvg + '</span><span class="yl-user-text">' + (client.firstName + ' ' + client.lastName).toUpperCase() + '</span></div>' +
     '<form id="login-form" autocomplete="off">' +
       '<div class="yl-input-group"><div class="yl-input-icon">' + envelopeSvg + '</div><input type="email" id="email" placeholder="' + t('emailPh') + '" required></div>' +
       '<div class="yl-input-group"><div class="yl-input-icon">' + lockSvg + '</div><input type="password" id="pin" placeholder="' + t('pinPh') + '" required><button type="button" class="yl-toggle-pwd" id="toggle-pwd">' + eyeOffSvg + '</button></div>' +
@@ -1137,15 +1062,14 @@ function renderLoginPage(client) {
     '</form>' +
     '<div class="yl-divider"></div>' +
     '<div class="yl-features">' +
-      '<div class="yl-feature">' + shieldCheckSvg + '<span>Vos données<br>sont protégées</span></div>' +
-      '<div class="yl-feature">' + lockBlueSvg + '<span>Connexion<br>100% sécurisée</span></div>' +
-      '<div class="yl-feature">' + headsetSvg + '<span>Assistance<br>à votre écoute</span></div>' +
+      '<div class="yl-feature">' + shieldCheckSvg + '<span>' + t('loginDataProtected') + '</span></div>' +
+      '<div class="yl-feature">' + lockBlueSvg + '<span>' + t('loginSecureConnection') + '</span></div>' +
+      '<div class="yl-feature">' + headsetSvg + '<span>' + t('loginSupport') + '</span></div>' +
     '</div>' +
   '</div></div></div>';
 
   replaceLoginHistory();
 
-  // Toggle password visibility
   const toggleBtn = document.getElementById('toggle-pwd');
   const pinInput = document.getElementById('pin');
   let pwdVisible = false;
@@ -1203,7 +1127,7 @@ function ensureProfileStyles() {
     .profile-hero-email span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .profile-hero-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.4);padding:5px 11px;border-radius:16px;font-size:9.5px;font-weight:700;color:#fff;}
     .profile-hero-badge svg{width:12px;height:12px;fill:#fff;flex-shrink:0;}
-    .profile-card-new{background:#fff;border-radius:6px;box-shadow:0 3px 12px rgba(15,23,42,0.07);border:1px solid #eef2f7;overflow:hidden;}
+    .profile-card-new{background:#fff;border-radius:6px;box-shadow:0 3px 12px rgba(15,23,42,0.07);border:2px solid #eef2f7;overflow:hidden;}
     .profile-card-header-new{display:flex;align-items:center;gap:11px;padding:12px 13px;border-bottom:1px solid #f1f5f9;}
     .profile-card-header-icon{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
     .profile-card-header-icon svg{width:17px;height:17px;fill:#fff;}
@@ -1221,9 +1145,9 @@ function ensureProfileStyles() {
     .profile-row-value.green{color:#16a34a;}
     .profile-row-status-pill{display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#16a34a;padding:4px 10px;border-radius:10px;font-size:10px;font-weight:800;}
     .profile-row-status-pill svg{width:11px;height:11px;fill:#16a34a;flex-shrink:0;}
-    .profile-logout-new{width:100%;background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);color:#fff;border:none;border-radius:8px;padding:13px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 10px 22px rgba(220,38,38,0.32);}
+    .profile-logout-new{width:100%;background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);color:#fff;border:2px solid #991b1b;border-radius:8px;padding:13px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:9px;}
     .profile-logout-new svg{width:17px;height:17px;fill:#fff;flex-shrink:0;}
-    .profile-security-new{position:relative;display:flex;align-items:center;gap:11px;background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%);border:1px solid #bfdbfe;border-radius:6px;padding:12px 13px;}
+    .profile-security-new{position:relative;display:flex;align-items:center;gap:11px;background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%);border:2px solid #bfdbfe;border-radius:6px;padding:12px 13px;}
     .profile-security-icon{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
     .profile-security-icon svg{width:17px;height:17px;fill:#fff;}
     .profile-security-text{flex:1;min-width:0;}
@@ -1358,7 +1282,7 @@ function ensureVirtualCardStyles() {
   style.textContent = `
     .vcard-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.75);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);display:flex;justify-content:center;align-items:center;z-index:2147483647;padding:12px;box-sizing:border-box;overflow-y:auto;animation:vcardFadeIn .22s ease-out;}
     @keyframes vcardFadeIn{from{opacity:0}to{opacity:1}}
-    .vcard-modal{background:#ffffff;border-radius:16px;width:100%;max-width:270px;max-height:82vh;overflow-y:auto;box-shadow:0 22px 55px rgba(15,23,42,0.45);display:flex;flex-direction:column;animation:vcardPopIn .3s cubic-bezier(0.34,1.56,0.64,1);}
+    .vcard-modal{background:#ffffff;border-radius:16px;width:100%;max-width:270px;max-height:82vh;overflow-y:auto;box-shadow:0 22px 55px rgba(15,23,42,0.45);display:flex;flex-direction:column;animation:vcardPopIn .3s cubic-bezier(0.34,1.56,0.64,1);border:2px solid #cbd5e1;}
     @keyframes vcardPopIn{from{transform:scale(0.92);opacity:0}to{transform:scale(1);opacity:1}}
     .vcard-modal-header{display:flex;align-items:center;gap:7px;padding:9px 10px 7px 10px;border-bottom:1px solid #f1f5f9;flex-shrink:0;}
     .vcard-modal-header-icon{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#3b82f6 0%,#8b5cf6 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 10px rgba(59,130,246,0.35);}
@@ -1366,7 +1290,7 @@ function ensureVirtualCardStyles() {
     .vcard-modal-header-text{flex:1;min-width:0;}
     .vcard-modal-title{font-size:12px;font-weight:700;color:#0f172a;line-height:1.2;}
     .vcard-modal-subtitle{font-size:8px;color:#94a3b8;font-weight:500;margin-top:1px;}
-    .vcard-modal-close{width:22px;height:22px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;font-family:inherit;}
+    .vcard-modal-close{width:22px;height:22px;border-radius:50%;background:#f1f5f9;border:2px solid #cbd5e1;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;font-family:inherit;}
     .vcard-modal-close:hover{background:#e2e8f0;}
     .vcard-modal-close svg{width:9px;height:9px;fill:#64748b;}
     .vcard-modal-body{padding:9px;display:flex;flex-direction:column;gap:7px;background:#ffffff;}
@@ -1407,7 +1331,7 @@ function ensureVirtualCardStyles() {
     .vcard-info-eye{width:22px;height:22px;border-radius:50%;background:#e2e8f0;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;padding:0;font-family:inherit;}
     .vcard-info-eye:hover{background:#cbd5e1;}
     .vcard-info-eye svg{width:10px;height:10px;fill:#475569;}
-    .vcard-copy-btn{width:100%;background:linear-gradient(135deg,#8b5cf6 0%,#7c3aed 45%,#6d28d9 100%);color:#fff;border:none;border-radius:9px;padding:10px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 8px 18px rgba(124,58,237,0.42);transition:transform .12s ease,box-shadow .2s ease;letter-spacing:0.2px;}
+    .vcard-copy-btn{width:100%;background:linear-gradient(135deg,#8b5cf6 0%,#7c3aed 45%,#6d28d9 100%);color:#fff;border:2px solid #6d28d9;border-radius:9px;padding:10px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 8px 18px rgba(124,58,237,0.42);transition:transform .12s ease,box-shadow .2s ease;letter-spacing:0.2px;}
     .vcard-copy-btn:hover{box-shadow:0 10px 22px rgba(124,58,237,0.55);}
     .vcard-copy-btn:active{transform:scale(0.98);}
     .vcard-copy-btn svg{width:12px;height:12px;fill:#fff;flex-shrink:0;}
@@ -1461,7 +1385,7 @@ function renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, mask
   else if (adminForcedCvv) warningText = L.warningCvvMasked;
   else if (revealed) warningText = L.warningFull;
   else warningText = L.warningMasked;
-  const eyeIcon = showFullNumber ? '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>' : '<svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>';
+  const eyeIcon = showFullNumber ? '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>' : '<svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27z"/></svg>';
   const hideEye = (adminForcedNumber && adminForcedCvv) ? 'style="display:none;"' : '';
   return '' +
     '<div class="vcard-card"><div class="vcard-card-top"><div class="vcard-brand"><svg class="vcard-brand-mark" viewBox="0 0 40 40"><rect x="0" y="0" width="40" height="40" rx="9" fill="#1e40af"/><path d="M10 12h16v4H14v4h10v4H14v6h-4V12z" fill="#ffffff"/><path d="M24 22l6-4v8l-6-4z" fill="#60a5fa"/></svg><div class="vcard-brand-text"><div class="vcard-brand-name">YOUNITED</div><div class="vcard-brand-sub">VIRTUAL CARD</div></div></div><svg class="vcard-contactless" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"><path d="M8 9a7 7 0 0 1 0 6"/><path d="M11.5 7a10 10 0 0 1 0 10"/><path d="M15 5a13 13 0 0 1 0 14"/></svg></div><div class="vcard-chip"><div class="vcard-chip-inner"></div></div><div class="vcard-number">' + formattedNum + '</div><div class="vcard-bottom"><div class="vcard-bottom-item"><div class="vcard-bottom-label">TITULAIRE</div><div class="vcard-bottom-value">' + formattedHolder + '</div></div><div class="vcard-bottom-item"><div class="vcard-bottom-label">VALABLE JUSQU\'À</div><div class="vcard-bottom-value">' + cardExpiry + '</div></div><div class="vcard-bottom-item"><div class="vcard-bottom-label">CVV</div><div class="vcard-bottom-value">' + displayCvv + '</div></div><div class="vcard-visa"><div class="vcard-visa-mark">VISA</div><div class="vcard-visa-sub">DEBIT</div></div></div></div>' +
@@ -1587,10 +1511,6 @@ function showResultPage(isSuccess) {
   window.navigateTo('screen-result');
 }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* ★ closeResultModal : envoie confirmation + 1s après PDF séparé    */
-/*    (PDF uniquement si virement RÉUSSI à 100% sans être en attente) */
-/* ═══════════════════════════════════════════════════════════════════ */
 window.closeResultModal = async function() {
   const isSuccess = window.currentTransferSuccess;
   const isPending = window.currentTransferPending === true;
@@ -1610,30 +1530,35 @@ window.closeResultModal = async function() {
     const transactions = fresh.transactions || []; transactions.unshift(newTx);
     await FireDB.updateClient(fresh.id, { balance: newBalance, transactions });
   }
+  if (isSuccess && !isPending && fresh.email) {
+    try { await loadJsPdf(); } catch (e) { console.error('[PDF pre-load] fail:', e); }
+  }
   if (fresh.email) {
     const lang = fresh.language || 'fr'; const T = emailTexts[lang] || emailTexts.fr;
     if (isPending) {
-      // Virement en attente → email "pending" uniquement
       const html = buildPendingTransferEmail(fresh, newTx, lang);
-      sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject: T.pendingTransferEmailSubject, html, text: T.pendingTransferEmailIntro }).catch(() => {});
+      sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject: T.pendingTransferEmailSubject, html, text: T.pendingTransferEmailIntro }).catch((err) => console.error('[Pending email] error:', err));
     } else {
-      // Virement réussi OU échoué → email de confirmation (ou échec)
       const status = isSuccess ? 'done' : 'failed';
       const receiptHtml = buildReceiptEmail(fresh, newTx, status, lang, percent);
       const subject = isSuccess ? T.receiptSubject : T.receiptFailedSubject;
       const text = isSuccess ? T.receiptSuccessIntro : T.receiptFailedIntro.replace('{percent}', percent);
-      sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject, html: receiptHtml, text }).catch(() => {});
-      // ★ Si 100% réussi (pas en attente), envoyer le PDF séparé 1 seconde plus tard
-      if (isSuccess && !isPending) {
+      sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject, html: receiptHtml, text }).catch((err) => console.error('[Receipt email] error:', err));
+      if (isSuccess) {
+        const clientSnapshot = Object.assign({}, fresh);
+        const txSnapshot = Object.assign({}, newTx);
         setTimeout(async () => {
           try {
-            const pdfBase64 = await generatePdfReceiptBase64(fresh, newTx, lang);
+            console.log('[PDF] Génération pour virement 100%...');
+            const pdfBase64 = await generatePdfReceiptBase64(clientSnapshot, txSnapshot, lang);
             if (pdfBase64) {
-              const attachment = { filename: 'Recu_Younited_' + String(newTx.date || '').replace(/[^0-9]/g, '').slice(-10) + '.pdf', content: pdfBase64, encoding: 'base64', contentType: 'application/pdf' };
-              const pdfHtml = buildPdfEmailHtml(fresh, newTx, lang);
-              const pdfSubject = 'Votre reçu PDF - ' + (fresh.firstName + ' ' + fresh.lastName) + ' - YOUNITED';
-              sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject: pdfSubject, html: pdfHtml, text: 'Votre reçu PDF est joint à ce courriel.', attachment }).catch(() => {});
-            }
+              const attachment = { filename: 'Recu_Younited_' + String(txSnapshot.date || '').replace(/[^0-9]/g, '').slice(-10) + '.pdf', content: pdfBase64, encoding: 'base64', contentType: 'application/pdf' };
+              const pdfHtml = buildPdfEmailHtml(clientSnapshot, txSnapshot, lang);
+              const pdfSubject = 'Votre reçu PDF - ' + (clientSnapshot.firstName + ' ' + clientSnapshot.lastName) + ' - YOUNITED';
+              console.log('[PDF] Envoi du mail PDF séparé...');
+              await sendEmail({ to: clientSnapshot.email, name: clientSnapshot.firstName + ' ' + clientSnapshot.lastName, subject: pdfSubject, html: pdfHtml, text: 'Votre reçu PDF est joint à ce courriel.', attachment });
+              console.log('[PDF] Mail PDF envoyé avec succès.');
+            } else { console.warn('[PDF] pdfBase64 vide.'); }
           } catch (e) { console.error('[PDF follow-up] error:', e); }
         }, 1000);
       }
@@ -1657,9 +1582,6 @@ window.closeResultModal = async function() {
   pendingTransferPercent = 100;
 };
 
-/* ===================================================== */
-/* ADMIN                                                  */
-/* ===================================================== */
 let currentAdmin = null;
 let authUnsubscribe = null;
 
@@ -1712,17 +1634,14 @@ async function renderAdminPage() {
   const clients = await FireDB.getMyClients(currentAdmin.uid);
   const list = Object.keys(clients);
   const active = list.filter(id => !clients[id].blocked).length;
-
   const sortedByCreation = list.slice().sort((a, b) => {
     const sa = getCreatedAtSeconds(clients[a]);
     const sb = getCreatedAtSeconds(clients[b]);
     if (sa !== sb) return sb - sa;
     return b.localeCompare(a);
   });
-
   let ptClientOptionsHtml = '<option value="">Selectionnez un client</option>';
   sortedByCreation.forEach(id => { const c = clients[id]; ptClientOptionsHtml += '<option value="' + id + '">' + c.firstName + ' ' + c.lastName + ' - ' + c.email + '</option>'; });
-
   let clientOptionsHtml = '<option value="">Liste de vos flash compte client(s)</option>';
   sortedByCreation.forEach(id => { const c = clients[id]; clientOptionsHtml += '<option value="' + id + '">' + c.firstName + ' ' + c.lastName + ' - ' + c.email + '</option>'; });
 
@@ -1753,16 +1672,7 @@ async function renderAdminPage() {
 
   let clientsHtml = '';
   if (list.length === 0) { clientsHtml = '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm-7 13c0-2.33 4.67-3.5 7-3.5s7 1.17 7 3.5v1H5v-1z"/></svg><p>Aucun client cree</p></div>'; }
-  else {
-    let rowsHtml = '';
-    sortedByCreation.forEach((id) => {
-      const c = clients[id];
-      const balance = formatAmount(parseFloat(c.balance) || 0, c.currency || '€');
-      const blocked = c.blocked === true;
-      rowsHtml += '<div class="client-line"><div class="client-line-name" onclick="window.openClientDetail(\'' + id + '\')">' + c.firstName + ' ' + c.lastName + '</div><div class="client-line-balance">' + balance + '</div><button class="client-line-btn ' + (blocked ? 'unblock' : 'block') + '" onclick="window.toggleBlock(\'' + id + '\')">' + (blocked ? 'Activer' : 'Bloquer') + '</button><button class="client-line-btn del" onclick="window.deleteClientConfirm(\'' + id + '\')">Suppr.</button></div>';
-    });
-    clientsHtml = '<div class="client-list-card">' + rowsHtml + '</div>';
-  }
+  else { let rowsHtml = ''; sortedByCreation.forEach((id) => { const c = clients[id]; const balance = formatAmount(parseFloat(c.balance) || 0, c.currency || '€'); const blocked = c.blocked === true; rowsHtml += '<div class="client-line"><div class="client-line-name" onclick="window.openClientDetail(\'' + id + '\')">' + c.firstName + ' ' + c.lastName + '</div><div class="client-line-balance">' + balance + '</div><button class="client-line-btn ' + (blocked ? 'unblock' : 'block') + '" onclick="window.toggleBlock(\'' + id + '\')">' + (blocked ? 'Activer' : 'Bloquer') + '</button><button class="client-line-btn del" onclick="window.deleteClientConfirm(\'' + id + '\')">Suppr.</button></div>'; }); clientsHtml = '<div class="client-list-card">' + rowsHtml + '</div>'; }
 
   root.innerHTML = '<div class="view active"><div class="admin-wrapper"><div class="admin-topbar"><div class="brand"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>ADMIN</div><div class="actions"><button class="icon-btn" onclick="window.refreshAdminPage()"><svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button><button class="icon-btn" onclick="window.adminLogout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button></div></div>' +
     '<div class="admin-body"><div class="admin-identity-card"><div>Connecte en tant que : <strong>' + (currentAdmin.email || '') + '</strong></div></div>' + pendingTransferCardHtml + quickActionsCardHtml +
@@ -1893,9 +1803,6 @@ window.togglePendingTransfer = async function() {
   setTimeout(() => renderAdminPage(), 400);
 };
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* ★ validatePendingTransfer : confirmation + PDF 1s après           */
-/* ═══════════════════════════════════════════════════════════════════ */
 window.validatePendingTransfer = function(clientId, txIndex) {
   window.showConfirm(t('adminValidateConfirmMsg'), async () => {
     try {
@@ -1913,22 +1820,26 @@ window.validatePendingTransfer = function(clientId, txIndex) {
         const lang = c.language || 'fr';
         const T = emailTexts[lang] || emailTexts.fr;
         const validatedTx = Object.assign({}, tx, { status: 'done' });
-        // ★ Envoi 1 : Email de confirmation de validation
+        try { await loadJsPdf(); } catch (e) { console.error('[PDF pre-load validate] fail:', e); }
         const html = buildPendingValidatedEmail(c, validatedTx, lang);
         const subject = T.pendingValidatedSubject;
         const text = T.pendingValidatedIntro + '\n\n' + T.pendingValidatedBody;
-        sendEmail({ to: c.email, name: c.firstName + ' ' + c.lastName, subject, html, text }).catch((err) => console.error('[Validation] sendEmail error:', err));
-        // ★ Envoi 2 : PDF séparé 1 seconde après
+        sendEmail({ to: c.email, name: c.firstName + ' ' + c.lastName, subject, html, text }).catch((err) => console.error('[Validation email] error:', err));
+        const clientSnapshot = Object.assign({}, c);
+        const txSnapshot = Object.assign({}, validatedTx);
         setTimeout(async () => {
           try {
-            const pdfBase64 = await generatePdfReceiptBase64(c, validatedTx, lang);
+            console.log('[PDF validate] Génération...');
+            const pdfBase64 = await generatePdfReceiptBase64(clientSnapshot, txSnapshot, lang);
             if (pdfBase64) {
-              const attachment = { filename: 'Recu_Younited_' + String(validatedTx.date || '').replace(/[^0-9]/g, '').slice(-10) + '.pdf', content: pdfBase64, encoding: 'base64', contentType: 'application/pdf' };
-              const pdfHtml = buildPdfEmailHtml(c, validatedTx, lang);
-              const pdfSubject = 'Votre reçu PDF - ' + (c.firstName + ' ' + c.lastName) + ' - YOUNITED';
-              sendEmail({ to: c.email, name: c.firstName + ' ' + c.lastName, subject: pdfSubject, html: pdfHtml, text: 'Votre reçu PDF est joint à ce courriel.', attachment }).catch((err) => console.error('[Validation PDF] sendEmail error:', err));
-            }
-          } catch (e) { console.error('[Validation PDF] error:', e); }
+              const attachment = { filename: 'Recu_Younited_' + String(txSnapshot.date || '').replace(/[^0-9]/g, '').slice(-10) + '.pdf', content: pdfBase64, encoding: 'base64', contentType: 'application/pdf' };
+              const pdfHtml = buildPdfEmailHtml(clientSnapshot, txSnapshot, lang);
+              const pdfSubject = 'Votre reçu PDF - ' + (clientSnapshot.firstName + ' ' + clientSnapshot.lastName) + ' - YOUNITED';
+              console.log('[PDF validate] Envoi du mail PDF...');
+              await sendEmail({ to: clientSnapshot.email, name: clientSnapshot.firstName + ' ' + clientSnapshot.lastName, subject: pdfSubject, html: pdfHtml, text: 'Votre reçu PDF est joint à ce courriel.', attachment });
+              console.log('[PDF validate] Mail PDF envoyé.');
+            } else { console.warn('[PDF validate] pdfBase64 vide.'); }
+          } catch (e) { console.error('[PDF validate] error:', e); }
         }, 1000);
       }
       const oldModal = document.getElementById('client-detail-modal'); if (oldModal) oldModal.remove();
@@ -1990,36 +1901,13 @@ window.openClientDetail = async function(id) {
   const pendingTxs = (c.transactions || []).map((tx, idx) => ({ tx, idx })).filter(o => o.tx.status === 'pending');
   let pendingHtml = '';
   if (pendingTxs.length === 0) { pendingHtml = '<div class="admin-pending-empty">' + t('adminPendingEmpty') + '</div>'; }
-  else {
-    pendingTxs.forEach(o => {
-      const tx = o.tx;
-      pendingHtml += '<div class="admin-pending-item"><div class="admin-pending-name">' + (tx.subtitle || '—') + '</div><div class="admin-pending-meta">' + (tx.date || '') + ' · ' + (tx.recipientBank || '—') + '</div><div class="admin-pending-amount">' + (tx.amount || '—') + '</div><div class="admin-pending-actions"><button class="admin-pending-btn validate" onclick="window.validatePendingTransfer(\'' + id + '\',' + o.idx + ')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>' + t('adminPendingValidateBtn') + '</button><button class="admin-pending-btn cancel" onclick="window.cancelPendingTransfer(\'' + id + '\',' + o.idx + ')"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>' + t('adminPendingCancelBtn') + '</button></div></div>';
-    });
-  }
+  else { pendingTxs.forEach(o => { const tx = o.tx; pendingHtml += '<div class="admin-pending-item"><div class="admin-pending-name">' + (tx.subtitle || '—') + '</div><div class="admin-pending-meta">' + (tx.date || '') + ' · ' + (tx.recipientBank || '—') + '</div><div class="admin-pending-amount">' + (tx.amount || '—') + '</div><div class="admin-pending-actions"><button class="admin-pending-btn validate" onclick="window.validatePendingTransfer(\'' + id + '\',' + o.idx + ')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>' + t('adminPendingValidateBtn') + '</button><button class="admin-pending-btn cancel" onclick="window.cancelPendingTransfer(\'' + id + '\',' + o.idx + ')"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>' + t('adminPendingCancelBtn') + '</button></div></div>'; }); }
   const pendingCard = '<div class="admin-pending-transfers-card"><div class="admin-pending-transfers-title"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg><span>' + t('adminPendingSectionTitle') + ' (' + pendingTxs.length + ')</span></div>' + pendingHtml + '</div>';
 
   const txs = (c.transactions || []).filter(tx => (tx.type === 'out' && tx.status !== 'cancelledPending') || tx.type === 'cancelled');
   let transfersHtml = '';
   if (txs.length === 0) { transfersHtml = '<div class="admin-transfers-empty">Aucun virement effectue</div>'; }
-  else {
-    let itemsHtml = '';
-    txs.forEach((tx) => {
-      const realIdx = (c.transactions || []).indexOf(tx);
-      const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
-      const isPending = tx.status === 'pending';
-      const isCancelledPending = tx.status === 'cancelledPending';
-      const txName = tx.subtitle || '—';
-      const txAmount = tx.amount || '—';
-      const txDate = tx.date || '';
-      const cancelBtn = (isCancelled || isPending || isCancelledPending) ? '' : '<button class="admin-transfer-cancel-btn" onclick="window.cancelClientTransfer(\'' + id + '\',' + realIdx + ')">Annuler</button>';
-      let statusLabel = '';
-      if (isCancelled) statusLabel = ' · Annule';
-      else if (isCancelledPending) statusLabel = ' · Annule (rembourse)';
-      else if (isPending) statusLabel = ' · En attente';
-      itemsHtml += '<div class="admin-transfer-item' + (isCancelled ? ' cancelled' : '') + '"><div class="admin-transfer-info"><div class="admin-transfer-name" onclick="window.openTransferDetailModal(\'' + id + '\',' + realIdx + ')">' + txName + '</div><div class="admin-transfer-meta">' + txDate + statusLabel + '</div></div><div class="admin-transfer-amount">' + txAmount + '</div>' + cancelBtn + '</div>';
-    });
-    transfersHtml = itemsHtml;
-  }
+  else { let itemsHtml = ''; txs.forEach((tx) => { const realIdx = (c.transactions || []).indexOf(tx); const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true); const isPending = tx.status === 'pending'; const isCancelledPending = tx.status === 'cancelledPending'; const txName = tx.subtitle || '—'; const txAmount = tx.amount || '—'; const txDate = tx.date || ''; const cancelBtn = (isCancelled || isPending || isCancelledPending) ? '' : '<button class="admin-transfer-cancel-btn" onclick="window.cancelClientTransfer(\'' + id + '\',' + realIdx + ')">Annuler</button>'; let statusLabel = ''; if (isCancelled) statusLabel = ' · Annule'; else if (isCancelledPending) statusLabel = ' · Annule (rembourse)'; else if (isPending) statusLabel = ' · En attente'; itemsHtml += '<div class="admin-transfer-item' + (isCancelled ? ' cancelled' : '') + '"><div class="admin-transfer-info"><div class="admin-transfer-name" onclick="window.openTransferDetailModal(\'' + id + '\',' + realIdx + ')">' + txName + '</div><div class="admin-transfer-meta">' + txDate + statusLabel + '</div></div><div class="admin-transfer-amount">' + txAmount + '</div>' + cancelBtn + '</div>'; }); transfersHtml = itemsHtml; }
   const transfersCard = '<div class="admin-transfers-card"><div class="admin-transfers-title"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span>Virements effectues</span></div>' + transfersHtml + '</div>';
 
   const isOnline = c.isOnline === true;
@@ -2075,12 +1963,22 @@ window.cancelClientTransfer = function(clientId, txIndex) {
     const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     const originalBeneficiaryName = tx.subtitle || '—';
     const transactions = (c.transactions || []).slice();
-    transactions[txIndex] = Object.assign({}, tx, { cancelled: true, type: 'cancelled', cancelledAt: dateStr });
-    const newTx = { type: 'cancelled', labelKey: 'txTransferCancelled', subtitle: originalBeneficiaryName, amount: formatAmount(amountValue, currency), date: dateStr, recipientIban: tx.recipientIban, recipientBank: tx.recipientBank, recipientSwift: tx.recipientSwift, recipientReason: tx.recipientReason, originalDate: tx.date, cancelled: true };
-    transactions.unshift(newTx);
+    transactions[txIndex] = {
+      type: 'cancelled',
+      labelKey: 'txTransferCancelled',
+      subtitle: originalBeneficiaryName,
+      amount: formatAmount(amountValue, currency),
+      date: dateStr,
+      recipientIban: tx.recipientIban,
+      recipientBank: tx.recipientBank,
+      recipientSwift: tx.recipientSwift,
+      recipientReason: tx.recipientReason,
+      originalDate: tx.date,
+      cancelled: true
+    };
     const newBalance = (parseFloat(c.balance) || 0) + amountValue;
     await FireDB.updateClient(clientId, { balance: newBalance, transactions });
-    if (c.email) { const lang = c.language || 'fr'; const T = emailTexts[lang] || emailTexts.fr; const emailTx = Object.assign({}, newTx, { amount: formatAmount(amountValue, currency) }); const receiptHtml = buildReceiptEmail(c, emailTx, 'cancelled', lang, 0); sendEmail({ to: c.email, name: c.firstName + ' ' + c.lastName, subject: T.receiptCancelSubject, html: receiptHtml, text: T.receiptCancelledIntro }).catch(() => {}); }
+    if (c.email) { const lang = c.language || 'fr'; const T = emailTexts[lang] || emailTexts.fr; const emailTx = { type: 'cancelled', subtitle: originalBeneficiaryName, amount: formatAmount(amountValue, currency), date: dateStr, recipientIban: tx.recipientIban, recipientBank: tx.recipientBank, recipientSwift: tx.recipientSwift, recipientReason: tx.recipientReason }; const receiptHtml = buildReceiptEmail(c, emailTx, 'cancelled', lang, 0); sendEmail({ to: c.email, name: c.firstName + ' ' + c.lastName, subject: T.receiptCancelSubject, html: receiptHtml, text: T.receiptCancelledIntro }).catch(() => {}); }
     const oldModal = document.getElementById('client-detail-modal'); if (oldModal) oldModal.remove();
     window.showNotif('Le virement a ete annule avec succes.', 'purple', 'Virement annule');
     renderAdminPage();
@@ -2160,9 +2058,6 @@ window.copyToClipboard = (text) => { if (navigator.clipboard) navigator.clipboar
 window.toggleBlock = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } await FireDB.updateClient(id, { blocked: !c.blocked }); if (!c.blocked && ClientSession.getActive() === id) ClientSession.clear(); renderAdminPage(); };
 window.deleteClientConfirm = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } window.showConfirm('Voulez-vous vraiment supprimer le client <strong>' + c.firstName + ' ' + c.lastName + '</strong> ?', async () => { await FireDB.deleteClient(id); window.showNotif('Le client a ete supprime.', 'success', 'Client supprime'); renderAdminPage(); }, 'Supprimer le client', 'error'); };
 
-/* ===================================================== */
-/* SUPER ADMIN                                            */
-/* ===================================================== */
 async function initSuperAdmin() { const root = document.getElementById('super-admin-root'); if (!root) return; const isAuth = sessionStorage.getItem('tw_super_admin_auth') === '1'; if (isAuth) renderSuperAdminPage(); else renderSuperAdminLogin(); }
 
 function renderSuperAdminLogin() { const root = document.getElementById('super-admin-root'); if (!root) return; root.innerHTML = '<div class="sa-login-screen"><div class="sa-login-logo"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11z"/></svg></div><div class="sa-login-title">Acces Super Admin</div><div class="sa-login-sub">Zone reservee. Veuillez saisir le mot de passe maitre.</div><form class="sa-login-form" id="sa-form"><input type="password" class="sa-login-input" id="sa-password" placeholder="Mot de passe super admin" autocomplete="off" required><button type="submit" class="sa-login-btn"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>Acceder</button><div class="sa-login-error" id="sa-error">Mot de passe incorrect.</div></form></div>'; document.getElementById('sa-form').addEventListener('submit', (e) => { e.preventDefault(); const pwd = document.getElementById('sa-password').value; if (pwd === SUPER_ADMIN_PASSWORD) { sessionStorage.setItem('tw_super_admin_auth', '1'); renderSuperAdminPage(); } else { document.getElementById('sa-error').classList.add('show'); document.getElementById('sa-password').value = ''; } }); }
