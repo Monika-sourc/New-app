@@ -602,312 +602,167 @@ const cardLabels = {
 };
 
 // ═══════════════════════════════════════════════════════════
-// ★ NOUVEAU : ASSISTANT IA CONVERSATIONNEL — Dictionnaires de réponses multilingues
+// ★ NOUVEAU : ASSISTANT IA CONVERSATIONNEL — Dictionnaires multilingues
 // ═══════════════════════════════════════════════════════════
 const CHAT_LABELS = {
-  fr: { title: "Assistant Younited", subtitle: "En ligne · Réponse instantanée", placeholder: "Écrivez votre message...", send: "Envoyer", welcomeTitle: "Bienvenue !", welcomeBody: "Je suis votre assistant personnel disponible 24h/24 pour répondre à toutes vos questions. Posez-moi votre question." },
-  pl: { title: "Asystent Younited", subtitle: "Online · Natychmiastowa odpowiedź", placeholder: "Napisz wiadomość...", send: "Wyślij", welcomeTitle: "Witamy!", welcomeBody: "Jestem Twoim osobistym asystentem dostępnym 24/7, aby odpowiedzieć na wszystkie Twoje pytania. Zadaj mi pytanie." },
-  es: { title: "Asistente Younited", subtitle: "En línea · Respuesta instantánea", placeholder: "Escribe tu mensaje...", send: "Enviar", welcomeTitle: "¡Bienvenido!", welcomeBody: "Soy tu asistente personal disponible 24h/24 para responder a todas tus preguntas. Házmela." },
-  it: { title: "Assistente Younited", subtitle: "Online · Risposta istantanea", placeholder: "Scrivi il tuo messaggio...", send: "Invia", welcomeTitle: "Benvenuto!", welcomeBody: "Sono il tuo assistente personale disponibile 24/7 per rispondere a tutte le tue domande. Fammi la tua domanda." },
-  de: { title: "Younited Assistent", subtitle: "Online · Sofortige Antwort", placeholder: "Schreiben Sie Ihre Nachricht...", send: "Senden", welcomeTitle: "Willkommen!", welcomeBody: "Ich bin Ihr persönlicher Assistent, 24/7 verfügbar, um alle Ihre Fragen zu beantworten. Stellen Sie mir Ihre Frage." }
+  fr: { title: "Assistant IA Younited", subtitle: "Intelligence artificielle · En ligne 24/7", placeholder: "Écrivez votre message...", send: "Envoyer", welcomeTitle: "Bienvenue !", welcomeBody: "Je suis votre assistant IA personnel, disponible 24h/24 et 7j/7 pour répondre à toutes vos questions avec précision et rapidité. Posez-moi votre question." },
+  pl: { title: "Asystent AI Younited", subtitle: "Sztuczna inteligencja · Online 24/7", placeholder: "Napisz wiadomość...", send: "Wyślij", welcomeTitle: "Witamy!", welcomeBody: "Jestem Twoim osobistym asystentem AI, dostępnym 24/7, aby odpowiadać na wszystkie Twoje pytania z precyzją i szybkością. Zadaj mi pytanie." },
+  es: { title: "Asistente IA Younited", subtitle: "Inteligencia artificial · En línea 24/7", placeholder: "Escribe tu mensaje...", send: "Enviar", welcomeTitle: "¡Bienvenido!", welcomeBody: "Soy tu asistente personal de IA, disponible 24h/24 y 7j/7 para responder a todas tus preguntas con precisión y rapidez. Házmela." },
+  it: { title: "Assistente IA Younited", subtitle: "Intelligenza artificiale · Online 24/7", placeholder: "Scrivi il tuo messaggio...", send: "Invia", welcomeTitle: "Benvenuto!", welcomeBody: "Sono il tuo assistente personale IA, disponibile 24/7 per rispondere a tutte le tue domande con precisione e rapidità. Fammi la tua domanda." },
+  de: { title: "Younited KI-Assistent", subtitle: "Künstliche Intelligenz · Online 24/7", placeholder: "Schreiben Sie Ihre Nachricht...", send: "Senden", welcomeTitle: "Willkommen!", welcomeBody: "Ich bin Ihr persönlicher KI-Assistent, 24/7 verfügbar, um alle Ihre Fragen präzise und schnell zu beantworten. Stellen Sie mir Ihre Frage." }
 };
 
 const CHAT_RESPONSES = {
   fr: {
     greeting: [
-      "Bonjour et bienvenue ! 👋 Je suis Younited Assistant, votre conseiller personnel disponible 24h/24. Comment puis-je vous aider aujourd'hui ?",
-      "Bonjour ! 😊 Ravi de vous revoir. Je suis là pour répondre à toutes vos questions. Que puis-je faire pour vous ?",
-      "Salut ! 👋 Bienvenue chez Younited. Je suis à votre entière disposition pour vous accompagner. Posez-moi votre question !"
+      "Bonjour et bienvenue ! 👋 Je suis votre assistant IA Younited, disponible 24h/24. Comment puis-je vous aider aujourd'hui ?",
+      "Bonjour ! 😊 Ravi de vous revoir. Je suis là pour répondre à toutes vos questions avec précision. Que puis-je faire pour vous ?"
     ],
     thanks: [
-      "Avec grand plaisir ! 🙏 Je suis là pour vous aider à tout moment. N'hésitez pas à revenir si vous avez la moindre question.",
-      "C'est un honneur de vous aider ! 😊 N'hésitez surtout pas à me solliciter à nouveau. Bonne journée !",
-      "Je vous en prie ! ✨ Votre satisfaction est ma priorité. À votre service 24h/24."
+      "Avec grand plaisir ! 🙏 Je suis là pour vous à tout moment. N'hésitez pas à revenir.",
+      "C'est un honneur de vous aider ! 😊 Bonne journée et à bientôt."
     ],
     whoAreYou: [
-      "Je suis Younited Assistant, votre conseiller numérique personnel. Je suis disponible 24h/24 pour répondre à vos questions, vous rassurer et vous orienter. Je travaille en collaboration étroite avec le service administratif de Younited pour vous garantir la meilleure expérience possible. 💙",
-      "Je suis votre assistant Younited dédié. Mon rôle est de vous accompagner, vous informer et vous rassurer à chaque étape. Je reste à votre disposition pour toute question, quel que soit le moment. ✨"
+      "Je suis l'Assistant IA Younited — une intelligence artificielle de nouvelle génération, entraînée pour vous accompagner 24h/24. Je peux répondre à vos questions sur votre compte, les virements, la sécurité, les services Younited, et bien plus encore. Je travaille en synergie avec nos équipes pour vous offrir une expérience fluide et transparente. 💙"
     ],
-    fees: [
-      "Concernant les frais, je ne suis pas habilité à vous donner des informations précises. Les conditions actuelles sont celles disponibles actuellement, car de nombreuses personnes ont bénéficié d'un prêt auprès de notre service et n'ont pas encore remboursé à ce jour. Pour toute question relative aux frais, veuillez contacter directement notre service client ou notre service administratif, ils seront en mesure de vous fournir tous les détails nécessaires. 🙏",
-      "Je comprends tout à fait votre question sur les frais. Cependant, je ne peux pas vous expliquer précisément les détails de frais car cela relève de la compétence exclusive du service administratif. Les conditions actuelles sont celles disponibles actuellement étant donné que de nombreuses personnes ont bénéficié d'un prêt auprès de notre service et n'ont pas encore remboursé jusqu'à présent. Je vous invite donc vivement à contacter le service client ou le service administratif pour obtenir une réponse complète et personnalisée. 💙",
-      "Pour tout ce qui concerne les frais, je vous recommande de vous adresser directement au service client ou au service administratif. Les conditions actuelles sont celles disponibles actuellement car beaucoup de personnes ayant bénéficié d'un prêt auprès de notre service n'ont pas encore remboursé à ce jour. Ces services seront les seuls habilités à vous fournir une réponse précise et conforme à votre situation. Merci de votre compréhension. 🙏"
-    ],
-    security: [
-      "Votre sécurité est notre priorité absolue. 🔒 Toutes vos transactions sont protégées par un chiffrement de bout en bout et chaque opération est vérifiée par notre service de conformité. Vos données personnelles ne sont jamais partagées avec des tiers. Vous pouvez utiliser nos services en toute confiance. 💙",
-      "Nous prenons la sécurité de votre compte très au sérieux. 🛡️ Chaque connexion, chaque virement et chaque modification est surveillé par nos équipes. Votre argent et vos informations sont protégés en permanence. Vous êtes entre de bonnes mains."
+    existence: [
+      "Younited est un service financier établi et en pleine croissance, opérant à travers toute l'Europe. 🇪🇺 Nous accompagnons quotidiennement des milliers de clients avec des solutions de virement sécurisées, transparentes et vérifiées. Nos processus sont audités et supervisés par des équipes de conformité dédiées. Vous pouvez avoir une totale confiance : Younited est un partenaire sérieux et fiable. 💙",
+      "Absolument ! Younited est une plateforme financière réelle et pleinement opérationnelle. ✨ Chaque jour, des milliers de transactions sont traitées avec succès par nos services. Nous disposons d'une infrastructure bancaire solide et d'équipes professionnelles dédiées à votre satisfaction. Si vous avez des doutes, sachez que notre existence et notre sérieux sont confirmés par nos nombreux clients à travers l'Europe. Vous êtes entre de bonnes mains."
     ],
     trust: [
-      "Je comprends tout à fait votre inquiétude, et je tiens à vous rassurer : Younited est un service sérieux et fiable. 💙 Des milliers de clients nous font confiance quotidiennement. Notre service administratif travaille en permanence pour garantir la sécurité et la transparence de chaque opération. Si vous avez le moindre doute, n'hésitez pas à contacter directement notre service client, ils sauront vous rassurer personnellement. Vous n'êtes pas seul(e), nous sommes là pour vous.",
-      "Votre confiance est précieuse pour nous. ✨ Je tiens à vous assurer que nous mettons tout en œuvre pour vous offrir un service irréprochable et transparent. Chaque opération est vérifiée, chaque question trouve une réponse. Si jamais quelque chose vous préoccupe, contactez notre service administratif : ils sont habilités et formés pour vous apporter une réponse claire et rassurante. Prenez soin de vous, nous veillons sur vous. 🙏",
-      "Je vous entends parfaitement et je veux que vous vous sentiez en sécurité. 💙 Younited fonctionne avec des procédures strictes et transparentes. Notre équipe administrative est dédiée à votre satisfaction. Si vous avez besoin d'une confirmation officielle ou d'informations précises, n'hésitez jamais à contacter le service client ou le service administratif : ce sont vos interlocuteurs de confiance. Votre tranquillité d'esprit est notre priorité absolue."
+      "Je comprends parfaitement votre préoccupation et je tiens à vous rassurer en toute transparence : Younited est un service sérieux, établi et fiable. 💙 Des milliers de clients nous font confiance chaque jour pour leurs virements. Chaque opération est vérifiée par des équipes administratives dédiées, et notre infrastructure technique est sécurisée au plus haut niveau. Vous n'êtes pas seul(e) — nous mettons tout en œuvre pour vous offrir la meilleure expérience possible. 🙏",
+      "Votre confiance est essentielle pour nous et je veux être clair : Younited fonctionne avec des procédures strictes, transparentes et vérifiables. ✨ Nous avons accompagné de très nombreux clients avec succès. Si vous rencontrez un doute ou un problème spécifique, notre équipe administrative reste disponible pour approfondir votre dossier. Mais soyez assuré(e) : vous êtes entre de bonnes mains. 💙"
+    ],
+    security: [
+      "Votre sécurité est notre priorité absolue. 🔒 Toutes vos transactions sont protégées par un chiffrement de bout en bout (AES-256), et chaque opération est vérifiée par notre service de conformité. Vos données personnelles sont stockées de manière chiffrée et ne sont jamais partagées avec des tiers non autorisés. Vous pouvez utiliser nos services en toute confiance, 24h/24. 💙",
+      "Nous prenons la sécurité de votre compte très au sérieux. 🛡️ Chaque connexion est authentifiée, chaque virement est contrôlé, et nos serveurs respectent les normes bancaires les plus strictes. Votre argent et vos informations sont protégés en permanence. Vos opérations sont confidentielles et sécurisées. 🚀"
+    ],
+    fees: [
+      "Concernant les frais, je ne suis pas habilité à vous donner des informations précises. Les conditions actuelles sont celles disponibles actuellement, car de nombreuses personnes ont bénéficié d'un prêt auprès de notre service et n'ont pas encore remboursé à ce jour. Pour toute question relative aux frais, veuillez contacter directement notre service client ou notre service administratif : ils seront en mesure de vous fournir tous les détails nécessaires. 🙏",
+      "Je comprends tout à fait votre question sur les frais. Cependant, je ne peux pas vous expliquer précisément les détails de frais car cela relève de la compétence exclusive du service administratif. Les conditions actuelles sont celles disponibles actuellement, étant donné que de nombreuses personnes ont bénéficié d'un prêt auprès de notre service et n'ont pas encore remboursé jusqu'à présent. Je vous invite donc à contacter le service client ou le service administratif pour obtenir une réponse complète et personnalisée. 💙"
     ],
     loan: [
-      "Concernant les prêts et les conditions de crédit, je vous invite à contacter directement notre service client ou notre service administratif. Ils sont les seuls habilités à vous donner des informations précises et personnalisées selon votre profil. Les conditions actuelles sont celles disponibles actuellement. 🙏",
-      "Pour toute question sur les prêts, les conditions actuelles sont celles disponibles actuellement. De nombreuses personnes ont bénéficié d'un prêt auprès de notre service. Pour connaître les modalités exactes et votre éligibilité, je vous recommande de contacter le service administratif qui saura vous orienter précisément. 💙"
+      "Pour toute demande de prêt ou de crédit, notre service administratif sera votre meilleur interlocuteur. 💼 Il pourra étudier votre situation personnelle et vous proposer les meilleures conditions adaptées à votre profil. Les conditions actuelles sont celles disponibles actuellement. N'hésitez pas à le contacter directement pour une étude approfondie de votre dossier. 🙏"
     ],
     transfer: [
-      "Concernant les virements, voici comment cela fonctionne : 💸 après validation du code d'activation, votre virement est traité par notre service administratif. Le délai habituel est de 1 à 3 minutes après vérification finale, mais cela peut varier selon les banques destinataires. Vous pouvez suivre son statut à tout moment depuis l'historique des transactions. Si vous avez une question précise sur un virement en cours, contactez le service client. 🙏",
-      "Nos virements sont traités rapidement et en toute sécurité. ⚡ Une fois votre code d'activation validé, la transaction est vérifiée par notre équipe administrative puis envoyée à la banque bénéficiaire. Vous recevrez une confirmation par email. Pour toute question sur un virement spécifique, le service client reste à votre disposition. 💙"
+      "Les virements Younited sont traités de manière rapide et sécurisée. ⚡ Voici le déroulement : après validation de votre code d'activation, votre virement passe en phase de vérification par notre équipe, puis est transmis à la banque bénéficiaire. Le délai habituel est de 1 à 3 minutes après vérification finale. Vous pouvez suivre son statut dans l'historique des transactions. En cas de virement en attente de validation, vous serez notifié(e) par email. 💙",
+      "Nos virements sont sécurisés et traités avec une grande rigueur. 💸 Une fois votre code d'activation validé, la transaction est vérifiée puis envoyée. Vous recevrez une confirmation par email avec le reçu officiel. Le processus est transparent : vous pouvez à tout moment consulter l'état de vos virements depuis votre tableau de bord. 🚀"
     ],
     wait: [
-      "Je comprends votre impatience. ⏳ Chaque virement est vérifié avec le plus grand soin par notre service administratif pour garantir votre sécurité et celle de vos fonds. Ce processus peut prendre quelques instants. Si vous constatez un retard inhabituel, je vous invite à contacter directement le service client ou le service administratif : ils pourront vous donner un statut précis et personnalisé. Merci de votre patience. 🙏",
-      "Votre demande est bien prise en compte. ⏱️ Notre équipe traite chaque opération individuellement et avec attention. Les délais habituels sont respectés dans la grande majorité des cas. Si vous avez un doute sur un délai particulier, n'hésitez pas à contacter le service administratif : ils sont là pour vous accompagner. 💙"
+      "Je comprends votre impatience. ⏳ Chaque virement est vérifié avec soin par nos équipes pour garantir votre sécurité et celle de vos fonds. Dans la grande majorité des cas, les délais habituels sont respectés. Si vous constatez un délai inhabituel sur une opération précise, je vous invite à contacter le service client qui pourra vérifier votre dossier de manière individualisée. Merci de votre patience. 🙏",
+      "Votre demande est bien prise en compte. ⏱️ Notre équipe traite chaque opération avec attention. Les délais standard sont respectés dans la très grande majorité des situations. Si votre attente dépasse les délais habituels, le service administratif pourra consulter l'état précis de votre dossier. 💙"
     ],
     balance: [
-      "Vous pouvez consulter votre solde à tout moment sur la page d'accueil de votre application. 💰 Il se met à jour automatiquement dès qu'une opération est confirmée. Si vous constatez une différence ou avez un doute, contactez le service client qui pourra vérifier précisément votre compte. 🙏",
-      "Votre solde disponible est affiché en temps réel sur votre tableau de bord. 📊 Toute opération validée ou annulée est immédiatement reflétée. Pour toute question sur une transaction spécifique, le service administratif saura vous apporter une réponse détaillée. 💙"
+      "Vous pouvez consulter votre solde en temps réel sur la page d'accueil de votre application. 💰 Il se met automatiquement à jour dès qu'une opération est validée ou remboursée. Si vous remarquez une différence ou avez une question sur une transaction, n'hésitez pas à me préciser votre demande. 🙏"
     ],
     iban: [
-      "Vos coordonnées bancaires (IBAN, BIC) sont accessibles en un clic depuis la page d'accueil via le bouton « Voir mon IBAN ». 📄 Vous pouvez les copier et les partager en toute sécurité. Pour des raisons de sécurité, certaines informations peuvent être masquées. Si vous avez besoin d'une confirmation officielle, contactez le service administratif. 💙"
+      "Vos coordonnées bancaires (IBAN, BIC) sont accessibles en un clic depuis la page d'accueil via le bouton « Voir mon IBAN ». 📄 Vous pouvez les copier et les partager en toute sécurité avec vos correspondants. Pour des raisons de sécurité, certains caractères peuvent être masqués côté client — vous pouvez les afficher selon la configuration de votre compte. 💙"
     ],
     card: [
-      "Votre carte virtuelle est disponible dans la section « Carte virtuelle ». 💳 Elle est protégée et vous pouvez révéler les informations sensibles à tout moment. Pour toute question ou problème lié à votre carte, contactez le service client ou le service administratif. 🙏"
+      "Votre carte virtuelle est disponible dans la section « Carte virtuelle » de votre application. 💳 Elle vous permet d'effectuer des paiements en ligne en toute sécurité. Vous pouvez révéler les informations sensibles selon vos paramètres. Pour toute question spécifique sur votre carte, je reste à votre disposition. 🚀"
+    ],
+    services: [
+      "Younited vous propose une gamme complète de services financiers : 💼\n\n• **Virements internationaux** sécurisés et rapides\n• **Carte virtuelle** pour vos paiements en ligne\n• **Gestion de compte** en temps réel\n• **Support multilingue** (français, polonais, espagnol, italien, allemand)\n• **Sécurité bancaire** de haut niveau\n• **Assistance 24h/24** via votre assistant IA\n\nQue puis-je vous détailler ? 🚀"
     ],
     problem: [
-      "Je suis vraiment désolé(e) pour la difficulté que vous rencontrez. 🙏 Sachez que je vais tout mettre en œuvre pour vous orienter vers la bonne personne. Pour résoudre ce problème précis, je vous recommande chaleureusement de contacter directement notre service client ou notre service administratif : ils sont formés et habilités à traiter tous types de situations complexes. N'hésitez pas à leur expliquer en détail votre problème, ils prendront soin de vous. 💙",
-      "Je comprends tout à fait et je prends votre situation très au sérieux. 💙 Certaines situations demandent une assistance personnalisée. Pour cela, notre service administratif est votre meilleur interlocuteur : il pourra analyser votre dossier en profondeur et vous proposer une solution adaptée. Nous restons à votre entière disposition.",
-      "Votre satisfaction est notre priorité et je suis navré(e) que vous rencontriez un souci. 🙏 Pour tout problème spécifique ou complexe, le service client et le service administratif sont là pour vous. Ils disposent de tous les outils nécessaires pour vous apporter une réponse rapide et efficace. Ne restez surtout pas seul(e) face à cette situation."
+      "Je suis vraiment désolé(e) pour la difficulté que vous rencontrez. 🙏 Sachez que je prends votre situation très au sérieux. Pour résoudre ce problème précis, je vous recommande de contacter directement notre service client ou notre service administratif : ils sont formés et habilités à traiter tous types de situations complexes et personnalisées. N'hésitez pas à leur expliquer en détail votre situation — ils prendront soin de vous. 💙",
+      "Votre satisfaction est notre priorité et je suis navré(e) que vous rencontriez un souci. 💙 Certaines situations demandent une analyse personnalisée : notre service administratif est votre meilleur interlocuteur pour cela. Ils disposent de tous les outils nécessaires pour vous apporter une réponse rapide et efficace. N'hésitez surtout pas à les solliciter."
     ],
     fallback: [
-      "Merci pour votre message. 💙 Je prends bien note de votre demande. Pour vous apporter une réponse précise et personnalisée, je vous recommande de reformuler votre question ou de contacter directement notre service client ou notre service administratif. Ils seront les mieux placés pour vous aider en détail. 🙏",
-      "J'ai bien reçu votre message. ✨ Pour vous donner la meilleure réponse possible, pourriez-vous préciser votre question ? Si elle concerne un point spécifique (frais, prêt, virement, compte...), n'hésitez pas à contacter directement le service client ou le service administratif : ils sont vos interlocuteurs privilégiés. 🙏",
-      "Merci de votre confiance. 💙 Votre question est importante. Pour obtenir une réponse précise, je vous invite à contacter le service administratif qui pourra traiter votre demande en profondeur. En attendant, n'hésitez pas à me poser d'autres questions simples."
+      "Merci pour votre message. 💙 Je prends bien note de votre demande. Pouvez-vous me donner un peu plus de précisions pour que je puisse vous répondre au mieux ? Si votre question concerne un aspect très spécifique (compte, virement, sécurité, service), je ferai tout mon possible pour vous aider directement. 🙏",
+      "J'ai bien reçu votre message. ✨ Pour vous donner la réponse la plus précise possible, pourriez-vous reformuler ou préciser votre question ? Je peux répondre à de nombreux sujets : sécurité, virements, services, existence de Younited, fonctionnement de votre compte... Posez-moi votre question en détail. 💙"
     ]
   },
   pl: {
-    greeting: [
-      "Witaj i zapraszamy! 👋 Jestem Asystent Younited, Twój osobisty doradca dostępny 24/7. Jak mogę Ci dzisiaj pomóc?",
-      "Witaj! 😊 Cieszę się, że znów Cię widzę. Jestem tu, aby odpowiedzieć na wszystkie Twoje pytania. Co mogę dla Ciebie zrobić?",
-      "Cześć! 👋 Witamy w Younited. Jestem do Twojej dyspozycji. Zadaj mi swoje pytanie!"
-    ],
-    thanks: [
-      "Z wielką przyjemnością! 🙏 Jestem tu, aby Ci pomóc w każdej chwili. Zapraszam ponownie, jeśli będziesz mieć jakiekolwiek pytanie.",
-      "To dla mnie zaszczyt móc Ci pomóc! 😊 Zapraszam ponownie. Miłego dnia!",
-      "Proszę bardzo! ✨ Twoja satysfakcja jest moim priorytetem. Do Twoich usług 24/7."
-    ],
-    whoAreYou: [
-      "Jestem Asystent Younited, Twój osobisty doradca cyfrowy. Jestem dostępny 24/7, aby odpowiadać na Twoje pytania, uspokajać Cię i kierować. Współpracuję ściśle z działem administracji Younited, aby zapewnić Ci najlepsze możliwe doświadczenie. 💙",
-      "Jestem Twoim asystentem Younited. Moim zadaniem jest towarzyszyć Ci, informować i uspokajać na każdym etapie. Pozostaję do Twojej dyspozycji w każdej chwili. ✨"
-    ],
-    fees: [
-      "Jeśli chodzi o opłaty, nie jestem upoważniony do udzielania precyzyjnych informacji. Aktualne warunki to te obecnie dostępne, ponieważ wiele osób skorzystało z pożyczki w naszym serwisie i do dziś nie spłaciło. W przypadku wszelkich pytań dotyczących opłat prosimy o bezpośredni kontakt z naszym działem obsługi klienta lub działem administracji, które będą mogły udzielić szczegółowych informacji. 🙏",
-      "Rozumiem doskonale Twoje pytanie o opłaty. Nie mogę jednak wyjaśnić dokładnych szczegółów, ponieważ należy to do wyłącznej kompetencji działu administracji. Aktualne warunki to te obecnie dostępne, ponieważ wiele osób skorzystało z pożyczki w naszym serwisie i do dziś nie spłaciło. Zachęcam do kontaktu z działem obsługi klienta lub działem administracji. 💙",
-      "W sprawie wszystkich kwestii dotyczących opłat zalecam bezpośredni kontakt z działem obsługi klienta lub działem administracji. Aktualne warunki to te obecnie dostępne, ponieważ wiele osób, które skorzystały z pożyczki, do dziś nie spłaciło. Te działy są jedynymi upoważnionymi do udzielenia precyzyjnej odpowiedzi. Dziękuję za zrozumienie. 🙏"
-    ],
-    security: [
-      "Twoje bezpieczeństwo jest naszym absolutnym priorytetem. 🔒 Wszystkie transakcje są chronione szyfrowaniem end-to-end, a każda operacja jest weryfikowana przez nasz dział zgodności. Twoje dane osobowe nigdy nie są udostępniane osobom trzecim. Możesz korzystać z naszych usług z pełnym zaufaniem. 💙"
-    ],
-    trust: [
-      "Rozumiem doskonale Twoje obawy i chcę Cię uspokoić: Younited to poważna i niezawodna usługa. 💙 Tysiące klientów codziennie nam ufa. Nasz dział administracji pracuje nieustannie, aby zapewnić bezpieczeństwo i przejrzystość każdej operacji. Jeśli masz jakiekolwiek wątpliwości, skontaktuj się bezpośrednio z obsługą klienta. Nie jesteś sam(a), jesteśmy tu dla Ciebie.",
-      "Twoje zaufanie jest dla nas cenne. ✨ Zapewniam Cię, że robimy wszystko, aby zapewnić nienaganną i przejrzystą obsługę. Każda operacja jest weryfikowana, każde pytanie znajduje odpowiedź. Jeśli coś Cię niepokoi, skontaktuj się z naszym działem administracji. Dbaj o siebie, czuwamy nad Tobą. 🙏"
-    ],
-    loan: [
-      "W sprawie pożyczek i warunków kredytu zachęcam do bezpośredniego kontaktu z działem obsługi klienta lub działem administracji. Tylko oni są upoważnieni do udzielania precyzyjnych i spersonalizowanych informacji. Aktualne warunki to te obecnie dostępne. 🙏"
-    ],
-    transfer: [
-      "Jeśli chodzi o przelewy: 💸 po zatwierdzeniu kodu aktywacyjnego przelew jest przetwarzany przez nasz dział administracji. Zwykły czas to 1-3 minuty po weryfikacji końcowej. Możesz śledzić jego status w historii transakcji. W przypadku pytań skontaktuj się z obsługą klienta. 🙏"
-    ],
-    wait: [
-      "Rozumiem Twoją niecierpliwość. ⏳ Każdy przelew jest weryfikowany z największą starannością. Jeśli zauważysz nietypowe opóźnienie, skontaktuj się z obsługą klienta lub działem administracji. Dziękuję za cierpliwość. 🙏"
-    ],
-    balance: [
-      "Możesz sprawdzić swoje saldo w każdej chwili na stronie głównej aplikacji. 💰 Aktualizuje się automatycznie. W razie wątpliwości skontaktuj się z obsługą klienta. 🙏"
-    ],
-    iban: [
-      "Twoje dane bankowe (IBAN, BIC) są dostępne jednym kliknięciem ze strony głównej za pomocą przycisku «Zobacz mój IBAN». 📄 Możesz je kopiować i udostępniać bezpiecznie. 💙"
-    ],
-    card: [
-      "Twoja karta wirtualna jest dostępna w sekcji «Karta wirtualna». 💳 W przypadku pytań lub problemów z kartą skontaktuj się z obsługą klienta. 🙏"
-    ],
-    problem: [
-      "Bardzo mi przykro z powodu trudności, których doświadczasz. 🙏 Zachęcam do bezpośredniego kontaktu z obsługą klienta lub działem administracji: są szkoleni i upoważnieni do rozwiązywania wszystkich złożonych sytuacji. 💙",
-      "Rozumiem doskonale i traktuję Twoją sytuację bardzo poważnie. 💙 Niektóre sytuacje wymagają spersonalizowanej pomocy. Dział administracji to Twój najlepszy rozmówca. Pozostajemy do Twojej dyspozycji. 🙏"
-    ],
-    fallback: [
-      "Dziękuję za wiadomość. 💙 Aby udzielić precyzyjnej i spersonalizowanej odpowiedzi, zalecam przeformułowanie pytania lub bezpośredni kontakt z obsługą klienta lub działem administracji. 🙏",
-      "Otrzymałem Twoją wiadomość. ✨ Czy możesz sprecyzować pytanie? W przypadku konkretnych kwestii skontaktuj się z obsługą klienta. 🙏"
-    ]
+    greeting: ["Witaj! 👋 Jestem Twoim asystentem AI Younited, dostępnym 24/7. Jak mogę Ci pomóc?", "Witaj ponownie! 😊 Odpowiem na wszystkie Twoje pytania z precyzją. W czym mogę pomóc?"],
+    thanks: ["Z przyjemnością! 🙏 Zapraszam ponownie.", "To dla mnie zaszczyt! 😊 Miłego dnia!"],
+    whoAreYou: ["Jestem Asystentem AI Younited — sztuczną inteligencją nowej generacji, wytrenowaną, aby Ci towarzyszyć 24/7. Mogę odpowiadać na Twoje pytania dotyczące konta, przelewów, bezpieczeństwa, usług Younited i wielu innych. 💙"],
+    existence: ["Younited to ugruntowana i prężnie rozwijająca się usługa finansowa działająca w całej Europie. 🇪🇺 Codziennie obsługujemy tysiące klientów dzięki bezpiecznym i przejrzystym rozwiązaniom do przelewów. Możesz mieć pełne zaufanie: Younited to poważny i niezawodny partner. 💙"],
+    trust: ["Rozumiem Twoje obawy i chcę Cię zapewnić: Younited to poważna, ugruntowana i niezawodna usługa. 💙 Tysiące klientów ufa nam codziennie. Każda operacja jest weryfikowana przez dedykowane zespoły administracyjne. Nie jesteś sam(a) — robimy wszystko, aby zapewnić Ci najlepsze doświadczenie. 🙏"],
+    security: ["Twoje bezpieczeństwo jest naszym absolutnym priorytetem. 🔒 Wszystkie transakcje są chronione szyfrowaniem end-to-end. Twoje dane osobowe nigdy nie są udostępniane osobom trzecim. 💙"],
+    fees: ["Jeśli chodzi o opłaty, nie jestem upoważniony do udzielania precyzyjnych informacji. Aktualne warunki to te obecnie dostępne, ponieważ wiele osób skorzystało z pożyczki w naszym serwisie i do dziś nie spłaciło. W przypadku pytań dotyczących opłat prosimy o bezpośredni kontakt z obsługą klienta lub działem administracji. 🙏"],
+    loan: ["W sprawie pożyczek dział administracji będzie Twoim najlepszym rozmówcą. 💼 Może zbadać Twoją sytuację osobistą i zaproponować najlepsze warunki. Aktualne warunki to te obecnie dostępne. 🙏"],
+    transfer: ["Przelewy Younited są przetwarzane szybko i bezpiecznie. ⚡ Po zatwierdzeniu kodu aktywacyjnego przelew przechodzi przez weryfikację, a następnie jest przekazywany do banku odbiorcy. Zwykły czas to 1-3 minuty. 💙"],
+    wait: ["Rozumiem Twoją niecierpliwość. ⏳ Każdy przelew jest dokładnie weryfikowany. W większości przypadków standardowe terminy są dotrzymywane. 🙏"],
+    balance: ["Możesz sprawdzić swoje saldo w czasie rzeczywistym na stronie głównej. 💰 Aktualizuje się automatycznie. 🙏"],
+    iban: ["Twoje dane bankowe (IBAN, BIC) są dostępne jednym kliknięciem ze strony głównej. 📄 Możesz je bezpiecznie kopiować i udostępniać. 💙"],
+    card: ["Twoja karta wirtualna jest dostępna w sekcji «Karta wirtualna». 💳 Umożliwia bezpieczne płatności online. 🚀"],
+    services: ["Younited oferuje pełen zakres usług finansowych: 💼\n\n• **Przelewy międzynarodowe** bezpieczne i szybkie\n• **Karta wirtualna** do płatności online\n• **Zarządzanie kontem** w czasie rzeczywistym\n• **Wsparcie wielojęzyczne**\n• **Bezpieczeństwo bankowe** na wysokim poziomie\n• **Pomoc 24/7**\n\nCo mogę Ci szczegółowo wyjaśnić? 🚀"],
+    problem: ["Bardzo mi przykro z powodu trudności. 🙏 Zachęcam do bezpośredniego kontaktu z obsługą klienta: są szkoleni, aby rozwiązywać wszystkie złożone sytuacje. 💙"],
+    fallback: ["Dziękuję za wiadomość. 💙 Czy możesz sprecyzować pytanie? Mogę odpowiedzieć na wiele tematów. 🙏"]
   },
   es: {
-    greeting: [
-      "¡Hola y bienvenido! 👋 Soy Asistente Younited, tu asesor personal disponible 24h/24. ¿Cómo puedo ayudarte hoy?",
-      "¡Hola! 😊 Encantado de verte de nuevo. Estoy aquí para responder a todas tus preguntas. ¿Qué puedo hacer por ti?",
-      "¡Hola! 👋 Bienvenido a Younited. Estoy a tu entera disposición. ¡Hazme tu pregunta!"
-    ],
-    thanks: [
-      "¡Con mucho gusto! 🙏 Estoy aquí para ayudarte en cualquier momento. Vuelve si tienes alguna pregunta.",
-      "¡Es un honor ayudarte! 😊 No dudes en solicitarme de nuevo. ¡Buen día!",
-      "¡De nada! ✨ Tu satisfacción es mi prioridad. A tu servicio 24h/24."
-    ],
-    whoAreYou: [
-      "Soy Asistente Younited, tu asesor digital personal. Estoy disponible 24h/24 para responder a tus preguntas, tranquilizarte y orientarte. Trabajo en estrecha colaboración con el servicio administrativo de Younited. 💙",
-      "Soy tu asistente Younited dedicado. Mi función es acompañarte, informarte y tranquilizarte en cada etapa. ✨"
-    ],
-    fees: [
-      "En cuanto a las tarifas, no estoy facultado para darte información precisa. Las condiciones actuales son las disponibles actualmente, porque muchas personas se beneficiaron de un préstamo con nuestro servicio y hasta hoy no han reembolsado. Para cualquier pregunta sobre las tarifas, contacta directamente con nuestro servicio al cliente o servicio administrativo, ellos podrán darte todos los detalles necesarios. 🙏",
-      "Entiendo perfectamente tu pregunta sobre las tarifas. Sin embargo, no puedo explicarte los detalles exactos porque es competencia exclusiva del servicio administrativo. Las condiciones actuales son las disponibles actualmente dado que muchas personas se beneficiaron de un préstamo y no han reembolsado hasta hoy. Te invito a contactar con el servicio al cliente. 💙",
-      "Para todo lo relacionado con tarifas, te recomiendo contactar directamente con el servicio al cliente o el servicio administrativo. Las condiciones actuales son las disponibles actualmente porque muchas personas que se beneficiaron de un préstamo no han reembolsado hasta la fecha. Solo estos servicios están facultados para darte una respuesta precisa. 🙏"
-    ],
-    security: [
-      "Tu seguridad es nuestra prioridad absoluta. 🔒 Todas tus transacciones están protegidas con cifrado de extremo a extremo. Tus datos personales nunca se comparten con terceros. Puedes usar nuestros servicios con total confianza. 💙"
-    ],
-    trust: [
-      "Entiendo perfectamente tu preocupación y quiero tranquilizarte: Younited es un servicio serio y fiable. 💙 Miles de clientes confían en nosotros cada día. Si tienes alguna duda, contacta directamente con nuestro servicio al cliente, sabrán tranquilizarte. No estás solo(a), estamos aquí para ti.",
-      "Tu confianza es valiosa para nosotros. ✨ Quiero asegurarte que hacemos todo lo posible para ofrecerte un servicio impecable y transparente. Si algo te preocupa, contacta con nuestro servicio administrativo. Cuídate, velamos por ti. 🙏"
-    ],
-    loan: [
-      "Sobre los préstamos y las condiciones de crédito, te invito a contactar directamente con nuestro servicio al cliente o servicio administrativo. Solo ellos están facultados para darte información precisa y personalizada. Las condiciones actuales son las disponibles actualmente. 🙏"
-    ],
-    transfer: [
-      "Sobre las transferencias: 💸 después de validar el código de activación, tu transferencia es procesada por nuestro servicio administrativo. El tiempo habitual es de 1 a 3 minutos. Puedes seguir su estado en el historial. Para preguntas específicas, contacta con el servicio al cliente. 🙏"
-    ],
-    wait: [
-      "Entiendo tu impaciencia. ⏳ Cada transferencia es verificada con el mayor cuidado. Si notas un retraso inusual, contacta con el servicio al cliente o el servicio administrativo. Gracias por tu paciencia. 🙏"
-    ],
-    balance: [
-      "Puedes consultar tu saldo en cualquier momento en la página de inicio. 💰 Se actualiza automáticamente. En caso de duda, contacta con el servicio al cliente. 🙏"
-    ],
-    iban: [
-      "Tus datos bancarios (IBAN, BIC) están accesibles con un clic desde la página de inicio con el botón «Ver mi IBAN». 📄 Puedes copiarlos y compartirlos con total seguridad. 💙"
-    ],
-    card: [
-      "Tu tarjeta virtual está disponible en la sección «Tarjeta virtual». 💳 Para cualquier pregunta o problema, contacta con el servicio al cliente. 🙏"
-    ],
-    problem: [
-      "Lamento mucho la dificultad que encuentras. 🙏 Te recomiendo contactar directamente con nuestro servicio al cliente o servicio administrativo: están formados para tratar todas las situaciones complejas. 💙",
-      "Entiendo perfectamente y tomo tu situación muy en serio. 💙 Algunas situaciones requieren asistencia personalizada. El servicio administrativo es tu mejor interlocutor. Permanecemos a tu entera disposición. 🙏"
-    ],
-    fallback: [
-      "Gracias por tu mensaje. 💙 Para darte una respuesta precisa y personalizada, te recomiendo reformular tu pregunta o contactar directamente con el servicio al cliente o el servicio administrativo. 🙏",
-      "He recibido tu mensaje. ✨ ¿Puedes precisar tu pregunta? Para puntos específicos, contacta con el servicio al cliente. 🙏"
-    ]
+    greeting: ["¡Hola y bienvenido! 👋 Soy tu asistente IA Younited, disponible 24h/24. ¿Cómo puedo ayudarte?", "¡Hola de nuevo! 😊 Responderé a todas tus preguntas con precisión. ¿Qué necesitas?"],
+    thanks: ["¡Con mucho gusto! 🙏 Vuelve cuando quieras.", "¡Un honor ayudarte! 😊 ¡Buen día!"],
+    whoAreYou: ["Soy el Asistente IA Younited — una inteligencia artificial de nueva generación, entrenada para acompañarte 24h/24. Puedo responder a tus preguntas sobre tu cuenta, transferencias, seguridad, servicios Younited y mucho más. 💙"],
+    existence: ["Younited es un servicio financiero establecido y en pleno crecimiento que opera en toda Europa. 🇪🇺 Atendemos diariamente a miles de clientes con soluciones de transferencia seguras y verificadas. Puedes tener total confianza: Younited es un socio serio y fiable. 💙"],
+    trust: ["Comprendo tu preocupación y quiero asegurarte: Younited es un servicio serio, establecido y fiable. 💙 Miles de clientes confían en nosotros cada día. Cada operación es verificada por equipos administrativos dedicados. No estás solo(a). 🙏"],
+    security: ["Tu seguridad es nuestra prioridad absoluta. 🔒 Todas tus transacciones están protegidas con cifrado end-to-end. Tus datos nunca se comparten con terceros. 💙"],
+    fees: ["En cuanto a las tarifas, no estoy facultado para darte información precisa. Las condiciones actuales son las disponibles actualmente, porque muchas personas se beneficiaron de un préstamo con nuestro servicio y hasta hoy no han reembolsado. Para preguntas sobre tarifas, contacta directamente con el servicio al cliente o el servicio administrativo. 🙏"],
+    loan: ["Para préstamos, el servicio administrativo será tu mejor interlocutor. 💼 Podrá estudiar tu situación personal. Las condiciones actuales son las disponibles actualmente. 🙏"],
+    transfer: ["Las transferencias Younited se procesan de forma rápida y segura. ⚡ Tras validar tu código de activación, la transferencia es verificada y enviada. El tiempo habitual es de 1 a 3 minutos. 💙"],
+    wait: ["Comprendo tu impaciencia. ⏳ Cada transferencia es verificada con cuidado. En la mayoría de los casos, los plazos se respetan. 🙏"],
+    balance: ["Puedes consultar tu saldo en tiempo real en la página de inicio. 💰 Se actualiza automáticamente. 🙏"],
+    iban: ["Tus datos bancarios (IBAN, BIC) están accesibles con un clic desde la página de inicio. 📄 Puedes copiarlos y compartirlos con seguridad. 💙"],
+    card: ["Tu tarjeta virtual está disponible en la sección «Tarjeta virtual». 💳 Te permite realizar pagos en línea con seguridad. 🚀"],
+    services: ["Younited ofrece una gama completa de servicios financieros: 💼\n\n• **Transferencias internacionales** seguras y rápidas\n• **Tarjeta virtual** para pagos en línea\n• **Gestión de cuenta** en tiempo real\n• **Soporte multilingüe**\n• **Seguridad bancaria** de alto nivel\n• **Asistencia 24/7**\n\n¿Qué te gustaría saber? 🚀"],
+    problem: ["Lamento mucho la dificultad. 🙏 Te recomiendo contactar directamente con el servicio al cliente: están formados para tratar todas las situaciones complejas. 💙"],
+    fallback: ["Gracias por tu mensaje. 💙 ¿Puedes precisar tu pregunta? Puedo responder a muchos temas. 🙏"]
   },
   it: {
-    greeting: [
-      "Benvenuto! 👋 Sono Assistente Younited, il tuo consulente personale disponibile 24/7. Come posso aiutarti oggi?",
-      "Ciao! 😊 Felice di rivederti. Sono qui per rispondere a tutte le tue domande. Cosa posso fare per te?",
-      "Ciao! 👋 Benvenuto in Younited. Sono a tua completa disposizione. Fammi la tua domanda!"
-    ],
-    thanks: [
-      "Con molto piacere! 🙏 Sono qui per aiutarti in ogni momento. Torna se hai qualsiasi domanda.",
-      "È un onore aiutarti! 😊 Non esitare a contattarmi di nuovo. Buona giornata!",
-      "Prego! ✨ La tua soddisfazione è la mia priorità. Al tuo servizio 24/7."
-    ],
-    whoAreYou: [
-      "Sono Assistente Younited, il tuo consulente digitale personale. Sono disponibile 24/7 per rispondere alle tue domande, rassicurarti e orientarti. Collaboro strettamente con il servizio amministrativo di Younited. 💙",
-      "Sono il tuo assistente Younited dedicato. Il mio ruolo è accompagnarti, informarti e rassicurarti in ogni fase. ✨"
-    ],
-    fees: [
-      "Per quanto riguarda le commissioni, non sono autorizzato a darti informazioni precise. Le condizioni attuali sono quelle attualmente disponibili, perché molte persone hanno beneficiato di un prestito con il nostro servizio e ad oggi non hanno ancora rimborsato. Per qualsiasi domanda sulle commissioni, ti preghiamo di contattare direttamente il nostro servizio clienti o servizio amministrativo, saranno in grado di fornirti tutti i dettagli necessari. 🙏",
-      "Comprendo perfettamente la tua domanda sulle commissioni. Tuttavia, non posso spiegarti i dettagli esatti perché è competenza esclusiva del servizio amministrativo. Le condizioni attuali sono quelle attualmente disponibili dato che molte persone hanno beneficiato di un prestito e non hanno ancora rimborsato. Ti invito a contattare il servizio clienti. 💙",
-      "Per tutto ciò che riguarda le commissioni, ti raccomando di contattare direttamente il servizio clienti o il servizio amministrativo. Le condizioni attuali sono quelle attualmente disponibili perché molte persone che hanno beneficiato di un prestito non hanno ancora rimborsato. Solo questi servizi sono autorizzati a darti una risposta precisa. 🙏"
-    ],
-    security: [
-      "La tua sicurezza è la nostra priorità assoluta. 🔒 Tutte le tue transazioni sono protette con crittografia end-to-end. I tuoi dati personali non vengono mai condivisi con terzi. Puoi usare i nostri servizi con totale fiducia. 💙"
-    ],
-    trust: [
-      "Comprendo perfettamente la tua preoccupazione e voglio rassicurarti: Younited è un servizio serio e affidabile. 💙 Migliaia di clienti si fidano di noi ogni giorno. Se hai dubbi, contatta direttamente il nostro servizio clienti. Non sei solo(a), siamo qui per te.",
-      "La tua fiducia è preziosa per noi. ✨ Ti assicuro che facciamo tutto il possibile per offrirti un servizio impeccabile e trasparente. Se qualcosa ti preoccupa, contatta il nostro servizio amministrativo. Prenditi cura di te, vegliamo su di te. 🙏"
-    ],
-    loan: [
-      "Per quanto riguarda i prestiti e le condizioni di credito, ti invito a contattare direttamente il nostro servizio clienti o servizio amministrativo. Solo loro sono autorizzati a darti informazioni precise e personalizzate. Le condizioni attuali sono quelle attualmente disponibili. 🙏"
-    ],
-    transfer: [
-      "Per quanto riguarda i bonifici: 💸 dopo la convalida del codice di attivazione, il bonifico viene elaborato dal nostro servizio amministrativo. Il tempo abituale è di 1-3 minuti. Puoi seguirne lo stato nella cronologia. Per domande specifiche, contatta il servizio clienti. 🙏"
-    ],
-    wait: [
-      "Comprendo la tua impazienza. ⏳ Ogni bonifico viene verificato con la massima cura. Se noti un ritardo insolito, contatta il servizio clienti o il servizio amministrativo. Grazie per la pazienza. 🙏"
-    ],
-    balance: [
-      "Puoi consultare il tuo saldo in qualsiasi momento nella pagina iniziale. 💰 Si aggiorna automaticamente. In caso di dubbio, contatta il servizio clienti. 🙏"
-    ],
-    iban: [
-      "I tuoi dati bancari (IBAN, BIC) sono accessibili con un clic dalla pagina iniziale tramite il pulsante «Vedi il mio IBAN». 📄 Puoi copiarli e condividerli in tutta sicurezza. 💙"
-    ],
-    card: [
-      "La tua carta virtuale è disponibile nella sezione «Carta virtuale». 💳 Per qualsiasi domanda o problema, contatta il servizio clienti. 🙏"
-    ],
-    problem: [
-      "Mi dispiace molto per la difficoltà che stai riscontrando. 🙏 Ti raccomando di contattare direttamente il nostro servizio clienti o servizio amministrativo: sono formati per gestire tutte le situazioni complesse. 💙",
-      "Comprendo perfettamente e prendo la tua situazione molto sul serio. 💙 Alcune situazioni richiedono assistenza personalizzata. Il servizio amministrativo è il tuo miglior interlocutore. Restiamo a tua completa disposizione. 🙏"
-    ],
-    fallback: [
-      "Grazie per il tuo messaggio. 💙 Per darti una risposta precisa e personalizzata, ti raccomando di riformulare la domanda o contattare direttamente il servizio clienti o il servizio amministrativo. 🙏",
-      "Ho ricevuto il tuo messaggio. ✨ Puoi precisare la tua domanda? Per punti specifici, contatta il servizio clienti. 🙏"
-    ]
+    greeting: ["Benvenuto! 👋 Sono il tuo assistente IA Younited, disponibile 24/7. Come posso aiutarti?", "Ciao di nuovo! 😊 Risponderò a tutte le tue domande con precisione. Cosa ti serve?"],
+    thanks: ["Con molto piacere! 🙏 Torna quando vuoi.", "Un onore aiutarti! 😊 Buona giornata!"],
+    whoAreYou: ["Sono l'Assistente IA Younited — un'intelligenza artificiale di nuova generazione, addestrata per accompagnarti 24/7. Posso rispondere alle tue domande su conto, bonifici, sicurezza, servizi Younited e molto altro. 💙"],
+    existence: ["Younited è un servizio finanziario consolidato e in piena crescita, operante in tutta Europa. 🇪🇺 Ogni giorno serviamo migliaia di clienti con soluzioni di bonifico sicure e verificate. Puoi avere totale fiducia: Younited è un partner serio e affidabile. 💙"],
+    trust: ["Comprendo la tua preoccupazione e voglio rassicurarti: Younited è un servizio serio, consolidato e affidabile. 💙 Migliaia di clienti si fidano di noi ogni giorno. Non sei solo(a). 🙏"],
+    security: ["La tua sicurezza è la nostra priorità assoluta. 🔒 Tutte le transazioni sono protette con crittografia end-to-end. I tuoi dati non vengono mai condivisi con terzi. 💙"],
+    fees: ["Per quanto riguarda le commissioni, non sono autorizzato a darti informazioni precise. Le condizioni attuali sono quelle attualmente disponibili, perché molte persone hanno beneficiato di un prestito e ad oggi non hanno ancora rimborsato. Per domande sulle commissioni, contatta direttamente il servizio clienti o il servizio amministrativo. 🙏"],
+    loan: ["Per i prestiti, il servizio amministrativo sarà il tuo miglior interlocutore. 💼 Potrà studiare la tua situazione personale. Le condizioni attuali sono quelle attualmente disponibili. 🙏"],
+    transfer: ["I bonifici Younited sono elaborati in modo rapido e sicuro. ⚡ Dopo la convalida del codice di attivazione, il bonifico viene verificato e inviato. Il tempo abituale è di 1-3 minuti. 💙"],
+    wait: ["Comprendo la tua impazienza. ⏳ Ogni bonifico viene verificato con cura. Nella maggior parte dei casi, i tempi vengono rispettati. 🙏"],
+    balance: ["Puoi consultare il tuo saldo in tempo reale dalla pagina iniziale. 💰 Si aggiorna automaticamente. 🙏"],
+    iban: ["I tuoi dati bancari (IBAN, BIC) sono accessibili con un clic dalla pagina iniziale. 📄 Puoi copiarli e condividerli in sicurezza. 💙"],
+    card: ["La tua carta virtuale è disponibile nella sezione «Carta virtuale». 💳 Ti permette di effettuare pagamenti online in sicurezza. 🚀"],
+    services: ["Younited offre una gamma completa di servizi finanziari: 💼\n\n• **Bonifici internazionali** sicuri e rapidi\n• **Carta virtuale** per pagamenti online\n• **Gestione conto** in tempo reale\n• **Supporto multilingue**\n• **Sicurezza bancaria** di alto livello\n• **Assistenza 24/7**\n\nCosa ti interessa sapere? 🚀"],
+    problem: ["Mi dispiace molto per la difficoltà. 🙏 Ti raccomando di contattare direttamente il servizio clienti: sono formati per gestire tutte le situazioni complesse. 💙"],
+    fallback: ["Grazie per il tuo messaggio. 💙 Puoi precisare la tua domanda? Posso rispondere a molti argomenti. 🙏"]
   },
   de: {
-    greeting: [
-      "Hallo und willkommen! 👋 Ich bin Younited Assistent, Ihr persönlicher Berater, 24/7 verfügbar. Wie kann ich Ihnen heute helfen?",
-      "Hallo! 😊 Schön, Sie wiederzusehen. Ich bin hier, um alle Ihre Fragen zu beantworten. Was kann ich für Sie tun?",
-      "Hallo! 👋 Willkommen bei Younited. Ich stehe Ihnen zur Verfügung. Stellen Sie mir Ihre Frage!"
-    ],
-    thanks: [
-      "Mit größtem Vergnügen! 🙏 Ich bin hier, um Ihnen jederzeit zu helfen. Kommen Sie wieder, wenn Sie eine Frage haben.",
-      "Es ist mir eine Ehre, Ihnen zu helfen! 😊 Zögern Sie nicht, mich erneut zu kontaktieren. Schönen Tag!",
-      "Gern geschehen! ✨ Ihre Zufriedenheit ist meine Priorität. Zu Ihren Diensten, 24/7."
-    ],
-    whoAreYou: [
-      "Ich bin Younited Assistent, Ihr persönlicher digitaler Berater. Ich bin 24/7 verfügbar, um Ihre Fragen zu beantworten, Sie zu beruhigen und zu orientieren. Ich arbeite eng mit der Verwaltungsabteilung von Younited zusammen. 💙",
-      "Ich bin Ihr engagierter Younited-Assistent. Meine Aufgabe ist es, Sie auf jedem Schritt zu begleiten, zu informieren und zu beruhigen. ✨"
-    ],
-    fees: [
-      "Bezüglich der Gebühren bin ich nicht befugt, Ihnen genaue Informationen zu geben. Die aktuellen Bedingungen sind die derzeit verfügbaren, da viele Personen einen Kredit bei unserem Service in Anspruch genommen haben und bis heute nicht zurückgezahlt haben. Für alle Fragen zu Gebühren wenden Sie sich bitte direkt an unseren Kundenservice oder unsere Verwaltungsabteilung; sie können Ihnen alle notwendigen Details liefern. 🙏",
-      "Ich verstehe Ihre Frage zu den Gebühren vollkommen. Ich kann Ihnen jedoch keine genauen Details erläutern, da dies ausschließlich in die Zuständigkeit der Verwaltungsabteilung fällt. Die aktuellen Bedingungen sind die derzeit verfügbaren, da viele Personen einen Kredit in Anspruch genommen haben und bis heute nicht zurückgezahlt haben. Bitte wenden Sie sich an den Kundenservice. 💙",
-      "Für alles, was Gebühren betrifft, empfehle ich Ihnen, sich direkt an den Kundenservice oder die Verwaltungsabteilung zu wenden. Die aktuellen Bedingungen sind die derzeit verfügbaren, da viele Personen, die einen Kredit in Anspruch genommen haben, bis heute nicht zurückgezahlt haben. Nur diese Abteilungen sind befugt, Ihnen eine genaue Antwort zu geben. 🙏"
-    ],
-    security: [
-      "Ihre Sicherheit hat für uns absolute Priorität. 🔒 Alle Ihre Transaktionen sind durch Ende-zu-Ende-Verschlüsselung geschützt. Ihre persönlichen Daten werden niemals an Dritte weitergegeben. Sie können unsere Dienste mit vollem Vertrauen nutzen. 💙"
-    ],
-    trust: [
-      "Ich verstehe Ihre Besorgnis vollkommen und möchte Sie beruhigen: Younited ist ein seriöser und zuverlässiger Service. 💙 Tausende Kunden vertrauen uns täglich. Wenn Sie Zweifel haben, wenden Sie sich direkt an unseren Kundenservice, sie werden Sie beruhigen. Sie sind nicht allein, wir sind für Sie da.",
-      "Ihr Vertrauen ist uns wertvoll. ✨ Ich versichere Ihnen, dass wir alles tun, um Ihnen einen einwandfreien und transparenten Service zu bieten. Wenn Sie etwas beunruhigt, kontaktieren Sie unsere Verwaltungsabteilung. Passen Sie auf sich auf, wir wachen über Sie. 🙏"
-    ],
-    loan: [
-      "Zu Krediten und Kreditbedingungen lade ich Sie ein, sich direkt an unseren Kundenservice oder unsere Verwaltungsabteilung zu wenden. Nur sie sind befugt, Ihnen genaue und personalisierte Informationen zu geben. Die aktuellen Bedingungen sind die derzeit verfügbaren. 🙏"
-    ],
-    transfer: [
-      "Zu Überweisungen: 💸 nach Validierung des Aktivierungscodes wird Ihre Überweisung von unserer Verwaltungsabteilung bearbeitet. Die übliche Zeit beträgt 1-3 Minuten. Sie können den Status im Verlauf verfolgen. Für spezifische Fragen wenden Sie sich an den Kundenservice. 🙏"
-    ],
-    wait: [
-      "Ich verstehe Ihre Ungeduld. ⏳ Jede Überweisung wird mit größter Sorgfalt geprüft. Wenn Sie eine ungewöhnliche Verzögerung feststellen, kontaktieren Sie den Kundenservice oder die Verwaltungsabteilung. Vielen Dank für Ihre Geduld. 🙏"
-    ],
-    balance: [
-      "Sie können Ihr Guthaben jederzeit auf der Startseite einsehen. 💰 Es wird automatisch aktualisiert. Bei Zweifeln kontaktieren Sie den Kundenservice. 🙏"
-    ],
-    iban: [
-      "Ihre Bankdaten (IBAN, BIC) sind mit einem Klick von der Startseite über die Schaltfläche «Meine IBAN anzeigen» zugänglich. 📄 Sie können sie sicher kopieren und teilen. 💙"
-    ],
-    card: [
-      "Ihre virtuelle Karte ist im Bereich «Virtuelle Karte» verfügbar. 💳 Bei Fragen oder Problemen kontaktieren Sie den Kundenservice. 🙏"
-    ],
-    problem: [
-      "Es tut mir sehr leid für die Schwierigkeit, die Sie erleben. 🙏 Ich empfehle Ihnen, sich direkt an unseren Kundenservice oder unsere Verwaltungsabteilung zu wenden: Sie sind geschult, um alle komplexen Situationen zu behandeln. 💙",
-      "Ich verstehe vollkommen und nehme Ihre Situation sehr ernst. 💙 Einige Situationen erfordern personalisierte Unterstützung. Die Verwaltungsabteilung ist Ihr bester Ansprechpartner. Wir stehen Ihnen vollständig zur Verfügung. 🙏"
-    ],
-    fallback: [
-      "Vielen Dank für Ihre Nachricht. 💙 Um Ihnen eine präzise und personalisierte Antwort zu geben, empfehle ich Ihnen, Ihre Frage neu zu formulieren oder sich direkt an den Kundenservice oder die Verwaltungsabteilung zu wenden. 🙏",
-      "Ich habe Ihre Nachricht erhalten. ✨ Können Sie Ihre Frage präzisieren? Für spezifische Punkte kontaktieren Sie den Kundenservice. 🙏"
-    ]
+    greeting: ["Hallo und willkommen! 👋 Ich bin Ihr Younited KI-Assistent, 24/7 verfügbar. Wie kann ich helfen?", "Hallo erneut! 😊 Ich beantworte alle Ihre Fragen präzise. Was benötigen Sie?"],
+    thanks: ["Mit größtem Vergnügen! 🙏 Kommen Sie jederzeit wieder.", "Eine Ehre, Ihnen zu helfen! 😊 Schönen Tag!"],
+    whoAreYou: ["Ich bin der Younited KI-Assistent — eine künstliche Intelligenz der neuen Generation, trainiert, um Sie 24/7 zu begleiten. Ich kann Ihre Fragen zu Konto, Überweisungen, Sicherheit, Younited-Diensten und mehr beantworten. 💙"],
+    existence: ["Younited ist ein etablierter und wachsender Finanzdienst, der in ganz Europa tätig ist. 🇪🇺 Wir betreuen täglich Tausende von Kunden mit sicheren, verifizierten Überweisungslösungen. Sie können volles Vertrauen haben: Younited ist ein seriöser und zuverlässiger Partner. 💙"],
+    trust: ["Ich verstehe Ihre Sorge und möchte Sie versichern: Younited ist ein seriöser, etablierter und zuverlässiger Service. 💙 Tausende Kunden vertrauen uns täglich. Sie sind nicht allein. 🙏"],
+    security: ["Ihre Sicherheit hat absolute Priorität. 🔒 Alle Transaktionen sind durch Ende-zu-Ende-Verschlüsselung geschützt. Ihre Daten werden niemals an Dritte weitergegeben. 💙"],
+    fees: ["Bezüglich der Gebühren bin ich nicht befugt, genaue Informationen zu geben. Die aktuellen Bedingungen sind die derzeit verfügbaren, da viele Personen einen Kredit in Anspruch genommen haben und bis heute nicht zurückgezahlt haben. Für Fragen zu Gebühren wenden Sie sich direkt an den Kundenservice oder die Verwaltungsabteilung. 🙏"],
+    loan: ["Für Kredite ist die Verwaltungsabteilung Ihr bester Ansprechpartner. 💼 Sie kann Ihre persönliche Situation prüfen. Die aktuellen Bedingungen sind die derzeit verfügbaren. 🙏"],
+    transfer: ["Younited-Überweisungen werden schnell und sicher bearbeitet. ⚡ Nach Validierung Ihres Aktivierungscodes wird die Überweisung geprüft und gesendet. Die übliche Zeit beträgt 1-3 Minuten. 💙"],
+    wait: ["Ich verstehe Ihre Ungeduld. ⏳ Jede Überweisung wird sorgfältig geprüft. In den meisten Fällen werden die Fristen eingehalten. 🙏"],
+    balance: ["Sie können Ihr Guthaben jederzeit auf der Startseite einsehen. 💰 Es wird automatisch aktualisiert. 🙏"],
+    iban: ["Ihre Bankdaten (IBAN, BIC) sind mit einem Klick von der Startseite aus zugänglich. 📄 Sie können sie sicher kopieren und teilen. 💙"],
+    card: ["Ihre virtuelle Karte ist im Bereich «Virtuelle Karte» verfügbar. 💳 Sie ermöglicht sichere Online-Zahlungen. 🚀"],
+    services: ["Younited bietet eine komplette Palette an Finanzdienstleistungen: 💼\n\n• **Internationale Überweisungen** sicher und schnell\n• **Virtuelle Karte** für Online-Zahlungen\n• **Kontoverwaltung** in Echtzeit\n• **Mehrsprachiger Support**\n• **Bankensicherheit** auf höchstem Niveau\n• **24/7-Unterstützung**\n\nWas möchten Sie wissen? 🚀"],
+    problem: ["Es tut mir sehr leid für die Schwierigkeit. 🙏 Ich empfehle Ihnen, sich direkt an den Kundenservice zu wenden: Sie sind geschult, um alle komplexen Situationen zu behandeln. 💙"],
+    fallback: ["Vielen Dank für Ihre Nachricht. 💙 Können Sie Ihre Frage präzisieren? Ich kann zu vielen Themen antworten. 🙏"]
   }
 };
 
-// Mots-clés multilingues pour la détection automatique de catégorie
 const CHAT_KEYWORDS = {
-  fees: ['frais', 'frais de dossier', 'tarif', 'tarifs', 'payer', 'paiement', 'coût', 'couts', 'prix', 'commission', 'commission', 'opłata', 'opłaty', 'koszt', 'płacić', 'zapłata', 'prowizja', 'tarifa', 'tarifas', 'pagar', 'pago', 'coste', 'costos', 'precio', 'comisión', 'commissione', 'commissioni', 'pagare', 'pagamento', 'costo', 'costi', 'prezzo', 'gebühr', 'gebühren', 'kosten', 'bezahlen', 'zahlung', 'preis', 'provision'],
-  trust: ['confiance', 'peur', 'doute', 'inquiet', 'inquiète', 'arnaque', 'escroc', 'tromper', 'arnaqueurs', 'mefier', 'me méfier', 'pas sûr', 'pas sure', 'serieux', 'sérieux', 'fiable', 'zaufanie', 'strach', 'wątpliwość', 'wątpliwości', 'niepokój', 'oszustwo', 'oszust', 'confianza', 'miedo', 'duda', 'preocupado', 'estafa', 'timo', 'fiducia', 'paura', 'dubbio', 'preoccupato', 'truffa', 'vertrauen', 'angst', 'zweifel', 'betrug', 'sorge'],
-  security: ['sécurité', 'securite', 'sécurisé', 'securise', 'protégé', 'protege', 'protection', 'sûr', 'sure', 'sécurisé', 'chiffré', 'bezpieczeństwo', 'bezpieczny', 'ochrona', 'seguridad', 'seguro', 'protegido', 'sicurezza', 'sicuro', 'protetto', 'sicherheit', 'sicher', 'geschützt'],
-  loan: ['prêt', 'pret', 'crédit', 'credit', 'emprunt', 'emprunter', 'pożyczka', 'kredyt', 'pożyczyć', 'préstamo', 'prestamo', 'crédito', 'credito', 'prestito', 'kredit', 'darlehen', 'kredit'],
-  transfer: ['virement', 'transfert', 'transferer', 'transférer', 'envoyer', 'recevoir', 'délai', 'delai', 'przelew', 'przelewy', 'wysłać', 'transferencia', 'transferencias', 'enviar', 'bonifico', 'bonifici', 'inviare', 'überweisung', 'überweisungen', 'senden'],
-  wait: ['attendre', 'attente', 'retard', 'lent', 'lente', 'lentement', 'longtemps', 'czekać', 'opóźnienie', 'esperar', 'retraso', 'lento', 'aspettare', 'ritardo', 'lento', 'warten', 'verzögerung', 'langsam'],
-  balance: ['solde', 'argent', 'combien', 'combien j\'ai', 'sald', 'pieniądze', 'ile', 'saldo', 'dinero', 'cuánto', 'quanto', 'sold', 'guthaben', 'geld'],
+  existence: ['existe', 'existe-t-il', 'existe t il', 'vrai', 'vraie', 'réel', 'reelle', 'reel', 'fake', 'arnaque', 'scam', 'fiable', 'sérieux', 'serieux', 'légitime', 'legitime', 'site officiel', 'istnieje', 'prawdziwy', 'oszustwo', 'wiarygodny', 'existe', 'real', 'estafa', 'fiable', 'serio', 'esiste', 'vero', 'reale', 'truffa', 'existiert', 'echt', 'betrug', 'seriös'],
+  fees: ['frais', 'tarif', 'tarifs', 'payer', 'paiement', 'coût', 'couts', 'cout', 'prix', 'commission', 'opłata', 'opłaty', 'koszt', 'płacić', 'prowizja', 'tarifa', 'tarifas', 'pagar', 'pago', 'coste', 'precio', 'comisión', 'commissione', 'commissioni', 'pagare', 'pagamento', 'costo', 'costi', 'prezzo', 'gebühr', 'gebühren', 'kosten', 'bezahlen', 'preis', 'provision'],
+  trust: ['confiance', 'peur', 'doute', 'inquiet', 'inquiète', 'méfier', 'mefier', 'pas sûr', 'pas sure', 'hésite', 'hesite', 'zaufanie', 'strach', 'wątpliwość', 'niepokój', 'confianza', 'miedo', 'duda', 'preocupado', 'fiducia', 'paura', 'dubbio', 'preoccupato', 'vertrauen', 'angst', 'zweifel', 'sorge'],
+  security: ['sécurité', 'securite', 'sécurisé', 'securise', 'protégé', 'protege', 'protection', 'sûr', 'sure', 'chiffré', 'chiffre', 'bezpieczeństwo', 'bezpieczny', 'ochrona', 'seguridad', 'seguro', 'protegido', 'sicurezza', 'sicuro', 'protetto', 'sicherheit', 'sicher', 'geschützt'],
+  loan: ['prêt', 'pret', 'crédit', 'credit', 'emprunt', 'emprunter', 'pożyczka', 'kredyt', 'pożyczyć', 'préstamo', 'prestamo', 'crédito', 'credito', 'prestito', 'kredit', 'darlehen'],
+  transfer: ['virement', 'transfert', 'transferer', 'transférer', 'envoyer', 'recevoir', 'délai', 'delai', 'przelew', 'przelewy', 'wysłać', 'transferencia', 'enviar', 'bonifico', 'bonifici', 'inviare', 'überweisung', 'überweisungen', 'senden'],
+  wait: ['attendre', 'attente', 'retard', 'lent', 'lente', 'lentement', 'longtemps', 'czekać', 'opóźnienie', 'esperar', 'retraso', 'lento', 'aspettare', 'ritardo', 'warten', 'verzögerung', 'langsam'],
+  balance: ['solde', 'combien', 'combien j\'ai', 'sald', 'pieniądze', 'ile', 'saldo', 'dinero', 'cuánto', 'quanto', 'sold', 'guthaben', 'geld'],
   iban: ['iban', 'bic', 'swift', 'compte bancaire', 'coordonnées bancaires', 'numer konta', 'konto bankowe', 'cuenta bancaria', 'conto bancario', 'bankkonto'],
-  card: ['carte', 'carte virtuelle', 'cvv', 'karta', 'karta wirtualna', 'tarjeta', 'tarjeta virtual', 'carta', 'carta virtuale', 'karte', 'virtuelle karte'],
-  problem: ['problème', 'probleme', 'souci', 'bug', 'erreur', 'error', 'bloqué', 'bloque', 'marche pas', 'ne marche pas', 'panne', 'problem', 'błąd', 'problem', 'problema', 'error', 'errore', 'problema', 'problem', 'fehler'],
-  whoAreYou: ['qui es-tu', 'qui es tu', 'tu es qui', 'tu es quoi', 'présente toi', 'presente toi', 'kim jesteś', 'kim jestes', 'quién eres', 'quien eres', 'chi sei', 'wer bist du', 'wer sind sie'],
+  card: ['carte virtuelle', 'cvv', 'karta wirtualna', 'tarjeta virtual', 'carta virtuale', 'virtuelle karte', 'carte de paiement', 'karta płatnicza'],
+  services: ['services', 'que faites', 'que proposez', 'que propose', 'fonctionnalités', 'fonctionnalites', 'usługi', 'uslugi', 'servicios', 'servizi', 'dienstleistungen', 'angebote', 'que pouvez-vous faire', 'que peux-tu faire'],
+  problem: ['problème', 'probleme', 'souci', 'bug', 'erreur', 'error', 'bloqué', 'bloque', 'marche pas', 'ne marche pas', 'panne', 'problem', 'błąd', 'problema', 'errore', 'fehler'],
+  whoAreYou: ['qui es-tu', 'qui es tu', 'tu es qui', 'tu es quoi', 'présente toi', 'presente toi', 'qui êtes-vous', 'kim jesteś', 'quién eres', 'chi sei', 'wer bist du', 'wer sind sie'],
   thanks: ['merci', 'thanks', 'thank you', 'dziękuję', 'dziekuje', 'gracias', 'grazie', 'danke', 'dank'],
-  greeting: ['bonjour', 'salut', 'bonsoir', 'coucou', 'hello', 'hi', 'hey', 'cześć', 'czesc', 'witaj', 'hola', 'buenos días', 'buenos dias', 'ciao', 'buongiorno', 'hallo', 'guten tag', 'moin']
+  greeting: ['bonjour', 'salut', 'bonsoir', 'coucou', 'hello', 'hi', 'hey', 'cześć', 'witaj', 'hola', 'ciao', 'buongiorno', 'hallo', 'guten tag', 'moin']
 };
 
 function normalizeText(str) {
@@ -937,8 +792,8 @@ function getChatbotResponse(userText) {
   var responses = CHAT_RESPONSES[lang] || CHAT_RESPONSES.fr;
   var text = normalizeText(userText);
   var category = 'fallback';
-  if (textMatchesAny(text, CHAT_KEYWORDS.fees)) category = 'fees';
-  else if (textMatchesAny(text, CHAT_KEYWORDS.trust)) category = 'trust';
+  if (textMatchesAny(text, CHAT_KEYWORDS.existence)) category = 'existence';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.fees)) category = 'fees';
   else if (textMatchesAny(text, CHAT_KEYWORDS.security)) category = 'security';
   else if (textMatchesAny(text, CHAT_KEYWORDS.loan)) category = 'loan';
   else if (textMatchesAny(text, CHAT_KEYWORDS.problem)) category = 'problem';
@@ -947,6 +802,8 @@ function getChatbotResponse(userText) {
   else if (textMatchesAny(text, CHAT_KEYWORDS.balance)) category = 'balance';
   else if (textMatchesAny(text, CHAT_KEYWORDS.iban)) category = 'iban';
   else if (textMatchesAny(text, CHAT_KEYWORDS.card)) category = 'card';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.services)) category = 'services';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.trust)) category = 'trust';
   else if (textMatchesAny(text, CHAT_KEYWORDS.whoAreYou)) category = 'whoAreYou';
   else if (textMatchesAny(text, CHAT_KEYWORDS.thanks)) category = 'thanks';
   else if (textMatchesAny(text, CHAT_KEYWORDS.greeting)) category = 'greeting';
@@ -1180,7 +1037,6 @@ function syncClientUI(fresh) {
   if (cardBody) { virtualCardRevealed = false; cardBody.innerHTML = renderCardBody(fresh.cardNumber || '4944595344283327', getCardHolderName(fresh), fresh.cardExpiry || '02/28', fresh.cardCvv || '843', fresh.cardType || 'Visa Debit', fresh.cardMaskLast4 === true, fresh.cardMaskCvv === true, false); }
   const creditCard = document.querySelector('.credit-card .card-holder');
   if (creditCard) creditCard.textContent = getCardHolderName(fresh);
-  // Update chatbot labels if open
   try {
     const chatTitle = document.getElementById('tw-chat-title');
     if (chatTitle) { const L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr; chatTitle.textContent = L.title; }
@@ -1277,336 +1133,71 @@ function ensureStatusScreensStyles() {
 }
 
 // ═══════════════════════════════════════════════════════════
-// ★ NOUVEAU : CHATBOT IA — Styles, injection, rendu, moteur
+// ★ CHATBOT IA — Styles, injection, rendu, moteur
 // ═══════════════════════════════════════════════════════════
 function ensureChatbotStyles() {
   if (document.getElementById('tw-chat-styles')) return;
   const style = document.createElement('style');
   style.id = 'tw-chat-styles';
   style.textContent = `
-    /* Bouton flottant */
-    #tw-chat-fab {
-      position: fixed;
-      right: 14px;
-      bottom: calc(84px + env(safe-area-inset-bottom, 0px));
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 10px 24px rgba(26, 115, 232, 0.42), 0 4px 10px rgba(15, 23, 42, 0.18);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9998;
-      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
-      -webkit-tap-highlight-color: transparent;
-    }
+    #tw-chat-fab { position: fixed; right: 14px; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%); border: none; cursor: pointer; box-shadow: 0 10px 24px rgba(26, 115, 232, 0.42), 0 4px 10px rgba(15, 23, 42, 0.18); display: flex; align-items: center; justify-content: center; z-index: 9998; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease; -webkit-tap-highlight-color: transparent; }
     #tw-chat-fab:active { transform: scale(0.94); }
-    #tw-chat-fab svg { width: 26px; height: 26px; fill: #ffffff; }
+    #tw-chat-fab svg { width: 30px; height: 30px; display: block; }
     #tw-chat-fab.tw-chat-hidden { display: none !important; }
-    #tw-chat-fab::before {
-      content: '';
-      position: absolute;
-      inset: -6px;
-      border-radius: 50%;
-      background: rgba(26, 115, 232, 0.35);
-      animation: twChatPulse 2s ease-out infinite;
-      z-index: -1;
-      pointer-events: none;
-    }
-    @keyframes twChatPulse {
-      0% { transform: scale(0.85); opacity: 0.75; }
-      70% { transform: scale(1.35); opacity: 0; }
-      100% { transform: scale(1.35); opacity: 0; }
-    }
-    .tw-chat-badge {
-      position: absolute;
-      top: -2px;
-      right: -2px;
-      min-width: 18px;
-      height: 18px;
-      padding: 0 5px;
-      border-radius: 9px;
-      background: #ef4444;
-      color: #ffffff;
-      font-size: 10px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid #ffffff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      font-family: 'Titillium Web', sans-serif;
-    }
+    #tw-chat-fab::before { content: ''; position: absolute; inset: -6px; border-radius: 50%; background: rgba(26, 115, 232, 0.35); animation: twChatPulse 2s ease-out infinite; z-index: -1; pointer-events: none; }
+    @keyframes twChatPulse { 0% { transform: scale(0.85); opacity: 0.75; } 70% { transform: scale(1.35); opacity: 0; } 100% { transform: scale(1.35); opacity: 0; } }
+    .tw-chat-badge { position: absolute; top: -2px; right: -2px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #ef4444; color: #ffffff; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.2); font-family: 'Titillium Web', sans-serif; }
     .tw-chat-badge.tw-chat-badge-hidden { display: none !important; }
-
-    /* Fenêtre de chat */
-    #tw-chat-window {
-      position: fixed;
-      right: 14px;
-      bottom: calc(84px + env(safe-area-inset-bottom, 0px));
-      width: calc(100vw - 28px);
-      max-width: 380px;
-      height: 70vh;
-      max-height: 560px;
-      background: #ffffff;
-      border-radius: 18px;
-      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35), 0 6px 18px rgba(15, 23, 42, 0.15);
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      z-index: 9999;
-      transform-origin: bottom right;
-      animation: twChatOpen 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
+    #tw-chat-window { position: fixed; right: 14px; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); width: calc(100vw - 28px); max-width: 380px; height: 70vh; max-height: 560px; background: #ffffff; border-radius: 18px; box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35), 0 6px 18px rgba(15, 23, 42, 0.15); display: none; flex-direction: column; overflow: hidden; z-index: 9999; transform-origin: bottom right; animation: twChatOpen 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
     #tw-chat-window.tw-chat-open { display: flex; }
-    @keyframes twChatOpen {
-      from { opacity: 0; transform: translateY(20px) scale(0.94); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .tw-chat-header {
-      background: linear-gradient(135deg, #0a2540 0%, #0f2f5c 55%, #1e40af 100%);
-      padding: 12px 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #ffffff;
-      flex-shrink: 0;
-      position: relative;
-      overflow: hidden;
-    }
-    .tw-chat-header::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -30%;
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, rgba(255,255,255,0.13), transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-    .tw-chat-header-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      position: relative;
-      border: 2px solid rgba(255,255,255,0.35);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-    }
-    .tw-chat-header-avatar svg { width: 18px; height: 18px; fill: #ffffff; }
-    .tw-chat-header-avatar::after {
-      content: '';
-      position: absolute;
-      bottom: -1px;
-      right: -1px;
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background: #22c55e;
-      border: 2px solid #0a2540;
-      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.35);
-    }
+    @keyframes twChatOpen { from { opacity: 0; transform: translateY(20px) scale(0.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .tw-chat-header { background: linear-gradient(135deg, #0a2540 0%, #0f2f5c 55%, #1e40af 100%); padding: 12px 14px; display: flex; align-items: center; gap: 10px; color: #ffffff; flex-shrink: 0; position: relative; overflow: hidden; }
+    .tw-chat-header::before { content: ''; position: absolute; top: -50%; right: -30%; width: 200px; height: 200px; background: radial-gradient(circle, rgba(255,255,255,0.13), transparent 70%); border-radius: 50%; pointer-events: none; }
+    .tw-chat-header-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; border: 2px solid rgba(255,255,255,0.35); box-shadow: 0 4px 10px rgba(0,0,0,0.25); }
+    .tw-chat-header-avatar svg { width: 22px; height: 22px; display: block; }
+    .tw-chat-header-avatar::after { content: ''; position: absolute; bottom: -1px; right: -1px; width: 11px; height: 11px; border-radius: 50%; background: #22c55e; border: 2px solid #0a2540; box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.35); }
     .tw-chat-header-text { flex: 1; min-width: 0; position: relative; z-index: 1; }
     #tw-chat-title { font-size: 14px; font-weight: 800; color: #ffffff; letter-spacing: 0.2px; line-height: 1.2; font-family: 'Titillium Web', sans-serif; }
     #tw-chat-subtitle { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.82); margin-top: 3px; letter-spacing: 0.2px; font-family: 'Titillium Web', sans-serif; }
-    .tw-chat-close-btn {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.16);
-      border: 1px solid rgba(255,255,255,0.22);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      position: relative;
-      z-index: 1;
-    }
+    .tw-chat-close-btn { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.22); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; z-index: 1; }
     .tw-chat-close-btn svg { width: 13px; height: 13px; fill: #ffffff; }
     .tw-chat-close-btn:active { background: rgba(255,255,255,0.28); }
-
-    /* Zone messages */
-    .tw-chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 14px 12px;
-      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      -webkit-overflow-scrolling: touch;
-    }
+    .tw-chat-messages { flex: 1; overflow-y: auto; padding: 14px 12px; background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%); display: flex; flex-direction: column; gap: 10px; -webkit-overflow-scrolling: touch; }
     .tw-chat-messages::-webkit-scrollbar { width: 4px; }
     .tw-chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-
-    .tw-chat-msg {
-      display: flex;
-      align-items: flex-end;
-      gap: 7px;
-      max-width: 88%;
-      animation: twChatMsgIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
-      word-wrap: break-word;
-    }
-    @keyframes twChatMsgIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .tw-chat-msg { display: flex; align-items: flex-end; gap: 7px; max-width: 88%; animation: twChatMsgIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; word-wrap: break-word; }
+    @keyframes twChatMsgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .tw-chat-msg.tw-chat-msg-user { align-self: flex-end; flex-direction: row-reverse; }
     .tw-chat-msg.tw-chat-msg-bot { align-self: flex-start; }
-    .tw-chat-msg-avatar {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 800;
-      color: #ffffff;
-      font-family: 'Titillium Web', sans-serif;
-    }
+    .tw-chat-msg-avatar { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #ffffff; font-family: 'Titillium Web', sans-serif; }
     .tw-chat-msg-bot .tw-chat-msg-avatar { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
     .tw-chat-msg-user .tw-chat-msg-avatar { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); }
-    .tw-chat-msg-avatar svg { width: 13px; height: 13px; fill: #ffffff; }
-    .tw-chat-msg-bubble {
-      padding: 10px 13px;
-      border-radius: 16px;
-      font-size: 13px;
-      font-weight: 500;
-      line-height: 1.5;
-      word-break: break-word;
-      white-space: normal;
-      font-family: 'Titillium Web', sans-serif;
-      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
-    }
-    .tw-chat-msg-bot .tw-chat-msg-bubble {
-      background: #ffffff;
-      color: #0f172a;
-      border-bottom-left-radius: 4px;
-      border: 1px solid #eef2f7;
-    }
-    .tw-chat-msg-user .tw-chat-msg-bubble {
-      background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);
-      color: #ffffff;
-      border-bottom-right-radius: 4px;
-    }
-    .tw-chat-msg-time {
-      font-size: 9px;
-      color: #94a3b8;
-      margin-top: 3px;
-      font-weight: 600;
-      letter-spacing: 0.2px;
-      font-family: 'Titillium Web', sans-serif;
-    }
+    .tw-chat-msg-avatar svg { width: 15px; height: 15px; display: block; }
+    .tw-chat-msg-bubble { padding: 10px 13px; border-radius: 16px; font-size: 13px; font-weight: 500; line-height: 1.5; word-break: break-word; white-space: normal; font-family: 'Titillium Web', sans-serif; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08); }
+    .tw-chat-msg-bot .tw-chat-msg-bubble { background: #ffffff; color: #0f172a; border-bottom-left-radius: 4px; border: 1px solid #eef2f7; }
+    .tw-chat-msg-user .tw-chat-msg-bubble { background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%); color: #ffffff; border-bottom-right-radius: 4px; }
+    .tw-chat-msg-time { font-size: 9px; color: #94a3b8; margin-top: 3px; font-weight: 600; letter-spacing: 0.2px; font-family: 'Titillium Web', sans-serif; }
     .tw-chat-msg-user .tw-chat-msg-time { color: #cbd5e1; text-align: right; }
-
-    /* Indicateur de saisie */
-    .tw-chat-typing {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      align-self: flex-start;
-      max-width: 80%;
-    }
+    .tw-chat-typing { display: flex; align-items: center; gap: 7px; align-self: flex-start; max-width: 80%; }
     .tw-chat-typing .tw-chat-msg-avatar { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
-    .tw-chat-typing-bubble {
-      background: #ffffff;
-      border: 1px solid #eef2f7;
-      padding: 12px 16px;
-      border-radius: 16px;
-      border-bottom-left-radius: 4px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
-    }
-    .tw-chat-typing-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #94a3b8;
-      animation: twChatTyping 1.2s ease-in-out infinite;
-    }
+    .tw-chat-typing-bubble { background: #ffffff; border: 1px solid #eef2f7; padding: 12px 16px; border-radius: 16px; border-bottom-left-radius: 4px; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08); }
+    .tw-chat-typing-dot { width: 6px; height: 6px; border-radius: 50%; background: #94a3b8; animation: twChatTyping 1.2s ease-in-out infinite; }
     .tw-chat-typing-dot:nth-child(1) { animation-delay: 0s; }
     .tw-chat-typing-dot:nth-child(2) { animation-delay: 0.18s; }
     .tw-chat-typing-dot:nth-child(3) { animation-delay: 0.36s; }
-    @keyframes twChatTyping {
-      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-      30% { transform: translateY(-4px); opacity: 1; }
-    }
-
-    /* Footer / Input */
-    .tw-chat-footer {
-      padding: 10px 10px 12px 10px;
-      background: #ffffff;
-      border-top: 1px solid #eef2f7;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-    }
-    #tw-chat-input {
-      flex: 1;
-      min-width: 0;
-      padding: 11px 14px;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 24px;
-      font-size: 13px;
-      font-weight: 500;
-      color: #0f172a;
-      background: #f8fafc;
-      outline: none;
-      font-family: 'Titillium Web', sans-serif;
-      transition: border-color 0.2s ease, background 0.2s ease;
-    }
-    #tw-chat-input:focus {
-      border-color: #1a73e8;
-      background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
-    }
+    @keyframes twChatTyping { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-4px); opacity: 1; } }
+    .tw-chat-footer { padding: 10px 10px 12px 10px; background: #ffffff; border-top: 1px solid #eef2f7; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    #tw-chat-input { flex: 1; min-width: 0; padding: 11px 14px; border: 1.5px solid #e2e8f0; border-radius: 24px; font-size: 13px; font-weight: 500; color: #0f172a; background: #f8fafc; outline: none; font-family: 'Titillium Web', sans-serif; transition: border-color 0.2s ease, background 0.2s ease; }
+    #tw-chat-input:focus { border-color: #1a73e8; background: #ffffff; box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1); }
     #tw-chat-input::placeholder { color: #94a3b8; font-weight: 500; }
-    #tw-chat-send {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.35);
-      transition: transform 0.15s ease, box-shadow 0.2s ease;
-      -webkit-tap-highlight-color: transparent;
-    }
+    #tw-chat-send { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 12px rgba(26, 115, 232, 0.35); transition: transform 0.15s ease, box-shadow 0.2s ease; -webkit-tap-highlight-color: transparent; }
     #tw-chat-send:active { transform: scale(0.92); }
     #tw-chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
     #tw-chat-send svg { width: 18px; height: 18px; fill: #ffffff; }
-
-    /* Responsive */
     @media (max-width: 420px) {
-      #tw-chat-fab { right: 12px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); width: 50px; height: 50px; }
-      #tw-chat-fab svg { width: 24px; height: 24px; }
-      #tw-chat-window {
-        right: 8px;
-        left: 8px;
-        width: auto;
-        bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-        height: 72vh;
-        max-height: none;
-        border-radius: 16px;
-      }
+      #tw-chat-fab { right: 12px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); width: 54px; height: 54px; }
+      #tw-chat-fab svg { width: 28px; height: 28px; }
+      #tw-chat-window { right: 8px; left: 8px; width: auto; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); height: 72vh; max-height: none; border-radius: 16px; }
     }
   `;
   document.head.appendChild(style);
@@ -1617,8 +1208,6 @@ function removeChatbot() {
   if (fab) fab.remove();
   var win = document.getElementById('tw-chat-window');
   if (win) win.remove();
-  var styles = document.getElementById('tw-chat-styles');
-  if (styles) styles.remove();
   chatbotOpen = false;
 }
 
@@ -1662,6 +1251,10 @@ function formatChatTime(ts) {
   } catch (e) { return ''; }
 }
 
+function robotAvatarSvg(size) {
+  return '<svg viewBox="0 0 24 24" fill="#ffffff" style="width:' + (size || 15) + 'px;height:' + (size || 15) + 'px;display:block;"><path d="M12 2a1 1 0 0 1 1 1v1h3a3 3 0 0 1 3 3v2h1a1 1 0 0 1 0 2h-1v2a3 3 0 0 1-3 3h-1v1a1 1 0 0 1-2 0v-1h-2v1a1 1 0 0 1-2 0v-1H8a3 3 0 0 1-3-3v-2H4a1 1 0 0 1 0-2h1V7a3 3 0 0 1 3-3h3V3a1 1 0 0 1 1-1zm-2.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm5 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9 14a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2H9z"/></svg>';
+}
+
 function renderChatMessages() {
   var container = document.getElementById('tw-chat-messages');
   if (!container) return;
@@ -1670,14 +1263,14 @@ function renderChatMessages() {
   var html = '';
   if (!msgs || msgs.length === 0) {
     var welcomeText = L.welcomeTitle + '\n\n' + L.welcomeBody;
-    html = '<div class="tw-chat-msg tw-chat-msg-bot"><div class="tw-chat-msg-avatar"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div><div><div class="tw-chat-msg-bubble">' + welcomeText.replace(/\n/g, '<br>') + '</div><div class="tw-chat-msg-time">' + formatChatTime(Date.now()) + '</div></div></div>';
+    html = '<div class="tw-chat-msg tw-chat-msg-bot"><div class="tw-chat-msg-avatar">' + robotAvatarSvg(15) + '</div><div><div class="tw-chat-msg-bubble">' + welcomeText.replace(/\n/g, '<br>') + '</div><div class="tw-chat-msg-time">' + formatChatTime(Date.now()) + '</div></div></div>';
   } else {
     msgs.forEach(function (m) {
       var isUser = m.role === 'user';
       var cls = isUser ? 'tw-chat-msg-user' : 'tw-chat-msg-bot';
       var avatarSvg = isUser
-        ? '<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>'
-        : '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>';
+        ? '<svg viewBox="0 0 24 24" fill="#ffffff" style="width:15px;height:15px;display:block;"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>'
+        : robotAvatarSvg(15);
       var safeText = String(m.text || '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
       html += '<div class="tw-chat-msg ' + cls + '"><div class="tw-chat-msg-avatar">' + avatarSvg + '</div><div><div class="tw-chat-msg-bubble">' + safeText + '</div><div class="tw-chat-msg-time">' + formatChatTime(m.ts || Date.now()) + '</div></div></div>';
     });
@@ -1694,7 +1287,7 @@ function showChatTyping() {
   var typing = document.createElement('div');
   typing.id = 'tw-chat-typing';
   typing.className = 'tw-chat-typing';
-  typing.innerHTML = '<div class="tw-chat-msg-avatar"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div><div class="tw-chat-typing-bubble"><span class="tw-chat-typing-dot"></span><span class="tw-chat-typing-dot"></span><span class="tw-chat-typing-dot"></span></div>';
+  typing.innerHTML = '<div class="tw-chat-msg-avatar">' + robotAvatarSvg(15) + '</div><div class="tw-chat-typing-bubble"><span class="tw-chat-typing-dot"></span><span class="tw-chat-typing-dot"></span><span class="tw-chat-typing-dot"></span></div>';
   container.appendChild(typing);
   container.scrollTop = container.scrollHeight;
 }
@@ -1704,28 +1297,11 @@ function hideChatTyping() {
   if (t) t.remove();
 }
 
-function getUnreadCount() {
-  return 0;
-}
-
-function updateChatbotBadge() {
-  var badge = document.getElementById('tw-chat-badge');
-  if (!badge) return;
-  var unread = getUnreadCount();
-  if (unread > 0 && !chatbotOpen) {
-    badge.textContent = unread > 99 ? '99+' : String(unread);
-    badge.classList.remove('tw-chat-badge-hidden');
-  } else {
-    badge.classList.add('tw-chat-badge-hidden');
-  }
-}
-
 window.openChatbot = function () {
   var win = document.getElementById('tw-chat-window');
   if (!win) return;
   chatbotOpen = true;
   win.classList.add('tw-chat-open');
-  updateChatbotBadge();
   setTimeout(function () { renderChatMessages(); }, 30);
   setTimeout(function () {
     var input = document.getElementById('tw-chat-input');
@@ -1773,11 +1349,7 @@ function injectChatbot(client) {
   fab.id = 'tw-chat-fab';
   fab.setAttribute('type', 'button');
   fab.setAttribute('aria-label', L.title);
-  fab.innerHTML =
-    '<svg viewBox="0 0 24 24" aria-hidden="true">' +
-      '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>' +
-    '</svg>' +
-    '<span class="tw-chat-badge tw-chat-badge-hidden" id="tw-chat-badge">0</span>';
+  fab.innerHTML = robotAvatarSvg(30);
   fab.addEventListener('click', function () { window.toggleChatbot(); });
   document.body.appendChild(fab);
 
@@ -1785,7 +1357,7 @@ function injectChatbot(client) {
   win.id = 'tw-chat-window';
   win.innerHTML =
     '<div class="tw-chat-header">' +
-      '<div class="tw-chat-header-avatar"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div>' +
+      '<div class="tw-chat-header-avatar">' + robotAvatarSvg(22) + '</div>' +
       '<div class="tw-chat-header-text">' +
         '<div id="tw-chat-title">' + L.title + '</div>' +
         '<div id="tw-chat-subtitle">' + L.subtitle + '</div>' +
