@@ -623,7 +623,7 @@ const CHAT_RESPONSES = {
       "C'est un honneur de vous aider ! 😊 Bonne journée et à bientôt."
     ],
     whoAreYou: [
-      "Je suis l'Assistant IA Younited — une intelligence artificielle de nouvelle génération, entraînée pour vous accompagner 24h/24. Je peux répondre à vos questions sur votre compte, les virements, la sécurité, les services Younited, et bien plus encore. Je travaille en synergie avec nos équipes pour vous offrir une expérience fluide et transparente. 💙"
+      "Je suis l'Assistant IA Younited — une intelligence artificielle de nouvelle génération, entraînée pour vous accompagner 24h/24. Je connais parfaitement chaque page de l'application : l'Accueil, les Paiements, la Carte virtuelle et le Profil. Je peux vous guider pas à pas pour effectuer un virement, consulter votre IBAN, utiliser votre carte, vous connecter, et bien plus. 💙"
     ],
     existence: [
       "Younited est un service financier établi et en pleine croissance, opérant à travers toute l'Europe. 🇪🇺 Nous accompagnons quotidiennement des milliers de clients avec des solutions de virement sécurisées, transparentes et vérifiées. Nos processus sont audités et supervisés par des équipes de conformité dédiées. Vous pouvez avoir une totale confiance : Younited est un partenaire sérieux et fiable. 💙",
@@ -638,56 +638,69 @@ const CHAT_RESPONSES = {
       "Nous prenons la sécurité de votre compte très au sérieux. 🛡️ Chaque connexion est authentifiée, chaque virement est contrôlé, et nos serveurs respectent les normes bancaires les plus strictes. Votre argent et vos informations sont protégés en permanence. Vos opérations sont confidentielles et sécurisées. 🚀"
     ],
     fees: [
-      "Concernant les frais, je ne suis pas habilité à vous donner des informations précises. Les conditions actuelles sont celles disponibles actuellement, car de nombreuses personnes ont bénéficié d'un prêt auprès de notre service et n'ont pas encore remboursé à ce jour. Pour toute question relative aux frais, veuillez contacter directement notre service client ou notre service administratif : ils seront en mesure de vous fournir tous les détails nécessaires. 🙏",
-      "Je comprends tout à fait votre question sur les frais. Cependant, je ne peux pas vous expliquer précisément les détails de frais car cela relève de la compétence exclusive du service administratif. Les conditions actuelles sont celles disponibles actuellement, étant donné que de nombreuses personnes ont bénéficié d'un prêt auprès de notre service et n'ont pas encore remboursé jusqu'à présent. Je vous invite donc à contacter le service client ou le service administratif pour obtenir une réponse complète et personnalisée. 💙"
+      "Concernant les frais, je ne suis pas habilité à vous donner des informations précises. Les conditions actuelles sont celles disponibles actuellement, car de nombreuses personnes ont bénéficié d'un prêt auprès de notre service et n'ont pas encore remboursé à ce jour. Pour toute question relative aux frais, veuillez contacter directement notre **service client** ou notre **service administratif** : ils seront en mesure de vous fournir tous les détails nécessaires. 🙏",
+      "Je comprends tout à fait votre question sur les frais. Cependant, je ne peux pas vous expliquer précisément les détails de frais car cela relève de la compétence exclusive du **service administratif**. Les conditions actuelles sont celles disponibles actuellement, étant donné que de nombreuses personnes ont bénéficié d'un prêt auprès de notre service et n'ont pas encore remboursé jusqu'à présent. Je vous invite donc à contacter le **service client** ou le **service administratif** pour obtenir une réponse complète et personnalisée. 💙"
     ],
     loan: [
-      "Pour toute demande de prêt ou de crédit, notre service administratif sera votre meilleur interlocuteur. 💼 Il pourra étudier votre situation personnelle et vous proposer les meilleures conditions adaptées à votre profil. Les conditions actuelles sont celles disponibles actuellement. N'hésitez pas à le contacter directement pour une étude approfondie de votre dossier. 🙏"
+      "Pour toute demande de prêt ou de crédit, notre **service administratif** sera votre meilleur interlocuteur. 💼 Il pourra étudier votre situation personnelle et vous proposer les meilleures conditions adaptées à votre profil. Les conditions actuelles sont celles disponibles actuellement. N'hésitez pas à le contacter directement pour une étude approfondie de votre dossier. 🙏"
     ],
     transfer: [
-      "Les virements Younited sont traités de manière rapide et sécurisée. ⚡ Voici le déroulement : après validation de votre code d'activation, votre virement passe en phase de vérification par notre équipe, puis est transmis à la banque bénéficiaire. Le délai habituel est de 1 à 3 minutes après vérification finale. Vous pouvez suivre son statut dans l'historique des transactions. En cas de virement en attente de validation, vous serez notifié(e) par email. 💙",
+      "Les virements Younited sont traités de manière rapide et sécurisée. ⚡ Après validation de votre code d'activation, votre virement passe en phase de vérification par notre équipe, puis est transmis à la banque bénéficiaire. Le délai habituel est de 1 à 3 minutes après vérification finale. Vous pouvez suivre son statut dans l'historique des transactions. En cas de virement en attente de validation, vous serez notifié(e) par email. 💙",
       "Nos virements sont sécurisés et traités avec une grande rigueur. 💸 Une fois votre code d'activation validé, la transaction est vérifiée puis envoyée. Vous recevrez une confirmation par email avec le reçu officiel. Le processus est transparent : vous pouvez à tout moment consulter l'état de vos virements depuis votre tableau de bord. 🚀"
     ],
     wait: [
-      "Je comprends votre impatience. ⏳ Chaque virement est vérifié avec soin par nos équipes pour garantir votre sécurité et celle de vos fonds. Dans la grande majorité des cas, les délais habituels sont respectés. Si vous constatez un délai inhabituel sur une opération précise, je vous invite à contacter le service client qui pourra vérifier votre dossier de manière individualisée. Merci de votre patience. 🙏",
-      "Votre demande est bien prise en compte. ⏱️ Notre équipe traite chaque opération avec attention. Les délais standard sont respectés dans la très grande majorité des situations. Si votre attente dépasse les délais habituels, le service administratif pourra consulter l'état précis de votre dossier. 💙"
+      "Je comprends votre impatience. ⏳ Chaque virement est vérifié avec soin par nos équipes pour garantir votre sécurité et celle de vos fonds. Dans la grande majorité des cas, les délais habituels sont respectés. Si vous constatez un délai inhabituel sur une opération précise, je vous invite à contacter le **service client** qui pourra vérifier votre dossier de manière individualisée. Merci de votre patience. 🙏",
+      "Votre demande est bien prise en compte. ⏱️ Notre équipe traite chaque opération avec attention. Les délais standard sont respectés dans la très grande majorité des situations. Si votre attente dépasse les délais habituels, le **service administratif** pourra consulter l'état précis de votre dossier. 💙"
     ],
     balance: [
-      "Vous pouvez consulter votre solde en temps réel sur la page d'accueil de votre application. 💰 Il se met automatiquement à jour dès qu'une opération est validée ou remboursée. Si vous remarquez une différence ou avez une question sur une transaction, n'hésitez pas à me préciser votre demande. 🙏"
+      "Vous pouvez consulter votre solde en temps réel sur la page **Accueil** de votre application. 💰 Il se met automatiquement à jour dès qu'une opération est validée ou remboursée. Si vous remarquez une différence ou avez une question sur une transaction, n'hésitez pas à me préciser votre demande. 🙏"
     ],
     iban: [
-      "Vos coordonnées bancaires (IBAN, BIC) sont accessibles en un clic depuis la page d'accueil via le bouton « Voir mon IBAN ». 📄 Vous pouvez les copier et les partager en toute sécurité avec vos correspondants. Pour des raisons de sécurité, certains caractères peuvent être masqués côté client — vous pouvez les afficher selon la configuration de votre compte. 💙"
+      "Vos coordonnées bancaires (IBAN, BIC) sont accessibles en un clic depuis la page **Accueil** via le bouton **« Voir mon IBAN »**. 📄 Vous pouvez les copier et les partager en toute sécurité avec vos correspondants. Pour des raisons de sécurité, certains caractères peuvent être masqués — vous pouvez les afficher selon la configuration de votre compte. 💙"
     ],
     card: [
-      "Votre carte virtuelle est disponible dans la section « Carte virtuelle » de votre application. 💳 Elle vous permet d'effectuer des paiements en ligne en toute sécurité. Vous pouvez révéler les informations sensibles selon vos paramètres. Pour toute question spécifique sur votre carte, je reste à votre disposition. 🚀"
+      "Votre carte virtuelle est disponible dans la section **« Carte virtuelle »** de votre application. 💳 Elle vous permet d'effectuer des paiements en ligne en toute sécurité. Vous pouvez révéler les informations sensibles selon vos paramètres. Pour toute question spécifique sur votre carte, je reste à votre disposition. 🚀"
     ],
     services: [
       "Younited vous propose une gamme complète de services financiers : 💼\n\n• **Virements internationaux** sécurisés et rapides\n• **Carte virtuelle** pour vos paiements en ligne\n• **Gestion de compte** en temps réel\n• **Support multilingue** (français, polonais, espagnol, italien, allemand)\n• **Sécurité bancaire** de haut niveau\n• **Assistance 24h/24** via votre assistant IA\n\nQue puis-je vous détailler ? 🚀"
     ],
     problem: [
-      "Je suis vraiment désolé(e) pour la difficulté que vous rencontrez. 🙏 Sachez que je prends votre situation très au sérieux. Pour résoudre ce problème précis, je vous recommande de contacter directement notre service client ou notre service administratif : ils sont formés et habilités à traiter tous types de situations complexes et personnalisées. N'hésitez pas à leur expliquer en détail votre situation — ils prendront soin de vous. 💙",
-      "Votre satisfaction est notre priorité et je suis navré(e) que vous rencontriez un souci. 💙 Certaines situations demandent une analyse personnalisée : notre service administratif est votre meilleur interlocuteur pour cela. Ils disposent de tous les outils nécessaires pour vous apporter une réponse rapide et efficace. N'hésitez surtout pas à les solliciter."
+      "Je suis vraiment désolé(e) pour la difficulté que vous rencontrez. 🙏 Sachez que je prends votre situation très au sérieux. Pour résoudre ce problème précis, je vous recommande de contacter directement notre **service client** ou notre **service administratif** : ils sont formés et habilités à traiter tous types de situations complexes et personnalisées. N'hésitez pas à leur expliquer en détail votre situation — ils prendront soin de vous. 💙",
+      "Votre satisfaction est notre priorité et je suis navré(e) que vous rencontriez un souci. 💙 Certaines situations demandent une analyse personnalisée : notre **service administratif** est votre meilleur interlocuteur pour cela. Ils disposent de tous les outils nécessaires pour vous apporter une réponse rapide et efficace. N'hésitez surtout pas à les solliciter."
     ],
     howToTransfer: [
-      "Pour effectuer un virement depuis votre compte Younited vers votre compte bancaire personnel, suivez ces étapes simples : 📋\n\n**1.** Depuis la page d'accueil, appuyez sur l'onglet **« Paiements »** en bas de l'écran (ou sur la tuile **« Faire un virement »**).\n\n**2.** Remplissez le formulaire :\n   • **Montant à débiter** : saisissez uniquement des chiffres, sans virgule ni point (ex : 500).\n   • **IBAN / Numéro de compte** : votre IBAN personnel.\n   • **Code banque (BIC/SWIFT)** : le code BIC de votre banque personnelle.\n   • **Nom de la banque** : le nom de votre banque (ex : BNP Paribas).\n   • **Nom du bénéficiaire** : votre nom complet tel qu'il apparaît sur votre compte.\n   • **Motif du virement** : par exemple « Virement personnel » ou « Épargne ».\n\n**3.** Appuyez sur le bouton **« Suivant »** en bas du formulaire.\n\n**4.** Vérifiez les informations affichées, puis saisissez votre **code d'activation** dans le champ prévu.\n\n**5.** Appuyez sur **« Valider le virement »** pour finaliser l'opération.\n\n✅ Une fois validé, votre virement sera traité et vous recevrez une confirmation. 💙"
+      "Voici le **guide complet** pour effectuer un virement vers votre compte bancaire personnel : 📋\n\n**ÉTAPE 1 — Ouvrir le formulaire**\n• Depuis l'accueil, appuyez en bas sur l'onglet **« Paiements »**\n• OU appuyez sur la tuile **« Faire un virement »** dans la section des raccourcis\n\n**ÉTAPE 2 — Remplir les 6 champs**\n• **Montant à débiter** : chiffres uniquement, sans virgule ni point (ex : 500)\n• **IBAN / Numéro de compte** : votre IBAN personnel (commence par FR, DE, PL...)\n• **Code banque (BIC/SWIFT)** : le code BIC de votre banque (8 ou 11 caractères)\n• **Nom de la banque** : par exemple « BNP Paribas », « Société Générale »...\n• **Nom du bénéficiaire** : votre nom complet tel qu'inscrit sur votre compte bancaire\n• **Motif du virement** : ex « Virement personnel », « Épargne »\n\n**ÉTAPE 3 — Valider**\n• Appuyez sur le bouton **« Suivant »** en bas du formulaire\n\n**ÉTAPE 4 — Vérifier**\n• Relisez le récapitulatif : montant, bénéficiaire, IBAN, banque, motif\n• Saisissez votre **code d'activation** dans le champ **« Code d'activation »**\n\n**ÉTAPE 5 — Confirmer**\n• Appuyez sur **« Valider le virement »**\n\n✅ Une barre de progression apparaît, puis un message de confirmation. Vous recevrez un email avec le reçu officiel. 💙",
+      "Pour envoyer de l'argent depuis votre compte Younited vers votre banque personnelle, suivez ces 5 étapes précises : 📋\n\n**1️⃣ Cliquez sur « Paiements »** (icône en bas de l'écran) — c'est le 2ème onglet en partant de la gauche.\n\n**2️⃣ Remplissez le formulaire** avec :\n• Montant (chiffres uniquement)\n• IBAN du compte destinataire\n• BIC/SWIFT de la banque\n• Nom de la banque destinataire\n• Nom du bénéficiaire (vous)\n• Motif du virement\n\n**3️⃣ Cliquez sur « Suivant »** — le bouton bleu en bas.\n\n**4️⃣ Saisissez votre code d'activation** sur la page de vérification, puis cliquez sur **« Valider le virement »**.\n\n**5️⃣ Attendez la confirmation** — un reçu PDF vous sera envoyé par email.\n\n💡 Vous pouvez suivre l'état de votre virement dans **« Historique des transactions »** sur la page d'accueil. 💙"
+    ],
+    howToFindActivationCode: [
+      "Le **code d'activation** vous est fourni de 2 manières : 🔑\n\n**1. Par email** 📧\n• Ouvrez votre boîte mail (celle que vous avez renseignée à l'inscription)\n• Cherchez un email de **YOUNITED** avec pour objet : *« Code d'activation de votre ordre de transfert »*\n• Le code s'y trouve en grand format\n\n**2. Dans votre espace personnel** 🔐\n• Depuis votre profil, l'information est disponible\n\n**Si vous ne trouvez pas votre code d'activation**, veuillez contacter directement le **service client** ou le **service administratif** : ils vous le renverront immédiatement par email. 💙\n\n⚠️ Ne partagez jamais ce code avec quelqu'un d'autre — il est confidentiel et personnel."
     ],
     howToNavigate: [
-      "Voici comment naviguer dans votre application Younited : 🧭\n\n• **Accueil** : vue d'ensemble de votre solde et dernières transactions.\n• **Paiements** : pour effectuer un virement (bouton bas de page).\n• **Carte virtuelle** : vos informations de carte de paiement en ligne.\n• **Profil** : vos données personnelles, IBAN, BIC et déconnexion.\n\nSur la page d'accueil, vous avez aussi trois raccourcis rapides : **« Voir mon IBAN »**, **« Carte virtuelle »** et **« Faire un virement »**. 💙"
+      "Voici la **structure complète** de votre application Younited : 🧭\n\n**🏠 Accueil (onglet 1)**\n• Affichage de votre **solde disponible**\n• **Historique des transactions** (les 5 dernières)\n• Bouton **« Voir tout »** pour l'historique complet\n• 3 raccourcis : **« Voir mon IBAN »**, **« Carte virtuelle »**, **« Faire un virement »**\n\n**💸 Paiements (onglet 2)**\n• Formulaire complet pour **effectuer un virement**\n• Champ montant, IBAN, BIC, banque, bénéficiaire, motif\n• Bouton **« Suivant »** pour valider\n\n**💳 Carte virtuelle (onglet 3)**\n• Numéro de carte, date d'expiration, CVV\n• Bouton **« Activer ma carte »** et **« Bloquer ma carte »**\n\n**👤 Profil (onglet 4)**\n• Vos **données personnelles** (nom, email, téléphone, adresse)\n• Type de compte et statut\n• Bouton **« Se déconnecter »**\n\n💡 **Astuce** : sur l'accueil, cliquez sur une transaction pour voir le reçu détaillé. 💙"
     ],
     howToLogin: [
-      "Pour vous connecter à votre espace client : 🔐\n\n**1.** Ouvrez le lien de connexion qui vous a été transmis par email.\n**2.** Saisissez votre **adresse e-mail** dans le premier champ.\n**3.** Saisissez votre **code PIN** dans le second champ.\n**4.** Appuyez sur **« Se connecter »**.\n\nSi vous avez perdu vos identifiants, contactez le service client qui pourra vous les renvoyer par email. 💙"
+      "Pour vous connecter à votre espace client : 🔐\n\n**1.** Ouvrez le lien de connexion reçu par email\n**2.** Saisissez votre **adresse e-mail** (identifiant) dans le premier champ\n**3.** Saisissez votre **code PIN** (code d'accès à 4-6 chiffres) dans le second champ\n**4.** Appuyez sur le bouton **« Se connecter »**\n\n💡 Le code PIN vous a été communiqué par email lors de l'ouverture de votre compte.\n\n**En cas de problème :**\n• Email introuvable → contactez le **service client**\n• PIN oublié → contactez le **service administratif** pour un renvoi\n• Compte suspendu → contactez immédiatement le **service client**\n\n⚠️ Ne partagez jamais vos identifiants. 💙"
     ],
     howToIban: [
-      "Pour consulter votre IBAN et votre code BIC : 📄\n\n**1.** Depuis la page d'accueil, appuyez sur la tuile **« Voir mon IBAN »**.\n**2.** Une fenêtre s'ouvre avec votre **Numéro IBAN**, votre **Titulaire** et votre **BIC / SWIFT**.\n**3.** Appuyez sur **« Copier »** pour copier rapidement votre IBAN.\n\n💡 Pour des raisons de sécurité, certains caractères peuvent être masqués — vous pouvez les afficher selon la configuration de votre compte. 💙"
+      "Pour consulter et copier vos coordonnées bancaires (IBAN / BIC) : 📄\n\n**ÉTAPE 1** — Depuis la page **Accueil**, appuyez sur la tuile **« Voir mon IBAN »**\n\n**ÉTAPE 2** — Une fenêtre s'ouvre avec :\n• **Numéro IBAN** (votre compte Younited)\n• **Titulaire** (votre nom)\n• **BIC / SWIFT** (code de la banque)\n\n**ÉTAPE 3** — Appuyez sur **« Copier »** pour copier l'IBAN\n\n**ÉTAPE 4** — Collez-le où vous voulez (formulaire, email, etc.)\n\n💡 Si certains caractères sont masqués (••••), c'est une mesure de sécurité configurée par l'administrateur. Contactez le **service client** si vous avez besoin de l'IBAN complet. 💙"
     ],
     howToCard: [
-      "Pour consulter votre carte virtuelle : 💳\n\n**1.** Depuis la page d'accueil, appuyez sur la tuile **« Carte virtuelle »** (ou sur l'onglet en bas).\n**2.** Vous verrez votre **numéro de carte**, votre **date d'expiration** et le **CVV**.\n**3.** Utilisez l'icône 👁 pour afficher ou masquer les informations sensibles.\n**4.** Appuyez sur **« Copier le numéro »** pour copier votre numéro de carte.\n\n⚠️ Pour votre sécurité, certains chiffres peuvent être masqués par l'administrateur. 💙"
+      "Pour consulter et utiliser votre carte virtuelle : 💳\n\n**ÉTAPE 1** — Depuis l'accueil, appuyez sur la tuile **« Carte virtuelle »** (ou sur l'onglet en bas)\n\n**ÉTAPE 2** — Vous verrez :\n• **Numéro de carte** (16 chiffres)\n• **Date d'expiration** (MM/AA)\n• **CVV** (3 chiffres au dos)\n• **Titulaire** (votre nom)\n\n**ÉTAPE 3** — Utilisez l'icône **👁 (œil)** pour afficher/masquer les informations sensibles\n\n**ÉTAPE 4** — Appuyez sur **« Copier le numéro »** pour copier la carte\n\n**Boutons disponibles :**\n• **« Activer ma carte »** — pour l'utiliser en ligne\n• **« Bloquer ma carte »** — en cas de perte ou vol\n\n⚠️ Ne partagez jamais votre CVV avec quelqu'un d'autre. 💙"
     ],
     howToDeposit: [
-      "Pour ajouter des fonds sur votre compte Younited : 💰\n\nLes dépôts sont crédités sur votre compte par le service administratif après vérification. Pour toute demande d'ajout de fonds, veuillez contacter directement le **service client** ou le **service administratif** : ils prendront en charge votre demande de manière personnalisée. 💙"
+      "Pour **ajouter des fonds** sur votre compte Younited : 💰\n\nLes dépôts sont traités exclusivement par notre **service administratif** après vérification d'identité et de conformité.\n\n**Procédure :**\n1. Contactez le **service client** ou le **service administratif**\n2. Indiquez le montant souhaité et la provenance des fonds\n3. Fournissez les justificatifs demandés (relevé, facture, etc.)\n4. Après validation, les fonds sont crédités sur votre compte\n\n⚠️ Pour toute question sur les dépôts, veuillez **contacter directement le service administratif** — ils sont les seuls habilités à traiter ce type d'opération. 💙"
+    ],
+    howToCancelTransfer: [
+      "Pour **annuler un virement** : 🔄\n\n**Si le virement est en cours de traitement (progression < 100%) :**\n• Attendez la fin du traitement, l'annulation n'est pas possible pendant cette phase\n\n**Si le virement est en attente de validation :**\n• Le **service administratif** peut l'annuler\n• Le montant vous sera automatiquement remboursé\n• Vous recevrez une notification par email\n\n**Pour demander une annulation :**\n• Contactez le **service client** ou le **service administratif**\n• Indiquez la référence du virement (visible dans l'historique)\n\n💡 Toutes les annulations sont traitées dans les plus brefs délais. 💙"
+    ],
+    howToViewReceipt: [
+      "Pour consulter le **reçu d'un virement** : 🧾\n\n**ÉTAPE 1** — Depuis l'accueil, faites défiler jusqu'à **« Historique des transactions »**\n\n**ÉTAPE 2** — Appuyez sur la transaction souhaitée\n\n**ÉTAPE 3** — Une fenêtre s'ouvre avec :\n• Montant envoyé\n• Bénéficiaire\n• IBAN / Banque\n• Date et référence\n• Statut\n\n**ÉTAPE 4** — Appuyez sur **« Fermer »** pour quitter\n\n💡 Un **reçu PDF officiel** vous est automatiquement envoyé par email à chaque virement effectué. Consultez votre boîte mail ! 💙"
+    ],
+    howToContactSupport: [
+      "Pour contacter notre équipe : 📞\n\n**Service client** — pour les questions générales :\n• Compte, identifiants, connexion\n• Utilisation de l'application\n• Questions sur les virements\n\n**Service administratif** — pour les opérations sensibles :\n• Frais et conditions\n• Prêts et crédits\n• Dépôts de fonds\n• Validation / annulation de virements en attente\n• Récupération de code d'activation ou PIN\n\n💡 Expliquez clairement votre demande dès le premier message pour un traitement rapide. Nos équipes sont disponibles 24h/24 et 7j/7. 💙"
     ],
     help: [
-      "Avec plaisir ! Voici les sujets sur lesquels je peux vous accompagner immédiatement : ✨\n\n• 📤 **Comment effectuer un virement** — guide pas à pas\n• 🔐 **Comment se connecter** à votre espace\n• 📄 **Consulter votre IBAN / BIC**\n• 💳 **Utiliser votre carte virtuelle**\n• 🛡️ **Sécurité** de vos données et transactions\n• 💼 **Services** Younited\n• 💰 **Frais** et conditions\n\nPosez-moi votre question, je vous réponds en détail. 💙"
+      "Avec plaisir ! Voici **tout ce que je peux faire pour vous** : ✨\n\n**📤 Virements**\n• Comment faire un virement pas à pas\n• Où trouver le code d'activation\n• Comment annuler un virement\n• Consulter un reçu\n\n**🧭 Navigation**\n• Rôle de chaque onglet (Accueil, Paiements, Carte, Profil)\n• Comment remplir les formulaires\n\n**🔐 Connexion & Sécurité**\n• Comment se connecter\n• Où trouver PIN et identifiants\n\n**📄 Compte**\n• Voir mon IBAN et BIC\n• Consulter mon solde\n• Voir mon historique\n\n**💳 Carte virtuelle**\n• Afficher les informations\n• Copier le numéro\n• Activer / bloquer\n\n**💼 Services & Frais**\n• Fonctionnalités Younited\n• Prêts, dépôts, frais\n• Contacter le support\n\nPosez-moi votre question, je vous réponds en détail ! 💙"
     ],
     fallback: [
       "Merci pour votre message. 💙 Je prends bien note de votre demande. Pouvez-vous me donner un peu plus de précisions pour que je puisse vous répondre au mieux ? Si votre question concerne un aspect très spécifique (compte, virement, sécurité, service), je ferai tout mon possible pour vous aider directement. 🙏",
@@ -697,126 +710,147 @@ const CHAT_RESPONSES = {
   pl: {
     greeting: ["Witaj! 👋 Jestem Twoim asystentem AI Younited, dostępnym 24/7. Jak mogę Ci pomóc?", "Witaj ponownie! 😊 Odpowiem na wszystkie Twoje pytania z precyzją. W czym mogę pomóc?"],
     thanks: ["Z przyjemnością! 🙏 Zapraszam ponownie.", "To dla mnie zaszczyt! 😊 Miłego dnia!"],
-    whoAreYou: ["Jestem Asystentem AI Younited — sztuczną inteligencją nowej generacji, wytrenowaną, aby Ci towarzyszyć 24/7. Mogę odpowiadać na Twoje pytania dotyczące konta, przelewów, bezpieczeństwa, usług Younited i wielu innych. 💙"],
+    whoAreYou: ["Jestem Asystentem AI Younited — sztuczną inteligencją nowej generacji, wytrenowaną, aby Ci towarzyszyć 24/7. Znam każdą stronę aplikacji: Pulpit, Płatności, Kartę i Profil. 💙"],
     existence: ["Younited to ugruntowana i prężnie rozwijająca się usługa finansowa działająca w całej Europie. 🇪🇺 Codziennie obsługujemy tysiące klientów dzięki bezpiecznym i przejrzystym rozwiązaniom do przelewów. Możesz mieć pełne zaufanie: Younited to poważny i niezawodny partner. 💙"],
-    trust: ["Rozumiem Twoje obawy i chcę Cię zapewnić: Younited to poważna, ugruntowana i niezawodna usługa. 💙 Tysiące klientów ufa nam codziennie. Każda operacja jest weryfikowana przez dedykowane zespoły administracyjne. Nie jesteś sam(a) — robimy wszystko, aby zapewnić Ci najlepsze doświadczenie. 🙏"],
+    trust: ["Rozumiem Twoje obawy i chcę Cię zapewnić: Younited to poważna, ugruntowana i niezawodna usługa. 💙 Tysiące klientów ufa nam codziennie. Każda operacja jest weryfikowana przez dedykowane zespoły administracyjne. Nie jesteś sam(a). 🙏"],
     security: ["Twoje bezpieczeństwo jest naszym absolutnym priorytetem. 🔒 Wszystkie transakcje są chronione szyfrowaniem end-to-end. Twoje dane osobowe nigdy nie są udostępniane osobom trzecim. 💙"],
-    fees: ["Jeśli chodzi o opłaty, nie jestem upoważniony do udzielania precyzyjnych informacji. Aktualne warunki to te obecnie dostępne, ponieważ wiele osób skorzystało z pożyczki w naszym serwisie i do dziś nie spłaciło. W przypadku pytań dotyczących opłat prosimy o bezpośredni kontakt z obsługą klienta lub działem administracji. 🙏"],
-    loan: ["W sprawie pożyczek dział administracji będzie Twoim najlepszym rozmówcą. 💼 Może zbadać Twoją sytuację osobistą i zaproponować najlepsze warunki. Aktualne warunki to te obecnie dostępne. 🙏"],
-    transfer: ["Przelewy Younited są przetwarzane szybko i bezpiecznie. ⚡ Po zatwierdzeniu kodu aktywacyjnego przelew przechodzi przez weryfikację, a następnie jest przekazywany do banku odbiorcy. Zwykły czas to 1-3 minuty. 💙"],
-    wait: ["Rozumiem Twoją niecierpliwość. ⏳ Każdy przelew jest dokładnie weryfikowany. W większości przypadków standardowe terminy są dotrzymywane. 🙏"],
-    balance: ["Możesz sprawdzić swoje saldo w czasie rzeczywistym na stronie głównej. 💰 Aktualizuje się automatycznie. 🙏"],
-    iban: ["Twoje dane bankowe (IBAN, BIC) są dostępne jednym kliknięciem ze strony głównej. 📄 Możesz je bezpiecznie kopiować i udostępniać. 💙"],
-    card: ["Twoja karta wirtualna jest dostępna w sekcji «Karta wirtualna». 💳 Umożliwia bezpieczne płatności online. 🚀"],
-    services: ["Younited oferuje pełen zakres usług finansowych: 💼\n\n• **Przelewy międzynarodowe** bezpieczne i szybkie\n• **Karta wirtualna** do płatności online\n• **Zarządzanie kontem** w czasie rzeczywistym\n• **Wsparcie wielojęzyczne**\n• **Bezpieczeństwo bankowe** na wysokim poziomie\n• **Pomoc 24/7**\n\nCo mogę Ci szczegółowo wyjaśnić? 🚀"],
-    problem: ["Bardzo mi przykro z powodu trudności. 🙏 Zachęcam do bezpośredniego kontaktu z obsługą klienta: są szkoleni, aby rozwiązywać wszystkie złożone sytuacje. 💙"],
-    howToTransfer: ["Aby wykonać przelew z konta Younited na swoje osobiste konto bankowe, postępuj zgodnie z tymi krokami: 📋\n\n**1.** Na stronie głównej naciśnij zakładkę **«Płatności»** na dole ekranu (lub kafelek **«Wykonaj przelew»**).\n\n**2.** Wypełnij formularz:\n   • **Kwota do obciążenia**: wpisz tylko cyfry, bez przecinka i kropki (np. 500).\n   • **IBAN / Numer konta**: Twój osobisty IBAN.\n   • **Kod banku (BIC/SWIFT)**: kod BIC Twojego banku.\n   • **Nazwa banku**: nazwa Twojego banku (np. PKO Bank Polski).\n   • **Nazwa beneficjenta**: Twoje pełne imię i nazwisko.\n   • **Powód przeniesienia**: np. «Przelew osobisty».\n\n**3.** Naciśnij przycisk **«Następny»** na dole formularza.\n\n**4.** Sprawdź wyświetlone informacje, a następnie wprowadź swój **kod aktywacyjny**.\n\n**5.** Naciśnij **«Zatwierdź przelew»**, aby sfinalizować operację.\n\n✅ Po zatwierdzeniu przelew zostanie przetworzony i otrzymasz potwierdzenie. 💙"],
-    howToNavigate: ["Oto jak poruszać się po aplikacji Younited: 🧭\n\n• **Pulpit**: przegląd salda i ostatnich transakcji.\n• **Płatności**: aby wykonać przelew.\n• **Karta**: dane karty wirtualnej.\n• **Profil**: dane osobowe, IBAN, BIC i wylogowanie.\n\n💙"],
-    howToLogin: ["Aby zalogować się do panelu klienta: 🔐\n\n**1.** Otwórz link logowania z e-maila.\n**2.** Wpisz swój **adres e-mail**.\n**3.** Wpisz swój **kod PIN**.\n**4.** Naciśnij **«Zaloguj się»**.\n\n💙"],
-    howToIban: ["Aby sprawdzić IBAN i BIC: 📄\n\n**1.** Na stronie głównej naciśnij kafelek **«Zobacz mój IBAN»**.\n**2.** Otworzy się okno z **Numerem IBAN**, **Właścicielem** i **BIC / SWIFT**.\n**3.** Naciśnij **«Kopiuj»**, aby szybko skopiować IBAN. 💙"],
-    howToCard: ["Aby wyświetlić kartę wirtualną: 💳\n\n**1.** Na stronie głównej naciśnij kafelek **«Karta wirtualna»**.\n**2.** Zobaczysz **numer karty**, **datę ważności** i **CVV**.\n**3.** Użyj ikony 👁, aby pokazać lub ukryć dane.\n**4.** Naciśnij **«Kopiuj numer»**. 💙"],
-    howToDeposit: ["Aby dodać środki: 💰\n\nWpłaty są księgowane przez dział administracji po weryfikacji. Skontaktuj się z obsługą klienta. 💙"],
-    help: ["Z przyjemnością! Oto tematy: ✨\n\n• 📤 Jak wykonać przelew\n• 🔐 Jak się zalogować\n• 📄 IBAN / BIC\n• 💳 Karta wirtualna\n• 🛡️ Bezpieczeństwo\n• 💼 Usługi Younited\n• 💰 Opłaty\n\nZadaj mi pytanie! 💙"],
+    fees: ["Jeśli chodzi o opłaty, nie jestem upoważniony do udzielania precyzyjnych informacji. Skontaktuj się bezpośrednio z **obsługą klienta** lub **działem administracji**. 🙏"],
+    loan: ["W sprawie pożyczek dział administracji będzie Twoim najlepszym rozmówcą. 💼 💙"],
+    transfer: ["Przelewy Younited są przetwarzane szybko i bezpiecznie. ⚡ Zwykły czas to 1-3 minuty. 💙"],
+    wait: ["Rozumiem Twoją niecierpliwość. ⏳ Każdy przelew jest dokładnie weryfikowany. 🙏"],
+    balance: ["Możesz sprawdzić swoje saldo w czasie rzeczywistym na stronie głównej. 💰 🙏"],
+    iban: ["Twoje dane bankowe (IBAN, BIC) są dostępne jednym kliknięciem ze strony głównej. 📄 💙"],
+    card: ["Twoja karta wirtualna jest dostępna w sekcji «Karta wirtualna». 💳 🚀"],
+    services: ["Younited oferuje pełen zakres usług finansowych: 💼\n\n• **Przelewy międzynarodowe**\n• **Karta wirtualna**\n• **Zarządzanie kontem**\n• **Wsparcie wielojęzyczne**\n• **Bezpieczeństwo bankowe**\n• **Pomoc 24/7**\n\n🚀"],
+    problem: ["Bardzo mi przykro. 🙏 Skontaktuj się z **obsługą klienta** lub **działem administracji**. 💙"],
+    howToTransfer: ["Aby wykonać przelew z konta Younited na swoje osobiste konto bankowe: 📋\n\n**1.** Naciśnij **«Płatności»** na dole ekranu (lub kafelek **«Wykonaj przelew»**).\n\n**2.** Wypełnij 6 pól:\n• **Kwota do obciążenia**: tylko cyfry\n• **IBAN / Numer konta**: Twój osobisty IBAN\n• **Kod banku (BIC/SWIFT)**: kod BIC banku\n• **Nazwa banku**: nazwa banku\n• **Nazwa beneficjenta**: Twoje imię i nazwisko\n• **Powód przeniesienia**: np. «Przelew osobisty»\n\n**3.** Naciśnij **«Następny»**.\n\n**4.** Wpisz **kod aktywacyjny** i naciśnij **«Zatwierdź przelew»**.\n\n✅ Otrzymasz potwierdzenie i e-mail. 💙"],
+    howToFindActivationCode: ["**Kod aktywacyjny** otrzymujesz na 2 sposoby: 🔑\n\n**1. E-mailem** 📧 — Sprawdź skrzynkę z tematem «Kod aktywacyjny zlecenia przelewu - YOUNITED».\n\n**2. Jeśli nie znajdziesz** — skontaktuj się z **obsługą klienta** lub **działem administracji**. 💙"],
+    howToNavigate: ["Struktura aplikacji: 🧭\n\n**🏠 Pulpit** — saldo i historia\n**💸 Płatności** — przelewy\n**💳 Karta** — karta wirtualna\n**👤 Profil** — dane i wylogowanie\n\n💙"],
+    howToLogin: ["Logowanie: 🔐\n\n**1.** Otwórz link\n**2.** Wpisz **e-mail**\n**3.** Wpisz **PIN**\n**4.** Naciśnij **«Zaloguj się»**\n\nW razie problemu skontaktuj się z obsługą klienta. 💙"],
+    howToIban: ["Aby zobaczyć IBAN: 📄\n\n**1.** Naciśnij **«Zobacz mój IBAN»**\n**2.** Zobaczysz IBAN, Właściciela, BIC/SWIFT\n**3.** Naciśnij **«Kopiuj»** 💙"],
+    howToCard: ["Karta wirtualna: 💳\n\n**1.** Naciśnij **«Karta wirtualna»**\n**2.** Zobaczysz numer, ważność, CVV\n**3.** Naciśnij **«Kopiuj numer»** 💙"],
+    howToDeposit: ["Aby dodać środki: 💰 Skontaktuj się z **działem administracji**. 💙"],
+    howToCancelTransfer: ["Aby anulować przelew: 🔄 Skontaktuj się z **obsługą klienta** lub **działem administracji**. 💙"],
+    howToViewReceipt: ["Aby zobaczyć potwierdzenie: 🧾 Naciśnij transakcję w historii. 💙"],
+    howToContactSupport: ["Kontakt: 📞 **Obsługa klienta** — sprawy ogólne. **Dział administracji** — przelewy, opłaty, pożyczki. 💙"],
+    help: ["Mogę pomóc w: ✨\n\n• 📤 Przelewy\n• 🧭 Nawigacja\n• 🔐 Logowanie\n• 📄 IBAN\n• 💳 Karta\n• 💼 Usługi\n\nZadaj mi pytanie! 💙"],
     fallback: ["Dziękuję za wiadomość. 💙 Czy możesz sprecyzować pytanie? Mogę odpowiedzieć na wiele tematów. 🙏"]
   },
   es: {
     greeting: ["¡Hola y bienvenido! 👋 Soy tu asistente IA Younited, disponible 24h/24. ¿Cómo puedo ayudarte?", "¡Hola de nuevo! 😊 Responderé a todas tus preguntas con precisión. ¿Qué necesitas?"],
     thanks: ["¡Con mucho gusto! 🙏 Vuelve cuando quieras.", "¡Un honor ayudarte! 😊 ¡Buen día!"],
-    whoAreYou: ["Soy el Asistente IA Younited — una inteligencia artificial de nueva generación, entrenada para acompañarte 24h/24. Puedo responder a tus preguntas sobre tu cuenta, transferencias, seguridad, servicios Younited y mucho más. 💙"],
-    existence: ["Younited es un servicio financiero establecido y en pleno crecimiento que opera en toda Europa. 🇪🇺 Atendemos diariamente a miles de clientes con soluciones de transferencia seguras y verificadas. Puedes tener total confianza: Younited es un socio serio y fiable. 💙"],
-    trust: ["Comprendo tu preocupación y quiero asegurarte: Younited es un servicio serio, establecido y fiable. 💙 Miles de clientes confían en nosotros cada día. Cada operación es verificada por equipos administrativos dedicados. No estás solo(a). 🙏"],
-    security: ["Tu seguridad es nuestra prioridad absoluta. 🔒 Todas tus transacciones están protegidas con cifrado end-to-end. Tus datos nunca se comparten con terceros. 💙"],
-    fees: ["En cuanto a las tarifas, no estoy facultado para darte información precisa. Las condiciones actuales son las disponibles actualmente, porque muchas personas se beneficiaron de un préstamo con nuestro servicio y hasta hoy no han reembolsado. Para preguntas sobre tarifas, contacta directamente con el servicio al cliente o el servicio administrativo. 🙏"],
-    loan: ["Para préstamos, el servicio administrativo será tu mejor interlocutor. 💼 Podrá estudiar tu situación personal. Las condiciones actuales son las disponibles actualmente. 🙏"],
-    transfer: ["Las transferencias Younited se procesan de forma rápida y segura. ⚡ Tras validar tu código de activación, la transferencia es verificada y enviada. El tiempo habitual es de 1 a 3 minutos. 💙"],
-    wait: ["Comprendo tu impaciencia. ⏳ Cada transferencia es verificada con cuidado. En la mayoría de los casos, los plazos se respetan. 🙏"],
-    balance: ["Puedes consultar tu saldo en tiempo real en la página de inicio. 💰 Se actualiza automáticamente. 🙏"],
-    iban: ["Tus datos bancarios (IBAN, BIC) están accesibles con un clic desde la página de inicio. 📄 Puedes copiarlos y compartirlos con seguridad. 💙"],
-    card: ["Tu tarjeta virtual está disponible en la sección «Tarjeta virtual». 💳 Te permite realizar pagos en línea con seguridad. 🚀"],
-    services: ["Younited ofrece una gama completa de servicios financieros: 💼\n\n• **Transferencias internacionales** seguras y rápidas\n• **Tarjeta virtual** para pagos en línea\n• **Gestión de cuenta** en tiempo real\n• **Soporte multilingüe**\n• **Seguridad bancaria** de alto nivel\n• **Asistencia 24/7**\n\n¿Qué te gustaría saber? 🚀"],
-    problem: ["Lamento mucho la dificultad. 🙏 Te recomiendo contactar directamente con el servicio al cliente: están formados para tratar todas las situaciones complejas. 💙"],
-    howToTransfer: ["Para realizar una transferencia desde tu cuenta Younited a tu cuenta bancaria personal, sigue estos pasos: 📋\n\n**1.** Desde la página de inicio, pulsa la pestaña **«Pagos»** en la parte inferior (o la tarjeta **«Hacer una transferencia»**).\n\n**2.** Rellena el formulario:\n   • **Importe a debitar**: solo dígitos, sin coma ni punto (ej: 500).\n   • **IBAN**: tu IBAN personal.\n   • **Código BIC/SWIFT**: el código BIC de tu banco.\n   • **Nombre del banco**: el nombre de tu banco.\n   • **Beneficiario**: tu nombre completo.\n   • **Motivo**: por ejemplo «Transferencia personal».\n\n**3.** Pulsa **«Siguiente»**.\n\n**4.** Verifica la información e introduce tu **código de activación**.\n\n**5.** Pulsa **«Validar»** para finalizar.\n\n✅ Recibirás una confirmación. 💙"],
-    howToNavigate: ["Cómo navegar: 🧭\n\n• **Inicio**: saldo y transacciones.\n• **Pagos**: transferencias.\n• **Tarjeta virtual**: datos de tarjeta.\n• **Perfil**: datos, IBAN, BIC, cerrar sesión. 💙"],
-    howToLogin: ["Para iniciar sesión: 🔐\n\n**1.** Abre el enlace de acceso.\n**2.** Introduce tu **correo**.\n**3.** Introduce tu **PIN**.\n**4.** Pulsa **«Iniciar»**. 💙"],
-    howToIban: ["Para ver tu IBAN: 📄\n\n**1.** Pulsa **«Ver mi IBAN»**.\n**2.** Verás IBAN, Titular y BIC/SWIFT.\n**3.** Pulsa **«Copiar»**. 💙"],
-    howToCard: ["Para ver tu tarjeta virtual: 💳\n\n**1.** Pulsa **«Tarjeta virtual»**.\n**2.** Verás número, caducidad y CVV.\n**3.** Usa 👁 para mostrar/ocultar.\n**4.** Pulsa **«Copiar número»**. 💙"],
-    howToDeposit: ["Para añadir fondos: 💰 contacta con el servicio al cliente. 💙"],
-    help: ["¡Con gusto! Temas disponibles: ✨\n\n• 📤 Cómo hacer una transferencia\n• 🔐 Cómo iniciar sesión\n• 📄 IBAN / BIC\n• 💳 Tarjeta virtual\n• 🛡️ Seguridad\n• 💼 Servicios\n• 💰 Tarifas\n\n¡Pregúntame! 💙"],
-    fallback: ["Gracias por tu mensaje. 💙 ¿Puedes precisar tu pregunta? Puedo responder a muchos temas. 🙏"]
+    whoAreYou: ["Soy el Asistente IA Younited — una inteligencia artificial de nueva generación, entrenada para acompañarte 24h/24. Conozco cada página de la aplicación. 💙"],
+    existence: ["Younited es un servicio financiero establecido y en pleno crecimiento que opera en toda Europa. 🇪🇺 Puedes tener total confianza: Younited es un socio serio y fiable. 💙"],
+    trust: ["Comprendo tu preocupación y quiero asegurarte: Younited es un servicio serio, establecido y fiable. 💙 No estás solo(a). 🙏"],
+    security: ["Tu seguridad es nuestra prioridad absoluta. 🔒 Todas tus transacciones están protegidas con cifrado end-to-end. 💙"],
+    fees: ["En cuanto a las tarifas, contacta directamente con el **servicio al cliente** o el **servicio administrativo**. 🙏"],
+    loan: ["Para préstamos, el **servicio administrativo** será tu mejor interlocutor. 💼 🙏"],
+    transfer: ["Las transferencias Younited se procesan de forma rápida y segura. ⚡ El tiempo habitual es de 1 a 3 minutos. 💙"],
+    wait: ["Comprendo tu impaciencia. ⏳ Cada transferencia es verificada con cuidado. 🙏"],
+    balance: ["Puedes consultar tu saldo en tiempo real en la página de inicio. 💰 🙏"],
+    iban: ["Tus datos bancarios están accesibles con un clic desde la página de inicio. 📄 💙"],
+    card: ["Tu tarjeta virtual está disponible en la sección «Tarjeta virtual». 💳 🚀"],
+    services: ["Younited ofrece una gama completa de servicios financieros: 💼\n\n• **Transferencias internacionales**\n• **Tarjeta virtual**\n• **Gestión de cuenta**\n• **Soporte multilingüe**\n• **Seguridad bancaria**\n• **Asistencia 24/7**\n\n🚀"],
+    problem: ["Lamento mucho la dificultad. 🙏 Contacta con el **servicio al cliente**. 💙"],
+    howToTransfer: ["Guía completa para una transferencia: 📋\n\n**1.** Pulsa **«Pagos»** abajo (o la tarjeta **«Hacer una transferencia»**).\n\n**2.** Rellena 6 campos:\n• **Importe a debitar**: solo dígitos\n• **IBAN**: tu IBAN personal\n• **Código BIC/SWIFT**: código de tu banco\n• **Nombre del banco**: ej. BBVA, Santander\n• **Beneficiario**: tu nombre completo\n• **Motivo**: ej. «Transferencia personal»\n\n**3.** Pulsa **«Siguiente»**.\n\n**4.** Introduce el **código de activación** y pulsa **«Validar»**.\n\n✅ Recibirás confirmación por email. 💙"],
+    howToFindActivationCode: ["El **código de activación** te llega: 🔑\n\n**1.** Por **email** (asunto: «Código de activación»)\n**2.** Si no lo encuentras → contacta con el **servicio al cliente** o **servicio administrativo**. 💙"],
+    howToNavigate: ["Estructura: 🧭\n\n**🏠 Inicio** — saldo e historial\n**💸 Pagos** — transferencias\n**💳 Tarjeta** — tarjeta virtual\n**👤 Perfil** — datos y cerrar sesión\n\n💙"],
+    howToLogin: ["Iniciar sesión: 🔐\n\n**1.** Abre el enlace\n**2.** Email\n**3.** PIN\n**4.** Pulsa **«Iniciar»**\n\nEn caso de problema → servicio al cliente. 💙"],
+    howToIban: ["IBAN: 📄\n\n**1.** Pulsa **«Ver mi IBAN»**\n**2.** Verás IBAN, Titular, BIC/SWIFT\n**3.** Pulsa **«Copiar»** 💙"],
+    howToCard: ["Tarjeta virtual: 💳\n\n**1.** Pulsa **«Tarjeta virtual»**\n**2.** Verás número, caducidad, CVV\n**3.** Pulsa **«Copiar número»** 💙"],
+    howToDeposit: ["Añadir fondos: 💰 Contacta con el **servicio administrativo**. 💙"],
+    howToCancelTransfer: ["Cancelar transferencia: 🔄 Contacta con el **servicio al cliente** o **servicio administrativo**. 💙"],
+    howToViewReceipt: ["Ver recibo: 🧾 Pulsa la transacción en el historial. 💙"],
+    howToContactSupport: ["Contacto: 📞 **Servicio al cliente** / **Servicio administrativo**. 💙"],
+    help: ["Puedo ayudarte: ✨\n\n• 📤 Transferencias\n• 🧭 Navegación\n• 🔐 Login\n• 📄 IBAN\n• 💳 Tarjeta\n• 💼 Servicios\n\n💙"],
+    fallback: ["Gracias por tu mensaje. 💙 ¿Puedes precisar tu pregunta? 🙏"]
   },
   it: {
-    greeting: ["Benvenuto! 👋 Sono il tuo assistente IA Younited, disponibile 24/7. Come posso aiutarti?", "Ciao di nuovo! 😊 Risponderò a tutte le tue domande con precisione. Cosa ti serve?"],
+    greeting: ["Benvenuto! 👋 Sono il tuo assistente IA Younited, disponibile 24/7. Come posso aiutarti?", "Ciao di nuovo! 😊 Risponderò a tutte le tue domande con precisione."],
     thanks: ["Con molto piacere! 🙏 Torna quando vuoi.", "Un onore aiutarti! 😊 Buona giornata!"],
-    whoAreYou: ["Sono l'Assistente IA Younited — un'intelligenza artificiale di nuova generazione, addestrata per accompagnarti 24/7. Posso rispondere alle tue domande su conto, bonifici, sicurezza, servizi Younited e molto altro. 💙"],
-    existence: ["Younited è un servizio finanziario consolidato e in piena crescita, operante in tutta Europa. 🇪🇺 Ogni giorno serviamo migliaia di clienti con soluzioni di bonifico sicure e verificate. Puoi avere totale fiducia: Younited è un partner serio e affidabile. 💙"],
-    trust: ["Comprendo la tua preoccupazione e voglio rassicurarti: Younited è un servizio serio, consolidato e affidabile. 💙 Migliaia di clienti si fidano di noi ogni giorno. Non sei solo(a). 🙏"],
-    security: ["La tua sicurezza è la nostra priorità assoluta. 🔒 Tutte le transazioni sono protette con crittografia end-to-end. I tuoi dati non vengono mai condivisi con terzi. 💙"],
-    fees: ["Per quanto riguarda le commissioni, non sono autorizzato a darti informazioni precise. Le condizioni attuali sono quelle attualmente disponibili, perché molte persone hanno beneficiato di un prestito e ad oggi non hanno ancora rimborsato. Per domande sulle commissioni, contatta direttamente il servizio clienti o il servizio amministrativo. 🙏"],
-    loan: ["Per i prestiti, il servizio amministrativo sarà il tuo miglior interlocutore. 💼 Potrà studiare la tua situazione personale. Le condizioni attuali sono quelle attualmente disponibili. 🙏"],
-    transfer: ["I bonifici Younited sono elaborati in modo rapido e sicuro. ⚡ Dopo la convalida del codice di attivazione, il bonifico viene verificato e inviato. Il tempo abituale è di 1-3 minuti. 💙"],
-    wait: ["Comprendo la tua impazienza. ⏳ Ogni bonifico viene verificato con cura. Nella maggior parte dei casi, i tempi vengono rispettati. 🙏"],
-    balance: ["Puoi consultare il tuo saldo in tempo reale dalla pagina iniziale. 💰 Si aggiorna automaticamente. 🙏"],
-    iban: ["I tuoi dati bancari (IBAN, BIC) sono accessibili con un clic dalla pagina iniziale. 📄 Puoi copiarli e condividerli in sicurezza. 💙"],
-    card: ["La tua carta virtuale è disponibile nella sezione «Carta virtuale». 💳 Ti permette di effettuare pagamenti online in sicurezza. 🚀"],
-    services: ["Younited offre una gamma completa di servizi finanziari: 💼\n\n• **Bonifici internazionali** sicuri e rapidi\n• **Carta virtuale** per pagamenti online\n• **Gestione conto** in tempo reale\n• **Supporto multilingue**\n• **Sicurezza bancaria** di alto livello\n• **Assistenza 24/7**\n\nCosa ti interessa sapere? 🚀"],
-    problem: ["Mi dispiace molto per la difficoltà. 🙏 Ti raccomando di contattare direttamente il servizio clienti: sono formati per gestire tutte le situazioni complesse. 💙"],
-    howToTransfer: ["Per effettuare un bonifico dal tuo conto Younited al tuo conto bancario personale, segui questi passaggi: 📋\n\n**1.** Dalla home, tocca la scheda **«Pagamenti»** in basso (o la casella **«Fai un bonifico»**).\n\n**2.** Compila il modulo:\n   • **Importo da addebitare**: solo cifre, senza virgola né punto (es: 500).\n   • **IBAN**: il tuo IBAN personale.\n   • **Codice BIC/SWIFT**: codice BIC della tua banca.\n   • **Nome della banca**: nome della tua banca.\n   • **Beneficiario**: tuo nome completo.\n   • **Motivo**: es. «Bonifico personale».\n\n**3.** Tocca **«Avanti»**.\n\n**4.** Verifica i dati e inserisci il **codice di attivazione**.\n\n**5.** Tocca **«Convalida»**.\n\n✅ Riceverai una conferma. 💙"],
-    howToNavigate: ["Come navigare: 🧭\n\n• **Home**: saldo e transazioni.\n• **Pagamenti**: bonifici.\n• **Carta virtuale**: dati carta.\n• **Profilo**: dati, IBAN, BIC, logout. 💙"],
-    howToLogin: ["Per accedere: 🔐\n\n**1.** Apri il link.\n**2.** Inserisci l'**email**.\n**3.** Inserisci il **PIN**.\n**4.** Tocca **«Accedi»**. 💙"],
-    howToIban: ["Per vedere l'IBAN: 📄\n\n**1.** Tocca **«Vedi il mio IBAN»**.\n**2.** Vedrai IBAN, Titolare e BIC/SWIFT.\n**3.** Tocca **«Copia»**. 💙"],
-    howToCard: ["Per vedere la carta virtuale: 💳\n\n**1.** Tocca **«Carta virtuale»**.\n**2.** Vedrai numero, scadenza e CVV.\n**3.** Usa 👁 per mostrare/nascondere.\n**4.** Tocca **«Copia numero»**. 💙"],
-    howToDeposit: ["Per aggiungere fondi: 💰 contatta il servizio clienti. 💙"],
-    help: ["Con piacere! Argomenti: ✨\n\n• 📤 Come fare un bonifico\n• 🔐 Come accedere\n• 📄 IBAN / BIC\n• 💳 Carta virtuale\n• 🛡️ Sicurezza\n• 💼 Servizi\n• 💰 Commissioni\n\nChiedimi! 💙"],
-    fallback: ["Grazie per il tuo messaggio. 💙 Puoi precisare la tua domanda? Posso rispondere a molti argomenti. 🙏"]
+    whoAreYou: ["Sono l'Assistente IA Younited — un'intelligenza artificiale di nuova generazione. Conosco ogni pagina dell'app. 💙"],
+    existence: ["Younited è un servizio finanziario consolidato e in piena crescita, operante in tutta Europa. 🇪🇺 💙"],
+    trust: ["Comprendo la tua preoccupazione e voglio rassicurarti: Younited è un servizio serio, consolidato e affidabile. 💙 🙏"],
+    security: ["La tua sicurezza è la nostra priorità assoluta. 🔒 Tutte le transazioni sono protette con crittografia end-to-end. 💙"],
+    fees: ["Per le commissioni, contatta il **servizio clienti** o il **servizio amministrativo**. 🙏"],
+    loan: ["Per i prestiti, il **servizio amministrativo** sarà il tuo miglior interlocutore. 💼 🙏"],
+    transfer: ["I bonifici Younited sono elaborati in modo rapido e sicuro. ⚡ 1-3 minuti. 💙"],
+    wait: ["Comprendo la tua impazienza. ⏳ Ogni bonifico viene verificato con cura. 🙏"],
+    balance: ["Puoi consultare il tuo saldo in tempo reale dalla pagina iniziale. 💰 🙏"],
+    iban: ["I tuoi dati bancari sono accessibili con un clic. 📄 💙"],
+    card: ["La tua carta virtuale è disponibile nella sezione «Carta virtuale». 💳 🚀"],
+    services: ["Younited offre una gamma completa: 💼\n\n• **Bonifici internazionali**\n• **Carta virtuale**\n• **Gestione conto**\n• **Supporto multilingue**\n• **Sicurezza bancaria**\n• **Assistenza 24/7**\n\n🚀"],
+    problem: ["Mi dispiace molto. 🙏 Contatta il **servizio clienti**. 💙"],
+    howToTransfer: ["Guida completa per un bonifico: 📋\n\n**1.** Tocca **«Pagamenti»** in basso.\n**2.** Compila 6 campi:\n• **Importo**: solo cifre\n• **IBAN**: tuo IBAN personale\n• **BIC/SWIFT**: codice banca\n• **Banca**: nome\n• **Beneficiario**: tuo nome\n• **Motivo**: es. «Bonifico personale»\n**3.** Tocca **«Avanti»**.\n**4.** Inserisci **codice di attivazione** e tocca **«Convalida»**.\n\n✅ Riceverai email di conferma. 💙"],
+    howToFindActivationCode: ["Il **codice di attivazione** arriva: 🔑\n\n**1.** Via **email**\n**2.** Se non lo trovi → contatta il **servizio clienti** o **servizio amministrativo**. 💙"],
+    howToNavigate: ["Struttura: 🧭\n\n**🏠 Home** — saldo e cronologia\n**💸 Pagamenti** — bonifici\n**💳 Carta** — carta virtuale\n**👤 Profilo** — dati e logout\n\n💙"],
+    howToLogin: ["Accesso: 🔐 Email + PIN, tocca **«Accedi»**. 💙"],
+    howToIban: ["IBAN: 📄 Tocca **«Vedi il mio IBAN»** → **«Copia»**. 💙"],
+    howToCard: ["Carta: 💳 Tocca **«Carta virtuale»**. 💙"],
+    howToDeposit: ["Aggiungere fondi: 💰 Contatta il **servizio amministrativo**. 💙"],
+    howToCancelTransfer: ["Annullare bonifico: 🔄 Contatta il **servizio clienti**. 💙"],
+    howToViewReceipt: ["Ricevuta: 🧾 Tocca la transazione nella cronologia. 💙"],
+    howToContactSupport: ["Contatti: 📞 **Servizio clienti** / **Servizio amministrativo**. 💙"],
+    help: ["Posso aiutarti: ✨ Bonifici, Navigazione, Accesso, IBAN, Carta, Servizi. 💙"],
+    fallback: ["Grazie per il tuo messaggio. 💙 Puoi precisare? 🙏"]
   },
   de: {
-    greeting: ["Hallo und willkommen! 👋 Ich bin Ihr Younited KI-Assistent, 24/7 verfügbar. Wie kann ich helfen?", "Hallo erneut! 😊 Ich beantworte alle Ihre Fragen präzise. Was benötigen Sie?"],
-    thanks: ["Mit größtem Vergnügen! 🙏 Kommen Sie jederzeit wieder.", "Eine Ehre, Ihnen zu helfen! 😊 Schönen Tag!"],
-    whoAreYou: ["Ich bin der Younited KI-Assistent — eine künstliche Intelligenz der neuen Generation, trainiert, um Sie 24/7 zu begleiten. Ich kann Ihre Fragen zu Konto, Überweisungen, Sicherheit, Younited-Diensten und mehr beantworten. 💙"],
-    existence: ["Younited ist ein etablierter und wachsender Finanzdienst, der in ganz Europa tätig ist. 🇪🇺 Wir betreuen täglich Tausende von Kunden mit sicheren, verifizierten Überweisungslösungen. Sie können volles Vertrauen haben: Younited ist ein seriöser und zuverlässiger Partner. 💙"],
-    trust: ["Ich verstehe Ihre Sorge und möchte Sie versichern: Younited ist ein seriöser, etablierter und zuverlässiger Service. 💙 Tausende Kunden vertrauen uns täglich. Sie sind nicht allein. 🙏"],
-    security: ["Ihre Sicherheit hat absolute Priorität. 🔒 Alle Transaktionen sind durch Ende-zu-Ende-Verschlüsselung geschützt. Ihre Daten werden niemals an Dritte weitergegeben. 💙"],
-    fees: ["Bezüglich der Gebühren bin ich nicht befugt, genaue Informationen zu geben. Die aktuellen Bedingungen sind die derzeit verfügbaren, da viele Personen einen Kredit in Anspruch genommen haben und bis heute nicht zurückgezahlt haben. Für Fragen zu Gebühren wenden Sie sich direkt an den Kundenservice oder die Verwaltungsabteilung. 🙏"],
-    loan: ["Für Kredite ist die Verwaltungsabteilung Ihr bester Ansprechpartner. 💼 Sie kann Ihre persönliche Situation prüfen. Die aktuellen Bedingungen sind die derzeit verfügbaren. 🙏"],
-    transfer: ["Younited-Überweisungen werden schnell und sicher bearbeitet. ⚡ Nach Validierung Ihres Aktivierungscodes wird die Überweisung geprüft und gesendet. Die übliche Zeit beträgt 1-3 Minuten. 💙"],
-    wait: ["Ich verstehe Ihre Ungeduld. ⏳ Jede Überweisung wird sorgfältig geprüft. In den meisten Fällen werden die Fristen eingehalten. 🙏"],
-    balance: ["Sie können Ihr Guthaben jederzeit auf der Startseite einsehen. 💰 Es wird automatisch aktualisiert. 🙏"],
-    iban: ["Ihre Bankdaten (IBAN, BIC) sind mit einem Klick von der Startseite aus zugänglich. 📄 Sie können sie sicher kopieren und teilen. 💙"],
-    card: ["Ihre virtuelle Karte ist im Bereich «Virtuelle Karte» verfügbar. 💳 Sie ermöglicht sichere Online-Zahlungen. 🚀"],
-    services: ["Younited bietet eine komplette Palette an Finanzdienstleistungen: 💼\n\n• **Internationale Überweisungen** sicher und schnell\n• **Virtuelle Karte** für Online-Zahlungen\n• **Kontoverwaltung** in Echtzeit\n• **Mehrsprachiger Support**\n• **Bankensicherheit** auf höchstem Niveau\n• **24/7-Unterstützung**\n\nWas möchten Sie wissen? 🚀"],
-    problem: ["Es tut mir sehr leid für die Schwierigkeit. 🙏 Ich empfehle Ihnen, sich direkt an den Kundenservice zu wenden: Sie sind geschult, um alle komplexen Situationen zu behandeln. 💙"],
-    howToTransfer: ["Um eine Überweisung von Ihrem Younited-Konto auf Ihr persönliches Bankkonto durchzuführen, folgen Sie diesen Schritten: 📋\n\n**1.** Tippen Sie auf der Startseite auf den Tab **«Zahlungen»** unten (oder auf die Kachel **«Überweisung tätigen»**).\n\n**2.** Füllen Sie das Formular aus:\n   • **Zu belastender Betrag**: nur Ziffern, ohne Komma oder Punkt (z.B. 500).\n   • **IBAN**: Ihre persönliche IBAN.\n   • **Bankcode (BIC/SWIFT)**: BIC Ihrer Bank.\n   • **Name der Bank**: Name Ihrer Bank.\n   • **Begünstigter**: Ihr vollständiger Name.\n   • **Grund**: z.B. «Persönliche Überweisung».\n\n**3.** Tippen Sie auf **«Weiter»**.\n\n**4.** Prüfen Sie die Angaben und geben Sie Ihren **Aktivierungscode** ein.\n\n**5.** Tippen Sie auf **«Bestätigen»**.\n\n✅ Sie erhalten eine Bestätigung. 💙"],
-    howToNavigate: ["Navigation in Ihrer App: 🧭\n\n• **Start**: Guthaben und Transaktionen.\n• **Zahlungen**: Überweisungen.\n• **Virtuelle Karte**: Kartendaten.\n• **Profil**: Daten, IBAN, BIC, Abmelden. 💙"],
-    howToLogin: ["Anmeldung: 🔐\n\n**1.** Öffnen Sie den Link.\n**2.** Geben Sie Ihre **E-Mail** ein.\n**3.** Geben Sie Ihre **PIN** ein.\n**4.** Tippen Sie auf **«Anmelden»**. 💙"],
-    howToIban: ["IBAN anzeigen: 📄\n\n**1.** Tippen Sie auf **«Meine IBAN anzeigen»**.\n**2.** Sie sehen IBAN, Inhaber und BIC/SWIFT.\n**3.** Tippen Sie auf **«Kopieren»**. 💙"],
-    howToCard: ["Virtuelle Karte anzeigen: 💳\n\n**1.** Tippen Sie auf **«Virtuelle Karte»**.\n**2.** Sie sehen Nummer, Ablaufdatum und CVV.\n**3.** Nutzen Sie 👁 zum Anzeigen/Verbergen.\n**4.** Tippen Sie auf **«Nummer kopieren»**. 💙"],
-    howToDeposit: ["Guthaben aufladen: 💰 kontaktieren Sie den Kundenservice. 💙"],
-    help: ["Gerne! Verfügbare Themen: ✨\n\n• 📤 Überweisung durchführen\n• 🔐 Anmelden\n• 📄 IBAN / BIC\n• 💳 Virtuelle Karte\n• 🛡️ Sicherheit\n• 💼 Dienstleistungen\n• 💰 Gebühren\n\nStellen Sie Ihre Frage! 💙"],
-    fallback: ["Vielen Dank für Ihre Nachricht. 💙 Können Sie Ihre Frage präzisieren? Ich kann zu vielen Themen antworten. 🙏"]
+    greeting: ["Hallo und willkommen! 👋 Ich bin Ihr Younited KI-Assistent, 24/7 verfügbar. Wie kann ich helfen?", "Hallo erneut! 😊 Ich beantworte alle Ihre Fragen präzise."],
+    thanks: ["Mit größtem Vergnügen! 🙏 Kommen Sie jederzeit wieder.", "Eine Ehre, Ihnen zu helfen! 😊"],
+    whoAreYou: ["Ich bin der Younited KI-Assistent — eine künstliche Intelligenz der neuen Generation. Ich kenne jede Seite der App. 💙"],
+    existence: ["Younited ist ein etablierter und wachsender Finanzdienst in ganz Europa. 🇪🇺 💙"],
+    trust: ["Ich verstehe Ihre Sorge und möchte Sie versichern: Younited ist ein seriöser, etablierter und zuverlässiger Service. 💙 🙏"],
+    security: ["Ihre Sicherheit hat absolute Priorität. 🔒 Ende-zu-Ende-Verschlüsselung. 💙"],
+    fees: ["Für Gebühren wenden Sie sich an den **Kundenservice** oder die **Verwaltungsabteilung**. 🙏"],
+    loan: ["Für Kredite ist die **Verwaltungsabteilung** Ihr bester Ansprechpartner. 💼 🙏"],
+    transfer: ["Younited-Überweisungen werden schnell und sicher bearbeitet. ⚡ 1-3 Minuten. 💙"],
+    wait: ["Ich verstehe Ihre Ungeduld. ⏳ Jede Überweisung wird sorgfältig geprüft. 🙏"],
+    balance: ["Sie können Ihr Guthaben auf der Startseite einsehen. 💰 🙏"],
+    iban: ["Ihre Bankdaten sind mit einem Klick zugänglich. 📄 💙"],
+    card: ["Ihre virtuelle Karte ist im Bereich «Virtuelle Karte» verfügbar. 💳 🚀"],
+    services: ["Younited bietet: 💼\n\n• **Internationale Überweisungen**\n• **Virtuelle Karte**\n• **Kontoverwaltung**\n• **Mehrsprachiger Support**\n• **Bankensicherheit**\n• **24/7-Unterstützung**\n\n🚀"],
+    problem: ["Es tut mir sehr leid. 🙏 Kontaktieren Sie den **Kundenservice**. 💙"],
+    howToTransfer: ["Komplette Anleitung für eine Überweisung: 📋\n\n**1.** Tippen Sie auf **«Zahlungen»**.\n**2.** Füllen Sie 6 Felder aus:\n• **Betrag**: nur Ziffern\n• **IBAN**: Ihre persönliche IBAN\n• **BIC/SWIFT**: Bankcode\n• **Bank**: Name\n• **Begünstigter**: Ihr vollständiger Name\n• **Grund**: z.B. «Persönliche Überweisung»\n**3.** Tippen Sie auf **«Weiter»**.\n**4.** Geben Sie den **Aktivierungscode** ein und tippen Sie auf **«Bestätigen»**.\n\n✅ Sie erhalten eine E-Mail-Bestätigung. 💙"],
+    howToFindActivationCode: ["Der **Aktivierungscode** kommt: 🔑\n\n**1.** Per **E-Mail**\n**2.** Falls nicht gefunden → **Kundenservice** oder **Verwaltungsabteilung** kontaktieren. 💙"],
+    howToNavigate: ["Struktur: 🧭\n\n**🏠 Start** — Guthaben und Verlauf\n**💸 Zahlungen** — Überweisungen\n**💳 Karte** — virtuelle Karte\n**👤 Profil** — Daten und Abmelden\n\n💙"],
+    howToLogin: ["Anmeldung: 🔐 E-Mail + PIN, tippen Sie auf **«Anmelden»**. 💙"],
+    howToIban: ["IBAN: 📄 Tippen Sie auf **«Meine IBAN anzeigen»** → **«Kopieren»**. 💙"],
+    howToCard: ["Karte: 💳 Tippen Sie auf **«Virtuelle Karte»**. 💙"],
+    howToDeposit: ["Guthaben aufladen: 💰 Kontaktieren Sie die **Verwaltungsabteilung**. 💙"],
+    howToCancelTransfer: ["Überweisung stornieren: 🔄 Kontaktieren Sie den **Kundenservice**. 💙"],
+    howToViewReceipt: ["Beleg anzeigen: 🧾 Tippen Sie auf die Transaktion im Verlauf. 💙"],
+    howToContactSupport: ["Kontakt: 📞 **Kundenservice** / **Verwaltungsabteilung**. 💙"],
+    help: ["Ich kann helfen: ✨ Überweisungen, Navigation, Anmeldung, IBAN, Karte, Dienste. 💙"],
+    fallback: ["Vielen Dank für Ihre Nachricht. 💙 Können Sie präzisieren? 🙏"]
   }
 };
 
 const CHAT_KEYWORDS = {
-  existence: ['existe', 'existe-t-il', 'existe t il', 'vrai', 'vraie', 'réel', 'reelle', 'reel', 'fake', 'arnaque', 'scam', 'fiable', 'sérieux', 'serieux', 'légitime', 'legitime', 'site officiel', 'istnieje', 'prawdziwy', 'oszustwo', 'wiarygodny', 'existe', 'real', 'estafa', 'fiable', 'serio', 'esiste', 'vero', 'reale', 'truffa', 'existiert', 'echt', 'betrug', 'seriös'],
+  existence: ['existe', 'existe-t-il', 'existe t il', 'vrai', 'vraie', 'réel', 'reelle', 'reel', 'fake', 'arnaque', 'scam', 'fiable', 'sérieux', 'serieux', 'légitime', 'legitime', 'site officiel', 'istnieje', 'prawdziwy', 'oszustwo', 'wiarygodny', 'real', 'estafa', 'serio', 'esiste', 'vero', 'reale', 'truffa', 'existiert', 'echt', 'betrug', 'seriös'],
   fees: ['frais', 'tarif', 'tarifs', 'payer', 'paiement', 'coût', 'couts', 'cout', 'prix', 'commission', 'opłata', 'opłaty', 'koszt', 'płacić', 'prowizja', 'tarifa', 'tarifas', 'pagar', 'pago', 'coste', 'precio', 'comisión', 'commissione', 'commissioni', 'pagare', 'pagamento', 'costo', 'costi', 'prezzo', 'gebühr', 'gebühren', 'kosten', 'bezahlen', 'preis', 'provision'],
   trust: ['confiance', 'peur', 'doute', 'inquiet', 'inquiète', 'méfier', 'mefier', 'pas sûr', 'pas sure', 'hésite', 'hesite', 'zaufanie', 'strach', 'wątpliwość', 'niepokój', 'confianza', 'miedo', 'duda', 'preocupado', 'fiducia', 'paura', 'dubbio', 'preoccupato', 'vertrauen', 'angst', 'zweifel', 'sorge'],
   security: ['sécurité', 'securite', 'sécurisé', 'securise', 'protégé', 'protege', 'protection', 'sûr', 'sure', 'chiffré', 'chiffre', 'bezpieczeństwo', 'bezpieczny', 'ochrona', 'seguridad', 'seguro', 'protegido', 'sicurezza', 'sicuro', 'protetto', 'sicherheit', 'sicher', 'geschützt'],
   loan: ['prêt', 'pret', 'crédit', 'credit', 'emprunt', 'emprunter', 'pożyczka', 'kredyt', 'pożyczyć', 'préstamo', 'prestamo', 'crédito', 'credito', 'prestito', 'kredit', 'darlehen'],
-  transfer: ['virement', 'transfert', 'transferer', 'transférer', 'envoyer', 'recevoir', 'délai', 'delai', 'przelew', 'przelewy', 'wysłać', 'transferencia', 'enviar', 'bonifico', 'bonifici', 'inviare', 'überweisung', 'überweisungen', 'senden'],
+  transfer: ['virement', 'transfert', 'transferer', 'transférer', 'envoyer', 'recevoir', 'przelew', 'przelewy', 'wysłać', 'transferencia', 'enviar', 'bonifico', 'bonifici', 'inviare', 'überweisung', 'überweisungen', 'senden', 'délai', 'delai'],
   wait: ['attendre', 'attente', 'retard', 'lent', 'lente', 'lentement', 'longtemps', 'czekać', 'opóźnienie', 'esperar', 'retraso', 'lento', 'aspettare', 'ritardo', 'warten', 'verzögerung', 'langsam'],
   balance: ['solde', 'combien', 'combien j\'ai', 'sald', 'pieniądze', 'ile', 'saldo', 'dinero', 'cuánto', 'quanto', 'sold', 'guthaben', 'geld'],
-  iban: ['iban', 'bic', 'swift', 'compte bancaire', 'coordonnées bancaires', 'numer konta', 'konto bankowe', 'cuenta bancaria', 'conto bancario', 'bankkonto'],
-  card: ['carte virtuelle', 'cvv', 'karta wirtualna', 'tarjeta virtual', 'carta virtuale', 'virtuelle karte', 'carte de paiement', 'karta płatnicza'],
+  iban: ['mon iban', 'mon bic', 'mon swift', 'compte bancaire', 'coordonnées bancaires', 'numer konta', 'konto bankowe', 'cuenta bancaria', 'conto bancario', 'bankkonto', 'mon rib'],
+  card: ['ma carte', 'carte virtuelle', 'cvv', 'karta wirtualna', 'tarjeta virtual', 'carta virtuale', 'virtuelle karte', 'carte de paiement', 'karta płatnicza'],
   services: ['services', 'que faites', 'que proposez', 'que propose', 'fonctionnalités', 'fonctionnalites', 'usługi', 'uslugi', 'servicios', 'servizi', 'dienstleistungen', 'angebote', 'que pouvez-vous faire', 'que peux-tu faire'],
   problem: ['problème', 'probleme', 'souci', 'bug', 'erreur', 'error', 'bloqué', 'bloque', 'marche pas', 'ne marche pas', 'panne', 'problem', 'błąd', 'problema', 'errore', 'fehler'],
   whoAreYou: ['qui es-tu', 'qui es tu', 'tu es qui', 'tu es quoi', 'présente toi', 'presente toi', 'qui êtes-vous', 'kim jesteś', 'quién eres', 'chi sei', 'wer bist du', 'wer sind sie'],
-  howToTransfer: ['comment faire un virement', 'faire un virement', 'effectuer un virement', 'envoyer un virement', 'virement vers mon compte', 'transférer de l\'argent', 'je veux faire un virement', 'aidez-moi à faire un virement', 'aide virement', 'guide virement', 'comment envoyer', 'jak zrobić przelew', 'wykonać przelew', 'como hacer transferencia', 'cómo transferir', 'come fare bonifico', 'wie überweisen', 'überweisung durchführen'],
-  howToNavigate: ['comment naviguer', 'où cliquer', 'où se trouve', 'comment utiliser l\'application', 'je ne trouve pas', 'navigation', 'comment accéder', 'jak nawigować', 'gdzie kliknąć', 'cómo navegar', 'dónde hacer clic', 'come navigare', 'dove cliccare', 'wie navigieren', 'wo klicken'],
-  howToLogin: ['comment se connecter', 'comment me connecter', 'comment se login', 'je ne peux pas me connecter', 'problème connexion', 'jak się zalogować', 'cómo iniciar sesión', 'come accedere', 'wie anmelden', 'connexion échouée', 'identifiants', 'mot de passe oublié', 'code pin oublié'],
-  howToIban: ['voir mon iban', 'où est mon iban', 'trouver mon iban', 'mon rib', 'coordonnées bancaires', 'zobacz iban', 'ver iban', 'vedere iban', 'iban anzeigen', 'bic', 'swift'],
-  howToCard: ['voir ma carte', 'ma carte virtuelle', 'numéro de carte', 'cvv', 'utiliser la carte', 'zobacz kartę', 'ver tarjeta', 'vedere carta', 'karte anzeigen', 'activer la carte', 'bloquer la carte'],
+  // PRIORITÉ HAUTE — guides pas-à-pas (à vérifier en premier)
+  howToFindActivationCode: ['code d\'activation', 'code activation', 'trouver le code', 'obtenir le code', 'recevoir le code', 'activation transfert', 'code de validation', 'code de confirmation', 'kod aktywacyjny', 'código de activación', 'codice di attivazione', 'aktivierungscode'],
+  howToTransfer: ['comment faire un virement', 'comment faire un transfert', 'comment envoyer', 'comment transférer', 'faire un virement', 'effectuer un virement', 'envoyer un virement', 'envoyer de l\'argent', 'transférer de l\'argent', 'virement vers mon compte', 'virement bancaire', 'guide virement', 'aide virement', 'aidez-moi à faire', 'je veux faire un virement', 'je veux envoyer', 'comment puis-je transférer', 'comment puis-je envoyer', 'comment effectuer', 'jak zrobić przelew', 'wykonać przelew', 'como hacer transferencia', 'cómo transferir', 'come fare bonifico', 'wie überweisen', 'überweisung durchführen'],
+  howToCancelTransfer: ['annuler un virement', 'annuler le virement', 'annuler transfert', 'annuler transferencia', 'annullare bonifico', 'überweisung stornieren', 'comment annuler'],
+  howToViewReceipt: ['voir le reçu', 'consulter le reçu', 'mon reçu', 'reçu du virement', 'historique des transactions', 'voir l\'historique', 'ver recibo', 'vedere ricevuta', 'beleg anzeigen', 'potwierdzenie'],
+  howToContactSupport: ['contacter le service', 'contacter le support', 'service client', 'service administratif', 'parler à quelqu\'un', 'aide humaine', 'obsługa klienta', 'servicio al cliente', 'servizio clienti', 'kundenservice', 'kontakt'],
+  howToNavigate: ['comment naviguer', 'où cliquer', 'où se trouve', 'où est', 'comment utiliser l\'application', 'je ne trouve pas', 'navigation', 'comment accéder', 'à quoi sert', 'rôle de', 'jak nawigować', 'gdzie kliknąć', 'cómo navegar', 'dónde hacer clic', 'come navigare', 'dove cliccare', 'wie navigieren', 'wo klicken'],
+  howToLogin: ['comment se connecter', 'comment me connecter', 'je ne peux pas me connecter', 'problème connexion', 'connexion échouée', 'jak się zalogować', 'cómo iniciar sesión', 'come accedere', 'wie anmelden', 'mot de passe oublié', 'code pin oublié', 'identifiant oublié', 'retrouver mes identifiants'],
+  howToIban: ['voir mon iban', 'où est mon iban', 'trouver mon iban', 'afficher mon iban', 'copier mon iban', 'coordonnées bancaires', 'zobacz iban', 'ver iban', 'vedere iban', 'iban anzeigen', 'voir mon bic'],
+  howToCard: ['voir ma carte', 'afficher ma carte', 'numéro de carte', 'utiliser la carte', 'activer la carte', 'bloquer la carte', 'zobacz kartę', 'ver tarjeta', 'vedere carta', 'karte anzeigen'],
   howToDeposit: ['déposer', 'dépôt', 'ajouter des fonds', 'recharger', 'alimenter mon compte', 'wpłacić', 'depositar', 'depositare', 'einzahlen', 'créditer'],
-  help: ['aide', 'aidez-moi', 'au secours', 'j\'ai besoin d\'aide', 'help', 'pomoc', 'ayuda', 'aiuto', 'hilfe', 'que peux-tu faire', 'que sais-tu faire'],
+  help: ['aide', 'aidez-moi', 'au secours', 'j\'ai besoin d\'aide', 'help', 'pomoc', 'ayuda', 'aiuto', 'hilfe', 'que peux-tu faire', 'que sais-tu faire', 'tu peux m\'aider', 'peux-tu m\'aider'],
   thanks: ['merci', 'thanks', 'thank you', 'dziękuję', 'dziekuje', 'gracias', 'grazie', 'danke', 'dank'],
   greeting: ['bonjour', 'salut', 'bonsoir', 'coucou', 'hello', 'hi', 'hey', 'cześć', 'witaj', 'hola', 'ciao', 'buongiorno', 'hallo', 'guten tag', 'moin']
 };
@@ -848,20 +882,28 @@ function getChatbotResponse(userText) {
   var responses = CHAT_RESPONSES[lang] || CHAT_RESPONSES.fr;
   var text = normalizeText(userText);
   var category = 'fallback';
-  // Priorité 1 : Guides "comment faire" (les plus utiles)
-  if (textMatchesAny(text, CHAT_KEYWORDS.howToTransfer)) category = 'howToTransfer';
+
+  // ═══ PRIORITÉ 1 : Guides pratiques (les plus demandés) ═══
+  if (textMatchesAny(text, CHAT_KEYWORDS.howToFindActivationCode)) category = 'howToFindActivationCode';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.howToTransfer)) category = 'howToTransfer';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.howToCancelTransfer)) category = 'howToCancelTransfer';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.howToViewReceipt)) category = 'howToViewReceipt';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.howToContactSupport)) category = 'howToContactSupport';
   else if (textMatchesAny(text, CHAT_KEYWORDS.howToLogin)) category = 'howToLogin';
   else if (textMatchesAny(text, CHAT_KEYWORDS.howToIban)) category = 'howToIban';
   else if (textMatchesAny(text, CHAT_KEYWORDS.howToCard)) category = 'howToCard';
   else if (textMatchesAny(text, CHAT_KEYWORDS.howToDeposit)) category = 'howToDeposit';
   else if (textMatchesAny(text, CHAT_KEYWORDS.howToNavigate)) category = 'howToNavigate';
   else if (textMatchesAny(text, CHAT_KEYWORDS.help)) category = 'help';
-  // Priorité 2 : Questions sensibles et spécifiques
+
+  // ═══ PRIORITÉ 2 : Questions sensibles ═══
   else if (textMatchesAny(text, CHAT_KEYWORDS.existence)) category = 'existence';
   else if (textMatchesAny(text, CHAT_KEYWORDS.fees)) category = 'fees';
   else if (textMatchesAny(text, CHAT_KEYWORDS.security)) category = 'security';
   else if (textMatchesAny(text, CHAT_KEYWORDS.loan)) category = 'loan';
   else if (textMatchesAny(text, CHAT_KEYWORDS.problem)) category = 'problem';
+
+  // ═══ PRIORITÉ 3 : Sujets généraux ═══
   else if (textMatchesAny(text, CHAT_KEYWORDS.transfer)) category = 'transfer';
   else if (textMatchesAny(text, CHAT_KEYWORDS.wait)) category = 'wait';
   else if (textMatchesAny(text, CHAT_KEYWORDS.balance)) category = 'balance';
@@ -870,8 +912,11 @@ function getChatbotResponse(userText) {
   else if (textMatchesAny(text, CHAT_KEYWORDS.services)) category = 'services';
   else if (textMatchesAny(text, CHAT_KEYWORDS.trust)) category = 'trust';
   else if (textMatchesAny(text, CHAT_KEYWORDS.whoAreYou)) category = 'whoAreYou';
+
+  // ═══ PRIORITÉ 4 : Salutations et remerciements ═══
   else if (textMatchesAny(text, CHAT_KEYWORDS.thanks)) category = 'thanks';
   else if (textMatchesAny(text, CHAT_KEYWORDS.greeting)) category = 'greeting';
+
   var pool = responses[category] || responses.fallback;
   return pool[Math.floor(Math.random() * pool.length)];
 }
