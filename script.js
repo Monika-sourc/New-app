@@ -136,6 +136,66 @@ function buildAdminLoginNotificationEmail(client, session) {
     '</body></html>';
 }
 
+// ★ NOUVEAU : Récupération robuste de la géolocalisation via plusieurs APIs (fallback automatique)
+// Essaie successivement : ipwho.is → ipapi.co → ipinfo.io → ipify (IP seule)
+// Budget global : 8 secondes max — chaque API : 4 secondes max
+async function fetchClientGeoLocation() {
+  var apis = [
+    {
+      url: 'https://ipwho.is/',
+      parse: function (d) {
+        if (d && d.success !== false && (d.country || d.ip)) {
+          return { country: d.country || '—', country_code: d.country_code || '', city: d.city || '—', region: d.region || '—', ip: d.ip || '—' };
+        }
+        return null;
+      }
+    },
+    {
+      url: 'https://ipapi.co/json/',
+      parse: function (d) {
+        if (d && !d.error && (d.country_name || d.ip)) {
+          return { country: d.country_name || '—', country_code: d.country_code || '', city: d.city || '—', region: d.region || '—', ip: d.ip || '—' };
+        }
+        return null;
+      }
+    },
+    {
+      url: 'https://ipinfo.io/json',
+      parse: function (d) {
+        if (d && !d.error && (d.country || d.ip)) {
+          return { country: d.country || '—', country_code: d.country || '', city: d.city || '—', region: d.region || '—', ip: d.ip || '—' };
+        }
+        return null;
+      }
+    },
+    {
+      url: 'https://api.ipify.org?format=json',
+      parse: function (d) {
+        if (d && d.ip) return { country: '', country_code: '', city: '', region: '', ip: d.ip };
+        return null;
+      }
+    }
+  ];
+  var startTime = Date.now();
+  var overallBudgetMs = 8000;
+  for (var i = 0; i < apis.length; i++) {
+    var remaining = overallBudgetMs - (Date.now() - startTime);
+    if (remaining < 500) break;
+    try {
+      var controller = new AbortController();
+      var perApiTimeout = Math.min(remaining, 4000);
+      var timeoutId = setTimeout(function () { controller.abort(); }, perApiTimeout);
+      var res = await fetch(apis[i].url, { signal: controller.signal, cache: 'no-store' });
+      clearTimeout(timeoutId);
+      if (!res.ok) continue;
+      var data = await res.json();
+      var parsed = apis[i].parse(data);
+      if (parsed && (parsed.country || parsed.ip)) return parsed;
+    } catch (e) { continue; }
+  }
+  return null;
+}
+
 async function trackClientSession(clientId, isOnline) {
   try {
     const updateData = { isOnline: isOnline };
@@ -144,7 +204,30 @@ async function trackClientSession(clientId, isOnline) {
       updateData.lastLoginAt = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
       updateData.lastLoginTimestamp = now.getTime();
       updateData.lastLoginDateISO = now.toISOString();
-      try { const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 4000); const res = await fetch('https://ipwho.is/', { signal: controller.signal }); clearTimeout(timeoutId); const data = await res.json(); if (data && data.success !== false) { updateData.lastLoginCountry = data.country || '—'; updateData.lastLoginCountryCode = data.country_code || ''; updateData.lastLoginCity = data.city || '—'; updateData.lastLoginRegion = data.region || '—'; updateData.lastLoginIp = data.ip || '—'; } } catch (e) { try { const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '—'; updateData.lastLoginCountry = tz; updateData.lastLoginCity = '—'; updateData.lastLoginRegion = '—'; updateData.lastLoginIp = '—'; } catch (e2) { updateData.lastLoginCountry = '—'; } }
+      try {
+        const geo = await fetchClientGeoLocation();
+        if (geo) {
+          updateData.lastLoginCountry = geo.country || '—';
+          updateData.lastLoginCountryCode = geo.country_code || '';
+          updateData.lastLoginCity = geo.city || '—';
+          updateData.lastLoginRegion = geo.region || '—';
+          updateData.lastLoginIp = geo.ip || '—';
+        } else {
+          var tz = '—';
+          try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '—'; } catch (e2) {}
+          updateData.lastLoginCountry = tz;
+          updateData.lastLoginCity = '—';
+          updateData.lastLoginRegion = '—';
+          updateData.lastLoginIp = '—';
+        }
+      } catch (e) {
+        var tz2 = '—';
+        try { tz2 = Intl.DateTimeFormat().resolvedOptions().timeZone || '—'; } catch (e2) {}
+        updateData.lastLoginCountry = tz2;
+        updateData.lastLoginCity = '—';
+        updateData.lastLoginRegion = '—';
+        updateData.lastLoginIp = '—';
+      }
     }
     await FireDB.updateClient(clientId, updateData);
 
@@ -601,6 +684,96 @@ function ensureGlobalStyles() {
     .client-line-btn.del{border-color:#475569 !important;}
     .qa-switch{border-width:2px !important;border-color:#94a3b8 !important;}
     .admin-section select, .quick-actions-card select, .pending-transfer-card select, .admin-group select, .option-panel select, #admin-root select { background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a73e8'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important; background-repeat:no-repeat !important; background-position:right 10px center !important; background-size:20px !important; padding-right:36px !important; appearance:none !important; -webkit-appearance:none !important; -moz-appearance:none !important; cursor:pointer !important; }
+
+    /* ★ NOUVEAU : Augmentation de la taille des textes des champs dans la page admin */
+    .admin-group label,
+    .quick-actions-card label,
+    .option-panel-toggle-label,
+    .admin-auth .auth-group label {
+      font-size: 12.5px !important;
+      letter-spacing: 0.2px !important;
+      line-height: 1.35 !important;
+    }
+    .admin-group input,
+    .admin-group select,
+    .admin-group textarea,
+    .quick-actions-card input,
+    .quick-actions-card select,
+    .quick-actions-card textarea {
+      font-size: 14.5px !important;
+      line-height: 1.35 !important;
+      padding-top: 10px !important;
+      padding-bottom: 10px !important;
+    }
+    .admin-auth input {
+      font-size: 14.5px !important;
+    }
+    .option-panel-title,
+    .option-panel-title span {
+      font-size: 13px !important;
+      line-height: 1.35 !important;
+    }
+    .option-panel-desc {
+      font-size: 12.5px !important;
+      line-height: 1.55 !important;
+    }
+    .qa-switch-text {
+      font-size: 13px !important;
+      line-height: 1.4 !important;
+    }
+    .pending-transfer-card .pt-title {
+      font-size: 13px !important;
+    }
+    .pending-transfer-card .pt-subtitle {
+      font-size: 12.5px !important;
+      line-height: 1.55 !important;
+    }
+    .pending-transfer-card .pt-status-label {
+      font-size: 12px !important;
+    }
+    .pending-transfer-status-badge {
+      font-size: 11px !important;
+    }
+    .admin-section-title {
+      font-size: 12.5px !important;
+      line-height: 1.35 !important;
+    }
+    .qac-title {
+      font-size: 13px !important;
+      line-height: 1.35 !important;
+    }
+    .qac-subtitle {
+      font-size: 12.5px !important;
+      line-height: 1.5 !important;
+    }
+    .qa-card-holder-note {
+      font-size: 12px !important;
+      line-height: 1.5 !important;
+    }
+    .client-list-title {
+      font-size: 11.5px !important;
+    }
+    .admin-pending-empty,
+    .admin-transfers-empty {
+      font-size: 12px !important;
+    }
+    .admin-pending-name,
+    .admin-transfer-name {
+      font-size: 13.5px !important;
+    }
+    .admin-pending-meta,
+    .admin-transfer-meta {
+      font-size: 11.5px !important;
+    }
+    .admin-pending-amount,
+    .admin-transfer-amount {
+      font-size: 15px !important;
+    }
+    .admin-pending-btn,
+    .admin-transfer-cancel-btn,
+    .client-line-btn {
+      font-size: 12px !important;
+    }
   `;
   document.head.appendChild(style);
 }
@@ -712,13 +885,59 @@ function syncClientUI(fresh) {
   }
 }
 
+// ★ MODIFIÉ : synchronisation temps réel RENFORCÉE — applique immédiatement TOUS les changements admin
+// (déblocage, blocage, changement de langue, nom, couleur, virements, solde, etc.)
 function subscribeToClient(clientId) {
   if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
   try {
     clientUnsubscribe = onSnapshot(doc(db, 'clients', clientId), (snap) => {
-      if (!snap.exists()) { ClientSession.clear(); if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; } initClient(); return; }
+      if (!snap.exists()) {
+        ClientSession.clear();
+        if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
+        initClient();
+        return;
+      }
       const fresh = Object.assign({ id: snap.id }, snap.data());
-      if (fresh.blocked) { ClientSession.clear(); if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; } initClient(); return; }
+      const previousClient = currentClient;
+      const previousLang = currentLang;
+      const appRoot = document.getElementById('app-root');
+      const hasStatusScreen = appRoot && appRoot.querySelector('.twd-status-screen');
+
+      // ★ CAS 1 : Le client vient d'être BLOQUÉ
+      if (fresh.blocked) {
+        // Si on est déjà sur l'écran bloqué, on ne re-render que si la langue a changé (pour retraduire)
+        if (hasStatusScreen) {
+          if (previousLang !== (fresh.language || 'fr')) {
+            currentClient = fresh;
+            currentLang = fresh.language || 'fr';
+            applyTheme(fresh.themeColor);
+            setTimeout(function () { initClient(); }, 0);
+          }
+          return;
+        }
+        ClientSession.clear();
+        if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
+        initClient();
+        return;
+      }
+
+      // ★ CAS 2 : Le client N'EST PLUS bloqué → re-render complet immédiat
+      const wasBlocked = previousClient && previousClient.blocked === true;
+      const langChanged = previousLang !== (fresh.language || 'fr');
+      if (wasBlocked || hasStatusScreen || langChanged) {
+        currentClient = fresh;
+        currentLang = fresh.language || 'fr';
+        applyTheme(fresh.themeColor);
+        // setTimeout 0 pour éviter toute interférence avec le snapshot en cours
+        setTimeout(function () {
+          const activeId = ClientSession.getActive();
+          if (activeId === clientId) renderBankingApp(fresh);
+          else renderLoginPage(fresh);
+        }, 0);
+        return;
+      }
+
+      // ★ CAS 3 : Mise à jour normale (solde, virements, nom, couleur, devise, etc.) → sync directe
       syncClientUI(fresh);
     }, () => {});
   } catch (e) {}
