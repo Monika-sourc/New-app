@@ -601,6 +601,359 @@ const cardLabels = {
   de: { title: "Virtuelle Karte", holderLabel: "Inhaber", expiryLabel: "Gültig bis", cvvLabel: "CVV", numberLabel: "Kartennummer", typeLabel: "Typ", copyBtn: "Nummer kopieren", showBtn: "Anzeigen", hideBtn: "Verbergen", warningMasked: "Die letzten 4 Ziffern sind vom Administrator ausgeblendet.", warningCvvMasked: "CVV ist vom Administrator ausgeblendet.", warningFull: "Karte vollständig sichtbar.", warningAdminMasked: "Die letzten 4 Ziffern und der CVV sind vom Administrator ausgeblendet." }
 };
 
+// ═══════════════════════════════════════════════════════════
+// ★ NOUVEAU : ASSISTANT IA CONVERSATIONNEL — Dictionnaires de réponses multilingues
+// ═══════════════════════════════════════════════════════════
+const CHAT_LABELS = {
+  fr: { title: "Assistant Younited", subtitle: "En ligne · Réponse instantanée", placeholder: "Écrivez votre message...", send: "Envoyer", welcomeTitle: "Bienvenue !", welcomeBody: "Je suis votre assistant personnel disponible 24h/24 pour répondre à toutes vos questions. Posez-moi votre question." },
+  pl: { title: "Asystent Younited", subtitle: "Online · Natychmiastowa odpowiedź", placeholder: "Napisz wiadomość...", send: "Wyślij", welcomeTitle: "Witamy!", welcomeBody: "Jestem Twoim osobistym asystentem dostępnym 24/7, aby odpowiedzieć na wszystkie Twoje pytania. Zadaj mi pytanie." },
+  es: { title: "Asistente Younited", subtitle: "En línea · Respuesta instantánea", placeholder: "Escribe tu mensaje...", send: "Enviar", welcomeTitle: "¡Bienvenido!", welcomeBody: "Soy tu asistente personal disponible 24h/24 para responder a todas tus preguntas. Házmela." },
+  it: { title: "Assistente Younited", subtitle: "Online · Risposta istantanea", placeholder: "Scrivi il tuo messaggio...", send: "Invia", welcomeTitle: "Benvenuto!", welcomeBody: "Sono il tuo assistente personale disponibile 24/7 per rispondere a tutte le tue domande. Fammi la tua domanda." },
+  de: { title: "Younited Assistent", subtitle: "Online · Sofortige Antwort", placeholder: "Schreiben Sie Ihre Nachricht...", send: "Senden", welcomeTitle: "Willkommen!", welcomeBody: "Ich bin Ihr persönlicher Assistent, 24/7 verfügbar, um alle Ihre Fragen zu beantworten. Stellen Sie mir Ihre Frage." }
+};
+
+const CHAT_RESPONSES = {
+  fr: {
+    greeting: [
+      "Bonjour et bienvenue ! 👋 Je suis Younited Assistant, votre conseiller personnel disponible 24h/24. Comment puis-je vous aider aujourd'hui ?",
+      "Bonjour ! 😊 Ravi de vous revoir. Je suis là pour répondre à toutes vos questions. Que puis-je faire pour vous ?",
+      "Salut ! 👋 Bienvenue chez Younited. Je suis à votre entière disposition pour vous accompagner. Posez-moi votre question !"
+    ],
+    thanks: [
+      "Avec grand plaisir ! 🙏 Je suis là pour vous aider à tout moment. N'hésitez pas à revenir si vous avez la moindre question.",
+      "C'est un honneur de vous aider ! 😊 N'hésitez surtout pas à me solliciter à nouveau. Bonne journée !",
+      "Je vous en prie ! ✨ Votre satisfaction est ma priorité. À votre service 24h/24."
+    ],
+    whoAreYou: [
+      "Je suis Younited Assistant, votre conseiller numérique personnel. Je suis disponible 24h/24 pour répondre à vos questions, vous rassurer et vous orienter. Je travaille en collaboration étroite avec le service administratif de Younited pour vous garantir la meilleure expérience possible. 💙",
+      "Je suis votre assistant Younited dédié. Mon rôle est de vous accompagner, vous informer et vous rassurer à chaque étape. Je reste à votre disposition pour toute question, quel que soit le moment. ✨"
+    ],
+    fees: [
+      "Concernant les frais, je ne suis pas habilité à vous donner des informations précises. Les conditions actuelles sont celles disponibles actuellement, car de nombreuses personnes ont bénéficié d'un prêt auprès de notre service et n'ont pas encore remboursé à ce jour. Pour toute question relative aux frais, veuillez contacter directement notre service client ou notre service administratif, ils seront en mesure de vous fournir tous les détails nécessaires. 🙏",
+      "Je comprends tout à fait votre question sur les frais. Cependant, je ne peux pas vous expliquer précisément les détails de frais car cela relève de la compétence exclusive du service administratif. Les conditions actuelles sont celles disponibles actuellement étant donné que de nombreuses personnes ont bénéficié d'un prêt auprès de notre service et n'ont pas encore remboursé jusqu'à présent. Je vous invite donc vivement à contacter le service client ou le service administratif pour obtenir une réponse complète et personnalisée. 💙",
+      "Pour tout ce qui concerne les frais, je vous recommande de vous adresser directement au service client ou au service administratif. Les conditions actuelles sont celles disponibles actuellement car beaucoup de personnes ayant bénéficié d'un prêt auprès de notre service n'ont pas encore remboursé à ce jour. Ces services seront les seuls habilités à vous fournir une réponse précise et conforme à votre situation. Merci de votre compréhension. 🙏"
+    ],
+    security: [
+      "Votre sécurité est notre priorité absolue. 🔒 Toutes vos transactions sont protégées par un chiffrement de bout en bout et chaque opération est vérifiée par notre service de conformité. Vos données personnelles ne sont jamais partagées avec des tiers. Vous pouvez utiliser nos services en toute confiance. 💙",
+      "Nous prenons la sécurité de votre compte très au sérieux. 🛡️ Chaque connexion, chaque virement et chaque modification est surveillé par nos équipes. Votre argent et vos informations sont protégés en permanence. Vous êtes entre de bonnes mains."
+    ],
+    trust: [
+      "Je comprends tout à fait votre inquiétude, et je tiens à vous rassurer : Younited est un service sérieux et fiable. 💙 Des milliers de clients nous font confiance quotidiennement. Notre service administratif travaille en permanence pour garantir la sécurité et la transparence de chaque opération. Si vous avez le moindre doute, n'hésitez pas à contacter directement notre service client, ils sauront vous rassurer personnellement. Vous n'êtes pas seul(e), nous sommes là pour vous.",
+      "Votre confiance est précieuse pour nous. ✨ Je tiens à vous assurer que nous mettons tout en œuvre pour vous offrir un service irréprochable et transparent. Chaque opération est vérifiée, chaque question trouve une réponse. Si jamais quelque chose vous préoccupe, contactez notre service administratif : ils sont habilités et formés pour vous apporter une réponse claire et rassurante. Prenez soin de vous, nous veillons sur vous. 🙏",
+      "Je vous entends parfaitement et je veux que vous vous sentiez en sécurité. 💙 Younited fonctionne avec des procédures strictes et transparentes. Notre équipe administrative est dédiée à votre satisfaction. Si vous avez besoin d'une confirmation officielle ou d'informations précises, n'hésitez jamais à contacter le service client ou le service administratif : ce sont vos interlocuteurs de confiance. Votre tranquillité d'esprit est notre priorité absolue."
+    ],
+    loan: [
+      "Concernant les prêts et les conditions de crédit, je vous invite à contacter directement notre service client ou notre service administratif. Ils sont les seuls habilités à vous donner des informations précises et personnalisées selon votre profil. Les conditions actuelles sont celles disponibles actuellement. 🙏",
+      "Pour toute question sur les prêts, les conditions actuelles sont celles disponibles actuellement. De nombreuses personnes ont bénéficié d'un prêt auprès de notre service. Pour connaître les modalités exactes et votre éligibilité, je vous recommande de contacter le service administratif qui saura vous orienter précisément. 💙"
+    ],
+    transfer: [
+      "Concernant les virements, voici comment cela fonctionne : 💸 après validation du code d'activation, votre virement est traité par notre service administratif. Le délai habituel est de 1 à 3 minutes après vérification finale, mais cela peut varier selon les banques destinataires. Vous pouvez suivre son statut à tout moment depuis l'historique des transactions. Si vous avez une question précise sur un virement en cours, contactez le service client. 🙏",
+      "Nos virements sont traités rapidement et en toute sécurité. ⚡ Une fois votre code d'activation validé, la transaction est vérifiée par notre équipe administrative puis envoyée à la banque bénéficiaire. Vous recevrez une confirmation par email. Pour toute question sur un virement spécifique, le service client reste à votre disposition. 💙"
+    ],
+    wait: [
+      "Je comprends votre impatience. ⏳ Chaque virement est vérifié avec le plus grand soin par notre service administratif pour garantir votre sécurité et celle de vos fonds. Ce processus peut prendre quelques instants. Si vous constatez un retard inhabituel, je vous invite à contacter directement le service client ou le service administratif : ils pourront vous donner un statut précis et personnalisé. Merci de votre patience. 🙏",
+      "Votre demande est bien prise en compte. ⏱️ Notre équipe traite chaque opération individuellement et avec attention. Les délais habituels sont respectés dans la grande majorité des cas. Si vous avez un doute sur un délai particulier, n'hésitez pas à contacter le service administratif : ils sont là pour vous accompagner. 💙"
+    ],
+    balance: [
+      "Vous pouvez consulter votre solde à tout moment sur la page d'accueil de votre application. 💰 Il se met à jour automatiquement dès qu'une opération est confirmée. Si vous constatez une différence ou avez un doute, contactez le service client qui pourra vérifier précisément votre compte. 🙏",
+      "Votre solde disponible est affiché en temps réel sur votre tableau de bord. 📊 Toute opération validée ou annulée est immédiatement reflétée. Pour toute question sur une transaction spécifique, le service administratif saura vous apporter une réponse détaillée. 💙"
+    ],
+    iban: [
+      "Vos coordonnées bancaires (IBAN, BIC) sont accessibles en un clic depuis la page d'accueil via le bouton « Voir mon IBAN ». 📄 Vous pouvez les copier et les partager en toute sécurité. Pour des raisons de sécurité, certaines informations peuvent être masquées. Si vous avez besoin d'une confirmation officielle, contactez le service administratif. 💙"
+    ],
+    card: [
+      "Votre carte virtuelle est disponible dans la section « Carte virtuelle ». 💳 Elle est protégée et vous pouvez révéler les informations sensibles à tout moment. Pour toute question ou problème lié à votre carte, contactez le service client ou le service administratif. 🙏"
+    ],
+    problem: [
+      "Je suis vraiment désolé(e) pour la difficulté que vous rencontrez. 🙏 Sachez que je vais tout mettre en œuvre pour vous orienter vers la bonne personne. Pour résoudre ce problème précis, je vous recommande chaleureusement de contacter directement notre service client ou notre service administratif : ils sont formés et habilités à traiter tous types de situations complexes. N'hésitez pas à leur expliquer en détail votre problème, ils prendront soin de vous. 💙",
+      "Je comprends tout à fait et je prends votre situation très au sérieux. 💙 Certaines situations demandent une assistance personnalisée. Pour cela, notre service administratif est votre meilleur interlocuteur : il pourra analyser votre dossier en profondeur et vous proposer une solution adaptée. Nous restons à votre entière disposition.",
+      "Votre satisfaction est notre priorité et je suis navré(e) que vous rencontriez un souci. 🙏 Pour tout problème spécifique ou complexe, le service client et le service administratif sont là pour vous. Ils disposent de tous les outils nécessaires pour vous apporter une réponse rapide et efficace. Ne restez surtout pas seul(e) face à cette situation."
+    ],
+    fallback: [
+      "Merci pour votre message. 💙 Je prends bien note de votre demande. Pour vous apporter une réponse précise et personnalisée, je vous recommande de reformuler votre question ou de contacter directement notre service client ou notre service administratif. Ils seront les mieux placés pour vous aider en détail. 🙏",
+      "J'ai bien reçu votre message. ✨ Pour vous donner la meilleure réponse possible, pourriez-vous préciser votre question ? Si elle concerne un point spécifique (frais, prêt, virement, compte...), n'hésitez pas à contacter directement le service client ou le service administratif : ils sont vos interlocuteurs privilégiés. 🙏",
+      "Merci de votre confiance. 💙 Votre question est importante. Pour obtenir une réponse précise, je vous invite à contacter le service administratif qui pourra traiter votre demande en profondeur. En attendant, n'hésitez pas à me poser d'autres questions simples."
+    ]
+  },
+  pl: {
+    greeting: [
+      "Witaj i zapraszamy! 👋 Jestem Asystent Younited, Twój osobisty doradca dostępny 24/7. Jak mogę Ci dzisiaj pomóc?",
+      "Witaj! 😊 Cieszę się, że znów Cię widzę. Jestem tu, aby odpowiedzieć na wszystkie Twoje pytania. Co mogę dla Ciebie zrobić?",
+      "Cześć! 👋 Witamy w Younited. Jestem do Twojej dyspozycji. Zadaj mi swoje pytanie!"
+    ],
+    thanks: [
+      "Z wielką przyjemnością! 🙏 Jestem tu, aby Ci pomóc w każdej chwili. Zapraszam ponownie, jeśli będziesz mieć jakiekolwiek pytanie.",
+      "To dla mnie zaszczyt móc Ci pomóc! 😊 Zapraszam ponownie. Miłego dnia!",
+      "Proszę bardzo! ✨ Twoja satysfakcja jest moim priorytetem. Do Twoich usług 24/7."
+    ],
+    whoAreYou: [
+      "Jestem Asystent Younited, Twój osobisty doradca cyfrowy. Jestem dostępny 24/7, aby odpowiadać na Twoje pytania, uspokajać Cię i kierować. Współpracuję ściśle z działem administracji Younited, aby zapewnić Ci najlepsze możliwe doświadczenie. 💙",
+      "Jestem Twoim asystentem Younited. Moim zadaniem jest towarzyszyć Ci, informować i uspokajać na każdym etapie. Pozostaję do Twojej dyspozycji w każdej chwili. ✨"
+    ],
+    fees: [
+      "Jeśli chodzi o opłaty, nie jestem upoważniony do udzielania precyzyjnych informacji. Aktualne warunki to te obecnie dostępne, ponieważ wiele osób skorzystało z pożyczki w naszym serwisie i do dziś nie spłaciło. W przypadku wszelkich pytań dotyczących opłat prosimy o bezpośredni kontakt z naszym działem obsługi klienta lub działem administracji, które będą mogły udzielić szczegółowych informacji. 🙏",
+      "Rozumiem doskonale Twoje pytanie o opłaty. Nie mogę jednak wyjaśnić dokładnych szczegółów, ponieważ należy to do wyłącznej kompetencji działu administracji. Aktualne warunki to te obecnie dostępne, ponieważ wiele osób skorzystało z pożyczki w naszym serwisie i do dziś nie spłaciło. Zachęcam do kontaktu z działem obsługi klienta lub działem administracji. 💙",
+      "W sprawie wszystkich kwestii dotyczących opłat zalecam bezpośredni kontakt z działem obsługi klienta lub działem administracji. Aktualne warunki to te obecnie dostępne, ponieważ wiele osób, które skorzystały z pożyczki, do dziś nie spłaciło. Te działy są jedynymi upoważnionymi do udzielenia precyzyjnej odpowiedzi. Dziękuję za zrozumienie. 🙏"
+    ],
+    security: [
+      "Twoje bezpieczeństwo jest naszym absolutnym priorytetem. 🔒 Wszystkie transakcje są chronione szyfrowaniem end-to-end, a każda operacja jest weryfikowana przez nasz dział zgodności. Twoje dane osobowe nigdy nie są udostępniane osobom trzecim. Możesz korzystać z naszych usług z pełnym zaufaniem. 💙"
+    ],
+    trust: [
+      "Rozumiem doskonale Twoje obawy i chcę Cię uspokoić: Younited to poważna i niezawodna usługa. 💙 Tysiące klientów codziennie nam ufa. Nasz dział administracji pracuje nieustannie, aby zapewnić bezpieczeństwo i przejrzystość każdej operacji. Jeśli masz jakiekolwiek wątpliwości, skontaktuj się bezpośrednio z obsługą klienta. Nie jesteś sam(a), jesteśmy tu dla Ciebie.",
+      "Twoje zaufanie jest dla nas cenne. ✨ Zapewniam Cię, że robimy wszystko, aby zapewnić nienaganną i przejrzystą obsługę. Każda operacja jest weryfikowana, każde pytanie znajduje odpowiedź. Jeśli coś Cię niepokoi, skontaktuj się z naszym działem administracji. Dbaj o siebie, czuwamy nad Tobą. 🙏"
+    ],
+    loan: [
+      "W sprawie pożyczek i warunków kredytu zachęcam do bezpośredniego kontaktu z działem obsługi klienta lub działem administracji. Tylko oni są upoważnieni do udzielania precyzyjnych i spersonalizowanych informacji. Aktualne warunki to te obecnie dostępne. 🙏"
+    ],
+    transfer: [
+      "Jeśli chodzi o przelewy: 💸 po zatwierdzeniu kodu aktywacyjnego przelew jest przetwarzany przez nasz dział administracji. Zwykły czas to 1-3 minuty po weryfikacji końcowej. Możesz śledzić jego status w historii transakcji. W przypadku pytań skontaktuj się z obsługą klienta. 🙏"
+    ],
+    wait: [
+      "Rozumiem Twoją niecierpliwość. ⏳ Każdy przelew jest weryfikowany z największą starannością. Jeśli zauważysz nietypowe opóźnienie, skontaktuj się z obsługą klienta lub działem administracji. Dziękuję za cierpliwość. 🙏"
+    ],
+    balance: [
+      "Możesz sprawdzić swoje saldo w każdej chwili na stronie głównej aplikacji. 💰 Aktualizuje się automatycznie. W razie wątpliwości skontaktuj się z obsługą klienta. 🙏"
+    ],
+    iban: [
+      "Twoje dane bankowe (IBAN, BIC) są dostępne jednym kliknięciem ze strony głównej za pomocą przycisku «Zobacz mój IBAN». 📄 Możesz je kopiować i udostępniać bezpiecznie. 💙"
+    ],
+    card: [
+      "Twoja karta wirtualna jest dostępna w sekcji «Karta wirtualna». 💳 W przypadku pytań lub problemów z kartą skontaktuj się z obsługą klienta. 🙏"
+    ],
+    problem: [
+      "Bardzo mi przykro z powodu trudności, których doświadczasz. 🙏 Zachęcam do bezpośredniego kontaktu z obsługą klienta lub działem administracji: są szkoleni i upoważnieni do rozwiązywania wszystkich złożonych sytuacji. 💙",
+      "Rozumiem doskonale i traktuję Twoją sytuację bardzo poważnie. 💙 Niektóre sytuacje wymagają spersonalizowanej pomocy. Dział administracji to Twój najlepszy rozmówca. Pozostajemy do Twojej dyspozycji. 🙏"
+    ],
+    fallback: [
+      "Dziękuję za wiadomość. 💙 Aby udzielić precyzyjnej i spersonalizowanej odpowiedzi, zalecam przeformułowanie pytania lub bezpośredni kontakt z obsługą klienta lub działem administracji. 🙏",
+      "Otrzymałem Twoją wiadomość. ✨ Czy możesz sprecyzować pytanie? W przypadku konkretnych kwestii skontaktuj się z obsługą klienta. 🙏"
+    ]
+  },
+  es: {
+    greeting: [
+      "¡Hola y bienvenido! 👋 Soy Asistente Younited, tu asesor personal disponible 24h/24. ¿Cómo puedo ayudarte hoy?",
+      "¡Hola! 😊 Encantado de verte de nuevo. Estoy aquí para responder a todas tus preguntas. ¿Qué puedo hacer por ti?",
+      "¡Hola! 👋 Bienvenido a Younited. Estoy a tu entera disposición. ¡Hazme tu pregunta!"
+    ],
+    thanks: [
+      "¡Con mucho gusto! 🙏 Estoy aquí para ayudarte en cualquier momento. Vuelve si tienes alguna pregunta.",
+      "¡Es un honor ayudarte! 😊 No dudes en solicitarme de nuevo. ¡Buen día!",
+      "¡De nada! ✨ Tu satisfacción es mi prioridad. A tu servicio 24h/24."
+    ],
+    whoAreYou: [
+      "Soy Asistente Younited, tu asesor digital personal. Estoy disponible 24h/24 para responder a tus preguntas, tranquilizarte y orientarte. Trabajo en estrecha colaboración con el servicio administrativo de Younited. 💙",
+      "Soy tu asistente Younited dedicado. Mi función es acompañarte, informarte y tranquilizarte en cada etapa. ✨"
+    ],
+    fees: [
+      "En cuanto a las tarifas, no estoy facultado para darte información precisa. Las condiciones actuales son las disponibles actualmente, porque muchas personas se beneficiaron de un préstamo con nuestro servicio y hasta hoy no han reembolsado. Para cualquier pregunta sobre las tarifas, contacta directamente con nuestro servicio al cliente o servicio administrativo, ellos podrán darte todos los detalles necesarios. 🙏",
+      "Entiendo perfectamente tu pregunta sobre las tarifas. Sin embargo, no puedo explicarte los detalles exactos porque es competencia exclusiva del servicio administrativo. Las condiciones actuales son las disponibles actualmente dado que muchas personas se beneficiaron de un préstamo y no han reembolsado hasta hoy. Te invito a contactar con el servicio al cliente. 💙",
+      "Para todo lo relacionado con tarifas, te recomiendo contactar directamente con el servicio al cliente o el servicio administrativo. Las condiciones actuales son las disponibles actualmente porque muchas personas que se beneficiaron de un préstamo no han reembolsado hasta la fecha. Solo estos servicios están facultados para darte una respuesta precisa. 🙏"
+    ],
+    security: [
+      "Tu seguridad es nuestra prioridad absoluta. 🔒 Todas tus transacciones están protegidas con cifrado de extremo a extremo. Tus datos personales nunca se comparten con terceros. Puedes usar nuestros servicios con total confianza. 💙"
+    ],
+    trust: [
+      "Entiendo perfectamente tu preocupación y quiero tranquilizarte: Younited es un servicio serio y fiable. 💙 Miles de clientes confían en nosotros cada día. Si tienes alguna duda, contacta directamente con nuestro servicio al cliente, sabrán tranquilizarte. No estás solo(a), estamos aquí para ti.",
+      "Tu confianza es valiosa para nosotros. ✨ Quiero asegurarte que hacemos todo lo posible para ofrecerte un servicio impecable y transparente. Si algo te preocupa, contacta con nuestro servicio administrativo. Cuídate, velamos por ti. 🙏"
+    ],
+    loan: [
+      "Sobre los préstamos y las condiciones de crédito, te invito a contactar directamente con nuestro servicio al cliente o servicio administrativo. Solo ellos están facultados para darte información precisa y personalizada. Las condiciones actuales son las disponibles actualmente. 🙏"
+    ],
+    transfer: [
+      "Sobre las transferencias: 💸 después de validar el código de activación, tu transferencia es procesada por nuestro servicio administrativo. El tiempo habitual es de 1 a 3 minutos. Puedes seguir su estado en el historial. Para preguntas específicas, contacta con el servicio al cliente. 🙏"
+    ],
+    wait: [
+      "Entiendo tu impaciencia. ⏳ Cada transferencia es verificada con el mayor cuidado. Si notas un retraso inusual, contacta con el servicio al cliente o el servicio administrativo. Gracias por tu paciencia. 🙏"
+    ],
+    balance: [
+      "Puedes consultar tu saldo en cualquier momento en la página de inicio. 💰 Se actualiza automáticamente. En caso de duda, contacta con el servicio al cliente. 🙏"
+    ],
+    iban: [
+      "Tus datos bancarios (IBAN, BIC) están accesibles con un clic desde la página de inicio con el botón «Ver mi IBAN». 📄 Puedes copiarlos y compartirlos con total seguridad. 💙"
+    ],
+    card: [
+      "Tu tarjeta virtual está disponible en la sección «Tarjeta virtual». 💳 Para cualquier pregunta o problema, contacta con el servicio al cliente. 🙏"
+    ],
+    problem: [
+      "Lamento mucho la dificultad que encuentras. 🙏 Te recomiendo contactar directamente con nuestro servicio al cliente o servicio administrativo: están formados para tratar todas las situaciones complejas. 💙",
+      "Entiendo perfectamente y tomo tu situación muy en serio. 💙 Algunas situaciones requieren asistencia personalizada. El servicio administrativo es tu mejor interlocutor. Permanecemos a tu entera disposición. 🙏"
+    ],
+    fallback: [
+      "Gracias por tu mensaje. 💙 Para darte una respuesta precisa y personalizada, te recomiendo reformular tu pregunta o contactar directamente con el servicio al cliente o el servicio administrativo. 🙏",
+      "He recibido tu mensaje. ✨ ¿Puedes precisar tu pregunta? Para puntos específicos, contacta con el servicio al cliente. 🙏"
+    ]
+  },
+  it: {
+    greeting: [
+      "Benvenuto! 👋 Sono Assistente Younited, il tuo consulente personale disponibile 24/7. Come posso aiutarti oggi?",
+      "Ciao! 😊 Felice di rivederti. Sono qui per rispondere a tutte le tue domande. Cosa posso fare per te?",
+      "Ciao! 👋 Benvenuto in Younited. Sono a tua completa disposizione. Fammi la tua domanda!"
+    ],
+    thanks: [
+      "Con molto piacere! 🙏 Sono qui per aiutarti in ogni momento. Torna se hai qualsiasi domanda.",
+      "È un onore aiutarti! 😊 Non esitare a contattarmi di nuovo. Buona giornata!",
+      "Prego! ✨ La tua soddisfazione è la mia priorità. Al tuo servizio 24/7."
+    ],
+    whoAreYou: [
+      "Sono Assistente Younited, il tuo consulente digitale personale. Sono disponibile 24/7 per rispondere alle tue domande, rassicurarti e orientarti. Collaboro strettamente con il servizio amministrativo di Younited. 💙",
+      "Sono il tuo assistente Younited dedicato. Il mio ruolo è accompagnarti, informarti e rassicurarti in ogni fase. ✨"
+    ],
+    fees: [
+      "Per quanto riguarda le commissioni, non sono autorizzato a darti informazioni precise. Le condizioni attuali sono quelle attualmente disponibili, perché molte persone hanno beneficiato di un prestito con il nostro servizio e ad oggi non hanno ancora rimborsato. Per qualsiasi domanda sulle commissioni, ti preghiamo di contattare direttamente il nostro servizio clienti o servizio amministrativo, saranno in grado di fornirti tutti i dettagli necessari. 🙏",
+      "Comprendo perfettamente la tua domanda sulle commissioni. Tuttavia, non posso spiegarti i dettagli esatti perché è competenza esclusiva del servizio amministrativo. Le condizioni attuali sono quelle attualmente disponibili dato che molte persone hanno beneficiato di un prestito e non hanno ancora rimborsato. Ti invito a contattare il servizio clienti. 💙",
+      "Per tutto ciò che riguarda le commissioni, ti raccomando di contattare direttamente il servizio clienti o il servizio amministrativo. Le condizioni attuali sono quelle attualmente disponibili perché molte persone che hanno beneficiato di un prestito non hanno ancora rimborsato. Solo questi servizi sono autorizzati a darti una risposta precisa. 🙏"
+    ],
+    security: [
+      "La tua sicurezza è la nostra priorità assoluta. 🔒 Tutte le tue transazioni sono protette con crittografia end-to-end. I tuoi dati personali non vengono mai condivisi con terzi. Puoi usare i nostri servizi con totale fiducia. 💙"
+    ],
+    trust: [
+      "Comprendo perfettamente la tua preoccupazione e voglio rassicurarti: Younited è un servizio serio e affidabile. 💙 Migliaia di clienti si fidano di noi ogni giorno. Se hai dubbi, contatta direttamente il nostro servizio clienti. Non sei solo(a), siamo qui per te.",
+      "La tua fiducia è preziosa per noi. ✨ Ti assicuro che facciamo tutto il possibile per offrirti un servizio impeccabile e trasparente. Se qualcosa ti preoccupa, contatta il nostro servizio amministrativo. Prenditi cura di te, vegliamo su di te. 🙏"
+    ],
+    loan: [
+      "Per quanto riguarda i prestiti e le condizioni di credito, ti invito a contattare direttamente il nostro servizio clienti o servizio amministrativo. Solo loro sono autorizzati a darti informazioni precise e personalizzate. Le condizioni attuali sono quelle attualmente disponibili. 🙏"
+    ],
+    transfer: [
+      "Per quanto riguarda i bonifici: 💸 dopo la convalida del codice di attivazione, il bonifico viene elaborato dal nostro servizio amministrativo. Il tempo abituale è di 1-3 minuti. Puoi seguirne lo stato nella cronologia. Per domande specifiche, contatta il servizio clienti. 🙏"
+    ],
+    wait: [
+      "Comprendo la tua impazienza. ⏳ Ogni bonifico viene verificato con la massima cura. Se noti un ritardo insolito, contatta il servizio clienti o il servizio amministrativo. Grazie per la pazienza. 🙏"
+    ],
+    balance: [
+      "Puoi consultare il tuo saldo in qualsiasi momento nella pagina iniziale. 💰 Si aggiorna automaticamente. In caso di dubbio, contatta il servizio clienti. 🙏"
+    ],
+    iban: [
+      "I tuoi dati bancari (IBAN, BIC) sono accessibili con un clic dalla pagina iniziale tramite il pulsante «Vedi il mio IBAN». 📄 Puoi copiarli e condividerli in tutta sicurezza. 💙"
+    ],
+    card: [
+      "La tua carta virtuale è disponibile nella sezione «Carta virtuale». 💳 Per qualsiasi domanda o problema, contatta il servizio clienti. 🙏"
+    ],
+    problem: [
+      "Mi dispiace molto per la difficoltà che stai riscontrando. 🙏 Ti raccomando di contattare direttamente il nostro servizio clienti o servizio amministrativo: sono formati per gestire tutte le situazioni complesse. 💙",
+      "Comprendo perfettamente e prendo la tua situazione molto sul serio. 💙 Alcune situazioni richiedono assistenza personalizzata. Il servizio amministrativo è il tuo miglior interlocutore. Restiamo a tua completa disposizione. 🙏"
+    ],
+    fallback: [
+      "Grazie per il tuo messaggio. 💙 Per darti una risposta precisa e personalizzata, ti raccomando di riformulare la domanda o contattare direttamente il servizio clienti o il servizio amministrativo. 🙏",
+      "Ho ricevuto il tuo messaggio. ✨ Puoi precisare la tua domanda? Per punti specifici, contatta il servizio clienti. 🙏"
+    ]
+  },
+  de: {
+    greeting: [
+      "Hallo und willkommen! 👋 Ich bin Younited Assistent, Ihr persönlicher Berater, 24/7 verfügbar. Wie kann ich Ihnen heute helfen?",
+      "Hallo! 😊 Schön, Sie wiederzusehen. Ich bin hier, um alle Ihre Fragen zu beantworten. Was kann ich für Sie tun?",
+      "Hallo! 👋 Willkommen bei Younited. Ich stehe Ihnen zur Verfügung. Stellen Sie mir Ihre Frage!"
+    ],
+    thanks: [
+      "Mit größtem Vergnügen! 🙏 Ich bin hier, um Ihnen jederzeit zu helfen. Kommen Sie wieder, wenn Sie eine Frage haben.",
+      "Es ist mir eine Ehre, Ihnen zu helfen! 😊 Zögern Sie nicht, mich erneut zu kontaktieren. Schönen Tag!",
+      "Gern geschehen! ✨ Ihre Zufriedenheit ist meine Priorität. Zu Ihren Diensten, 24/7."
+    ],
+    whoAreYou: [
+      "Ich bin Younited Assistent, Ihr persönlicher digitaler Berater. Ich bin 24/7 verfügbar, um Ihre Fragen zu beantworten, Sie zu beruhigen und zu orientieren. Ich arbeite eng mit der Verwaltungsabteilung von Younited zusammen. 💙",
+      "Ich bin Ihr engagierter Younited-Assistent. Meine Aufgabe ist es, Sie auf jedem Schritt zu begleiten, zu informieren und zu beruhigen. ✨"
+    ],
+    fees: [
+      "Bezüglich der Gebühren bin ich nicht befugt, Ihnen genaue Informationen zu geben. Die aktuellen Bedingungen sind die derzeit verfügbaren, da viele Personen einen Kredit bei unserem Service in Anspruch genommen haben und bis heute nicht zurückgezahlt haben. Für alle Fragen zu Gebühren wenden Sie sich bitte direkt an unseren Kundenservice oder unsere Verwaltungsabteilung; sie können Ihnen alle notwendigen Details liefern. 🙏",
+      "Ich verstehe Ihre Frage zu den Gebühren vollkommen. Ich kann Ihnen jedoch keine genauen Details erläutern, da dies ausschließlich in die Zuständigkeit der Verwaltungsabteilung fällt. Die aktuellen Bedingungen sind die derzeit verfügbaren, da viele Personen einen Kredit in Anspruch genommen haben und bis heute nicht zurückgezahlt haben. Bitte wenden Sie sich an den Kundenservice. 💙",
+      "Für alles, was Gebühren betrifft, empfehle ich Ihnen, sich direkt an den Kundenservice oder die Verwaltungsabteilung zu wenden. Die aktuellen Bedingungen sind die derzeit verfügbaren, da viele Personen, die einen Kredit in Anspruch genommen haben, bis heute nicht zurückgezahlt haben. Nur diese Abteilungen sind befugt, Ihnen eine genaue Antwort zu geben. 🙏"
+    ],
+    security: [
+      "Ihre Sicherheit hat für uns absolute Priorität. 🔒 Alle Ihre Transaktionen sind durch Ende-zu-Ende-Verschlüsselung geschützt. Ihre persönlichen Daten werden niemals an Dritte weitergegeben. Sie können unsere Dienste mit vollem Vertrauen nutzen. 💙"
+    ],
+    trust: [
+      "Ich verstehe Ihre Besorgnis vollkommen und möchte Sie beruhigen: Younited ist ein seriöser und zuverlässiger Service. 💙 Tausende Kunden vertrauen uns täglich. Wenn Sie Zweifel haben, wenden Sie sich direkt an unseren Kundenservice, sie werden Sie beruhigen. Sie sind nicht allein, wir sind für Sie da.",
+      "Ihr Vertrauen ist uns wertvoll. ✨ Ich versichere Ihnen, dass wir alles tun, um Ihnen einen einwandfreien und transparenten Service zu bieten. Wenn Sie etwas beunruhigt, kontaktieren Sie unsere Verwaltungsabteilung. Passen Sie auf sich auf, wir wachen über Sie. 🙏"
+    ],
+    loan: [
+      "Zu Krediten und Kreditbedingungen lade ich Sie ein, sich direkt an unseren Kundenservice oder unsere Verwaltungsabteilung zu wenden. Nur sie sind befugt, Ihnen genaue und personalisierte Informationen zu geben. Die aktuellen Bedingungen sind die derzeit verfügbaren. 🙏"
+    ],
+    transfer: [
+      "Zu Überweisungen: 💸 nach Validierung des Aktivierungscodes wird Ihre Überweisung von unserer Verwaltungsabteilung bearbeitet. Die übliche Zeit beträgt 1-3 Minuten. Sie können den Status im Verlauf verfolgen. Für spezifische Fragen wenden Sie sich an den Kundenservice. 🙏"
+    ],
+    wait: [
+      "Ich verstehe Ihre Ungeduld. ⏳ Jede Überweisung wird mit größter Sorgfalt geprüft. Wenn Sie eine ungewöhnliche Verzögerung feststellen, kontaktieren Sie den Kundenservice oder die Verwaltungsabteilung. Vielen Dank für Ihre Geduld. 🙏"
+    ],
+    balance: [
+      "Sie können Ihr Guthaben jederzeit auf der Startseite einsehen. 💰 Es wird automatisch aktualisiert. Bei Zweifeln kontaktieren Sie den Kundenservice. 🙏"
+    ],
+    iban: [
+      "Ihre Bankdaten (IBAN, BIC) sind mit einem Klick von der Startseite über die Schaltfläche «Meine IBAN anzeigen» zugänglich. 📄 Sie können sie sicher kopieren und teilen. 💙"
+    ],
+    card: [
+      "Ihre virtuelle Karte ist im Bereich «Virtuelle Karte» verfügbar. 💳 Bei Fragen oder Problemen kontaktieren Sie den Kundenservice. 🙏"
+    ],
+    problem: [
+      "Es tut mir sehr leid für die Schwierigkeit, die Sie erleben. 🙏 Ich empfehle Ihnen, sich direkt an unseren Kundenservice oder unsere Verwaltungsabteilung zu wenden: Sie sind geschult, um alle komplexen Situationen zu behandeln. 💙",
+      "Ich verstehe vollkommen und nehme Ihre Situation sehr ernst. 💙 Einige Situationen erfordern personalisierte Unterstützung. Die Verwaltungsabteilung ist Ihr bester Ansprechpartner. Wir stehen Ihnen vollständig zur Verfügung. 🙏"
+    ],
+    fallback: [
+      "Vielen Dank für Ihre Nachricht. 💙 Um Ihnen eine präzise und personalisierte Antwort zu geben, empfehle ich Ihnen, Ihre Frage neu zu formulieren oder sich direkt an den Kundenservice oder die Verwaltungsabteilung zu wenden. 🙏",
+      "Ich habe Ihre Nachricht erhalten. ✨ Können Sie Ihre Frage präzisieren? Für spezifische Punkte kontaktieren Sie den Kundenservice. 🙏"
+    ]
+  }
+};
+
+// Mots-clés multilingues pour la détection automatique de catégorie
+const CHAT_KEYWORDS = {
+  fees: ['frais', 'frais de dossier', 'tarif', 'tarifs', 'payer', 'paiement', 'coût', 'couts', 'prix', 'commission', 'commission', 'opłata', 'opłaty', 'koszt', 'płacić', 'zapłata', 'prowizja', 'tarifa', 'tarifas', 'pagar', 'pago', 'coste', 'costos', 'precio', 'comisión', 'commissione', 'commissioni', 'pagare', 'pagamento', 'costo', 'costi', 'prezzo', 'gebühr', 'gebühren', 'kosten', 'bezahlen', 'zahlung', 'preis', 'provision'],
+  trust: ['confiance', 'peur', 'doute', 'inquiet', 'inquiète', 'arnaque', 'escroc', 'tromper', 'arnaqueurs', 'mefier', 'me méfier', 'pas sûr', 'pas sure', 'serieux', 'sérieux', 'fiable', 'zaufanie', 'strach', 'wątpliwość', 'wątpliwości', 'niepokój', 'oszustwo', 'oszust', 'confianza', 'miedo', 'duda', 'preocupado', 'estafa', 'timo', 'fiducia', 'paura', 'dubbio', 'preoccupato', 'truffa', 'vertrauen', 'angst', 'zweifel', 'betrug', 'sorge'],
+  security: ['sécurité', 'securite', 'sécurisé', 'securise', 'protégé', 'protege', 'protection', 'sûr', 'sure', 'sécurisé', 'chiffré', 'bezpieczeństwo', 'bezpieczny', 'ochrona', 'seguridad', 'seguro', 'protegido', 'sicurezza', 'sicuro', 'protetto', 'sicherheit', 'sicher', 'geschützt'],
+  loan: ['prêt', 'pret', 'crédit', 'credit', 'emprunt', 'emprunter', 'pożyczka', 'kredyt', 'pożyczyć', 'préstamo', 'prestamo', 'crédito', 'credito', 'prestito', 'kredit', 'darlehen', 'kredit'],
+  transfer: ['virement', 'transfert', 'transferer', 'transférer', 'envoyer', 'recevoir', 'délai', 'delai', 'przelew', 'przelewy', 'wysłać', 'transferencia', 'transferencias', 'enviar', 'bonifico', 'bonifici', 'inviare', 'überweisung', 'überweisungen', 'senden'],
+  wait: ['attendre', 'attente', 'retard', 'lent', 'lente', 'lentement', 'longtemps', 'czekać', 'opóźnienie', 'esperar', 'retraso', 'lento', 'aspettare', 'ritardo', 'lento', 'warten', 'verzögerung', 'langsam'],
+  balance: ['solde', 'argent', 'combien', 'combien j\'ai', 'sald', 'pieniądze', 'ile', 'saldo', 'dinero', 'cuánto', 'quanto', 'sold', 'guthaben', 'geld'],
+  iban: ['iban', 'bic', 'swift', 'compte bancaire', 'coordonnées bancaires', 'numer konta', 'konto bankowe', 'cuenta bancaria', 'conto bancario', 'bankkonto'],
+  card: ['carte', 'carte virtuelle', 'cvv', 'karta', 'karta wirtualna', 'tarjeta', 'tarjeta virtual', 'carta', 'carta virtuale', 'karte', 'virtuelle karte'],
+  problem: ['problème', 'probleme', 'souci', 'bug', 'erreur', 'error', 'bloqué', 'bloque', 'marche pas', 'ne marche pas', 'panne', 'problem', 'błąd', 'problem', 'problema', 'error', 'errore', 'problema', 'problem', 'fehler'],
+  whoAreYou: ['qui es-tu', 'qui es tu', 'tu es qui', 'tu es quoi', 'présente toi', 'presente toi', 'kim jesteś', 'kim jestes', 'quién eres', 'quien eres', 'chi sei', 'wer bist du', 'wer sind sie'],
+  thanks: ['merci', 'thanks', 'thank you', 'dziękuję', 'dziekuje', 'gracias', 'grazie', 'danke', 'dank'],
+  greeting: ['bonjour', 'salut', 'bonsoir', 'coucou', 'hello', 'hi', 'hey', 'cześć', 'czesc', 'witaj', 'hola', 'buenos días', 'buenos dias', 'ciao', 'buongiorno', 'hallo', 'guten tag', 'moin']
+};
+
+function normalizeText(str) {
+  if (!str) return '';
+  return String(str).toLowerCase()
+    .replace(/[!?.,;:'"«»\-_()\[\]{}]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function textMatchesAny(text, keywords) {
+  if (!text || !keywords) return false;
+  for (var i = 0; i < keywords.length; i++) {
+    var kw = keywords[i].toLowerCase();
+    if (kw.indexOf(' ') !== -1) {
+      if (text.indexOf(kw) !== -1) return true;
+    } else {
+      var re = new RegExp('\\b' + kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+      if (re.test(text)) return true;
+    }
+  }
+  return false;
+}
+
+function getChatbotResponse(userText) {
+  var lang = currentLang || 'fr';
+  var responses = CHAT_RESPONSES[lang] || CHAT_RESPONSES.fr;
+  var text = normalizeText(userText);
+  var category = 'fallback';
+  if (textMatchesAny(text, CHAT_KEYWORDS.fees)) category = 'fees';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.trust)) category = 'trust';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.security)) category = 'security';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.loan)) category = 'loan';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.problem)) category = 'problem';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.transfer)) category = 'transfer';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.wait)) category = 'wait';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.balance)) category = 'balance';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.iban)) category = 'iban';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.card)) category = 'card';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.whoAreYou)) category = 'whoAreYou';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.thanks)) category = 'thanks';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.greeting)) category = 'greeting';
+  var pool = responses[category] || responses.fallback;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
 let currentLang = 'fr';
 let currentClient = null;
 let progressInterval = null;
@@ -609,6 +962,7 @@ let pendingTransferAmount = 0;
 let pendingTransferPercent = 100;
 let virtualCardRevealed = false;
 let currentTransactions = [];
+let chatbotOpen = false;
 
 const t = (k) => { const d = i18n[currentLang] || i18n.fr; return d[k] !== undefined ? d[k] : (i18n.fr[k] || k); };
 const formatAmount = (a, c) => a.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + c;
@@ -685,7 +1039,7 @@ function ensureGlobalStyles() {
     .qa-switch{border-width:2px !important;border-color:#94a3b8 !important;}
     .admin-section select, .quick-actions-card select, .pending-transfer-card select, .admin-group select, .option-panel select, #admin-root select { background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a73e8'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important; background-repeat:no-repeat !important; background-position:right 10px center !important; background-size:20px !important; padding-right:36px !important; appearance:none !important; -webkit-appearance:none !important; -moz-appearance:none !important; cursor:pointer !important; }
 
-    /* ★ NOUVEAU : Augmentation de la taille des textes des champs dans la page admin */
+    /* ★ Augmentation de la taille des textes des champs dans la page admin */
     .admin-group label,
     .quick-actions-card label,
     .option-panel-toggle-label,
@@ -705,75 +1059,24 @@ function ensureGlobalStyles() {
       padding-top: 10px !important;
       padding-bottom: 10px !important;
     }
-    .admin-auth input {
-      font-size: 14.5px !important;
-    }
-    .option-panel-title,
-    .option-panel-title span {
-      font-size: 13px !important;
-      line-height: 1.35 !important;
-    }
-    .option-panel-desc {
-      font-size: 12.5px !important;
-      line-height: 1.55 !important;
-    }
-    .qa-switch-text {
-      font-size: 13px !important;
-      line-height: 1.4 !important;
-    }
-    .pending-transfer-card .pt-title {
-      font-size: 13px !important;
-    }
-    .pending-transfer-card .pt-subtitle {
-      font-size: 12.5px !important;
-      line-height: 1.55 !important;
-    }
-    .pending-transfer-card .pt-status-label {
-      font-size: 12px !important;
-    }
-    .pending-transfer-status-badge {
-      font-size: 11px !important;
-    }
-    .admin-section-title {
-      font-size: 12.5px !important;
-      line-height: 1.35 !important;
-    }
-    .qac-title {
-      font-size: 13px !important;
-      line-height: 1.35 !important;
-    }
-    .qac-subtitle {
-      font-size: 12.5px !important;
-      line-height: 1.5 !important;
-    }
-    .qa-card-holder-note {
-      font-size: 12px !important;
-      line-height: 1.5 !important;
-    }
-    .client-list-title {
-      font-size: 11.5px !important;
-    }
-    .admin-pending-empty,
-    .admin-transfers-empty {
-      font-size: 12px !important;
-    }
-    .admin-pending-name,
-    .admin-transfer-name {
-      font-size: 13.5px !important;
-    }
-    .admin-pending-meta,
-    .admin-transfer-meta {
-      font-size: 11.5px !important;
-    }
-    .admin-pending-amount,
-    .admin-transfer-amount {
-      font-size: 15px !important;
-    }
-    .admin-pending-btn,
-    .admin-transfer-cancel-btn,
-    .client-line-btn {
-      font-size: 12px !important;
-    }
+    .admin-auth input { font-size: 14.5px !important; }
+    .option-panel-title, .option-panel-title span { font-size: 13px !important; line-height: 1.35 !important; }
+    .option-panel-desc { font-size: 12.5px !important; line-height: 1.55 !important; }
+    .qa-switch-text { font-size: 13px !important; line-height: 1.4 !important; }
+    .pending-transfer-card .pt-title { font-size: 13px !important; }
+    .pending-transfer-card .pt-subtitle { font-size: 12.5px !important; line-height: 1.55 !important; }
+    .pending-transfer-card .pt-status-label { font-size: 12px !important; }
+    .pending-transfer-status-badge { font-size: 11px !important; }
+    .admin-section-title { font-size: 12.5px !important; line-height: 1.35 !important; }
+    .qac-title { font-size: 13px !important; line-height: 1.35 !important; }
+    .qac-subtitle { font-size: 12.5px !important; line-height: 1.5 !important; }
+    .qa-card-holder-note { font-size: 12px !important; line-height: 1.5 !important; }
+    .client-list-title { font-size: 11.5px !important; }
+    .admin-pending-empty, .admin-transfers-empty { font-size: 12px !important; }
+    .admin-pending-name, .admin-transfer-name { font-size: 13.5px !important; }
+    .admin-pending-meta, .admin-transfer-meta { font-size: 11.5px !important; }
+    .admin-pending-amount, .admin-transfer-amount { font-size: 15px !important; }
+    .admin-pending-btn, .admin-transfer-cancel-btn, .client-line-btn { font-size: 12px !important; }
   `;
   document.head.appendChild(style);
 }
@@ -828,7 +1131,6 @@ function renderTransactions(txs) {
   return h;
 }
 
-// ★ MODIFIÉ : détection de l'annulation d'un virement EFFECTUÉ par l'admin → notification violette côté client
 function syncClientUI(fresh) {
   if (!fresh) return;
   const previousLang = currentLang;
@@ -837,7 +1139,6 @@ function syncClientUI(fresh) {
   currentLang = fresh.language || 'fr';
   applyTheme(fresh.themeColor);
 
-  // ★ NOUVEAU : Détecter l'annulation d'un virement EFFECTUÉ par l'admin → notifier le client (en-tête violet)
   try {
     if (previousClient && previousClient.transactions) {
       const prevCancelledCount = previousClient.transactions.filter(function (t) {
@@ -879,14 +1180,21 @@ function syncClientUI(fresh) {
   if (cardBody) { virtualCardRevealed = false; cardBody.innerHTML = renderCardBody(fresh.cardNumber || '4944595344283327', getCardHolderName(fresh), fresh.cardExpiry || '02/28', fresh.cardCvv || '843', fresh.cardType || 'Visa Debit', fresh.cardMaskLast4 === true, fresh.cardMaskCvv === true, false); }
   const creditCard = document.querySelector('.credit-card .card-holder');
   if (creditCard) creditCard.textContent = getCardHolderName(fresh);
+  // Update chatbot labels if open
+  try {
+    const chatTitle = document.getElementById('tw-chat-title');
+    if (chatTitle) { const L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr; chatTitle.textContent = L.title; }
+    const chatSub = document.getElementById('tw-chat-subtitle');
+    if (chatSub) { const L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr; chatSub.textContent = L.subtitle; }
+    const chatInput = document.getElementById('tw-chat-input');
+    if (chatInput) { const L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr; chatInput.placeholder = L.placeholder; }
+  } catch (e) {}
   if (previousLang !== currentLang) {
     const navLabels = { 'nav-dashboard': 'navBalance', 'nav-transfer': 'navPaymentsNew', 'nav-card': 'navCard', 'nav-profile': 'navAccount' };
     Object.keys(navLabels).forEach(function (navId) { const el = document.getElementById(navId); if (el) { const span = el.querySelector('span'); if (span) span.textContent = t(navLabels[navId]); } });
   }
 }
 
-// ★ MODIFIÉ : synchronisation temps réel RENFORCÉE — applique immédiatement TOUS les changements admin
-// (déblocage, blocage, changement de langue, nom, couleur, virements, solde, etc.)
 function subscribeToClient(clientId) {
   if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
   try {
@@ -894,6 +1202,7 @@ function subscribeToClient(clientId) {
       if (!snap.exists()) {
         ClientSession.clear();
         if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
+        try { removeChatbot(); } catch (e) {}
         initClient();
         return;
       }
@@ -903,32 +1212,30 @@ function subscribeToClient(clientId) {
       const appRoot = document.getElementById('app-root');
       const hasStatusScreen = appRoot && appRoot.querySelector('.twd-status-screen');
 
-      // ★ CAS 1 : Le client vient d'être BLOQUÉ
       if (fresh.blocked) {
-        // Si on est déjà sur l'écran bloqué, on ne re-render que si la langue a changé (pour retraduire)
         if (hasStatusScreen) {
           if (previousLang !== (fresh.language || 'fr')) {
             currentClient = fresh;
             currentLang = fresh.language || 'fr';
             applyTheme(fresh.themeColor);
+            try { removeChatbot(); } catch (e) {}
             setTimeout(function () { initClient(); }, 0);
           }
           return;
         }
         ClientSession.clear();
         if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
+        try { removeChatbot(); } catch (e) {}
         initClient();
         return;
       }
 
-      // ★ CAS 2 : Le client N'EST PLUS bloqué → re-render complet immédiat
       const wasBlocked = previousClient && previousClient.blocked === true;
       const langChanged = previousLang !== (fresh.language || 'fr');
       if (wasBlocked || hasStatusScreen || langChanged) {
         currentClient = fresh;
         currentLang = fresh.language || 'fr';
         applyTheme(fresh.themeColor);
-        // setTimeout 0 pour éviter toute interférence avec le snapshot en cours
         setTimeout(function () {
           const activeId = ClientSession.getActive();
           if (activeId === clientId) renderBankingApp(fresh);
@@ -937,7 +1244,6 @@ function subscribeToClient(clientId) {
         return;
       }
 
-      // ★ CAS 3 : Mise à jour normale (solde, virements, nom, couleur, devise, etc.) → sync directe
       syncClientUI(fresh);
     }, () => {});
   } catch (e) {}
@@ -947,95 +1253,576 @@ export function initClientApp() { initClient(); }
 export function initAdminApp() { initAdmin(); }
 export function initSuperAdminApp() { initSuperAdmin(); }
 
-// ★ NOUVEAU : Styles pour les écrans "compte bloqué" (cadenas + clé) et "lien non disponible" (poubelle)
 function ensureStatusScreensStyles() {
   if (document.getElementById('twd-status-styles')) return;
   const style = document.createElement('style');
   style.id = 'twd-status-styles';
   style.textContent = `
-    .twd-status-screen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 32px 24px;
-      text-align: center;
-      background: #ffffff;
-      box-sizing: border-box;
-      font-family: 'Titillium Web', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    }
+    .twd-status-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 32px 24px; text-align: center; background: #ffffff; box-sizing: border-box; font-family: 'Titillium Web', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
     .twd-status-screen > * { animation: twdStatusIn 0.5s ease-out both; }
     .twd-status-screen > *:nth-child(2) { animation-delay: 0.08s; }
     .twd-status-screen > *:nth-child(3) { animation-delay: 0.16s; }
-    @keyframes twdStatusIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .twd-status-icon {
-      width: 140px;
-      height: 140px;
+    @keyframes twdStatusIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .twd-status-icon { width: 140px; height: 140px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 28px; flex-shrink: 0; }
+    .twd-status-icon.blocked { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); color: #dc2626; box-shadow: 0 14px 36px rgba(220, 38, 38, 0.22), 0 0 0 8px rgba(220, 38, 38, 0.05); }
+    .twd-status-icon.deleted { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); color: #475569; box-shadow: 0 14px 36px rgba(71, 85, 105, 0.22), 0 0 0 8px rgba(71, 85, 105, 0.05); }
+    .twd-status-icon svg { width: 84px; height: 84px; display: block; }
+    .twd-status-title { font-size: 22px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.3px; line-height: 1.25; white-space: normal; word-break: break-word; font-family: 'Titillium Web', sans-serif; }
+    .twd-status-title.blocked { color: #b91c1c; }
+    .twd-status-title.deleted { color: #334155; }
+    .twd-status-desc { font-size: 14px; color: #475569; line-height: 1.6; max-width: 320px; font-weight: 500; white-space: normal; word-break: break-word; font-family: 'Titillium Web', sans-serif; }
+    @media (max-width: 400px) { .twd-status-icon { width: 120px; height: 120px; } .twd-status-icon svg { width: 70px; height: 70px; } .twd-status-title { font-size: 20px; } .twd-status-desc { font-size: 13px; } }
+  `;
+  document.head.appendChild(style);
+}
+
+// ═══════════════════════════════════════════════════════════
+// ★ NOUVEAU : CHATBOT IA — Styles, injection, rendu, moteur
+// ═══════════════════════════════════════════════════════════
+function ensureChatbotStyles() {
+  if (document.getElementById('tw-chat-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'tw-chat-styles';
+  style.textContent = `
+    /* Bouton flottant */
+    #tw-chat-fab {
+      position: fixed;
+      right: 14px;
+      bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+      width: 54px;
+      height: 54px;
       border-radius: 50%;
+      background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(26, 115, 232, 0.42), 0 4px 10px rgba(15, 23, 42, 0.18);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 28px;
+      z-index: 9998;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #tw-chat-fab:active { transform: scale(0.94); }
+    #tw-chat-fab svg { width: 26px; height: 26px; fill: #ffffff; }
+    #tw-chat-fab.tw-chat-hidden { display: none !important; }
+    #tw-chat-fab::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      background: rgba(26, 115, 232, 0.35);
+      animation: twChatPulse 2s ease-out infinite;
+      z-index: -1;
+      pointer-events: none;
+    }
+    @keyframes twChatPulse {
+      0% { transform: scale(0.85); opacity: 0.75; }
+      70% { transform: scale(1.35); opacity: 0; }
+      100% { transform: scale(1.35); opacity: 0; }
+    }
+    .tw-chat-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 9px;
+      background: #ef4444;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      font-family: 'Titillium Web', sans-serif;
+    }
+    .tw-chat-badge.tw-chat-badge-hidden { display: none !important; }
+
+    /* Fenêtre de chat */
+    #tw-chat-window {
+      position: fixed;
+      right: 14px;
+      bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+      width: calc(100vw - 28px);
+      max-width: 380px;
+      height: 70vh;
+      max-height: 560px;
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35), 0 6px 18px rgba(15, 23, 42, 0.15);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 9999;
+      transform-origin: bottom right;
+      animation: twChatOpen 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    #tw-chat-window.tw-chat-open { display: flex; }
+    @keyframes twChatOpen {
+      from { opacity: 0; transform: translateY(20px) scale(0.94); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .tw-chat-header {
+      background: linear-gradient(135deg, #0a2540 0%, #0f2f5c 55%, #1e40af 100%);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffffff;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .tw-chat-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -30%;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(255,255,255,0.13), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .tw-chat-header-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      border: 2px solid rgba(255,255,255,0.35);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    }
+    .tw-chat-header-avatar svg { width: 18px; height: 18px; fill: #ffffff; }
+    .tw-chat-header-avatar::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #22c55e;
+      border: 2px solid #0a2540;
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.35);
+    }
+    .tw-chat-header-text { flex: 1; min-width: 0; position: relative; z-index: 1; }
+    #tw-chat-title { font-size: 14px; font-weight: 800; color: #ffffff; letter-spacing: 0.2px; line-height: 1.2; font-family: 'Titillium Web', sans-serif; }
+    #tw-chat-subtitle { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.82); margin-top: 3px; letter-spacing: 0.2px; font-family: 'Titillium Web', sans-serif; }
+    .tw-chat-close-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.22);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .tw-chat-close-btn svg { width: 13px; height: 13px; fill: #ffffff; }
+    .tw-chat-close-btn:active { background: rgba(255,255,255,0.28); }
+
+    /* Zone messages */
+    .tw-chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 12px;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tw-chat-messages::-webkit-scrollbar { width: 4px; }
+    .tw-chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+    .tw-chat-msg {
+      display: flex;
+      align-items: flex-end;
+      gap: 7px;
+      max-width: 88%;
+      animation: twChatMsgIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+      word-wrap: break-word;
+    }
+    @keyframes twChatMsgIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .tw-chat-msg.tw-chat-msg-user { align-self: flex-end; flex-direction: row-reverse; }
+    .tw-chat-msg.tw-chat-msg-bot { align-self: flex-start; }
+    .tw-chat-msg-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: 'Titillium Web', sans-serif;
+    }
+    .tw-chat-msg-bot .tw-chat-msg-avatar { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+    .tw-chat-msg-user .tw-chat-msg-avatar { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); }
+    .tw-chat-msg-avatar svg { width: 13px; height: 13px; fill: #ffffff; }
+    .tw-chat-msg-bubble {
+      padding: 10px 13px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.5;
+      word-break: break-word;
+      white-space: normal;
+      font-family: 'Titillium Web', sans-serif;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    }
+    .tw-chat-msg-bot .tw-chat-msg-bubble {
+      background: #ffffff;
+      color: #0f172a;
+      border-bottom-left-radius: 4px;
+      border: 1px solid #eef2f7;
+    }
+    .tw-chat-msg-user .tw-chat-msg-bubble {
+      background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);
+      color: #ffffff;
+      border-bottom-right-radius: 4px;
+    }
+    .tw-chat-msg-time {
+      font-size: 9px;
+      color: #94a3b8;
+      margin-top: 3px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      font-family: 'Titillium Web', sans-serif;
+    }
+    .tw-chat-msg-user .tw-chat-msg-time { color: #cbd5e1; text-align: right; }
+
+    /* Indicateur de saisie */
+    .tw-chat-typing {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      align-self: flex-start;
+      max-width: 80%;
+    }
+    .tw-chat-typing .tw-chat-msg-avatar { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+    .tw-chat-typing-bubble {
+      background: #ffffff;
+      border: 1px solid #eef2f7;
+      padding: 12px 16px;
+      border-radius: 16px;
+      border-bottom-left-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    }
+    .tw-chat-typing-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #94a3b8;
+      animation: twChatTyping 1.2s ease-in-out infinite;
+    }
+    .tw-chat-typing-dot:nth-child(1) { animation-delay: 0s; }
+    .tw-chat-typing-dot:nth-child(2) { animation-delay: 0.18s; }
+    .tw-chat-typing-dot:nth-child(3) { animation-delay: 0.36s; }
+    @keyframes twChatTyping {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-4px); opacity: 1; }
+    }
+
+    /* Footer / Input */
+    .tw-chat-footer {
+      padding: 10px 10px 12px 10px;
+      background: #ffffff;
+      border-top: 1px solid #eef2f7;
+      display: flex;
+      align-items: center;
+      gap: 8px;
       flex-shrink: 0;
     }
-    .twd-status-icon.blocked {
-      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-      color: #dc2626;
-      box-shadow: 0 14px 36px rgba(220, 38, 38, 0.22), 0 0 0 8px rgba(220, 38, 38, 0.05);
-    }
-    .twd-status-icon.deleted {
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-      color: #475569;
-      box-shadow: 0 14px 36px rgba(71, 85, 105, 0.22), 0 0 0 8px rgba(71, 85, 105, 0.05);
-    }
-    .twd-status-icon svg {
-      width: 84px;
-      height: 84px;
-      display: block;
-    }
-    .twd-status-title {
-      font-size: 22px;
-      font-weight: 800;
-      margin-bottom: 12px;
-      letter-spacing: -0.3px;
-      line-height: 1.25;
-      white-space: normal;
-      word-break: break-word;
-      font-family: 'Titillium Web', sans-serif;
-    }
-    .twd-status-title.blocked { color: #b91c1c; }
-    .twd-status-title.deleted { color: #334155; }
-    .twd-status-desc {
-      font-size: 14px;
-      color: #475569;
-      line-height: 1.6;
-      max-width: 320px;
+    #tw-chat-input {
+      flex: 1;
+      min-width: 0;
+      padding: 11px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 24px;
+      font-size: 13px;
       font-weight: 500;
-      white-space: normal;
-      word-break: break-word;
+      color: #0f172a;
+      background: #f8fafc;
+      outline: none;
       font-family: 'Titillium Web', sans-serif;
+      transition: border-color 0.2s ease, background 0.2s ease;
     }
-    @media (max-width: 400px) {
-      .twd-status-icon { width: 120px; height: 120px; }
-      .twd-status-icon svg { width: 70px; height: 70px; }
-      .twd-status-title { font-size: 20px; }
-      .twd-status-desc { font-size: 13px; }
+    #tw-chat-input:focus {
+      border-color: #1a73e8;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+    }
+    #tw-chat-input::placeholder { color: #94a3b8; font-weight: 500; }
+    #tw-chat-send {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.35);
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #tw-chat-send:active { transform: scale(0.92); }
+    #tw-chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+    #tw-chat-send svg { width: 18px; height: 18px; fill: #ffffff; }
+
+    /* Responsive */
+    @media (max-width: 420px) {
+      #tw-chat-fab { right: 12px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); width: 50px; height: 50px; }
+      #tw-chat-fab svg { width: 24px; height: 24px; }
+      #tw-chat-window {
+        right: 8px;
+        left: 8px;
+        width: auto;
+        bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+        height: 72vh;
+        max-height: none;
+        border-radius: 16px;
+      }
     }
   `;
   document.head.appendChild(style);
 }
 
-// ★ MODIFIÉ : écrans bloqué (cadenas + clé) et supprimé (poubelle) — MULTILINGUE via i18n
+function removeChatbot() {
+  var fab = document.getElementById('tw-chat-fab');
+  if (fab) fab.remove();
+  var win = document.getElementById('tw-chat-window');
+  if (win) win.remove();
+  var styles = document.getElementById('tw-chat-styles');
+  if (styles) styles.remove();
+  chatbotOpen = false;
+}
+
+function loadChatMessages() {
+  if (!currentClient) return [];
+  var msgs = currentClient.aiMessages;
+  if (msgs && Array.isArray(msgs) && msgs.length > 0) return msgs;
+  try {
+    var localKey = 'tw_ai_msgs_' + currentClient.id;
+    var localMsgs = JSON.parse(localStorage.getItem(localKey) || '[]');
+    if (Array.isArray(localMsgs) && localMsgs.length > 0) return localMsgs;
+  } catch (e) {}
+  return [];
+}
+
+function saveChatMessage(role, text) {
+  if (!currentClient || !currentClient.id) return;
+  var msg = { role: role, text: text, ts: Date.now() };
+  try {
+    var localKey = 'tw_ai_msgs_' + currentClient.id;
+    var localMsgs = JSON.parse(localStorage.getItem(localKey) || '[]');
+    if (!Array.isArray(localMsgs)) localMsgs = [];
+    localMsgs.push(msg);
+    if (localMsgs.length > 200) localMsgs = localMsgs.slice(-200);
+    localStorage.setItem(localKey, JSON.stringify(localMsgs));
+  } catch (e) {}
+  var txs = (currentClient.aiMessages || []).slice();
+  if (!Array.isArray(txs)) txs = [];
+  txs.push(msg);
+  if (txs.length > 200) txs = txs.slice(-200);
+  currentClient.aiMessages = txs;
+  try { FireDB.updateClient(currentClient.id, { aiMessages: txs }).catch(function () {}); } catch (e) {}
+}
+
+function formatChatTime(ts) {
+  try {
+    var d = new Date(ts);
+    var hh = String(d.getHours()).padStart(2, '0');
+    var mm = String(d.getMinutes()).padStart(2, '0');
+    return hh + ':' + mm;
+  } catch (e) { return ''; }
+}
+
+function renderChatMessages() {
+  var container = document.getElementById('tw-chat-messages');
+  if (!container) return;
+  var msgs = loadChatMessages();
+  var L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr;
+  var html = '';
+  if (!msgs || msgs.length === 0) {
+    var welcomeText = L.welcomeTitle + '\n\n' + L.welcomeBody;
+    html = '<div class="tw-chat-msg tw-chat-msg-bot"><div class="tw-chat-msg-avatar"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div><div><div class="tw-chat-msg-bubble">' + welcomeText.replace(/\n/g, '<br>') + '</div><div class="tw-chat-msg-time">' + formatChatTime(Date.now()) + '</div></div></div>';
+  } else {
+    msgs.forEach(function (m) {
+      var isUser = m.role === 'user';
+      var cls = isUser ? 'tw-chat-msg-user' : 'tw-chat-msg-bot';
+      var avatarSvg = isUser
+        ? '<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>'
+        : '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>';
+      var safeText = String(m.text || '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+      html += '<div class="tw-chat-msg ' + cls + '"><div class="tw-chat-msg-avatar">' + avatarSvg + '</div><div><div class="tw-chat-msg-bubble">' + safeText + '</div><div class="tw-chat-msg-time">' + formatChatTime(m.ts || Date.now()) + '</div></div></div>';
+    });
+  }
+  container.innerHTML = html;
+  setTimeout(function () { container.scrollTop = container.scrollHeight; }, 50);
+}
+
+function showChatTyping() {
+  var container = document.getElementById('tw-chat-messages');
+  if (!container) return;
+  var existing = document.getElementById('tw-chat-typing');
+  if (existing) existing.remove();
+  var typing = document.createElement('div');
+  typing.id = 'tw-chat-typing';
+  typing.className = 'tw-chat-typing';
+  typing.innerHTML = '<div class="tw-chat-msg-avatar"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div><div class="tw-chat-typing-bubble"><span class="tw-chat-typing-dot"></span><span class="tw-chat-typing-dot"></span><span class="tw-chat-typing-dot"></span></div>';
+  container.appendChild(typing);
+  container.scrollTop = container.scrollHeight;
+}
+
+function hideChatTyping() {
+  var t = document.getElementById('tw-chat-typing');
+  if (t) t.remove();
+}
+
+function getUnreadCount() {
+  return 0;
+}
+
+function updateChatbotBadge() {
+  var badge = document.getElementById('tw-chat-badge');
+  if (!badge) return;
+  var unread = getUnreadCount();
+  if (unread > 0 && !chatbotOpen) {
+    badge.textContent = unread > 99 ? '99+' : String(unread);
+    badge.classList.remove('tw-chat-badge-hidden');
+  } else {
+    badge.classList.add('tw-chat-badge-hidden');
+  }
+}
+
+window.openChatbot = function () {
+  var win = document.getElementById('tw-chat-window');
+  if (!win) return;
+  chatbotOpen = true;
+  win.classList.add('tw-chat-open');
+  updateChatbotBadge();
+  setTimeout(function () { renderChatMessages(); }, 30);
+  setTimeout(function () {
+    var input = document.getElementById('tw-chat-input');
+    if (input) { try { input.focus(); } catch (e) {} }
+  }, 250);
+};
+
+window.closeChatbot = function () {
+  var win = document.getElementById('tw-chat-window');
+  if (!win) return;
+  chatbotOpen = false;
+  win.classList.remove('tw-chat-open');
+};
+
+window.toggleChatbot = function () {
+  if (chatbotOpen) window.closeChatbot();
+  else window.openChatbot();
+};
+
+window.sendChatMessage = function () {
+  var input = document.getElementById('tw-chat-input');
+  if (!input) return;
+  var text = String(input.value || '').trim();
+  if (!text) return;
+  input.value = '';
+  saveChatMessage('user', text);
+  renderChatMessages();
+  showChatTyping();
+  var delay = 700 + Math.floor(Math.random() * 600);
+  setTimeout(function () {
+    var reply = getChatbotResponse(text);
+    hideChatTyping();
+    saveChatMessage('bot', reply);
+    renderChatMessages();
+  }, delay);
+};
+
+function injectChatbot(client) {
+  if (!client) return;
+  removeChatbot();
+  ensureChatbotStyles();
+  var L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr;
+
+  var fab = document.createElement('button');
+  fab.id = 'tw-chat-fab';
+  fab.setAttribute('type', 'button');
+  fab.setAttribute('aria-label', L.title);
+  fab.innerHTML =
+    '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+      '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>' +
+    '</svg>' +
+    '<span class="tw-chat-badge tw-chat-badge-hidden" id="tw-chat-badge">0</span>';
+  fab.addEventListener('click', function () { window.toggleChatbot(); });
+  document.body.appendChild(fab);
+
+  var win = document.createElement('div');
+  win.id = 'tw-chat-window';
+  win.innerHTML =
+    '<div class="tw-chat-header">' +
+      '<div class="tw-chat-header-avatar"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div>' +
+      '<div class="tw-chat-header-text">' +
+        '<div id="tw-chat-title">' + L.title + '</div>' +
+        '<div id="tw-chat-subtitle">' + L.subtitle + '</div>' +
+      '</div>' +
+      '<button type="button" class="tw-chat-close-btn" onclick="window.closeChatbot()" aria-label="Close">' +
+        '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>' +
+      '</button>' +
+    '</div>' +
+    '<div class="tw-chat-messages" id="tw-chat-messages"></div>' +
+    '<div class="tw-chat-footer">' +
+      '<input type="text" id="tw-chat-input" placeholder="' + L.placeholder + '" autocomplete="off" />' +
+      '<button type="button" id="tw-chat-send" onclick="window.sendChatMessage()" aria-label="Send">' +
+        '<svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>' +
+      '</button>' +
+    '</div>';
+  document.body.appendChild(win);
+
+  var chatInput = document.getElementById('tw-chat-input');
+  if (chatInput) {
+    chatInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        window.sendChatMessage();
+      }
+    });
+  }
+
+  renderChatMessages();
+}
+
 async function initClient() {
   const clientId = new URLSearchParams(window.location.search).get('id');
   const root = document.getElementById('app-root');
   if (!root) return;
   ensureGlobalStyles();
   ensureStatusScreensStyles();
+  try { removeChatbot(); } catch (e) {}
   if (!clientId) { root.innerHTML = '<div class="view active"><div class="no-access"><div class="ico"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm3 11c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg></div><h2>Acces restreint</h2><p>Cette application necessite un lien de connexion valide.</p></div></div>'; return; }
   const client = await FireDB.getClient(clientId);
   if (!client) {
@@ -1055,11 +1842,11 @@ async function initClient() {
   else renderLoginPage(client);
 }
 
-// ============ LOGIN PAGE (rectangulaire + petite) ============
 function renderLoginPage(client) {
   currentLang = client.language || 'fr';
   applyTheme(client.themeColor);
   ensureGlobalStyles();
+  try { removeChatbot(); } catch (e) {}
   const root = document.getElementById('app-root');
   const clientName = (client.firstName + ' ' + client.lastName).toUpperCase();
 
@@ -1168,7 +1955,6 @@ window.toggleLoginPinVisibility = function () {
   }
 };
 
-// ============ PROFILE STYLES ============
 function ensureProfileStyles() {
   if (document.getElementById('profile-new-styles')) return;
   const style = document.createElement('style');
@@ -1284,10 +2070,11 @@ function renderBankingApp(client) {
     '<nav class="bottom-nav-new"><div class="bottom-nav-inner-new"><button class="nav-item-new active" id="nav-dashboard" onclick="window.navigateTo(\'screen-dashboard\')"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>' + t('navBalance') + '</span></button><button class="nav-item-new" id="nav-transfer" onclick="window.navigateTo(\'screen-transfer\')"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span>' + t('navPaymentsNew') + '</span></button><button class="nav-item-new" id="nav-card" onclick="window.showVirtualCard()"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg><span>' + t('navCard') + '</span></button><button class="nav-item-new" id="nav-profile" onclick="window.navigateTo(\'screen-profile\')"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>' + t('navAccount') + '</span></button></div></nav>' +
   '</div>';
   subscribeToClient(client.id);
+  injectChatbot(client);
   if (!window.location.hash || window.location.hash === '#login' || window.location.hash === '') replaceHistory('screen-dashboard');
 }
 
-window.ClientLogout = function() { if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; } if (currentClient && currentClient.id) trackClientSession(currentClient.id, false); ClientSession.clear(); replaceLoginHistory(); initClient(); };
+window.ClientLogout = function() { try { removeChatbot(); } catch (e) {} if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; } if (currentClient && currentClient.id) trackClientSession(currentClient.id, false); ClientSession.clear(); replaceLoginHistory(); initClient(); };
 
 window.navigateTo = function(id) { showLoader(); setTimeout(() => { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); const target = document.getElementById(id); if (target) target.classList.add('active'); document.querySelectorAll('.nav-item-new').forEach(i => i.classList.remove('active')); const map = { 'screen-dashboard': 'nav-dashboard', 'screen-card': 'nav-card', 'screen-profile': 'nav-profile' }; let navId = map[id]; if (['screen-transfer', 'screen-verification', 'screen-processing', 'screen-result'].indexOf(id) !== -1) navId = 'nav-transfer'; if (navId) { const n = document.getElementById(navId); if (n) n.classList.add('active'); } const container = document.querySelector('.screens-container'); if (container) container.scrollTop = 0; pushHistory(id); hideLoader(); }, 250); };
 
@@ -1825,7 +2612,7 @@ async function renderAdminPage() {
     const generatedCardNumber = generateCardNumber(); const generatedCardExpiry = generateCardExpiry(); const generatedCardCvv = generateCardCvv();
     const now = new Date(); const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     const initialTransactions = initialBalance > 0 ? [{ type: 'in', labelKey: 'txInitialDeposit', subtitle: bankNameValue || '', amount: formatAmount(initialBalance, currencyValue), date: dateStr, senderIban: generatedIban, bankLogo: bankLogoValue, bankDomain: bankDomainValue }] : [];
-    const clientData = { adminUid: currentAdmin.uid, adminEmail: currentAdmin.email, lastName: document.getElementById('lastName').value, firstName: document.getElementById('firstName').value, country: countryValue, phone: document.getElementById('phone').value, email: document.getElementById('email').value, address: document.getElementById('address').value, language: document.getElementById('language').value, bankName: bankNameValue, bankLogo: bankLogoValue, iban: generatedIban, bic: generatedBic, ibanMasked: true, cardHolder: '', cardNumber: generatedCardNumber, cardExpiry: generatedCardExpiry, cardCvv: generatedCardCvv, cardType: 'Visa Debit', cardMaskLast4: true, cardMaskCvv: true, balance: initialBalance, currency: currencyValue, startPercent: parseInt(document.getElementById('startPercent').value), stopPercent: parseInt(document.getElementById('stopPercent').value), pin: document.getElementById('pin').value, activationCode: document.getElementById('activationCode').value, message: document.getElementById('message').value, themeColor: document.getElementById('themeColor').value, blocked: false, isOnline: false, pendingTransferEnabled: false, transactions: initialTransactions };
+    const clientData = { adminUid: currentAdmin.uid, adminEmail: currentAdmin.email, lastName: document.getElementById('lastName').value, firstName: document.getElementById('firstName').value, country: countryValue, phone: document.getElementById('phone').value, email: document.getElementById('email').value, address: document.getElementById('address').value, language: document.getElementById('language').value, bankName: bankNameValue, bankLogo: bankLogoValue, iban: generatedIban, bic: generatedBic, ibanMasked: true, cardHolder: '', cardNumber: generatedCardNumber, cardExpiry: generatedCardExpiry, cardCvv: generatedCardCvv, cardType: 'Visa Debit', cardMaskLast4: true, cardMaskCvv: true, balance: initialBalance, currency: currencyValue, startPercent: parseInt(document.getElementById('startPercent').value), stopPercent: parseInt(document.getElementById('stopPercent').value), pin: document.getElementById('pin').value, activationCode: document.getElementById('activationCode').value, message: document.getElementById('message').value, themeColor: document.getElementById('themeColor').value, blocked: false, isOnline: false, pendingTransferEnabled: false, aiMessages: [], transactions: initialTransactions };
     const ok = await FireDB.createClient(id, clientData);
     if (ok) { window.showNotif('Le client a ete cree avec succes.', 'success', 'Client cree'); renderAdminPage(); }
     else window.showNotif('Erreur lors de la creation du client.', 'error');
