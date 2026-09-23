@@ -728,15 +728,99 @@ export function initClientApp() { initClient(); }
 export function initAdminApp() { initAdmin(); }
 export function initSuperAdminApp() { initSuperAdmin(); }
 
+// ★ NOUVEAU : Styles pour les écrans "compte bloqué" (cadenas + clé) et "lien non disponible" (poubelle)
+function ensureStatusScreensStyles() {
+  if (document.getElementById('twd-status-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'twd-status-styles';
+  style.textContent = `
+    .twd-status-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 32px 24px;
+      text-align: center;
+      background: #ffffff;
+      box-sizing: border-box;
+      font-family: 'Titillium Web', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    .twd-status-screen > * { animation: twdStatusIn 0.5s ease-out both; }
+    .twd-status-screen > *:nth-child(2) { animation-delay: 0.08s; }
+    .twd-status-screen > *:nth-child(3) { animation-delay: 0.16s; }
+    @keyframes twdStatusIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .twd-status-icon {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 28px;
+      flex-shrink: 0;
+    }
+    .twd-status-icon.blocked {
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      color: #dc2626;
+      box-shadow: 0 14px 36px rgba(220, 38, 38, 0.22), 0 0 0 8px rgba(220, 38, 38, 0.05);
+    }
+    .twd-status-icon.deleted {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      color: #475569;
+      box-shadow: 0 14px 36px rgba(71, 85, 105, 0.22), 0 0 0 8px rgba(71, 85, 105, 0.05);
+    }
+    .twd-status-icon svg {
+      width: 84px;
+      height: 84px;
+      display: block;
+    }
+    .twd-status-title {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -0.3px;
+      line-height: 1.25;
+      white-space: normal;
+      word-break: break-word;
+      font-family: 'Titillium Web', sans-serif;
+    }
+    .twd-status-title.blocked { color: #b91c1c; }
+    .twd-status-title.deleted { color: #334155; }
+    .twd-status-desc {
+      font-size: 14px;
+      color: #475569;
+      line-height: 1.6;
+      max-width: 320px;
+      font-weight: 500;
+      white-space: normal;
+      word-break: break-word;
+      font-family: 'Titillium Web', sans-serif;
+    }
+    @media (max-width: 400px) {
+      .twd-status-icon { width: 120px; height: 120px; }
+      .twd-status-icon svg { width: 70px; height: 70px; }
+      .twd-status-title { font-size: 20px; }
+      .twd-status-desc { font-size: 13px; }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// ★ MODIFIÉ : écrans bloqué (cadenas + clé) et supprimé (poubelle)
 async function initClient() {
   const clientId = new URLSearchParams(window.location.search).get('id');
   const root = document.getElementById('app-root');
   if (!root) return;
   ensureGlobalStyles();
+  ensureStatusScreensStyles();
   if (!clientId) { root.innerHTML = '<div class="view active"><div class="no-access"><div class="ico"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm3 11c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg></div><h2>Acces restreint</h2><p>Cette application necessite un lien de connexion valide.</p></div></div>'; return; }
   const client = await FireDB.getClient(clientId);
-  if (!client) { root.innerHTML = '<div class="view active"><div class="blocked-screen"><div class="ico"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div><h2>Lien invalide</h2><p>Ce lien n\'est plus valide.</p></div></div>'; return; }
-  if (client.blocked) { root.innerHTML = '<div class="view active"><div class="blocked-screen"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div><h2>Compte suspendu</h2><p>Votre acces a ete temporairement suspendu.</p></div></div>'; return; }
+  if (!client) { root.innerHTML = '<div class="view active"><div class="twd-status-screen"><div class="twd-status-icon deleted"><svg viewBox="0 0 120 130" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="46" y="14" width="28" height="10" rx="5" fill="currentColor"/><rect x="16" y="26" width="88" height="14" rx="4" fill="currentColor"/><path d="M24 40 L32 108 Q33 114 40 114 H80 Q87 114 88 108 L96 40 Z" fill="currentColor"/><line x1="42" y1="52" x2="42" y2="104" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="52" x2="60" y2="104" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/><line x1="78" y1="52" x2="78" y2="104" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/></svg></div><div class="twd-status-title deleted">Lien non disponible</div><div class="twd-status-desc">Ce lien n\'est plus disponible.</div></div></div>'; return; }
+  if (client.blocked) { root.innerHTML = '<div class="view active"><div class="twd-status-screen"><div class="twd-status-icon blocked"><svg viewBox="0 0 175 125" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M33 52V40a22 22 0 0 1 44 0v12" stroke="currentColor" stroke-width="7" stroke-linecap="round"/><rect x="20" y="52" width="70" height="55" rx="8" fill="currentColor"/><circle cx="55" cy="75" r="6" fill="#ffffff"/><rect x="52.5" y="75" width="5" height="14" rx="2" fill="#ffffff"/><g transform="translate(110, 75)" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"><circle cx="0" cy="0" r="11"/><circle cx="0" cy="0" r="4" fill="currentColor" stroke="none"/><line x1="11" y1="0" x2="50" y2="0"/><line x1="43" y1="0" x2="43" y2="8"/><line x1="35" y1="0" x2="35" y2="6"/></g></svg></div><div class="twd-status-title blocked">Compte bloqué</div><div class="twd-status-desc">Votre compte a été bloqué pour des raisons de sécurité.</div></div></div>'; return; }
   currentLang = client.language || 'fr';
   applyTheme(client.themeColor);
   const activeId = ClientSession.getActive();
