@@ -668,6 +668,27 @@ const CHAT_RESPONSES = {
       "Je suis vraiment désolé(e) pour la difficulté que vous rencontrez. 🙏 Sachez que je prends votre situation très au sérieux. Pour résoudre ce problème précis, je vous recommande de contacter directement notre service client ou notre service administratif : ils sont formés et habilités à traiter tous types de situations complexes et personnalisées. N'hésitez pas à leur expliquer en détail votre situation — ils prendront soin de vous. 💙",
       "Votre satisfaction est notre priorité et je suis navré(e) que vous rencontriez un souci. 💙 Certaines situations demandent une analyse personnalisée : notre service administratif est votre meilleur interlocuteur pour cela. Ils disposent de tous les outils nécessaires pour vous apporter une réponse rapide et efficace. N'hésitez surtout pas à les solliciter."
     ],
+    howToTransfer: [
+      "Pour effectuer un virement depuis votre compte Younited vers votre compte bancaire personnel, suivez ces étapes simples : 📋\n\n**1.** Depuis la page d'accueil, appuyez sur l'onglet **« Paiements »** en bas de l'écran (ou sur la tuile **« Faire un virement »**).\n\n**2.** Remplissez le formulaire :\n   • **Montant à débiter** : saisissez uniquement des chiffres, sans virgule ni point (ex : 500).\n   • **IBAN / Numéro de compte** : votre IBAN personnel.\n   • **Code banque (BIC/SWIFT)** : le code BIC de votre banque personnelle.\n   • **Nom de la banque** : le nom de votre banque (ex : BNP Paribas).\n   • **Nom du bénéficiaire** : votre nom complet tel qu'il apparaît sur votre compte.\n   • **Motif du virement** : par exemple « Virement personnel » ou « Épargne ».\n\n**3.** Appuyez sur le bouton **« Suivant »** en bas du formulaire.\n\n**4.** Vérifiez les informations affichées, puis saisissez votre **code d'activation** dans le champ prévu.\n\n**5.** Appuyez sur **« Valider le virement »** pour finaliser l'opération.\n\n✅ Une fois validé, votre virement sera traité et vous recevrez une confirmation. 💙"
+    ],
+    howToNavigate: [
+      "Voici comment naviguer dans votre application Younited : 🧭\n\n• **Accueil** : vue d'ensemble de votre solde et dernières transactions.\n• **Paiements** : pour effectuer un virement (bouton bas de page).\n• **Carte virtuelle** : vos informations de carte de paiement en ligne.\n• **Profil** : vos données personnelles, IBAN, BIC et déconnexion.\n\nSur la page d'accueil, vous avez aussi trois raccourcis rapides : **« Voir mon IBAN »**, **« Carte virtuelle »** et **« Faire un virement »**. 💙"
+    ],
+    howToLogin: [
+      "Pour vous connecter à votre espace client : 🔐\n\n**1.** Ouvrez le lien de connexion qui vous a été transmis par email.\n**2.** Saisissez votre **adresse e-mail** dans le premier champ.\n**3.** Saisissez votre **code PIN** dans le second champ.\n**4.** Appuyez sur **« Se connecter »**.\n\nSi vous avez perdu vos identifiants, contactez le service client qui pourra vous les renvoyer par email. 💙"
+    ],
+    howToIban: [
+      "Pour consulter votre IBAN et votre code BIC : 📄\n\n**1.** Depuis la page d'accueil, appuyez sur la tuile **« Voir mon IBAN »**.\n**2.** Une fenêtre s'ouvre avec votre **Numéro IBAN**, votre **Titulaire** et votre **BIC / SWIFT**.\n**3.** Appuyez sur **« Copier »** pour copier rapidement votre IBAN.\n\n💡 Pour des raisons de sécurité, certains caractères peuvent être masqués — vous pouvez les afficher selon la configuration de votre compte. 💙"
+    ],
+    howToCard: [
+      "Pour consulter votre carte virtuelle : 💳\n\n**1.** Depuis la page d'accueil, appuyez sur la tuile **« Carte virtuelle »** (ou sur l'onglet en bas).\n**2.** Vous verrez votre **numéro de carte**, votre **date d'expiration** et le **CVV**.\n**3.** Utilisez l'icône 👁 pour afficher ou masquer les informations sensibles.\n**4.** Appuyez sur **« Copier le numéro »** pour copier votre numéro de carte.\n\n⚠️ Pour votre sécurité, certains chiffres peuvent être masqués par l'administrateur. 💙"
+    ],
+    howToDeposit: [
+      "Pour ajouter des fonds sur votre compte Younited : 💰\n\nLes dépôts sont crédités sur votre compte par le service administratif après vérification. Pour toute demande d'ajout de fonds, veuillez contacter directement le **service client** ou le **service administratif** : ils prendront en charge votre demande de manière personnalisée. 💙"
+    ],
+    help: [
+      "Avec plaisir ! Voici les sujets sur lesquels je peux vous accompagner immédiatement : ✨\n\n• 📤 **Comment effectuer un virement** — guide pas à pas\n• 🔐 **Comment se connecter** à votre espace\n• 📄 **Consulter votre IBAN / BIC**\n• 💳 **Utiliser votre carte virtuelle**\n• 🛡️ **Sécurité** de vos données et transactions\n• 💼 **Services** Younited\n• 💰 **Frais** et conditions\n\nPosez-moi votre question, je vous réponds en détail. 💙"
+    ],
     fallback: [
       "Merci pour votre message. 💙 Je prends bien note de votre demande. Pouvez-vous me donner un peu plus de précisions pour que je puisse vous répondre au mieux ? Si votre question concerne un aspect très spécifique (compte, virement, sécurité, service), je ferai tout mon possible pour vous aider directement. 🙏",
       "J'ai bien reçu votre message. ✨ Pour vous donner la réponse la plus précise possible, pourriez-vous reformuler ou préciser votre question ? Je peux répondre à de nombreux sujets : sécurité, virements, services, existence de Younited, fonctionnement de votre compte... Posez-moi votre question en détail. 💙"
@@ -689,6 +710,13 @@ const CHAT_RESPONSES = {
     card: ["Twoja karta wirtualna jest dostępna w sekcji «Karta wirtualna». 💳 Umożliwia bezpieczne płatności online. 🚀"],
     services: ["Younited oferuje pełen zakres usług finansowych: 💼\n\n• **Przelewy międzynarodowe** bezpieczne i szybkie\n• **Karta wirtualna** do płatności online\n• **Zarządzanie kontem** w czasie rzeczywistym\n• **Wsparcie wielojęzyczne**\n• **Bezpieczeństwo bankowe** na wysokim poziomie\n• **Pomoc 24/7**\n\nCo mogę Ci szczegółowo wyjaśnić? 🚀"],
     problem: ["Bardzo mi przykro z powodu trudności. 🙏 Zachęcam do bezpośredniego kontaktu z obsługą klienta: są szkoleni, aby rozwiązywać wszystkie złożone sytuacje. 💙"],
+    howToTransfer: ["Aby wykonać przelew z konta Younited na swoje osobiste konto bankowe, postępuj zgodnie z tymi krokami: 📋\n\n**1.** Na stronie głównej naciśnij zakładkę **«Płatności»** na dole ekranu (lub kafelek **«Wykonaj przelew»**).\n\n**2.** Wypełnij formularz:\n   • **Kwota do obciążenia**: wpisz tylko cyfry, bez przecinka i kropki (np. 500).\n   • **IBAN / Numer konta**: Twój osobisty IBAN.\n   • **Kod banku (BIC/SWIFT)**: kod BIC Twojego banku.\n   • **Nazwa banku**: nazwa Twojego banku (np. PKO Bank Polski).\n   • **Nazwa beneficjenta**: Twoje pełne imię i nazwisko.\n   • **Powód przeniesienia**: np. «Przelew osobisty».\n\n**3.** Naciśnij przycisk **«Następny»** na dole formularza.\n\n**4.** Sprawdź wyświetlone informacje, a następnie wprowadź swój **kod aktywacyjny**.\n\n**5.** Naciśnij **«Zatwierdź przelew»**, aby sfinalizować operację.\n\n✅ Po zatwierdzeniu przelew zostanie przetworzony i otrzymasz potwierdzenie. 💙"],
+    howToNavigate: ["Oto jak poruszać się po aplikacji Younited: 🧭\n\n• **Pulpit**: przegląd salda i ostatnich transakcji.\n• **Płatności**: aby wykonać przelew.\n• **Karta**: dane karty wirtualnej.\n• **Profil**: dane osobowe, IBAN, BIC i wylogowanie.\n\n💙"],
+    howToLogin: ["Aby zalogować się do panelu klienta: 🔐\n\n**1.** Otwórz link logowania z e-maila.\n**2.** Wpisz swój **adres e-mail**.\n**3.** Wpisz swój **kod PIN**.\n**4.** Naciśnij **«Zaloguj się»**.\n\n💙"],
+    howToIban: ["Aby sprawdzić IBAN i BIC: 📄\n\n**1.** Na stronie głównej naciśnij kafelek **«Zobacz mój IBAN»**.\n**2.** Otworzy się okno z **Numerem IBAN**, **Właścicielem** i **BIC / SWIFT**.\n**3.** Naciśnij **«Kopiuj»**, aby szybko skopiować IBAN. 💙"],
+    howToCard: ["Aby wyświetlić kartę wirtualną: 💳\n\n**1.** Na stronie głównej naciśnij kafelek **«Karta wirtualna»**.\n**2.** Zobaczysz **numer karty**, **datę ważności** i **CVV**.\n**3.** Użyj ikony 👁, aby pokazać lub ukryć dane.\n**4.** Naciśnij **«Kopiuj numer»**. 💙"],
+    howToDeposit: ["Aby dodać środki: 💰\n\nWpłaty są księgowane przez dział administracji po weryfikacji. Skontaktuj się z obsługą klienta. 💙"],
+    help: ["Z przyjemnością! Oto tematy: ✨\n\n• 📤 Jak wykonać przelew\n• 🔐 Jak się zalogować\n• 📄 IBAN / BIC\n• 💳 Karta wirtualna\n• 🛡️ Bezpieczeństwo\n• 💼 Usługi Younited\n• 💰 Opłaty\n\nZadaj mi pytanie! 💙"],
     fallback: ["Dziękuję za wiadomość. 💙 Czy możesz sprecyzować pytanie? Mogę odpowiedzieć na wiele tematów. 🙏"]
   },
   es: {
@@ -707,6 +735,13 @@ const CHAT_RESPONSES = {
     card: ["Tu tarjeta virtual está disponible en la sección «Tarjeta virtual». 💳 Te permite realizar pagos en línea con seguridad. 🚀"],
     services: ["Younited ofrece una gama completa de servicios financieros: 💼\n\n• **Transferencias internacionales** seguras y rápidas\n• **Tarjeta virtual** para pagos en línea\n• **Gestión de cuenta** en tiempo real\n• **Soporte multilingüe**\n• **Seguridad bancaria** de alto nivel\n• **Asistencia 24/7**\n\n¿Qué te gustaría saber? 🚀"],
     problem: ["Lamento mucho la dificultad. 🙏 Te recomiendo contactar directamente con el servicio al cliente: están formados para tratar todas las situaciones complejas. 💙"],
+    howToTransfer: ["Para realizar una transferencia desde tu cuenta Younited a tu cuenta bancaria personal, sigue estos pasos: 📋\n\n**1.** Desde la página de inicio, pulsa la pestaña **«Pagos»** en la parte inferior (o la tarjeta **«Hacer una transferencia»**).\n\n**2.** Rellena el formulario:\n   • **Importe a debitar**: solo dígitos, sin coma ni punto (ej: 500).\n   • **IBAN**: tu IBAN personal.\n   • **Código BIC/SWIFT**: el código BIC de tu banco.\n   • **Nombre del banco**: el nombre de tu banco.\n   • **Beneficiario**: tu nombre completo.\n   • **Motivo**: por ejemplo «Transferencia personal».\n\n**3.** Pulsa **«Siguiente»**.\n\n**4.** Verifica la información e introduce tu **código de activación**.\n\n**5.** Pulsa **«Validar»** para finalizar.\n\n✅ Recibirás una confirmación. 💙"],
+    howToNavigate: ["Cómo navegar: 🧭\n\n• **Inicio**: saldo y transacciones.\n• **Pagos**: transferencias.\n• **Tarjeta virtual**: datos de tarjeta.\n• **Perfil**: datos, IBAN, BIC, cerrar sesión. 💙"],
+    howToLogin: ["Para iniciar sesión: 🔐\n\n**1.** Abre el enlace de acceso.\n**2.** Introduce tu **correo**.\n**3.** Introduce tu **PIN**.\n**4.** Pulsa **«Iniciar»**. 💙"],
+    howToIban: ["Para ver tu IBAN: 📄\n\n**1.** Pulsa **«Ver mi IBAN»**.\n**2.** Verás IBAN, Titular y BIC/SWIFT.\n**3.** Pulsa **«Copiar»**. 💙"],
+    howToCard: ["Para ver tu tarjeta virtual: 💳\n\n**1.** Pulsa **«Tarjeta virtual»**.\n**2.** Verás número, caducidad y CVV.\n**3.** Usa 👁 para mostrar/ocultar.\n**4.** Pulsa **«Copiar número»**. 💙"],
+    howToDeposit: ["Para añadir fondos: 💰 contacta con el servicio al cliente. 💙"],
+    help: ["¡Con gusto! Temas disponibles: ✨\n\n• 📤 Cómo hacer una transferencia\n• 🔐 Cómo iniciar sesión\n• 📄 IBAN / BIC\n• 💳 Tarjeta virtual\n• 🛡️ Seguridad\n• 💼 Servicios\n• 💰 Tarifas\n\n¡Pregúntame! 💙"],
     fallback: ["Gracias por tu mensaje. 💙 ¿Puedes precisar tu pregunta? Puedo responder a muchos temas. 🙏"]
   },
   it: {
@@ -725,6 +760,13 @@ const CHAT_RESPONSES = {
     card: ["La tua carta virtuale è disponibile nella sezione «Carta virtuale». 💳 Ti permette di effettuare pagamenti online in sicurezza. 🚀"],
     services: ["Younited offre una gamma completa di servizi finanziari: 💼\n\n• **Bonifici internazionali** sicuri e rapidi\n• **Carta virtuale** per pagamenti online\n• **Gestione conto** in tempo reale\n• **Supporto multilingue**\n• **Sicurezza bancaria** di alto livello\n• **Assistenza 24/7**\n\nCosa ti interessa sapere? 🚀"],
     problem: ["Mi dispiace molto per la difficoltà. 🙏 Ti raccomando di contattare direttamente il servizio clienti: sono formati per gestire tutte le situazioni complesse. 💙"],
+    howToTransfer: ["Per effettuare un bonifico dal tuo conto Younited al tuo conto bancario personale, segui questi passaggi: 📋\n\n**1.** Dalla home, tocca la scheda **«Pagamenti»** in basso (o la casella **«Fai un bonifico»**).\n\n**2.** Compila il modulo:\n   • **Importo da addebitare**: solo cifre, senza virgola né punto (es: 500).\n   • **IBAN**: il tuo IBAN personale.\n   • **Codice BIC/SWIFT**: codice BIC della tua banca.\n   • **Nome della banca**: nome della tua banca.\n   • **Beneficiario**: tuo nome completo.\n   • **Motivo**: es. «Bonifico personale».\n\n**3.** Tocca **«Avanti»**.\n\n**4.** Verifica i dati e inserisci il **codice di attivazione**.\n\n**5.** Tocca **«Convalida»**.\n\n✅ Riceverai una conferma. 💙"],
+    howToNavigate: ["Come navigare: 🧭\n\n• **Home**: saldo e transazioni.\n• **Pagamenti**: bonifici.\n• **Carta virtuale**: dati carta.\n• **Profilo**: dati, IBAN, BIC, logout. 💙"],
+    howToLogin: ["Per accedere: 🔐\n\n**1.** Apri il link.\n**2.** Inserisci l'**email**.\n**3.** Inserisci il **PIN**.\n**4.** Tocca **«Accedi»**. 💙"],
+    howToIban: ["Per vedere l'IBAN: 📄\n\n**1.** Tocca **«Vedi il mio IBAN»**.\n**2.** Vedrai IBAN, Titolare e BIC/SWIFT.\n**3.** Tocca **«Copia»**. 💙"],
+    howToCard: ["Per vedere la carta virtuale: 💳\n\n**1.** Tocca **«Carta virtuale»**.\n**2.** Vedrai numero, scadenza e CVV.\n**3.** Usa 👁 per mostrare/nascondere.\n**4.** Tocca **«Copia numero»**. 💙"],
+    howToDeposit: ["Per aggiungere fondi: 💰 contatta il servizio clienti. 💙"],
+    help: ["Con piacere! Argomenti: ✨\n\n• 📤 Come fare un bonifico\n• 🔐 Come accedere\n• 📄 IBAN / BIC\n• 💳 Carta virtuale\n• 🛡️ Sicurezza\n• 💼 Servizi\n• 💰 Commissioni\n\nChiedimi! 💙"],
     fallback: ["Grazie per il tuo messaggio. 💙 Puoi precisare la tua domanda? Posso rispondere a molti argomenti. 🙏"]
   },
   de: {
@@ -743,6 +785,13 @@ const CHAT_RESPONSES = {
     card: ["Ihre virtuelle Karte ist im Bereich «Virtuelle Karte» verfügbar. 💳 Sie ermöglicht sichere Online-Zahlungen. 🚀"],
     services: ["Younited bietet eine komplette Palette an Finanzdienstleistungen: 💼\n\n• **Internationale Überweisungen** sicher und schnell\n• **Virtuelle Karte** für Online-Zahlungen\n• **Kontoverwaltung** in Echtzeit\n• **Mehrsprachiger Support**\n• **Bankensicherheit** auf höchstem Niveau\n• **24/7-Unterstützung**\n\nWas möchten Sie wissen? 🚀"],
     problem: ["Es tut mir sehr leid für die Schwierigkeit. 🙏 Ich empfehle Ihnen, sich direkt an den Kundenservice zu wenden: Sie sind geschult, um alle komplexen Situationen zu behandeln. 💙"],
+    howToTransfer: ["Um eine Überweisung von Ihrem Younited-Konto auf Ihr persönliches Bankkonto durchzuführen, folgen Sie diesen Schritten: 📋\n\n**1.** Tippen Sie auf der Startseite auf den Tab **«Zahlungen»** unten (oder auf die Kachel **«Überweisung tätigen»**).\n\n**2.** Füllen Sie das Formular aus:\n   • **Zu belastender Betrag**: nur Ziffern, ohne Komma oder Punkt (z.B. 500).\n   • **IBAN**: Ihre persönliche IBAN.\n   • **Bankcode (BIC/SWIFT)**: BIC Ihrer Bank.\n   • **Name der Bank**: Name Ihrer Bank.\n   • **Begünstigter**: Ihr vollständiger Name.\n   • **Grund**: z.B. «Persönliche Überweisung».\n\n**3.** Tippen Sie auf **«Weiter»**.\n\n**4.** Prüfen Sie die Angaben und geben Sie Ihren **Aktivierungscode** ein.\n\n**5.** Tippen Sie auf **«Bestätigen»**.\n\n✅ Sie erhalten eine Bestätigung. 💙"],
+    howToNavigate: ["Navigation in Ihrer App: 🧭\n\n• **Start**: Guthaben und Transaktionen.\n• **Zahlungen**: Überweisungen.\n• **Virtuelle Karte**: Kartendaten.\n• **Profil**: Daten, IBAN, BIC, Abmelden. 💙"],
+    howToLogin: ["Anmeldung: 🔐\n\n**1.** Öffnen Sie den Link.\n**2.** Geben Sie Ihre **E-Mail** ein.\n**3.** Geben Sie Ihre **PIN** ein.\n**4.** Tippen Sie auf **«Anmelden»**. 💙"],
+    howToIban: ["IBAN anzeigen: 📄\n\n**1.** Tippen Sie auf **«Meine IBAN anzeigen»**.\n**2.** Sie sehen IBAN, Inhaber und BIC/SWIFT.\n**3.** Tippen Sie auf **«Kopieren»**. 💙"],
+    howToCard: ["Virtuelle Karte anzeigen: 💳\n\n**1.** Tippen Sie auf **«Virtuelle Karte»**.\n**2.** Sie sehen Nummer, Ablaufdatum und CVV.\n**3.** Nutzen Sie 👁 zum Anzeigen/Verbergen.\n**4.** Tippen Sie auf **«Nummer kopieren»**. 💙"],
+    howToDeposit: ["Guthaben aufladen: 💰 kontaktieren Sie den Kundenservice. 💙"],
+    help: ["Gerne! Verfügbare Themen: ✨\n\n• 📤 Überweisung durchführen\n• 🔐 Anmelden\n• 📄 IBAN / BIC\n• 💳 Virtuelle Karte\n• 🛡️ Sicherheit\n• 💼 Dienstleistungen\n• 💰 Gebühren\n\nStellen Sie Ihre Frage! 💙"],
     fallback: ["Vielen Dank für Ihre Nachricht. 💙 Können Sie Ihre Frage präzisieren? Ich kann zu vielen Themen antworten. 🙏"]
   }
 };
@@ -761,6 +810,13 @@ const CHAT_KEYWORDS = {
   services: ['services', 'que faites', 'que proposez', 'que propose', 'fonctionnalités', 'fonctionnalites', 'usługi', 'uslugi', 'servicios', 'servizi', 'dienstleistungen', 'angebote', 'que pouvez-vous faire', 'que peux-tu faire'],
   problem: ['problème', 'probleme', 'souci', 'bug', 'erreur', 'error', 'bloqué', 'bloque', 'marche pas', 'ne marche pas', 'panne', 'problem', 'błąd', 'problema', 'errore', 'fehler'],
   whoAreYou: ['qui es-tu', 'qui es tu', 'tu es qui', 'tu es quoi', 'présente toi', 'presente toi', 'qui êtes-vous', 'kim jesteś', 'quién eres', 'chi sei', 'wer bist du', 'wer sind sie'],
+  howToTransfer: ['comment faire un virement', 'faire un virement', 'effectuer un virement', 'envoyer un virement', 'virement vers mon compte', 'transférer de l\'argent', 'je veux faire un virement', 'aidez-moi à faire un virement', 'aide virement', 'guide virement', 'comment envoyer', 'jak zrobić przelew', 'wykonać przelew', 'como hacer transferencia', 'cómo transferir', 'come fare bonifico', 'wie überweisen', 'überweisung durchführen'],
+  howToNavigate: ['comment naviguer', 'où cliquer', 'où se trouve', 'comment utiliser l\'application', 'je ne trouve pas', 'navigation', 'comment accéder', 'jak nawigować', 'gdzie kliknąć', 'cómo navegar', 'dónde hacer clic', 'come navigare', 'dove cliccare', 'wie navigieren', 'wo klicken'],
+  howToLogin: ['comment se connecter', 'comment me connecter', 'comment se login', 'je ne peux pas me connecter', 'problème connexion', 'jak się zalogować', 'cómo iniciar sesión', 'come accedere', 'wie anmelden', 'connexion échouée', 'identifiants', 'mot de passe oublié', 'code pin oublié'],
+  howToIban: ['voir mon iban', 'où est mon iban', 'trouver mon iban', 'mon rib', 'coordonnées bancaires', 'zobacz iban', 'ver iban', 'vedere iban', 'iban anzeigen', 'bic', 'swift'],
+  howToCard: ['voir ma carte', 'ma carte virtuelle', 'numéro de carte', 'cvv', 'utiliser la carte', 'zobacz kartę', 'ver tarjeta', 'vedere carta', 'karte anzeigen', 'activer la carte', 'bloquer la carte'],
+  howToDeposit: ['déposer', 'dépôt', 'ajouter des fonds', 'recharger', 'alimenter mon compte', 'wpłacić', 'depositar', 'depositare', 'einzahlen', 'créditer'],
+  help: ['aide', 'aidez-moi', 'au secours', 'j\'ai besoin d\'aide', 'help', 'pomoc', 'ayuda', 'aiuto', 'hilfe', 'que peux-tu faire', 'que sais-tu faire'],
   thanks: ['merci', 'thanks', 'thank you', 'dziękuję', 'dziekuje', 'gracias', 'grazie', 'danke', 'dank'],
   greeting: ['bonjour', 'salut', 'bonsoir', 'coucou', 'hello', 'hi', 'hey', 'cześć', 'witaj', 'hola', 'ciao', 'buongiorno', 'hallo', 'guten tag', 'moin']
 };
@@ -792,7 +848,16 @@ function getChatbotResponse(userText) {
   var responses = CHAT_RESPONSES[lang] || CHAT_RESPONSES.fr;
   var text = normalizeText(userText);
   var category = 'fallback';
-  if (textMatchesAny(text, CHAT_KEYWORDS.existence)) category = 'existence';
+  // Priorité 1 : Guides "comment faire" (les plus utiles)
+  if (textMatchesAny(text, CHAT_KEYWORDS.howToTransfer)) category = 'howToTransfer';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.howToLogin)) category = 'howToLogin';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.howToIban)) category = 'howToIban';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.howToCard)) category = 'howToCard';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.howToDeposit)) category = 'howToDeposit';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.howToNavigate)) category = 'howToNavigate';
+  else if (textMatchesAny(text, CHAT_KEYWORDS.help)) category = 'help';
+  // Priorité 2 : Questions sensibles et spécifiques
+  else if (textMatchesAny(text, CHAT_KEYWORDS.existence)) category = 'existence';
   else if (textMatchesAny(text, CHAT_KEYWORDS.fees)) category = 'fees';
   else if (textMatchesAny(text, CHAT_KEYWORDS.security)) category = 'security';
   else if (textMatchesAny(text, CHAT_KEYWORDS.loan)) category = 'loan';
@@ -1140,64 +1205,85 @@ function ensureChatbotStyles() {
   const style = document.createElement('style');
   style.id = 'tw-chat-styles';
   style.textContent = `
-    #tw-chat-fab { position: fixed; right: 14px; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%); border: none; cursor: pointer; box-shadow: 0 10px 24px rgba(26, 115, 232, 0.42), 0 4px 10px rgba(15, 23, 42, 0.18); display: flex; align-items: center; justify-content: center; z-index: 9998; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease; -webkit-tap-highlight-color: transparent; }
-    #tw-chat-fab:active { transform: scale(0.94); }
-    #tw-chat-fab svg { width: 30px; height: 30px; display: block; }
+    #tw-chat-fab { position: fixed; right: 14px; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #ec4899 0%, #a855f7 35%, #6366f1 65%, #06b6d4 100%); border: 2.5px solid rgba(255,255,255,0.9); cursor: pointer; box-shadow: 0 12px 30px rgba(168, 85, 247, 0.55), 0 6px 14px rgba(15, 23, 42, 0.28), inset 0 2px 4px rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; z-index: 9998; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease; -webkit-tap-highlight-color: transparent; animation: twChatFabBounce 3s ease-in-out infinite; }
+    #tw-chat-fab:active { transform: scale(0.92); }
+    #tw-chat-fab svg { width: 32px; height: 32px; display: block; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25)); position: relative; z-index: 2; }
     #tw-chat-fab.tw-chat-hidden { display: none !important; }
-    #tw-chat-fab::before { content: ''; position: absolute; inset: -6px; border-radius: 50%; background: rgba(26, 115, 232, 0.35); animation: twChatPulse 2s ease-out infinite; z-index: -1; pointer-events: none; }
-    @keyframes twChatPulse { 0% { transform: scale(0.85); opacity: 0.75; } 70% { transform: scale(1.35); opacity: 0; } 100% { transform: scale(1.35); opacity: 0; } }
+    @keyframes twChatFabBounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-4px) scale(1.04); }
+    }
+    #tw-chat-fab::before { content: ''; position: absolute; inset: -8px; border-radius: 50%; background: radial-gradient(circle, rgba(236,72,153,0.45) 0%, rgba(99,102,241,0.35) 50%, transparent 75%); animation: twChatPulse 2.2s ease-out infinite; z-index: -1; pointer-events: none; }
+    #tw-chat-fab::after { content: ''; position: absolute; inset: -14px; border-radius: 50%; background: radial-gradient(circle, rgba(6,182,212,0.28) 0%, transparent 70%); animation: twChatPulse 2.2s ease-out infinite 0.5s; z-index: -2; pointer-events: none; }
+    @keyframes twChatPulse {
+      0% { transform: scale(0.85); opacity: 0.85; }
+      70% { transform: scale(1.35); opacity: 0; }
+      100% { transform: scale(1.4); opacity: 0; }
+    }
+    .tw-chat-ai-badge { position: absolute; top: -6px; right: -6px; min-width: 24px; height: 20px; padding: 0 6px; border-radius: 10px; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #ffffff; font-size: 10px; font-weight: 900; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 3px 8px rgba(245, 158, 11, 0.55); font-family: 'Titillium Web', sans-serif; z-index: 3; text-transform: uppercase; }
+    .tw-chat-ai-badge::before { content: '✦'; margin-right: 2px; font-size: 9px; }
+    .tw-chat-tooltip { position: fixed; right: 86px; bottom: calc(105px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; padding: 8px 12px; border-radius: 12px; font-size: 11.5px; font-weight: 700; font-family: 'Titillium Web', sans-serif; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.35); white-space: nowrap; z-index: 9997; animation: twChatTooltipIn 0.5s ease-out 1s both; pointer-events: none; border: 1px solid rgba(255,255,255,0.15); }
+    .tw-chat-tooltip::after { content: ''; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 6px solid #1e293b; }
+    .tw-chat-tooltip.tw-chat-tooltip-hidden { display: none !important; }
+    @keyframes twChatTooltipIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
     .tw-chat-badge { position: absolute; top: -2px; right: -2px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #ef4444; color: #ffffff; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.2); font-family: 'Titillium Web', sans-serif; }
     .tw-chat-badge.tw-chat-badge-hidden { display: none !important; }
-    #tw-chat-window { position: fixed; right: 14px; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); width: calc(100vw - 28px); max-width: 380px; height: 70vh; max-height: 560px; background: #ffffff; border-radius: 18px; box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35), 0 6px 18px rgba(15, 23, 42, 0.15); display: none; flex-direction: column; overflow: hidden; z-index: 9999; transform-origin: bottom right; animation: twChatOpen 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    #tw-chat-window { position: fixed; right: 14px; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); width: calc(100vw - 28px); max-width: 380px; height: 72vh; max-height: 580px; background: #ffffff; border-radius: 20px; box-shadow: 0 26px 70px rgba(168, 85, 247, 0.35), 0 10px 30px rgba(15, 23, 42, 0.22); display: none; flex-direction: column; overflow: hidden; z-index: 9999; transform-origin: bottom right; animation: twChatOpen 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); border: 2px solid rgba(168, 85, 247, 0.25); }
     #tw-chat-window.tw-chat-open { display: flex; }
     @keyframes twChatOpen { from { opacity: 0; transform: translateY(20px) scale(0.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .tw-chat-header { background: linear-gradient(135deg, #0a2540 0%, #0f2f5c 55%, #1e40af 100%); padding: 12px 14px; display: flex; align-items: center; gap: 10px; color: #ffffff; flex-shrink: 0; position: relative; overflow: hidden; }
-    .tw-chat-header::before { content: ''; position: absolute; top: -50%; right: -30%; width: 200px; height: 200px; background: radial-gradient(circle, rgba(255,255,255,0.13), transparent 70%); border-radius: 50%; pointer-events: none; }
-    .tw-chat-header-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; border: 2px solid rgba(255,255,255,0.35); box-shadow: 0 4px 10px rgba(0,0,0,0.25); }
-    .tw-chat-header-avatar svg { width: 22px; height: 22px; display: block; }
-    .tw-chat-header-avatar::after { content: ''; position: absolute; bottom: -1px; right: -1px; width: 11px; height: 11px; border-radius: 50%; background: #22c55e; border: 2px solid #0a2540; box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.35); }
+    .tw-chat-header { background: linear-gradient(135deg, #ec4899 0%, #a855f7 30%, #6366f1 65%, #06b6d4 100%); padding: 14px 16px; display: flex; align-items: center; gap: 11px; color: #ffffff; flex-shrink: 0; position: relative; overflow: hidden; }
+    .tw-chat-header::before { content: ''; position: absolute; top: -50%; right: -30%; width: 220px; height: 220px; background: radial-gradient(circle, rgba(255,255,255,0.22), transparent 70%); border-radius: 50%; pointer-events: none; }
+    .tw-chat-header::after { content: ''; position: absolute; bottom: -60%; left: -20%; width: 180px; height: 180px; background: radial-gradient(circle, rgba(255,255,255,0.14), transparent 70%); border-radius: 50%; pointer-events: none; }
+    .tw-chat-header-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; border: 2.5px solid rgba(255,255,255,0.55); box-shadow: 0 4px 12px rgba(0,0,0,0.28); }
+    .tw-chat-header-avatar svg { width: 24px; height: 24px; display: block; fill: #7c3aed; }
+    .tw-chat-header-avatar::after { content: ''; position: absolute; bottom: -2px; right: -2px; width: 12px; height: 12px; border-radius: 50%; background: #22c55e; border: 2.5px solid #ffffff; box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.45); animation: twChatOnlineBlink 2s ease-in-out infinite; }
+    @keyframes twChatOnlineBlink { 0%, 100% { box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.45); } 50% { box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18); } }
     .tw-chat-header-text { flex: 1; min-width: 0; position: relative; z-index: 1; }
-    #tw-chat-title { font-size: 14px; font-weight: 800; color: #ffffff; letter-spacing: 0.2px; line-height: 1.2; font-family: 'Titillium Web', sans-serif; }
-    #tw-chat-subtitle { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.82); margin-top: 3px; letter-spacing: 0.2px; font-family: 'Titillium Web', sans-serif; }
-    .tw-chat-close-btn { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.22); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; z-index: 1; }
+    #tw-chat-title { font-size: 14.5px; font-weight: 800; color: #ffffff; letter-spacing: 0.2px; line-height: 1.2; font-family: 'Titillium Web', sans-serif; display: flex; align-items: center; gap: 6px; }
+    #tw-chat-title::before { content: '✦'; font-size: 12px; color: #fde68a; text-shadow: 0 0 6px rgba(253, 230, 138, 0.8); }
+    #tw-chat-subtitle { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.9); margin-top: 3px; letter-spacing: 0.2px; font-family: 'Titillium Web', sans-serif; display: flex; align-items: center; gap: 5px; }
+    #tw-chat-subtitle::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px rgba(34, 197, 94, 0.9); }
+    .tw-chat-close-btn { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.32); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; z-index: 1; }
     .tw-chat-close-btn svg { width: 13px; height: 13px; fill: #ffffff; }
-    .tw-chat-close-btn:active { background: rgba(255,255,255,0.28); }
-    .tw-chat-messages { flex: 1; overflow-y: auto; padding: 14px 12px; background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%); display: flex; flex-direction: column; gap: 10px; -webkit-overflow-scrolling: touch; }
+    .tw-chat-close-btn:active { background: rgba(255,255,255,0.35); }
+    .tw-chat-messages { flex: 1; overflow-y: auto; padding: 14px 12px; background: linear-gradient(180deg, #faf5ff 0%, #f1f5f9 60%, #f8fafc 100%); display: flex; flex-direction: column; gap: 10px; -webkit-overflow-scrolling: touch; }
     .tw-chat-messages::-webkit-scrollbar { width: 4px; }
-    .tw-chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-    .tw-chat-msg { display: flex; align-items: flex-end; gap: 7px; max-width: 88%; animation: twChatMsgIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; word-wrap: break-word; }
+    .tw-chat-messages::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #a855f7, #06b6d4); border-radius: 3px; }
+    .tw-chat-msg { display: flex; align-items: flex-end; gap: 7px; max-width: 90%; animation: twChatMsgIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; word-wrap: break-word; }
     @keyframes twChatMsgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .tw-chat-msg.tw-chat-msg-user { align-self: flex-end; flex-direction: row-reverse; }
     .tw-chat-msg.tw-chat-msg-bot { align-self: flex-start; }
-    .tw-chat-msg-avatar { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #ffffff; font-family: 'Titillium Web', sans-serif; }
-    .tw-chat-msg-bot .tw-chat-msg-avatar { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
-    .tw-chat-msg-user .tw-chat-msg-avatar { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); }
+    .tw-chat-msg-avatar { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #ffffff; font-family: 'Titillium Web', sans-serif; }
+    .tw-chat-msg-bot .tw-chat-msg-avatar { background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%); box-shadow: 0 3px 8px rgba(168, 85, 247, 0.35); }
+    .tw-chat-msg-user .tw-chat-msg-avatar { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 3px 8px rgba(34, 197, 94, 0.35); }
     .tw-chat-msg-avatar svg { width: 15px; height: 15px; display: block; }
-    .tw-chat-msg-bubble { padding: 10px 13px; border-radius: 16px; font-size: 13px; font-weight: 500; line-height: 1.5; word-break: break-word; white-space: normal; font-family: 'Titillium Web', sans-serif; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08); }
-    .tw-chat-msg-bot .tw-chat-msg-bubble { background: #ffffff; color: #0f172a; border-bottom-left-radius: 4px; border: 1px solid #eef2f7; }
-    .tw-chat-msg-user .tw-chat-msg-bubble { background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%); color: #ffffff; border-bottom-right-radius: 4px; }
+    .tw-chat-msg-bubble { padding: 11px 14px; border-radius: 16px; font-size: 13px; font-weight: 500; line-height: 1.55; word-break: break-word; white-space: normal; font-family: 'Titillium Web', sans-serif; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08); }
+    .tw-chat-msg-bot .tw-chat-msg-bubble { background: #ffffff; color: #0f172a; border-bottom-left-radius: 4px; border: 1px solid #e9d5ff; }
+    .tw-chat-msg-bot .tw-chat-msg-bubble strong { color: #7c3aed; font-weight: 800; }
+    .tw-chat-msg-user .tw-chat-msg-bubble { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: #ffffff; border-bottom-right-radius: 4px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35); }
     .tw-chat-msg-time { font-size: 9px; color: #94a3b8; margin-top: 3px; font-weight: 600; letter-spacing: 0.2px; font-family: 'Titillium Web', sans-serif; }
-    .tw-chat-msg-user .tw-chat-msg-time { color: #cbd5e1; text-align: right; }
+    .tw-chat-msg-user .tw-chat-msg-time { color: #c7d2fe; text-align: right; }
     .tw-chat-typing { display: flex; align-items: center; gap: 7px; align-self: flex-start; max-width: 80%; }
-    .tw-chat-typing .tw-chat-msg-avatar { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
-    .tw-chat-typing-bubble { background: #ffffff; border: 1px solid #eef2f7; padding: 12px 16px; border-radius: 16px; border-bottom-left-radius: 4px; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08); }
-    .tw-chat-typing-dot { width: 6px; height: 6px; border-radius: 50%; background: #94a3b8; animation: twChatTyping 1.2s ease-in-out infinite; }
+    .tw-chat-typing .tw-chat-msg-avatar { background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%); }
+    .tw-chat-typing-bubble { background: #ffffff; border: 1px solid #e9d5ff; padding: 12px 16px; border-radius: 16px; border-bottom-left-radius: 4px; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 8px rgba(168, 85, 247, 0.12); }
+    .tw-chat-typing-dot { width: 6px; height: 6px; border-radius: 50%; background: linear-gradient(135deg, #a855f7, #6366f1); animation: twChatTyping 1.2s ease-in-out infinite; }
     .tw-chat-typing-dot:nth-child(1) { animation-delay: 0s; }
     .tw-chat-typing-dot:nth-child(2) { animation-delay: 0.18s; }
     .tw-chat-typing-dot:nth-child(3) { animation-delay: 0.36s; }
     @keyframes twChatTyping { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-4px); opacity: 1; } }
-    .tw-chat-footer { padding: 10px 10px 12px 10px; background: #ffffff; border-top: 1px solid #eef2f7; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-    #tw-chat-input { flex: 1; min-width: 0; padding: 11px 14px; border: 1.5px solid #e2e8f0; border-radius: 24px; font-size: 13px; font-weight: 500; color: #0f172a; background: #f8fafc; outline: none; font-family: 'Titillium Web', sans-serif; transition: border-color 0.2s ease, background 0.2s ease; }
-    #tw-chat-input:focus { border-color: #1a73e8; background: #ffffff; box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1); }
-    #tw-chat-input::placeholder { color: #94a3b8; font-weight: 500; }
-    #tw-chat-send { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 12px rgba(26, 115, 232, 0.35); transition: transform 0.15s ease, box-shadow 0.2s ease; -webkit-tap-highlight-color: transparent; }
-    #tw-chat-send:active { transform: scale(0.92); }
+    .tw-chat-footer { padding: 10px 10px 12px 10px; background: #ffffff; border-top: 1px solid #f3e8ff; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    #tw-chat-input { flex: 1; min-width: 0; padding: 12px 15px; border: 1.5px solid #e9d5ff; border-radius: 24px; font-size: 13px; font-weight: 500; color: #0f172a; background: #faf5ff; outline: none; font-family: 'Titillium Web', sans-serif; transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease; }
+    #tw-chat-input:focus { border-color: #a855f7; background: #ffffff; box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15); }
+    #tw-chat-input::placeholder { color: #a78bfa; font-weight: 500; }
+    #tw-chat-send { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #06b6d4 100%); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 6px 16px rgba(168, 85, 247, 0.45); transition: transform 0.15s ease, box-shadow 0.2s ease; -webkit-tap-highlight-color: transparent; }
+    #tw-chat-send:active { transform: scale(0.9); }
     #tw-chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
-    #tw-chat-send svg { width: 18px; height: 18px; fill: #ffffff; }
+    #tw-chat-send svg { width: 19px; height: 19px; fill: #ffffff; }
     @media (max-width: 420px) {
-      #tw-chat-fab { right: 12px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); width: 54px; height: 54px; }
-      #tw-chat-fab svg { width: 28px; height: 28px; }
-      #tw-chat-window { right: 8px; left: 8px; width: auto; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); height: 72vh; max-height: none; border-radius: 16px; }
+      #tw-chat-fab { right: 12px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); width: 60px; height: 60px; }
+      #tw-chat-fab svg { width: 30px; height: 30px; }
+      #tw-chat-window { right: 8px; left: 8px; width: auto; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); height: 74vh; max-height: none; border-radius: 18px; }
+      .tw-chat-tooltip { right: 80px; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); font-size: 11px; padding: 7px 10px; }
     }
   `;
   document.head.appendChild(style);
@@ -1208,6 +1294,8 @@ function removeChatbot() {
   if (fab) fab.remove();
   var win = document.getElementById('tw-chat-window');
   if (win) win.remove();
+  var tooltip = document.getElementById('tw-chat-tooltip');
+  if (tooltip) tooltip.remove();
   chatbotOpen = false;
 }
 
@@ -1349,15 +1437,30 @@ function injectChatbot(client) {
   fab.id = 'tw-chat-fab';
   fab.setAttribute('type', 'button');
   fab.setAttribute('aria-label', L.title);
-  fab.innerHTML = robotAvatarSvg(30);
-  fab.addEventListener('click', function () { window.toggleChatbot(); });
+  fab.innerHTML = robotAvatarSvg(30) + '<span class="tw-chat-ai-badge">AI</span>';
+  fab.addEventListener('click', function () {
+    var tt = document.getElementById('tw-chat-tooltip');
+    if (tt) tt.classList.add('tw-chat-tooltip-hidden');
+    window.toggleChatbot();
+  });
   document.body.appendChild(fab);
+
+  // ★ Tooltip "Assistant IA" près du FAB
+  var tooltip = document.createElement('div');
+  tooltip.id = 'tw-chat-tooltip';
+  tooltip.className = 'tw-chat-tooltip';
+  tooltip.textContent = '💬 Assistant IA · Posez-moi une question';
+  document.body.appendChild(tooltip);
+  setTimeout(function () {
+    var t = document.getElementById('tw-chat-tooltip');
+    if (t) t.classList.add('tw-chat-tooltip-hidden');
+  }, 8000);
 
   var win = document.createElement('div');
   win.id = 'tw-chat-window';
   win.innerHTML =
     '<div class="tw-chat-header">' +
-      '<div class="tw-chat-header-avatar">' + robotAvatarSvg(22) + '</div>' +
+      '<div class="tw-chat-header-avatar">' + robotAvatarSvg(24) + '</div>' +
       '<div class="tw-chat-header-text">' +
         '<div id="tw-chat-title">' + L.title + '</div>' +
         '<div id="tw-chat-subtitle">' + L.subtitle + '</div>' +
@@ -2485,4 +2588,4 @@ window.saDeleteAdmin = function (uid, email) { window.showConfirm('Voulez-vous v
 
 window.addEventListener('error', () => {});
 
-// ═══════════ FIN DU FICHIER script.js v62 ═══════════
+// ═══════════ FIN DU FICHIER script.js v66 ═══════════
