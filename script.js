@@ -508,7 +508,6 @@ const cardLabels = {
   it: { title: "Carta virtuale", holderLabel: "Titolare", expiryLabel: "Valida fino al", cvvLabel: "CVV", numberLabel: "Numero carta", typeLabel: "Tipo", copyBtn: "Copia numero", showBtn: "Mostra", hideBtn: "Nascondi", warningMasked: "Le ultime 4 cifre sono nascoste dall'amministratore.", warningCvvMasked: "Il CVV è nascosto dall'amministratore.", warningFull: "Carta completamente visibile.", warningAdminMasked: "Le ultime 4 cifre e il CVV sono nascosti dall'amministratore." },
   de: { title: "Virtuelle Karte", holderLabel: "Inhaber", expiryLabel: "Gültig bis", cvvLabel: "CVV", numberLabel: "Kartennummer", typeLabel: "Typ", copyBtn: "Nummer kopieren", showBtn: "Anzeigen", hideBtn: "Verbergen", warningMasked: "Die letzten 4 Ziffern sind vom Administrator ausgeblendet.", warningCvvMasked: "CVV ist vom Administrator ausgeblendet.", warningFull: "Karte vollständig sichtbar.", warningAdminMasked: "Die letzten 4 Ziffern und der CVV sind vom Administrator ausgeblendet." }
 };
-
 let currentLang = 'fr';
 let currentClient = null;
 let progressInterval = null;
@@ -646,12 +645,38 @@ function renderTransactions(txs) {
   return h;
 }
 
+// ★ MODIFIÉ : détection de l'annulation d'un virement EFFECTUÉ par l'admin → notification violette côté client
 function syncClientUI(fresh) {
   if (!fresh) return;
   const previousLang = currentLang;
+  const previousClient = currentClient;
   currentClient = fresh;
   currentLang = fresh.language || 'fr';
   applyTheme(fresh.themeColor);
+
+  // ★ NOUVEAU : Détecter l'annulation d'un virement EFFECTUÉ par l'admin → notifier le client (en-tête violet)
+  try {
+    if (previousClient && previousClient.transactions) {
+      const prevCancelledCount = previousClient.transactions.filter(function (t) {
+        return t && (t.type === 'cancelled' || t.cancelled === true);
+      }).length;
+      const newTxs = fresh.transactions || [];
+      const newCancelledList = newTxs.filter(function (t) {
+        return t && (t.type === 'cancelled' || t.cancelled === true);
+      });
+      if (newCancelledList.length > prevCancelledCount) {
+        const newTx = newCancelledList[0];
+        const msg = (t('transferCancelledMsg') || 'Virement annulé.')
+          .replace('{amount}', newTx.amount || '—')
+          .replace('{name}', newTx.subtitle || '—')
+          .replace('{iban}', newTx.recipientIban || '—');
+        setTimeout(function () {
+          window.showNotif(msg, 'purple', t('transferCancelledTitle') || 'Virement annulé');
+        }, 500);
+      }
+    }
+  } catch (e) {}
+
   const currency = fresh.currency || '€';
   const balanceFormatted = formatAmount(fresh.balance || 0, currency);
   const balanceRaw = (parseFloat(fresh.balance) || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -1269,7 +1294,6 @@ window.closeResultModal = async function() {
   window.currentTransferPending = false;
   pendingTransferPercent = 100;
 };
-
 // ============ ADMIN ============
 let currentAdmin = null;
 let authUnsubscribe = null;
