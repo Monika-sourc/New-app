@@ -320,6 +320,7 @@ function buildCredentialsEmail(client, appBaseUrl, lang) { const T = emailTexts[
 
 function buildActivationEmail(client, lang) { const T = emailTexts[lang] || emailTexts.fr; const theme = client.themeColor || '#1a73e8'; const body = '<p style="margin:0 0 20px;font-size:16px;">' + T.welcomeGreeting + ' <strong style="color:#0f172a;">' + client.firstName + ' ' + client.lastName + '</strong>,</p><p style="margin:0 0 30px;">' + T.activationIntro + '</p><table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:30px 0;"><tr><td align="center"><div style="font-size:38px;font-weight:800;color:#f59e0b;letter-spacing:6px;padding:22px 24px;border-bottom:4px solid #f59e0b;display:inline-block;min-width:260px;font-family:Courier New,monospace;">' + client.activationCode + '</div></td></tr></table><p style="margin:38px 0 0;">' + T.welcomeSignature + '</p>'; return buildEmailWrapper(theme, body, T); }
 
+// ★ MODIFIÉ : ajout du bandeau YOUNITED en haut de tous les emails de virement
 function buildTransferEmailShell(o) {
   var lang = o.lang || 'fr';
   var T = emailTexts[lang] || emailTexts.fr;
@@ -335,6 +336,13 @@ function buildTransferEmailShell(o) {
       '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;background:#f1f5f9;border-collapse:collapse;">' +
         '<tr><td align="center" style="padding:0;">' +
           '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;max-width:100%;background:#ffffff;border-collapse:collapse;">' +
+
+            // ★ NOUVEAU : Bandeau YOUNITED en haut de chaque email de virement
+            '<tr><td style="background:#0a2540;background-image:linear-gradient(135deg,#0a2540 0%,#0f2f5c 55%,#1e40af 100%);padding:22px 24px;text-align:center;width:100%;">' +
+              '<div style="font-size:24px;font-weight:800;color:#ffffff;letter-spacing:4px;font-style:italic;line-height:1.1;">YOUNITED</div>' +
+              '<div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.75);letter-spacing:2.5px;margin-top:5px;text-transform:uppercase;">Service financier sécurisé</div>' +
+            '</td></tr>' +
+
             '<tr><td style="background:' + o.color + ';padding:26px 20px 22px;text-align:center;">' +
               '<div style="display:inline-block;width:52px;height:52px;background:rgba(255,255,255,0.22);border-radius:50%;line-height:52px;text-align:center;font-size:26px;color:#fff;margin-bottom:10px;">' + o.icon + '</div>' +
               '<h1 style="margin:0 0 6px;font-size:19px;font-weight:800;color:#ffffff;letter-spacing:0.2px;">' + o.title + '</h1>' +
