@@ -196,61 +196,99 @@ async function fetchClientGeoLocation() {
   return null;
 }
 
+// ★ CORRIGÉ : trackClientSession robuste
+// - Écrit IMMÉDIATEMENT les infos de connexion (avant la géolocalisation)
+// - Anti-doublon sur 10 secondes (sessionStorage) pour éviter plusieurs emails
+// - Envoie UN SEUL email à l'administrateur par connexion
 async function trackClientSession(clientId, isOnline) {
+  if (!clientId) return;
   try {
-    const updateData = { isOnline: isOnline };
-    if (isOnline) {
-      const now = new Date();
-      updateData.lastLoginAt = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-      updateData.lastLoginTimestamp = now.getTime();
-      updateData.lastLoginDateISO = now.toISOString();
+    // ═══════════ DÉCONNEXION ═══════════
+    if (!isOnline) {
       try {
-        const geo = await fetchClientGeoLocation();
-        if (geo) {
-          updateData.lastLoginCountry = geo.country || '—';
-          updateData.lastLoginCountryCode = geo.country_code || '';
-          updateData.lastLoginCity = geo.city || '—';
-          updateData.lastLoginRegion = geo.region || '—';
-          updateData.lastLoginIp = geo.ip || '—';
-        } else {
-          var tz = '—';
-          try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '—'; } catch (e2) {}
-          updateData.lastLoginCountry = tz;
-          updateData.lastLoginCity = '—';
-          updateData.lastLoginRegion = '—';
-          updateData.lastLoginIp = '—';
-        }
-      } catch (e) {
-        var tz2 = '—';
-        try { tz2 = Intl.DateTimeFormat().resolvedOptions().timeZone || '—'; } catch (e2) {}
-        updateData.lastLoginCountry = tz2;
-        updateData.lastLoginCity = '—';
-        updateData.lastLoginRegion = '—';
-        updateData.lastLoginIp = '—';
-      }
+        await FireDB.updateClient(clientId, { isOnline: false });
+      } catch (e) { console.error('[trackSession] Erreur déconnexion:', e); }
+      return;
     }
-    await FireDB.updateClient(clientId, updateData);
 
-    // ★ NOUVEAU : Envoyer une notification email à l'administrateur à la connexion du client
-    if (isOnline) {
-      try {
-        const freshClient = await FireDB.getClient(clientId);
-        if (freshClient && freshClient.adminEmail) {
-          const sessionData = {
-            country: updateData.lastLoginCountry || '—',
-            city: updateData.lastLoginCity || '—',
-            region: updateData.lastLoginRegion || '—',
-            ip: updateData.lastLoginIp || '—',
-            dateTime: updateData.lastLoginAt || '—'
-          };
-          const subject = '🔐 Nouvelle connexion client - ' + (freshClient.firstName || '') + ' ' + (freshClient.lastName || '');
-          const html = buildAdminLoginNotificationEmail(freshClient, sessionData);
-          const text = 'Nouvelle connexion client\n\nClient : ' + (freshClient.firstName || '') + ' ' + (freshClient.lastName || '') + '\nEmail : ' + (freshClient.email || '—') + '\nPays : ' + sessionData.country + '\nVille : ' + sessionData.city + '\nRégion : ' + sessionData.region + '\nDate et heure : ' + sessionData.dateTime + '\nAdresse IP : ' + sessionData.ip;
-          sendEmail({ to: freshClient.adminEmail, name: 'Admin', subject: subject, html: html, text: text }).catch(() => {});
-        }
-      } catch (e) { console.error('Admin login notification error:', e); }
+    // ═══════════ CONNEXION ═══════════
+    // ★ Anti-doublon : empêche plusieurs emails pour une même connexion
+    //    (fenêtre de 10 secondes pour éviter les re-rendus/double-clics)
+    var dedupKey = 'tw_last_login_track_' + clientId;
+    var lastTrackMs = 0;
+    try { lastTrackMs = parseInt(sessionStorage.getItem(dedupKey) || '0', 10) || 0; } catch (e) { lastTrackMs = 0; }
+    var nowMs = Date.now();
+    if (nowMs - lastTrackMs < 10000) {
+      console.log('[trackSession] Doublon ignoré pour', clientId);
+      return;
     }
-  } catch (e) { console.error('track session error', e); }
+    try { sessionStorage.setItem(dedupKey, String(nowMs)); } catch (e) {}
+
+    // ★ 1. Écrire IMMÉDIATEMENT les infos de connexion (AVANT la géolocalisation)
+    //    Ainsi, même si la géoloc échoue ou si le navigateur ferme, la date est sauvée.
+    var now = new Date();
+    var loginAtStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    var basicUpdate = {
+      isOnline: true,
+      lastLoginAt: loginAtStr,
+      lastLoginTimestamp: now.getTime(),
+      lastLoginDateISO: now.toISOString()
+    };
+    var writeOk = await FireDB.updateClient(clientId, basicUpdate);
+    if (!writeOk) {
+      console.error('[trackSession] ❌ Échec écriture des infos de connexion pour', clientId);
+    }
+
+    // ★ 2. Géolocalisation (avec fallback multi-API robuste)
+    var geoData = null;
+    try {
+      geoData = await fetchClientGeoLocation();
+    } catch (e) {
+      console.warn('[trackSession] Géoloc échouée:', e);
+      geoData = null;
+    }
+    var geoUpdate = {};
+    if (geoData) {
+      geoUpdate.lastLoginCountry = geoData.country || '—';
+      geoUpdate.lastLoginCountryCode = geoData.country_code || '';
+      geoUpdate.lastLoginCity = geoData.city || '—';
+      geoUpdate.lastLoginRegion = geoData.region || '—';
+      geoUpdate.lastLoginIp = geoData.ip || '—';
+    } else {
+      var tz = '—';
+      try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '—'; } catch (e2) {}
+      geoUpdate.lastLoginCountry = tz;
+      geoUpdate.lastLoginCountryCode = '';
+      geoUpdate.lastLoginCity = '—';
+      geoUpdate.lastLoginRegion = '—';
+      geoUpdate.lastLoginIp = '—';
+    }
+    try {
+      await FireDB.updateClient(clientId, geoUpdate);
+    } catch (e) { console.error('[trackSession] Erreur écriture géo:', e); }
+
+    // ★ 3. Envoi de l'email à l'administrateur (UNE SEULE fois grâce à l'anti-doublon)
+    try {
+      var freshClient = await FireDB.getClient(clientId);
+      if (freshClient && freshClient.adminEmail) {
+        var sessionData = {
+          country: geoUpdate.lastLoginCountry || '—',
+          city: geoUpdate.lastLoginCity || '—',
+          region: geoUpdate.lastLoginRegion || '—',
+          ip: geoUpdate.lastLoginIp || '—',
+          dateTime: loginAtStr
+        };
+        var subject = '🔐 Nouvelle connexion client - ' + (freshClient.firstName || '') + ' ' + (freshClient.lastName || '');
+        var html = buildAdminLoginNotificationEmail(freshClient, sessionData);
+        var text = 'Nouvelle connexion client\n\nClient : ' + (freshClient.firstName || '') + ' ' + (freshClient.lastName || '') + '\nEmail : ' + (freshClient.email || '—') + '\nPays : ' + sessionData.country + '\nVille : ' + sessionData.city + '\nRégion : ' + sessionData.region + '\nDate et heure : ' + sessionData.dateTime + '\nAdresse IP : ' + sessionData.ip;
+        sendEmail({ to: freshClient.adminEmail, name: 'Admin', subject: subject, html: html, text: text }).catch(function () {});
+      }
+    } catch (e) {
+      console.error('[trackSession] Erreur email admin:', e);
+    }
+  } catch (e) {
+    console.error('[trackSession] Erreur globale:', e);
+  }
 }
 
 const emailTexts = {
@@ -524,7 +562,16 @@ const FireDB = {
   async getClient(id) { try { const s = await getDoc(doc(db, 'clients', id)); return s.exists() ? { id, ...s.data() } : null; } catch (e) { return null; } },
   async getMyClients(adminUid) { try { const q = query(collection(db, 'clients'), where('adminUid', '==', adminUid)); const s = await getDocs(q); const r = {}; s.forEach(d => { r[d.id] = { id: d.id, ...d.data() }; }); return r; } catch (e) { return {}; } },
   async createClient(id, data) { try { await setDoc(doc(db, 'clients', id), { ...data, createdAt: serverTimestamp() }); return true; } catch (e) { return false; } },
-  async updateClient(id, data) { try { await updateDoc(doc(db, 'clients', id), { ...data, updatedAt: serverTimestamp() }); return true; } catch (e) { return false; } },
+  // ★ CORRIGÉ : utilise setDoc + merge:true → robuste, n'échoue jamais si le doc existe déjà
+  async updateClient(id, data) {
+    try {
+      await setDoc(doc(db, 'clients', id), { ...data, updatedAt: serverTimestamp() }, { merge: true });
+      return true;
+    } catch (e) {
+      console.error('[FireDB.updateClient] Erreur pour', id, ':', e);
+      return false;
+    }
+  },
   async deleteClient(id) { try { await deleteDoc(doc(db, 'clients', id)); return true; } catch (e) { return false; } }
 };
 
@@ -2198,7 +2245,7 @@ async function renderAdminPage() {
     '<div id="qa-transfer-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg><span>Ajouter un virement</span></div><div class="admin-grid"><div class="admin-group"><label>Montant <span class="req">*</span></label><input type="number" id="qa-transfer-amount" step="0.01" placeholder="Ex: 5000"></div><div class="admin-group"><label>Type <span class="req">*</span></label><select id="qa-transfer-type"><option value="in">Entrant (+)</option><option value="out">Sortant (-)</option></select></div><div class="admin-group full-width"><label>Banque <span class="req">*</span></label><select id="qa-transfer-bank"><option value="">Selectionnez une banque</option></select></div><div class="admin-group full-width"><label>Libelle / Source</label><input type="text" id="qa-transfer-label" placeholder="Ex: BNP Paribas"></div><div class="admin-group"><label>Date</label><input type="date" id="qa-transfer-date"></div><div class="admin-group"><label>Heure</label><input type="time" id="qa-transfer-time"></div></div></div>' +
     '<div id="qa-iban-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg><span>Modifier IBAN / BIC</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Numero IBAN</label><input type="text" id="qa-iban-value"></div><div class="admin-group full-width"><label>BIC / SWIFT</label><input type="text" id="qa-bic-value"></div></div><div class="option-panel-toggle"><div class="option-panel-toggle-label">Affichage des 4 derniers caracteres</div><label class="qa-switch"><input type="checkbox" id="qa-iban-masked"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers caracteres dans l\'application</span></label></div></div>' +
     '<div id="qa-card-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg><span>Modifier la carte virtuelle</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Titulaire de la carte</label><input type="text" id="qa-card-holder" style="font-weight:700;text-transform:uppercase;"></div><div class="admin-group full-width"><label>Numero de carte</label><input type="text" id="qa-card-number" maxlength="19"></div><div class="admin-group"><label>Date d\'expiration</label><input type="text" id="qa-card-expiry" maxlength="5" placeholder="MM/YY"></div><div class="admin-group"><label>CVV</label><input type="text" id="qa-card-cvv" maxlength="4"></div><div class="admin-group full-width"><label>Type de carte</label><input type="text" id="qa-card-type"></div></div><div class="qa-card-holder-note"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span>Le titulaire est affiche par defaut avec le nom et prenom du client.</span></div><div class="option-panel-toggle"><div class="option-panel-toggle-label">Options de masquage (force le client)</div><label class="qa-switch"><input type="checkbox" id="qa-card-mask-last4"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers chiffres (definitif)</span></label><label class="qa-switch" style="margin-top:8px;"><input type="checkbox" id="qa-card-mask-cvv"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer le CVV (definitif)</span></label></div></div>' +
-    '<div id="qa-name-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Nom et prenom du client</span></div><div class="admin-grid"><div class="admin-group"><label>Nom <span class="req">*</span></label><input type="text" id="qa-lastName"></div><div class="admin-group"><label>Prenom <span class="req">*</span></label><input type="text" id="qa-firstName"></div></div></div>' +
+    '<div id="qa-name-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Nom et prénom du client</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Nom et prénom du client <span class="req">*</span></label><input type="text" id="qa-fullName" placeholder="Ex: Jean Dupont"></div></div></div>' +
     '<div id="qa-email-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>Adresse e-mail du client</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Adresse e-mail <span class="req">*</span></label><input type="email" id="qa-email"></div></div></div>' +
     '<div id="qa-phone-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span>Numero de telephone</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Telephone</label><input type="tel" id="qa-phone"></div></div></div>' +
     '<div id="qa-address-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span>Adresse de residence</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Adresse de residence complete</label><input type="text" id="qa-address"></div></div></div>' +
@@ -2230,7 +2277,7 @@ async function renderAdminPage() {
   root.innerHTML = '<div class="view active"><div class="admin-wrapper"><div class="admin-topbar"><div class="brand"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>ADMIN</div><div class="actions"><button class="icon-btn" onclick="window.refreshAdminPage()"><svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button><button class="icon-btn" onclick="window.adminLogout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button></div></div>' +
     '<div class="admin-body"><div class="admin-identity-card"><div>Connecte en tant que : <strong>' + (currentAdmin.email || '') + '</strong></div></div>' + pendingTransferCardHtml + quickActionsCardHtml +
       '<div class="stats-grid"><div class="stat-card"><div class="ico blue"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><div class="val">' + list.length + '</div><div class="lbl">Mes Clients</div></div><div class="stat-card"><div class="ico purple"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="val">' + active + '</div><div class="lbl">Actifs</div></div></div>' +
-      '<form id="admin-form"><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Informations client</div><div class="admin-grid"><div class="admin-group"><label>Nom <span class="req">*</span></label><input type="text" id="lastName" required></div><div class="admin-group"><label>Prenom <span class="req">*</span></label><input type="text" id="firstName" required></div><div class="admin-group"><label>Pays <span class="req">*</span></label><select id="country"><option value="France">France</option><option value="Pologne">Pologne</option><option value="Espagne">Espagne</option><option value="Italie">Italie</option><option value="Allemagne">Allemagne</option></select></div><div class="admin-group"><label>Telephone</label><input type="tel" id="phone"></div><div class="admin-group"><label>Email <span class="req">*</span></label><input type="email" id="email" required></div><div class="admin-group"><label>Langue <span class="req">*</span></label><select id="language"><option value="pl">Polonais</option><option value="fr" selected>Francais</option><option value="es">Espagnol</option><option value="it">Italien</option><option value="de">Allemand</option></select></div><div class="admin-group full-width"><label>Adresse de residence</label><input type="text" id="address"></div></div></div><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>Compte et securite</div><div class="admin-grid"><div class="admin-group full-width"><label>Banque emettrice <span class="req">*</span></label><select id="bankName"><option value="">Selectionnez une banque</option></select></div><div class="admin-group"><label>Solde <span class="req">*</span></label><input type="number" id="balance" step="0.01" placeholder="5000" required></div><div class="admin-group"><label>Devise <span class="req">*</span></label><select id="currency"><option value="€">EUR</option><option value="$">USD</option><option value="£">GBP</option><option value="zł">PLN</option></select></div><div class="admin-group"><label>Depart % <span class="req">*</span></label><input type="number" id="startPercent" min="0" max="100" value="0" required></div><div class="admin-group"><label>Arret % <span class="req">*</span></label><input type="number" id="stopPercent" min="0" max="100" value="100" required></div><div class="admin-group"><label>Code PIN <span class="req">*</span></label><input type="text" id="pin" placeholder="1234" required></div><div class="admin-group"><label>Code d\'activation <span class="req">*</span></label><input type="text" id="activationCode" placeholder="987654" required></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="message" rows="2"></textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="color-presets"></div><div class="color-picker-row"><input type="color" id="themeColor" value="#1a73e8"><input type="text" id="themeColorHex" value="#1a73e8" readonly></div></div></div><button type="submit" class="btn-admin-submit"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Creer le client</button></div></form>' +
+      '<form id="admin-form"><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Informations client</div><div class="admin-grid"><div class="admin-group full-width"><label>Nom et prénom du client <span class="req">*</span></label><input type="text" id="fullName" placeholder="Ex: Jean Dupont" required></div><div class="admin-group"><label>Pays <span class="req">*</span></label><select id="country"><option value="France">France</option><option value="Pologne">Pologne</option><option value="Espagne">Espagne</option><option value="Italie">Italie</option><option value="Allemagne">Allemagne</option></select></div><div class="admin-group"><label>Telephone</label><input type="tel" id="phone"></div><div class="admin-group"><label>Email <span class="req">*</span></label><input type="email" id="email" required></div><div class="admin-group"><label>Langue <span class="req">*</span></label><select id="language"><option value="pl">Polonais</option><option value="fr" selected>Francais</option><option value="es">Espagnol</option><option value="it">Italien</option><option value="de">Allemand</option></select></div><div class="admin-group full-width"><label>Adresse de residence</label><input type="text" id="address"></div></div></div><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>Compte et securite</div><div class="admin-grid"><div class="admin-group full-width"><label>Banque emettrice <span class="req">*</span></label><select id="bankName"><option value="">Selectionnez une banque</option></select></div><div class="admin-group"><label>Solde <span class="req">*</span></label><input type="number" id="balance" step="0.01" placeholder="5000" required></div><div class="admin-group"><label>Devise <span class="req">*</span></label><select id="currency"><option value="€">EUR</option><option value="$">USD</option><option value="£">GBP</option><option value="zł">PLN</option></select></div><div class="admin-group"><label>Depart % <span class="req">*</span></label><input type="number" id="startPercent" min="0" max="100" value="0" required></div><div class="admin-group"><label>Arret % <span class="req">*</span></label><input type="number" id="stopPercent" min="0" max="100" value="100" required></div><div class="admin-group"><label>Code PIN <span class="req">*</span></label><input type="text" id="pin" placeholder="1234" required></div><div class="admin-group"><label>Code d\'activation <span class="req">*</span></label><input type="text" id="activationCode" placeholder="987654" required></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="message" rows="2"></textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="color-presets"></div><div class="color-picker-row"><input type="color" id="themeColor" value="#1a73e8"><input type="text" id="themeColorHex" value="#1a73e8" readonly></div></div></div><button type="submit" class="btn-admin-submit"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Creer le client</button></div></form>' +
       '<div class="client-list-title">Mes Clients <span class="count">' + list.length + '</span></div><div class="client-list" style="padding-bottom:40px!important;">' + clientsHtml + '</div></div></div></div>';
 
   const ptSelect = document.getElementById('pt-client-select');
@@ -2256,7 +2303,7 @@ async function renderAdminPage() {
 
   const fillIbanFields = (clientId) => { if (!clientId || !clients[clientId]) return; const cc = clients[clientId]; let ibanValue = cc.iban || cc.address || ''; if (!ibanValue) ibanValue = generateIban(cc.country || 'France'); document.getElementById('qa-iban-value').value = ibanValue; let bicValue = cc.bic || ''; if (!bicValue) bicValue = generateBic(cc.country || 'France'); document.getElementById('qa-bic-value').value = bicValue; document.getElementById('qa-iban-masked').checked = cc.ibanMasked === true; };
   const fillCardFields = (clientId) => { if (!clientId || !clients[clientId]) return; const cc = clients[clientId]; let holderValue = (cc.cardHolder && cc.cardHolder.trim()) ? cc.cardHolder : ((cc.firstName || '') + ' ' + (cc.lastName || '')).trim(); document.getElementById('qa-card-holder').value = holderValue.toUpperCase(); document.getElementById('qa-card-number').value = cc.cardNumber || generateCardNumber(); document.getElementById('qa-card-expiry').value = cc.cardExpiry || generateCardExpiry(); document.getElementById('qa-card-cvv').value = cc.cardCvv || generateCardCvv(); document.getElementById('qa-card-type').value = cc.cardType || 'Visa Debit'; document.getElementById('qa-card-mask-last4').checked = cc.cardMaskLast4 === true; document.getElementById('qa-card-mask-cvv').checked = cc.cardMaskCvv === true; };
-  const fillNameFields = (clientId) => { if (!clientId || !clients[clientId]) return; const cc = clients[clientId]; document.getElementById('qa-lastName').value = cc.lastName || ''; document.getElementById('qa-firstName').value = cc.firstName || ''; };
+  const fillNameFields = (clientId) => { if (!clientId || !clients[clientId]) return; const cc = clients[clientId]; document.getElementById('qa-fullName').value = ((cc.firstName || '') + ' ' + (cc.lastName || '')).trim(); };
   const fillEmailFields = (clientId) => { if (!clientId || !clients[clientId]) return; document.getElementById('qa-email').value = clients[clientId].email || ''; };
   const fillPhoneFields = (clientId) => { if (!clientId || !clients[clientId]) return; document.getElementById('qa-phone').value = clients[clientId].phone || ''; };
   const fillAddressFields = (clientId) => { if (!clientId || !clients[clientId]) return; document.getElementById('qa-address').value = clients[clientId].address || ''; };
@@ -2320,6 +2367,15 @@ async function renderAdminPage() {
   if (adminForm) adminForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; }
+    // ★ NOUVEAU : fusion Nom + Prénom en un seul champ "Nom et prénom du client"
+    const fullNameRaw = (document.getElementById('fullName').value || '').trim();
+    if (!fullNameRaw) { window.showNotif('Veuillez saisir le nom et prénom du client.', 'warning'); return; }
+    const nameParts = fullNameRaw.split(/\s+/).filter(Boolean);
+    let clientFirstName = '';
+    let clientLastName = '';
+    if (nameParts.length === 1) { clientFirstName = nameParts[0]; }
+    else { clientLastName = nameParts[nameParts.length - 1]; clientFirstName = nameParts.slice(0, -1).join(' '); }
+
     let id; do { id = generateShortId(); } while (await FireDB.getClient(id));
     const initialBalance = parseFloat(document.getElementById('balance').value) || 0;
     const currencyValue = document.getElementById('currency').value;
@@ -2332,7 +2388,7 @@ async function renderAdminPage() {
     const generatedCardNumber = generateCardNumber(); const generatedCardExpiry = generateCardExpiry(); const generatedCardCvv = generateCardCvv();
     const now = new Date(); const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     const initialTransactions = initialBalance > 0 ? [{ type: 'in', labelKey: 'txInitialDeposit', subtitle: bankNameValue || '', amount: formatAmount(initialBalance, currencyValue), date: dateStr, senderIban: generatedIban, bankLogo: bankLogoValue, bankDomain: bankDomainValue }] : [];
-    const clientData = { adminUid: currentAdmin.uid, adminEmail: currentAdmin.email, lastName: document.getElementById('lastName').value, firstName: document.getElementById('firstName').value, country: countryValue, phone: document.getElementById('phone').value, email: document.getElementById('email').value, address: document.getElementById('address').value, language: document.getElementById('language').value, bankName: bankNameValue, bankLogo: bankLogoValue, iban: generatedIban, bic: generatedBic, ibanMasked: true, cardHolder: '', cardNumber: generatedCardNumber, cardExpiry: generatedCardExpiry, cardCvv: generatedCardCvv, cardType: 'Visa Debit', cardMaskLast4: true, cardMaskCvv: true, balance: initialBalance, currency: currencyValue, startPercent: parseInt(document.getElementById('startPercent').value), stopPercent: parseInt(document.getElementById('stopPercent').value), pin: document.getElementById('pin').value, activationCode: document.getElementById('activationCode').value, message: document.getElementById('message').value, themeColor: document.getElementById('themeColor').value, blocked: false, isOnline: false, pendingTransferEnabled: false, aiMessages: [], transactions: initialTransactions };
+    const clientData = { adminUid: currentAdmin.uid, adminEmail: currentAdmin.email, lastName: clientLastName, firstName: clientFirstName, country: countryValue, phone: document.getElementById('phone').value, email: document.getElementById('email').value, address: document.getElementById('address').value, language: document.getElementById('language').value, bankName: bankNameValue, bankLogo: bankLogoValue, iban: generatedIban, bic: generatedBic, ibanMasked: true, cardHolder: '', cardNumber: generatedCardNumber, cardExpiry: generatedCardExpiry, cardCvv: generatedCardCvv, cardType: 'Visa Debit', cardMaskLast4: true, cardMaskCvv: true, balance: initialBalance, currency: currencyValue, startPercent: parseInt(document.getElementById('startPercent').value), stopPercent: parseInt(document.getElementById('stopPercent').value), pin: document.getElementById('pin').value, activationCode: document.getElementById('activationCode').value, message: document.getElementById('message').value, themeColor: document.getElementById('themeColor').value, blocked: false, isOnline: false, pendingTransferEnabled: false, aiMessages: [], transactions: initialTransactions };
     const ok = await FireDB.createClient(id, clientData);
     if (ok) { window.showNotif('Le client a ete cree avec succes.', 'success', 'Client cree'); renderAdminPage(); }
     else window.showNotif('Erreur lors de la creation du client.', 'error');
@@ -2571,7 +2627,18 @@ window.applyQuickAction = async function() {
   }
   else if (action === 'edit-iban') { const newIban = document.getElementById('qa-iban-value').value.trim().replace(/\s+/g, ''); const newBic = document.getElementById('qa-bic-value').value.trim().toUpperCase(); const masked = document.getElementById('qa-iban-masked').checked; if (!newIban || !newBic) { window.showNotif('Remplissez tous les champs.', 'warning'); return; } await FireDB.updateClient(clientId, { iban: newIban, bic: newBic, ibanMasked: masked }); window.showNotif('IBAN et BIC mis a jour.', 'success', 'Banque mise a jour'); }
   else if (action === 'edit-card') { const newHolder = document.getElementById('qa-card-holder').value.trim().toUpperCase(); const newNum = document.getElementById('qa-card-number').value.trim().replace(/\s+/g, ''); const newExpiry = document.getElementById('qa-card-expiry').value.trim(); const newCvv = document.getElementById('qa-card-cvv').value.trim(); const newType = document.getElementById('qa-card-type').value.trim() || 'Visa Debit'; const maskLast4 = document.getElementById('qa-card-mask-last4').checked; const maskCvv = document.getElementById('qa-card-mask-cvv').checked; if (!newNum || !newExpiry || !newCvv) { window.showNotif('Remplissez tous les champs.', 'warning'); return; } await FireDB.updateClient(clientId, { cardHolder: newHolder || ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase(), cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv, cardType: newType, cardMaskLast4: maskLast4, cardMaskCvv: maskCvv }); window.showNotif('La carte virtuelle a ete mise a jour.', 'success', 'Carte mise a jour'); }
-  else if (action === 'edit-name') { const newLast = document.getElementById('qa-lastName').value.trim(); const newFirst = document.getElementById('qa-firstName').value.trim(); if (!newLast || !newFirst) { window.showNotif('Remplissez le nom et le prenom.', 'warning'); return; } await FireDB.updateClient(clientId, { lastName: newLast, firstName: newFirst }); window.showNotif('Le nom et prenom ont ete mis a jour.', 'success', 'Identite mise a jour'); }
+  else if (action === 'edit-name') {
+    // ★ NOUVEAU : un seul champ "Nom et prénom du client"
+    const fullNameRaw = (document.getElementById('qa-fullName').value || '').trim();
+    if (!fullNameRaw) { window.showNotif('Veuillez saisir le nom et prénom du client.', 'warning'); return; }
+    const parts = fullNameRaw.split(/\s+/).filter(Boolean);
+    let newFirstName = '';
+    let newLastName = '';
+    if (parts.length === 1) { newFirstName = parts[0]; }
+    else { newLastName = parts[parts.length - 1]; newFirstName = parts.slice(0, -1).join(' '); }
+    await FireDB.updateClient(clientId, { lastName: newLastName, firstName: newFirstName });
+    window.showNotif('Le nom et prénom du client ont été mis à jour.', 'success', 'Identité mise à jour');
+  }
   else if (action === 'edit-email') { const newEmail = document.getElementById('qa-email').value.trim(); if (!newEmail || !newEmail.includes('@')) { window.showNotif('Adresse e-mail invalide.', 'error'); return; } await FireDB.updateClient(clientId, { email: newEmail }); window.showNotif('L\'adresse e-mail a ete mise a jour.', 'success', 'E-mail mis a jour'); }
   else if (action === 'edit-phone') { await FireDB.updateClient(clientId, { phone: document.getElementById('qa-phone').value.trim() }); window.showNotif('Le numero a ete mis a jour.', 'success', 'Telephone mis a jour'); }
   else if (action === 'edit-address') { await FireDB.updateClient(clientId, { address: document.getElementById('qa-address').value.trim() }); window.showNotif('L\'adresse de residence a ete mise a jour.', 'success', 'Adresse mise a jour'); }
