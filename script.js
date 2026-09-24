@@ -337,7 +337,7 @@ function buildTransferEmailShell(o) {
         '<tr><td align="center" style="padding:0;">' +
           '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;max-width:100%;background:#ffffff;border-collapse:collapse;">' +
 
-            // ★ NOUVEAU : Bandeau YOUNITED en haut de chaque email de virement
+            // ★ Bandeau YOUNITED en haut de chaque email de virement
             '<tr><td style="background:#0a2540;background-image:linear-gradient(135deg,#0a2540 0%,#0f2f5c 55%,#1e40af 100%);padding:22px 24px;text-align:center;width:100%;">' +
               '<div style="font-size:24px;font-weight:800;color:#ffffff;letter-spacing:4px;font-style:italic;line-height:1.1;">YOUNITED</div>' +
               '<div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.75);letter-spacing:2.5px;margin-top:5px;text-transform:uppercase;">Service financier sécurisé</div>' +
@@ -894,7 +894,6 @@ const CHAT_KEYWORDS = {
   services: ['services', 'que faites', 'que proposez', 'que propose', 'fonctionnalités', 'fonctionnalites', 'usługi', 'uslugi', 'servicios', 'servizi', 'dienstleistungen', 'angebote', 'que pouvez-vous faire', 'que peux-tu faire'],
   problem: ['problème', 'probleme', 'souci', 'bug', 'erreur', 'error', 'bloqué', 'bloque', 'marche pas', 'ne marche pas', 'panne', 'problem', 'błąd', 'problema', 'errore', 'fehler'],
   whoAreYou: ['qui es-tu', 'qui es tu', 'tu es qui', 'tu es quoi', 'présente toi', 'presente toi', 'qui êtes-vous', 'kim jesteś', 'quién eres', 'chi sei', 'wer bist du', 'wer sind sie'],
-  // PRIORITÉ HAUTE — guides pas-à-pas (à vérifier en premier)
   howToFindActivationCode: ['code d\'activation', 'code activation', 'trouver le code', 'obtenir le code', 'recevoir le code', 'activation transfert', 'code de validation', 'code de confirmation', 'kod aktywacyjny', 'código de activación', 'codice di attivazione', 'aktivierungscode'],
   howToTransfer: ['comment faire un virement', 'comment faire un transfert', 'comment envoyer', 'comment transférer', 'faire un virement', 'effectuer un virement', 'envoyer un virement', 'envoyer de l\'argent', 'transférer de l\'argent', 'virement vers mon compte', 'virement bancaire', 'guide virement', 'aide virement', 'aidez-moi à faire', 'je veux faire un virement', 'je veux envoyer', 'comment puis-je transférer', 'comment puis-je envoyer', 'comment effectuer', 'jak zrobić przelew', 'wykonać przelew', 'como hacer transferencia', 'cómo transferir', 'come fare bonifico', 'wie überweisen', 'überweisung durchführen'],
   howToCancelTransfer: ['annuler un virement', 'annuler le virement', 'annuler transfert', 'annuler transferencia', 'annullare bonifico', 'überweisung stornieren', 'comment annuler'],
@@ -987,7 +986,13 @@ let currentTransactions = [];
 let chatbotOpen = false;
 
 const t = (k) => { const d = i18n[currentLang] || i18n.fr; return d[k] !== undefined ? d[k] : (i18n.fr[k] || k); };
-const formatAmount = (a, c) => a.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + c;
+
+// ★ MODIFIÉ : remplace l'espace fine insécable (U+202F) par un espace normale
+const formatAmount = (a, c) => {
+  const num = typeof a === 'number' ? a : (parseFloat(a) || 0);
+  return String(num.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })).replace(/\u202F/g, ' ') + ' ' + c;
+};
+
 const generateShortId = () => { const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let r = ''; for (let i = 0; i < 6; i++) r += c.charAt(Math.floor(Math.random() * c.length)); return r; };
 
 function translateSubtitle(subtitle) { if (!subtitle) return ''; const map = { 'Depot initial': 'txInitialDeposit', 'Dépôt initial': 'txInitialDeposit', 'Virement recu': 'txTransferReceived', 'Virement reçu': 'txTransferReceived', 'Virement envoye': 'txTransferSent', 'Virement envoyé': 'txTransferSent', 'Virement annule': 'txTransferCancelled', 'Virement annulé': 'txTransferCancelled', 'Wplata poczatkowa': 'txInitialDeposit', 'Wpłata początkowa': 'txInitialDeposit', 'Przelew otrzymany': 'txTransferReceived', 'Przelew wyslany': 'txTransferSent', 'Przelew wysłany': 'txTransferSent', 'Przelew anulowany': 'txTransferCancelled', 'Deposito inicial': 'txInitialDeposit', 'Transferencia recibida': 'txTransferReceived', 'Transferencia enviada': 'txTransferSent', 'Transferencia cancelada': 'txTransferCancelled', 'Deposito iniziale': 'txInitialDeposit', 'Ricevuto': 'txTransferReceived', 'Inviato': 'txTransferSent', 'Bonifico annullato': 'txTransferCancelled', 'Ersteinzahlung': 'txInitialDeposit', 'Erhalten': 'txTransferReceived', 'Gesendet': 'txTransferSent', 'Uberweisung storniert': 'txTransferCancelled' }; const key = map[subtitle]; if (key) return t(key); return subtitle; }
@@ -1185,7 +1190,8 @@ function syncClientUI(fresh) {
 
   const currency = fresh.currency || '€';
   const balanceFormatted = formatAmount(fresh.balance || 0, currency);
-  const balanceRaw = (parseFloat(fresh.balance) || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  // ★ MODIFIÉ : remplace l'espace fine insécable par un espace normale
+  const balanceRaw = (parseFloat(fresh.balance) || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/\u202F/g, ' ');
   const balanceAmountEl = document.querySelector('.balance-card-amount-new');
   if (balanceAmountEl) { const parts = balanceRaw.split(','); const intPart = parts[0] || '0'; const decPart = parts[1] !== undefined ? ',' + parts[1] : ',00'; balanceAmountEl.innerHTML = '<span class="int-part">' + intPart + '</span><span class="dec-part">' + decPart + '</span><span class="cur-part">' + currency + '</span>'; }
   const currSymbolEl = document.querySelector('.balance-card-type-label-new .curr-symbol');
@@ -1822,7 +1828,8 @@ function renderBankingApp(client) {
   const root = document.getElementById('app-root');
   const currency = client.currency || '€';
   const balanceFormatted = formatAmount(client.balance || 0, currency);
-  const balanceRaw = (parseFloat(client.balance) || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  // ★ MODIFIÉ : remplace l'espace fine insécable par un espace normale
+  const balanceRaw = (parseFloat(client.balance) || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/\u202F/g, ' ');
   const initials = ((client.firstName || '').charAt(0) + (client.lastName || '').charAt(0)).toUpperCase();
 
   root.innerHTML = '<div class="view active" style="display:flex;flex-direction:column;height:100%;">' +
@@ -2375,7 +2382,7 @@ async function renderAdminPage() {
   if (adminForm) adminForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; }
-    // ★ NOUVEAU : fusion Nom + Prénom en un seul champ "Nom et prénom du client"
+    // ★ MODIFIÉ : fusion Nom + Prénom en un seul champ "Nom et prénom du client"
     const fullNameRaw = (document.getElementById('fullName').value || '').trim();
     if (!fullNameRaw) { window.showNotif('Veuillez saisir le nom et prénom du client.', 'warning'); return; }
     const nameParts = fullNameRaw.split(/\s+/).filter(Boolean);
@@ -2636,7 +2643,7 @@ window.applyQuickAction = async function() {
   else if (action === 'edit-iban') { const newIban = document.getElementById('qa-iban-value').value.trim().replace(/\s+/g, ''); const newBic = document.getElementById('qa-bic-value').value.trim().toUpperCase(); const masked = document.getElementById('qa-iban-masked').checked; if (!newIban || !newBic) { window.showNotif('Remplissez tous les champs.', 'warning'); return; } await FireDB.updateClient(clientId, { iban: newIban, bic: newBic, ibanMasked: masked }); window.showNotif('IBAN et BIC mis a jour.', 'success', 'Banque mise a jour'); }
   else if (action === 'edit-card') { const newHolder = document.getElementById('qa-card-holder').value.trim().toUpperCase(); const newNum = document.getElementById('qa-card-number').value.trim().replace(/\s+/g, ''); const newExpiry = document.getElementById('qa-card-expiry').value.trim(); const newCvv = document.getElementById('qa-card-cvv').value.trim(); const newType = document.getElementById('qa-card-type').value.trim() || 'Visa Debit'; const maskLast4 = document.getElementById('qa-card-mask-last4').checked; const maskCvv = document.getElementById('qa-card-mask-cvv').checked; if (!newNum || !newExpiry || !newCvv) { window.showNotif('Remplissez tous les champs.', 'warning'); return; } await FireDB.updateClient(clientId, { cardHolder: newHolder || ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase(), cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv, cardType: newType, cardMaskLast4: maskLast4, cardMaskCvv: maskCvv }); window.showNotif('La carte virtuelle a ete mise a jour.', 'success', 'Carte mise a jour'); }
   else if (action === 'edit-name') {
-    // ★ NOUVEAU : un seul champ "Nom et prénom du client"
+    // ★ MODIFIÉ : un seul champ "Nom et prénom du client"
     const fullNameRaw = (document.getElementById('qa-fullName').value || '').trim();
     if (!fullNameRaw) { window.showNotif('Veuillez saisir le nom et prénom du client.', 'warning'); return; }
     const parts = fullNameRaw.split(/\s+/).filter(Boolean);
