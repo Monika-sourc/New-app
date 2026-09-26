@@ -666,7 +666,6 @@ const CHAT_LABELS = {
   it: { title: "Assistente IA Younited", subtitle: "Intelligenza artificiale · Online 24/7", placeholder: "Scrivi il tuo messaggio...", send: "Invia", welcomeTitle: "Benvenuto!", welcomeBody: "Sono il tuo assistente personale IA, disponibile 24/7 per rispondere a tutte le tue domande con precisione e rapidità. Fammi la tua domanda." },
   de: { title: "Younited KI-Assistent", subtitle: "Künstliche Intelligenz · Online 24/7", placeholder: "Schreiben Sie Ihre Nachricht...", send: "Senden", welcomeTitle: "Willkommen!", welcomeBody: "Ich bin Ihr persönlicher KI-Assistent, 24/7 verfügbar, um alle Ihre Fragen präzise und schnell zu beantworten. Stellen Sie mir Ihre Frage." }
 };
-
 const CHAT_RESPONSES = {
   fr: {
     greeting: [
@@ -1104,6 +1103,206 @@ function ensureGlobalStyles() {
     .admin-pending-meta, .admin-transfer-meta { font-size: 11.5px !important; }
     .admin-pending-amount, .admin-transfer-amount { font-size: 15px !important; }
     .admin-pending-btn, .admin-transfer-cancel-btn, .client-line-btn { font-size: 12px !important; }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* ★ NOUVEAU : ADMIN — EN-TÊTES COLORÉS DES CARTES             */
+    /* + AGRANDISSEMENT DES SOUS-TITRES (scopé admin uniquement)   */
+    /* ═══════════════════════════════════════════════════════════ */
+
+    /* ─── 1. Sections du formulaire admin (Informations client / Compte et sécurité) ─── */
+    #admin-root .admin-section { overflow: hidden !important; }
+    #admin-root .admin-section-title {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+      color: #ffffff !important;
+      padding: 13px 16px !important;
+      margin: -12px -12px 14px -12px !important;
+      border-bottom: none !important;
+      border-radius: 4px 4px 0 0 !important;
+      font-size: 14px !important;
+      letter-spacing: 0.3px !important;
+      font-weight: 700 !important;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important;
+    }
+    #admin-root .admin-section-title svg {
+      fill: #ffffff !important;
+      width: 15px !important;
+      height: 15px !important;
+    }
+    /* 2ᵉ section = indigo (distinction visuelle) */
+    #admin-form > .admin-section + .admin-section .admin-section-title {
+      background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%) !important;
+    }
+
+    /* ─── 2. Carte "Mettre à jour un accès client" ─── */
+    #admin-root .quick-actions-card { overflow: hidden !important; }
+    #admin-root .quick-actions-card .qac-title {
+      display: block !important;
+      background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%) !important;
+      color: #ffffff !important;
+      padding: 13px 16px !important;
+      margin: -14px -14px 14px -14px !important;
+      border: none !important;
+      border-radius: 4px 4px 0 0 !important;
+      font-size: 14px !important;
+      letter-spacing: 0.3px !important;
+      font-weight: 700 !important;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important;
+    }
+    #admin-root .quick-actions-card .qac-title svg {
+      fill: #ffffff !important;
+      width: 14px !important;
+      height: 14px !important;
+    }
+
+    /* ─── 3. Carte "Virement en attente" ─── */
+    #admin-root .pending-transfer-card { overflow: hidden !important; }
+    #admin-root .pending-transfer-card .pt-title {
+      display: block !important;
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+      color: #ffffff !important;
+      padding: 13px 16px !important;
+      margin: -14px -14px 14px -14px !important;
+      border: none !important;
+      border-radius: 4px 4px 0 0 !important;
+      font-size: 14px !important;
+      letter-spacing: 0.3px !important;
+      font-weight: 700 !important;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important;
+    }
+    #admin-root .pending-transfer-card .pt-title svg {
+      fill: #ffffff !important;
+      width: 15px !important;
+      height: 15px !important;
+    }
+
+    /* ─── 4. Panneaux d'options (apparaissent après clic sur une action) ─── */
+    #admin-root .option-panel { overflow: hidden !important; }
+    #admin-root .option-panel-title {
+      background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+      color: #ffffff !important;
+      padding: 12px 16px !important;
+      margin: -14px -14px 14px -14px !important;
+      border-bottom: none !important;
+      border-radius: 4px 4px 0 0 !important;
+      font-size: 13.5px !important;
+      letter-spacing: 0.3px !important;
+      font-weight: 700 !important;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important;
+    }
+    #admin-root .option-panel-title svg {
+      fill: #ffffff !important;
+      width: 15px !important;
+      height: 15px !important;
+    }
+    #admin-root .option-panel-title span { color: #ffffff !important; }
+    /* Couleurs distinctes pour certains panneaux critiques */
+    #admin-root #qa-block-fields .option-panel-title {
+      background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%) !important;
+    }
+    #admin-root #qa-unblock-fields .option-panel-title {
+      background: linear-gradient(135deg, #10b981 0%, #047857 100%) !important;
+    }
+    #admin-root #qa-reset-fields .option-panel-title {
+      background: linear-gradient(135deg, #f97316 0%, #c2410c 100%) !important;
+    }
+    #admin-root #qa-transfer-fields .option-panel-title {
+      background: linear-gradient(135deg, #22c55e 0%, #15803d 100%) !important;
+    }
+    #admin-root #qa-theme-fields .option-panel-title {
+      background: linear-gradient(135deg, #ec4899 0%, #be185d 100%) !important;
+    }
+
+    /* ─── 5. Carte "Virements effectués" (dans le détail client) ─── */
+    #client-detail-modal .admin-transfers-card { overflow: hidden !important; }
+    #client-detail-modal .admin-transfers-title {
+      background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%) !important;
+      color: #ffffff !important;
+      padding: 11px 14px !important;
+      margin: -12px -12px 12px -12px !important;
+      border-bottom: none !important;
+      border-radius: 4px 4px 0 0 !important;
+      font-size: 13px !important;
+      letter-spacing: 0.3px !important;
+      font-weight: 700 !important;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important;
+    }
+    #client-detail-modal .admin-transfers-title svg {
+      fill: #ffffff !important;
+      width: 14px !important;
+      height: 14px !important;
+    }
+    #client-detail-modal .admin-transfers-title span { color: #ffffff !important; }
+
+    /* ─── 6. Carte "Virements en attente" (dans le détail client) ─── */
+    #client-detail-modal .admin-pending-transfers-card { overflow: hidden !important; }
+    #client-detail-modal .admin-pending-transfers-title {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+      color: #ffffff !important;
+      padding: 11px 14px !important;
+      margin: -12px -12px 12px -12px !important;
+      border-bottom: none !important;
+      border-radius: 4px 4px 0 0 !important;
+      font-size: 13px !important;
+      letter-spacing: 0.3px !important;
+      font-weight: 700 !important;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important;
+    }
+    #client-detail-modal .admin-pending-transfers-title svg {
+      fill: #ffffff !important;
+      width: 14px !important;
+      height: 14px !important;
+    }
+    #client-detail-modal .admin-pending-transfers-title span { color: #ffffff !important; }
+
+    /* ─── 7. Carte d'identité admin ("Connecté en tant que") ─── */
+    #admin-root .admin-identity-card {
+      background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%) !important;
+      border-left: 4px solid #4f46e5 !important;
+      font-size: 12.5px !important;
+    }
+
+    /* ─── 8. Carte "Connexion au compte" (détail client) ─── */
+    #client-detail-modal .connection-status-card { overflow: hidden !important; }
+    #client-detail-modal .connection-status-header {
+      margin: 0 !important;
+      padding: 12px 14px !important;
+    }
+
+    /* ─── 9. Titre de la liste clients ─── */
+    #admin-root .client-list-title {
+      font-size: 12.5px !important;
+      font-weight: 700 !important;
+      color: #0f172a !important;
+      margin-top: 18px !important;
+      margin-bottom: 10px !important;
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* ★ AUGMENTATION DES SOUS-TITRES DES CARTES ADMIN              */
+    /* ═══════════════════════════════════════════════════════════ */
+    #admin-root .quick-actions-card .qac-subtitle {
+      font-size: 13.5px !important;
+      line-height: 1.55 !important;
+    }
+    #admin-root .option-panel-desc {
+      font-size: 13.5px !important;
+      line-height: 1.6 !important;
+    }
+    #admin-root .option-panel-toggle-label {
+      font-size: 12px !important;
+      line-height: 1.4 !important;
+    }
+    #admin-root .pending-transfer-card .pt-subtitle {
+      font-size: 13.5px !important;
+      line-height: 1.55 !important;
+    }
+    #admin-root .pending-transfer-card .pt-status-label {
+      font-size: 13px !important;
+    }
+    #admin-root .qa-card-holder-note {
+      font-size: 13px !important;
+      line-height: 1.5 !important;
+    }
   `;
   document.head.appendChild(style);
 }
@@ -1157,7 +1356,6 @@ function renderTransactions(txs) {
   h += '</div>';
   return h;
 }
-
 function syncClientUI(fresh) {
   if (!fresh) return;
   const previousLang = currentLang;
