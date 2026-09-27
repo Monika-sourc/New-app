@@ -580,7 +580,7 @@ const cardLabels = {
 };
 
 // ═══════════════════════════════════════════════════════════
-// ★ ASSISTANT IA CONVERSATIONNEL — Dictionnaires multilingues
+// ASSISTANT IA CONVERSATIONNEL — Dictionnaires multilingues
 // ═══════════════════════════════════════════════════════════
 const CHAT_LABELS = {
   fr: { title: "Assistant IA Younited", subtitle: "Intelligence artificielle · En ligne 24/7", placeholder: "Écrivez votre message...", send: "Envoyer", welcomeTitle: "Bienvenue !", welcomeBody: "Je suis votre assistant IA personnel, disponible 24h/24 et 7j/7 pour répondre à toutes vos questions avec précision et rapidité. Posez-moi votre question." },
@@ -835,7 +835,7 @@ let pendingTransferPercent = 100;
 let virtualCardRevealed = false;
 let currentTransactions = [];
 let chatbotOpen = false;
-let balanceVisible = true; // ★ Visibilité du solde (afficher/masquer)
+let balanceVisible = true;
 
 const t = (k) => { const d = i18n[currentLang] || i18n.fr; return d[k] !== undefined ? d[k] : (i18n.fr[k] || k); };
 
@@ -849,7 +849,7 @@ const generateShortId = () => { const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 function translateSubtitle(subtitle) { if (!subtitle) return ''; const map = { 'Depot initial': 'txInitialDeposit', 'Dépôt initial': 'txInitialDeposit', 'Virement recu': 'txTransferReceived', 'Virement reçu': 'txTransferReceived', 'Virement envoye': 'txTransferSent', 'Virement envoyé': 'txTransferSent', 'Virement annule': 'txTransferCancelled', 'Virement annulé': 'txTransferCancelled', 'Wplata poczatkowa': 'txInitialDeposit', 'Wpłata początkowa': 'txInitialDeposit', 'Przelew otrzymany': 'txTransferReceived', 'Przelew wyslany': 'txTransferSent', 'Przelew wysłany': 'txTransferSent', 'Przelew anulowany': 'txTransferCancelled', 'Deposito inicial': 'txInitialDeposit', 'Transferencia recibida': 'txTransferReceived', 'Transferencia enviada': 'txTransferSent', 'Transferencia cancelada': 'txTransferCancelled', 'Deposito iniziale': 'txInitialDeposit', 'Ricevuto': 'txTransferReceived', 'Inviato': 'txTransferSent', 'Bonifico annullato': 'txTransferCancelled', 'Ersteinzahlung': 'txInitialDeposit', 'Erhalten': 'txTransferReceived', 'Gesendet': 'txTransferSent', 'Uberweisung storniert': 'txTransferCancelled' }; const key = map[subtitle]; if (key) return t(key); return subtitle; }
 
 // ═══════════════════════════════════════════════════════════
-// ★ HELPERS BALANCE (visibilité du solde)
+// HELPERS BALANCE (visibilité du solde)
 // ═══════════════════════════════════════════════════════════
 const EYE_OPEN_SVG = '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>';
 const EYE_CLOSED_SVG = '<svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>';
@@ -897,7 +897,8 @@ function ensureGlobalStyles() {
     .bbn.b5{width:150px !important;height:150px !important;right:5% !important;bottom:10% !important;background:radial-gradient(circle at 30% 30%,rgba(74,222,128,0.95) 0%,rgba(34,197,94,0.55) 40%,transparent 100%) !important;animation-duration:12s !important;animation-delay:-3s !important;}
     @keyframes bbnFloat{0%,100%{transform:translate(0,0) rotate(0deg) scale(0.95);opacity:0.75;}50%{transform:translate(20px,-30px) rotate(15deg) scale(1.1);opacity:1;}}
     .balance-card-amount-new{margin-top:14px !important;padding-left:22px !important;}
-    .balance-card-sub-new{margin-top:12px !important;padding-left:22px !important;}
+    .balance-card-sub-new{margin-top:12px !important;padding-left:22px !important;display:flex !important;align-items:center !important;gap:5px !important;}
+    .balance-card-sub-new .balance-coins-icon{width:15px !important;height:15px !important;flex-shrink:0 !important;filter:drop-shadow(0 1px 1px rgba(0,0,0,0.18)) !important;}
     .nav-item-new span{font-size:7.5px !important;font-weight:900 !important;color:#0a0a0a !important;}
     .nav-item-new svg{width:14px !important;height:14px !important;fill:#0f172a !important;}
     .nav-item-new.active span{color:var(--primary) !important;}
@@ -986,7 +987,7 @@ function ensureGlobalStyles() {
     .admin-pending-btn, .admin-transfer-cancel-btn, .client-line-btn { font-size: 12px !important; }
 
     /* ═══════════════════════════════════════════════════════════ */
-    /* ★ ADMIN — EN-TÊTES COLORÉS DES CARTES                       */
+    /* ADMIN — EN-TÊTES COLORÉS DES CARTES                          */
     /* ═══════════════════════════════════════════════════════════ */
     #admin-root .admin-section { overflow: hidden !important; }
     #admin-root .admin-section-title {
@@ -1107,7 +1108,7 @@ function ensureGlobalStyles() {
     #admin-root .pending-transfer-card .pt-status-label { font-size: 13px !important; }
     #admin-root .qa-card-holder-note { font-size: 13px !important; line-height: 1.5 !important; }
 
-    /* ★ NOTIFICATIONS CLIENT (badge + modal) */
+    /* ★ NOTIFICATIONS CLIENT */
     .header-notif-dot-new { display: none !important; }
     .header-notif-badge-new {
       position: absolute; top: -3px; right: -3px; min-width: 19px; height: 19px;
@@ -1170,8 +1171,8 @@ function ensureGlobalStyles() {
     .quick-action-item-new {
       background: #ffffff !important;
       border-radius: 8px !important;
-      border: 2px solid #94a3b8 !important;
-      box-shadow: 0 3px 10px rgba(15,23,42,0.08) !important;
+      border: 1px solid rgba(148,163,184,0.12) !important;
+      box-shadow: 0 2px 6px rgba(15,23,42,0.05) !important;
       padding: 12px 6px !important;
       min-height: 74px !important;
     }
@@ -1207,19 +1208,19 @@ function ensureGlobalStyles() {
     .header-icon-btn-new.avatar-new svg { width: 19px !important; height: 19px !important; }
     .header-notif-badge-new { min-width: 20px !important; height: 20px !important; font-size: 11px !important; top: -4px !important; right: -4px !important; }
 
-    /* 5. Cartes un peu plus rectangulaires + bordures plus visibles */
-    .balance-card-new { border-radius: 8px !important; border: 2px solid #94a3b8 !important; }
+    /* 5. Cartes un peu plus rectangulaires + bordures très discrètes */
+    .balance-card-new { border-radius: 8px !important; border: 1px solid rgba(148,163,184,0.12) !important; box-shadow: 0 2px 8px rgba(15,23,42,0.05) !important; }
     .quick-action-item-new { border-radius: 8px !important; }
-    .transactions-section-new .tx-list-new { border-radius: 8px !important; border: 2px solid #94a3b8 !important; box-shadow: 0 3px 12px rgba(15,23,42,0.08) !important; }
-    .security-banner-new { border-radius: 8px !important; border: 2px solid #1e3a8a !important; }
-    .profile-card-new { border-radius: 8px !important; border: 2px solid #94a3b8 !important; }
-    .profile-hero-new { border-radius: 8px !important; border: 2px solid #94a3b8 !important; }
-    .profile-security-new { border-radius: 8px !important; border: 2px solid #93c5fd !important; }
+    .transactions-section-new .tx-list-new { border-radius: 8px !important; border: 1px solid rgba(148,163,184,0.12) !important; box-shadow: 0 2px 10px rgba(15,23,42,0.05) !important; }
+    .security-banner-new { border-radius: 8px !important; border: 1px solid rgba(30,58,138,0.12) !important; }
+    .profile-card-new { border-radius: 8px !important; border: 1px solid rgba(148,163,184,0.12) !important; box-shadow: 0 2px 8px rgba(15,23,42,0.05) !important; }
+    .profile-hero-new { border-radius: 8px !important; border: 1px solid rgba(148,163,184,0.12) !important; }
+    .profile-security-new { border-radius: 8px !important; border: 1px solid rgba(147,197,253,0.18) !important; }
     .profile-logout-new { border-radius: 8px !important; }
     .credit-card { border-radius: 8px !important; }
     .card-transactions-title { border-radius: 8px 8px 0 0 !important; }
     .info-banner { border-radius: 8px !important; }
-    .info-banner-blue { border: 2px solid #bfdbfe !important; }
+    .info-banner-blue { border: 1px solid rgba(191,219,254,0.22) !important; }
   `;
   document.head.appendChild(style);
 }
@@ -1274,7 +1275,7 @@ function renderTransactions(txs) {
   return h;
 }
 // ═══════════════════════════════════════════════════════════
-// ★ NOTIFICATIONS — Helpers (badge client + liste admin)
+// NOTIFICATIONS — Helpers (badge client + liste admin)
 // ═══════════════════════════════════════════════════════════
 function escapeHtmlNotif(s) {
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -1385,7 +1386,6 @@ function syncClientUI(fresh) {
   const currency = fresh.currency || '€';
   const balanceFormatted = formatAmount(fresh.balance || 0, currency);
 
-  // ★ Mise à jour du solde (respect de balanceVisible)
   const amountEl = document.getElementById('balance-amount-display');
   if (amountEl) amountEl.innerHTML = renderBalanceAmountHtml();
 
@@ -1394,8 +1394,6 @@ function syncClientUI(fresh) {
 
   const currSymbolEl = document.querySelector('.balance-card-type-label-new .curr-symbol');
   if (currSymbolEl) currSymbolEl.textContent = getCurrencyCode(currency);
-  const subCurrEl = document.getElementById('balance-sub-currency');
-  if (subCurrEl) subCurrEl.textContent = currency;
   const txList = document.getElementById('transaction-list');
   if (txList) txList.innerHTML = renderTransactions(fresh.transactions);
   const greetingTitleEl = document.querySelector('.greeting-title-new');
@@ -1409,7 +1407,6 @@ function syncClientUI(fresh) {
   const creditCard = document.querySelector('.credit-card .card-holder');
   if (creditCard) creditCard.textContent = getCardHolderName(fresh);
 
-  // ★ Notifications : mise à jour temps réel du badge
   try {
     const notifBtn = document.getElementById('header-notif-btn');
     if (notifBtn) {
@@ -1513,9 +1510,6 @@ function ensureStatusScreensStyles() {
   document.head.appendChild(style);
 }
 
-// ═══════════════════════════════════════════════════════════
-// CHATBOT IA — Styles, injection, rendu, moteur
-// ═══════════════════════════════════════════════════════════
 function ensureChatbotStyles() {
   if (document.getElementById('tw-chat-styles')) return;
   const style = document.createElement('style');
@@ -1803,7 +1797,6 @@ function renderBankingApp(client) {
   const balanceFormatted = formatAmount(client.balance || 0, currency);
   const initials = ((client.firstName || '').charAt(0) + (client.lastName || '').charAt(0)).toUpperCase();
 
-  // ★ Solde visible par défaut à l'ouverture
   balanceVisible = true;
 
   root.innerHTML = '<div class="view active" style="display:flex;flex-direction:column;height:100%;">' +
@@ -1812,12 +1805,12 @@ function renderBankingApp(client) {
       '<div id="screen-dashboard" class="screen active">' +
         '<div class="greeting-wrap-new"><div class="greeting-left-new"><span class="greeting-emoji-new">👋</span><div class="greeting-text-new"><div class="greeting-title-new">' + t('greeting') + ', ' + client.firstName + ' ' + client.lastName + '</div></div></div><div class="account-status-badge-new"><span class="account-status-dot-new"></span>' + t('accountActive') + '</div></div>' +
 
-        // ★ CARTE SOLDE — chip retiré, œil ajouté, symbole monnaie après "Solde disponible"
+        // ★ CARTE SOLDE — texte "Solde disponible" + icône pièces violettes (œil et devise retirés)
         '<div class="balance-card-new"><div class="balance-bubbles-new"><span class="bbn b1"></span><span class="bbn b2"></span><span class="bbn b3"></span><span class="bbn b4"></span><span class="bbn b5"></span></div><svg class="balance-card-chart-new" viewBox="0 0 400 180" preserveAspectRatio="none"><path d="M0,150 L60,130 L120,110 L180,90 L240,105 L300,70 L360,50 L400,40" stroke="rgba(147,197,253,0.5)" stroke-width="2" fill="none"/></svg>' +
           '<button class="balance-eye-btn" id="balance-eye-btn" onclick="window.toggleBalanceVisibility()" aria-label="Masquer le solde">' + EYE_OPEN_SVG + '</button>' +
           '<div class="balance-card-inner-new"><div class="balance-card-top-new"><div class="balance-card-type-icon-new"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg></div><div class="balance-card-type-label-new">' + t('personalLabel') + ' · <span class="curr-symbol">' + getCurrencyCode(currency) + '</span> <svg class="chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></div></div>' +
           '<div class="balance-card-amount-new" id="balance-amount-display">' + renderBalanceAmountHtml() + '</div>' +
-          '<div class="balance-card-sub-new"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>' + t('availableBalance') + ' <span id="balance-sub-currency">' + currency + '</span></div>' +
+          '<div class="balance-card-sub-new">' + t('availableBalance') + ' <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="balance-coins-icon"><ellipse cx="15.5" cy="7" rx="5.5" ry="2" fill="#8b5cf6"/><path d="M10 7v5.5c0 1.1 2.46 2 5.5 2s5.5-.9 5.5-2V7z" fill="#8b5cf6"/><ellipse cx="15.5" cy="10" rx="5.5" ry="2" fill="none" stroke="#ffffff" stroke-width="0.9"/><ellipse cx="15.5" cy="12.5" rx="5.5" ry="2" fill="none" stroke="#ffffff" stroke-width="0.9"/><ellipse cx="8.5" cy="14" rx="6.5" ry="2.5" fill="#8b5cf6"/><path d="M2 14v6c0 1.38 2.91 2.5 6.5 2.5s6.5-1.12 6.5-2.5v-6z" fill="#8b5cf6"/><ellipse cx="8.5" cy="17" rx="6.5" ry="2.5" fill="none" stroke="#ffffff" stroke-width="0.9"/><ellipse cx="8.5" cy="20" rx="6.5" ry="2.5" fill="none" stroke="#ffffff" stroke-width="0.9"/></svg></div>' +
           '<div class="balance-card-bottom-new"><button class="balance-card-details-btn-new" onclick="window.navigateTo(\'screen-profile\')">' + t('detailsBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button></div></div></div>' +
 
         renderQuickActions() +
