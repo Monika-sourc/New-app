@@ -25,7 +25,7 @@
   --gray-700: #334155;
   --gray-800: #1e293b;
   --gray-900: #0f172a;
-  --bg-gray: #d8dbe0;
+  --bg-gray: #c9cdd5;
   --bubble-c1: hsla(320, 95%, 62%, 0.95);
   --bubble-c2: hsla(170, 95%, 58%, 0.85);
   --bubble-c3: hsla(60, 98%, 65%, 0.75);
@@ -871,7 +871,7 @@ input, select, textarea { font-family: inherit; }
   background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 55%, var(--primary) 100%);
   border-radius: 13px;
   padding: 11px 11px 10px 11px;
-  margin: 0 9px 10px 9px;
+  margin: 0 9px 22px 9px;
   color: #fff;
   position: relative;
   overflow: hidden;
@@ -933,8 +933,8 @@ input, select, textarea { font-family: inherit; }
 /* ---------- HISTORIQUE TRANSACTIONS ---------- */
 .transactions-section-new { margin: 0 9px 10px 9px; }
 .tx-section-header-new { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 2px 2px 7px 2px; flex-wrap: wrap; }
-.tx-section-title-new { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: #0f172a; white-space: normal; word-break: break-word; }
-.tx-section-title-new svg { width: 14px; height: 14px; fill: #2563eb; flex-shrink: 0; }
+.tx-section-title-new { display: flex; align-items: center; gap: 5px; font-size: 14.5px; font-weight: 700; color: #0f172a; white-space: normal; word-break: break-word; }
+.tx-section-title-new svg { width: 16px; height: 16px; fill: #2563eb; flex-shrink: 0; }
 .see-all-link-new { color: #2563eb; font-size: 10.5px; font-weight: 700; background: none; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; font-family: inherit; padding: 4px 4px; flex-shrink: 0; white-space: normal; word-break: break-word; text-align: center; }
 .see-all-link-new svg { width: 10px; height: 10px; fill: #2563eb; flex-shrink: 0; }
 .tx-list-new { background: #ffffff; border-radius: 6px; padding: 0; box-shadow: 0 2px 14px rgba(15, 23, 42, 0.06); overflow: hidden; }
