@@ -25,7 +25,7 @@
   --gray-700: #334155;
   --gray-800: #1e293b;
   --gray-900: #0f172a;
-  --bg-gray: #b3b7c0;
+  --bg-gray: #bfc3cb;
   --bubble-c1: hsla(320, 95%, 62%, 0.95);
   --bubble-c2: hsla(170, 95%, 58%, 0.85);
   --bubble-c3: hsla(60, 98%, 65%, 0.75);
@@ -875,7 +875,6 @@ input, select, textarea { font-family: inherit; }
   color: #fff;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22), 0 12px 28px rgba(0, 0, 0, 0.30), 0 20px 50px rgba(15, 23, 42, 0.42) !important;
   min-height: 132px;
   display: flex; flex-direction: column;
 }
@@ -1548,13 +1547,12 @@ input, select, textarea { font-family: inherit; }
 .header-icon-btn-new.avatar-new svg { width: 19px !important; height: 19px !important; }
 .header-notif-badge-new { min-width: 20px !important; height: 20px !important; font-size: 11px !important; top: -4px !important; right: -4px !important; }
 
-/* 5. OMBRE RENFORCÉE ET FORCÉE sur la grande carte (4 couches) */
+/* 5. OMBRE BIEN VISIBLE autour de la grande carte */
 .balance-card-new {
   box-shadow:
-    0 4px 10px rgba(0, 0, 0, 0.22),
-    0 12px 28px rgba(0, 0, 0, 0.30),
-    0 20px 50px rgba(15, 23, 42, 0.42),
-    0 30px 70px rgba(15, 23, 42, 0.28) !important;
+    0 6px 14px rgba(0, 0, 0, 0.28),
+    0 14px 32px rgba(0, 0, 0, 0.35),
+    0 22px 55px rgba(15, 23, 42, 0.45) !important;
   border-radius: 8px !important;
   border: 1px solid rgba(148,163,184,0.12) !important;
 }
