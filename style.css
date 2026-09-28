@@ -1,6 +1,8 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
    v63.0 - FINAL (textes complets partout)
+   + Réduction affichage client
+   + Espacement champs client + admin
    ===================================================== */
 
 :root {
@@ -2027,6 +2029,241 @@ input, select, textarea { font-family: inherit; }
 .form-input.input-error { color: #7f1d1d !important; background: #fef2f2 !important; }
 
 /* ===================================================== */
+/* ★★★ AJUSTEMENTS DEMANDÉS — COMPACITÉ + ESPACEMENT ★★★ */
+/* 1) Affichage du compte client réduit (champs + textes) */
+/* 2) Espacement accru entre les champs (client + admin)  */
+/* AUCUN texte supprimé, AUCUN bouton modifié, AUCUNE clé */
+/* ===================================================== */
+
+/* ----------------------------------------------------- */
+/* 1) COMPTE CLIENT — RÉDUCTION LÉGÈRE DE L'AFFICHAGE    */
+/* ----------------------------------------------------- */
+
+/* Champs de saisie du client — plus compacts */
+.form-input {
+  padding: 9px 11px !important;
+  font-size: 12.5px !important;
+  min-height: 36px !important;
+  border-radius: 7px !important;
+}
+.amount-input {
+  padding: 10px 12px !important;
+  font-size: 16px !important;
+  min-height: 42px !important;
+  letter-spacing: 0.8px !important;
+}
+.verify-code-input {
+  padding: 9px 11px !important;
+  font-size: 13px !important;
+  min-height: 36px !important;
+  letter-spacing: 3px !important;
+}
+.transfer-card {
+  padding: 13px 12px 12px 12px !important;
+}
+.transfer-amount {
+  font-size: 20px !important;
+  padding: 4px 0 10px 0 !important;
+}
+.page-title-bar {
+  padding: 10px 12px !important;
+  font-size: 12px !important;
+}
+.form-label {
+  font-size: 10.5px !important;
+  margin-bottom: 5px !important;
+  letter-spacing: 0.3px !important;
+}
+.warning-box {
+  padding: 9px 11px !important;
+  margin-top: 10px !important;
+}
+.warning-text {
+  font-size: 10px !important;
+  line-height: 1.45 !important;
+}
+.submit-btn {
+  padding: 11px 12px !important;
+  font-size: 12px !important;
+  margin: 0 12px 12px 12px !important;
+}
+.verify-card {
+  padding: 13px 12px 13px 12px !important;
+}
+.verify-header-title {
+  font-size: 12px !important;
+}
+.verify-row-label {
+  font-size: 11px !important;
+}
+.verify-row-value {
+  font-size: 12.5px !important;
+  padding-left: 14px !important;
+}
+.processing-page-title {
+  font-size: 15px !important;
+  padding: 18px 20px 12px 20px !important;
+}
+.processing-desc-text {
+  font-size: 11.5px !important;
+  line-height: 1.55 !important;
+}
+
+/* ----------------------------------------------------- */
+/* 2) ESPACEMENT ENTRE LES CHAMPS — PAGE TRANSFERT      */
+/* ----------------------------------------------------- */
+
+/* Chaque champ du formulaire de virement respire davantage */
+.form-group {
+  padding: 0 0 16px 0 !important;
+}
+.form-group:last-of-type {
+  padding-bottom: 4px !important;
+}
+#screen-transfer .form-group {
+  padding: 0 0 16px 0 !important;
+}
+#screen-transfer .form-group:last-of-type {
+  padding-bottom: 4px !important;
+}
+.transfer-card .form-group + .form-group {
+  margin-top: 0 !important;
+}
+/* Espace supplémentaire sous le label avant le champ */
+.form-label {
+  display: block !important;
+  margin-bottom: 7px !important;
+}
+/* Espace supplémentaire au-dessus du bloc warning */
+.transfer-card .warning-box {
+  margin-top: 14px !important;
+}
+
+/* ----------------------------------------------------- */
+/* 2 bis) ESPACEMENT ENTRE LES CHAMPS — PAGE ADMIN      */
+/* ----------------------------------------------------- */
+
+/* Grille admin — plus d'air entre les lignes et colonnes */
+.admin-grid {
+  gap: 16px 12px !important;
+  row-gap: 16px !important;
+  column-gap: 12px !important;
+}
+.admin-group {
+  gap: 6px !important;
+}
+.admin-group label {
+  margin-bottom: 3px !important;
+}
+.admin-group input,
+.admin-group select,
+.admin-group textarea {
+  padding-top: 9px !important;
+  padding-bottom: 9px !important;
+}
+
+/* Section admin — espace global */
+.admin-section {
+  padding: 14px 14px 16px 14px !important;
+}
+
+/* Quick actions card — chaque groupe respire */
+.quick-actions-card .admin-group {
+  margin-bottom: 18px !important;
+}
+.quick-actions-card .admin-group:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Option panel — chaque groupe respire */
+.option-panel .admin-group {
+  margin-bottom: 16px !important;
+}
+.option-panel .admin-group:last-child {
+  margin-bottom: 0 !important;
+}
+.option-panel .admin-grid {
+  gap: 16px 12px !important;
+}
+/* Séparation entre les switches */
+.qa-switch + .qa-switch {
+  margin-top: 12px !important;
+}
+.option-panel-toggle {
+  margin-top: 16px !important;
+  padding-top: 14px !important;
+}
+.option-panel-toggle-label {
+  margin-bottom: 12px !important;
+}
+
+/* Pending transfer card — plus d'air */
+.pending-transfer-card .admin-group {
+  margin-bottom: 16px !important;
+}
+.pending-transfer-card .pt-subtitle {
+  margin-bottom: 16px !important;
+}
+.pending-transfer-card .pt-status-line {
+  margin-bottom: 14px !important;
+}
+
+/* Admin auth (login admin) — plus d'air */
+.admin-auth .auth-form {
+  gap: 16px !important;
+}
+.admin-auth .auth-group {
+  margin-bottom: 4px !important;
+}
+.admin-auth .auth-group label {
+  margin-bottom: 4px !important;
+}
+
+/* Formulaire création client (admin) */
+#admin-form .admin-section .admin-grid {
+  gap: 18px 12px !important;
+}
+#admin-form .admin-group {
+  margin-bottom: 4px !important;
+}
+#admin-form textarea {
+  min-height: 50px !important;
+}
+
+/* ----------------------------------------------------- */
+/* 3) VÉRIFICATION — ESPACEMENT ENTRE LES LIGNES        */
+/* ----------------------------------------------------- */
+.verify-list {
+  gap: 16px !important;
+}
+.verify-row {
+  gap: 6px !important;
+}
+.verify-lock-row {
+  margin-bottom: 14px !important;
+}
+.verify-separator {
+  margin: 18px 0 16px 0 !important;
+}
+.verify-code-label {
+  margin-bottom: 8px !important;
+}
+
+/* ----------------------------------------------------- */
+/* 4) SUPER ADMIN — ESPACEMENT DES CHAMPS               */
+/* ----------------------------------------------------- */
+.sa-login-form {
+  gap: 14px !important;
+}
+.sa-admin-fields {
+  padding: 12px 14px !important;
+}
+.sa-field-row {
+  padding: 7px 0 !important;
+}
+
+/* ===================================================== */
 /* FIN - TRANSFERWIRE v63.0 (VERSION FINALE COMPLÈTE)    */
 /* + Contraste WCAG AA renforcé — Tous les textes OK     */
+/* + Réduction affichage client + Espacement champs       */
 /* ===================================================== */
