@@ -1547,14 +1547,16 @@ input, select, textarea { font-family: inherit; }
 .header-icon-btn-new.avatar-new svg { width: 19px !important; height: 19px !important; }
 .header-notif-badge-new { min-width: 20px !important; height: 20px !important; font-size: 11px !important; top: -4px !important; right: -4px !important; }
 
-/* 5. OMBRE BIEN VISIBLE autour de la grande carte */
+/* 5. OMBRE AUTOUR DE LA BORDURE + HALO BLEU DOUX sur la grande carte */
 .balance-card-new {
   box-shadow:
+    0 0 0 3px rgba(26, 115, 232, 0.10),
+    0 0 22px 4px rgba(26, 115, 232, 0.22),
     0 6px 14px rgba(0, 0, 0, 0.28),
     0 14px 32px rgba(0, 0, 0, 0.35),
     0 22px 55px rgba(15, 23, 42, 0.45) !important;
   border-radius: 8px !important;
-  border: 1px solid rgba(148,163,184,0.12) !important;
+  border: 1.5px solid rgba(59, 130, 246, 0.35) !important;
 }
 
 /* 6. Cartes un peu plus rectangulaires + bordures très discrètes */
