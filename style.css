@@ -1,8 +1,6 @@
 /* =====================================================
    TRANSFERWIRE - STYLES
-   v63.0 - FINAL (textes complets partout)
-   + Réduction affichage client
-   + Espacement champs client + admin
+   v64.0 - FINAL + Réduction affichage client + Espacement champs
    ===================================================== */
 
 :root {
@@ -326,7 +324,7 @@ input, select, textarea { font-family: inherit; }
   cursor: pointer !important;
 }
 
-/* ========== LOGIN CLIENT (legacy — conservé au cas où) ========== */
+/* ========== LOGIN CLIENT (legacy) ========== */
 .login-page { display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; padding: 20px; background: var(--bg-gray); overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .login-card { width: 100%; max-width: 320px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 28px 22px 26px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 6px 20px rgba(15, 23, 42, 0.1); animation: loginCardIn 0.4s ease-out; }
 @keyframes loginCardIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -1494,11 +1492,9 @@ input, select, textarea { font-family: inherit; }
 /* ★ AJUSTEMENTS VISUELS DU COMPTE CLIENT                */
 /* ===================================================== */
 
-/* 1. Espace header → greeting → grande carte */
 .greeting-wrap-new { padding: 20px 12px 14px 12px !important; }
 .balance-card-new { margin-top: 4px !important; }
 
-/* 2. Les 3 raccourcis deviennent 3 petites cartes séparées */
 .quick-actions-row-new {
   background: transparent !important;
   box-shadow: none !important;
@@ -1518,7 +1514,6 @@ input, select, textarea { font-family: inherit; }
 }
 .quick-action-item-new:not(:last-child)::after { display: none !important; }
 
-/* 3. Chip chocolat masqué + bouton œil (couleur ROUGE VIF unique) */
 .balance-card-chip-new { display: none !important; }
 .balance-eye-btn {
   position: absolute;
@@ -1544,12 +1539,10 @@ input, select, textarea { font-family: inherit; }
 .balance-eye-btn svg { width: 18px; height: 18px; fill: #ffffff; display: block; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35)); }
 .balance-amount-hidden { letter-spacing: 3px !important; font-weight: 800 !important; }
 
-/* 4. Icônes du header un peu plus grandes */
 .header-icon-btn-new svg { width: 22px !important; height: 22px !important; }
 .header-icon-btn-new.avatar-new svg { width: 19px !important; height: 19px !important; }
 .header-notif-badge-new { min-width: 20px !important; height: 20px !important; font-size: 11px !important; top: -4px !important; right: -4px !important; }
 
-/* 5. OMBRE AUTOUR DE LA BORDURE + HALO BLEU DOUX sur la grande carte */
 .balance-card-new {
   box-shadow:
     0 0 0 3px rgba(26, 115, 232, 0.10),
@@ -1561,7 +1554,6 @@ input, select, textarea { font-family: inherit; }
   border: 1.5px solid rgba(59, 130, 246, 0.35) !important;
 }
 
-/* 6. Cartes un peu plus rectangulaires + bordures très discrètes */
 .quick-action-item-new { border-radius: 8px !important; }
 .transactions-section-new .tx-list-new { border-radius: 8px !important; border: 1px solid rgba(148,163,184,0.12) !important; box-shadow: 0 2px 10px rgba(15,23,42,0.05) !important; }
 .security-banner-new { border-radius: 8px !important; border: 1px solid rgba(30,58,138,0.12) !important; }
@@ -1589,7 +1581,6 @@ input, select, textarea { font-family: inherit; }
   margin-bottom: 14px;
   box-shadow: 0 4px 14px rgba(16, 185, 129, 0.18);
 }
-
 .connected-devices-icon {
   width: 48px;
   height: 48px;
@@ -1601,124 +1592,24 @@ input, select, textarea { font-family: inherit; }
   flex-shrink: 0;
   box-shadow: 0 4px 10px rgba(16, 185, 129, 0.35);
 }
-
-.connected-devices-icon svg {
-  width: 24px;
-  height: 24px;
-  fill: #ffffff;
-  display: block;
-}
-
-.connected-devices-text {
-  flex: 1;
-  min-width: 0;
-}
-
-.connected-devices-label {
-  font-size: 10px;
-  font-weight: 800;
-  color: #065f46;
-  letter-spacing: 1.1px;
-  margin-bottom: 4px;
-}
-
-.connected-devices-count {
-  font-size: 26px;
-  font-weight: 800;
-  color: #059669;
-  line-height: 1;
-  letter-spacing: -0.5px;
-}
-
-.connected-devices-count small {
-  font-size: 12px;
-  font-weight: 600;
-  color: #047857;
-  margin-left: 6px;
-  letter-spacing: 0;
-}
-
-.connected-devices-sub {
-  font-size: 11px;
-  color: #047857;
-  margin-top: 4px;
-  font-weight: 500;
-  line-height: 1.4;
-  word-break: break-word;
-}
-
-.connected-devices-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-.connected-device-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  background: #f8fafc;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 8px;
-}
-
-.connected-device-num {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.connected-device-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.connected-device-ua {
-  font-size: 11.5px;
-  font-weight: 700;
-  color: #0f172a;
-  line-height: 1.35;
-  word-break: break-word;
-  margin-bottom: 3px;
-}
-
-.connected-device-meta {
-  font-size: 10px;
-  color: #64748b;
-  font-weight: 600;
-  line-height: 1.3;
-  word-break: break-word;
-}
-
-.connected-devices-empty {
-  padding: 16px 14px;
-  background: #f8fafc;
-  border: 1.5px dashed #cbd5e1;
-  border-radius: 8px;
-  text-align: center;
-  font-size: 11.5px;
-  color: #64748b;
-  font-weight: 600;
-}
+.connected-devices-icon svg { width: 24px; height: 24px; fill: #ffffff; display: block; }
+.connected-devices-text { flex: 1; min-width: 0; }
+.connected-devices-label { font-size: 10px; font-weight: 800; color: #065f46; letter-spacing: 1.1px; margin-bottom: 4px; }
+.connected-devices-count { font-size: 26px; font-weight: 800; color: #059669; line-height: 1; letter-spacing: -0.5px; }
+.connected-devices-count small { font-size: 12px; font-weight: 600; color: #047857; margin-left: 6px; letter-spacing: 0; }
+.connected-devices-sub { font-size: 11px; color: #047857; margin-top: 4px; font-weight: 500; line-height: 1.4; word-break: break-word; }
+.connected-devices-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+.connected-device-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 8px; }
+.connected-device-num { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.connected-device-info { flex: 1; min-width: 0; }
+.connected-device-ua { font-size: 11.5px; font-weight: 700; color: #0f172a; line-height: 1.35; word-break: break-word; margin-bottom: 3px; }
+.connected-device-meta { font-size: 10px; color: #64748b; font-weight: 600; line-height: 1.3; word-break: break-word; }
+.connected-devices-empty { padding: 16px 14px; background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 8px; text-align: center; font-size: 11.5px; color: #64748b; font-weight: 600; }
 
 /* ===================================================== */
 /* ★★★  LISIBILITÉ RENFORCÉE — CONTRASTE OPTIMAL  ★★★    */
-/* Tous les textes ont un contraste conforme WCAG AA     */
-/* (≥ 4.5:1 pour texte normal, ≥ 3:1 pour texte large)  */
-/* AUCUN texte gris n'est "noyé" dans son arrière-plan  */
 /* ===================================================== */
 
-/* ---------- 1) Textes gris clairs sur fond blanc → gris foncés ---------- */
 .quick-actions-card .qac-subtitle,
 .option-panel-toggle-label,
 .stat-card .lbl,
@@ -1756,7 +1647,6 @@ input, select, textarea { font-family: inherit; }
   color: #1e293b !important;
 }
 
-/* Icônes grises (chevrons, stylos, indicateurs) → gris foncé */
 .receipt-row-icon svg,
 .receipt-row-label svg,
 .tx-chevron-new,
@@ -1765,7 +1655,6 @@ input, select, textarea { font-family: inherit; }
   color: #334155 !important;
 }
 
-/* ---------- 2) Placeholders — gris moyen bien lisible ---------- */
 .form-input::placeholder,
 .verify-code-input::placeholder,
 .yld-input-group input::placeholder,
@@ -1780,7 +1669,6 @@ input, select, textarea { font-family: inherit; }
   opacity: 1 !important;
 }
 
-/* ---------- 3) Textes sur fond sombre — BLANC pur garanti ---------- */
 .header-brand-title-new,
 .header-brand-sub-new,
 .balance-card-type-label-new,
@@ -1824,7 +1712,6 @@ input, select, textarea { font-family: inherit; }
   opacity: 1 !important;
 }
 
-/* Opacités faibles → 100% pour ne plus "baver" */
 .header-brand-sub-new,
 .security-desc-new,
 .profile-hero-email,
@@ -1836,7 +1723,6 @@ input, select, textarea { font-family: inherit; }
   opacity: 1 !important;
 }
 
-/* ---------- 4) Textes sur fond orange/jaune (pending, warn) ---------- */
 .warning-text,
 .iban-new-warning,
 .iban-new-warning span,
@@ -1860,7 +1746,6 @@ input, select, textarea { font-family: inherit; }
 }
 .detail-footer-btn.send-credentials svg { fill: #451a03 !important; }
 
-/* ---------- 5) Textes sur fond vert clair (success) ---------- */
 .detail-status-box.active .detail-status-label { color: #14532d !important; }
 .detail-status-box.active .detail-status-value { color: #166534 !important; }
 .detail-footer-btn.send-activation { color: #14532d !important; }
@@ -1873,7 +1758,6 @@ input, select, textarea { font-family: inherit; }
 .connected-devices-count small { color: #065f46 !important; }
 .connected-devices-sub { color: #065f46 !important; }
 
-/* ---------- 6) Textes sur fond bleu clair (balance/info) ---------- */
 .detail-status-box.balance .detail-status-label { color: #1e3a8a !important; }
 .detail-status-box.balance .detail-status-value { color: #1e40af !important; }
 .info-banner-blue .banner-text { color: #1e3a8a !important; }
@@ -1882,11 +1766,9 @@ input, select, textarea { font-family: inherit; }
 .detail-footer-btn.copy { color: #1e3a8a !important; }
 .detail-footer-btn.copy svg { fill: #1e3a8a !important; }
 
-/* ---------- 7) Textes sur fond rouge clair (blocked) ---------- */
 .detail-status-box.blocked .detail-status-label { color: #7f1d1d !important; }
 .detail-status-box.blocked .detail-status-value { color: #991b1b !important; }
 
-/* ---------- 8) Labels de formulaire (admin + client) — contraste max ---------- */
 .admin-group label,
 .quick-actions-card label,
 .admin-auth .auth-group label,
@@ -1916,7 +1798,6 @@ input, select, textarea { font-family: inherit; }
   color: #0f172a !important;
 }
 
-/* ---------- 9) Titres / valeurs — noir pur garanti ---------- */
 .receipt-row-value,
 .transfer-detail-row-value,
 .detail-row-value,
@@ -1945,7 +1826,6 @@ input, select, textarea { font-family: inherit; }
   color: #000000 !important;
 }
 
-/* ---------- 10) SUPER ADMIN — textes sur fond sombre ---------- */
 .sa-admin-email,
 .sa-login-title { color: #ffffff !important; }
 .sa-admin-meta { color: #e2e8f0 !important; }
@@ -1962,7 +1842,6 @@ input, select, textarea { font-family: inherit; }
 .sa-topbar .sa-brand { color: #ffffff !important; }
 .sa-topbar .sa-brand span { color: #fbbf24 !important; }
 
-/* ---------- 11) BOUTONS — textes lisibles sur tous les fonds ---------- */
 .notif-btn.cancel { color: #0f172a !important; }
 .btn-close,
 .result-close-action,
@@ -1971,7 +1850,6 @@ input, select, textarea { font-family: inherit; }
 .detail-footer-btn { color: #0f172a !important; }
 .detail-footer-btn svg { fill: currentColor !important; }
 
-/* ---------- 12) PAGE LOGIN v63 — textes contrastés ---------- */
 .yld-logo-text,
 .yld-hero-title { color: #0a1f44 !important; }
 .yld-badge { color: #0f172a !important; }
@@ -1980,7 +1858,6 @@ input, select, textarea { font-family: inherit; }
 .yld-footer-item svg { stroke: #0f172a !important; }
 .yld-input-group input { color: #0f172a !important; }
 
-/* ---------- 13) Cartes TRANSFERT — labels + valeurs ---------- */
 .form-label,
 .verify-row-label,
 .verify-code-label,
@@ -1988,22 +1865,18 @@ input, select, textarea { font-family: inherit; }
 .iban-new-info-value { color: #000000 !important; }
 .receipt-line-label { color: #334155 !important; }
 
-/* ---------- 14) Bandeau sécurité — texte blanc pur ---------- */
 .security-title-new { color: #ffffff !important; font-weight: 800 !important; }
 .security-desc-new { color: #ffffff !important; font-weight: 600 !important; }
 .security-btn-new { color: #0a2540 !important; font-weight: 800 !important; }
 .security-btn-new svg { fill: #0a2540 !important; }
 
-/* ---------- 15) Badge "Compte actif" — vert foncé sur fond vert clair ---------- */
 .account-status-badge-new { color: #14532d !important; font-weight: 800 !important; }
 
-/* ---------- 16) Étoile / couronne / pastilles de nav — haute lisibilité ---------- */
 .nav-item-new span { color: #0f172a !important; font-weight: 800 !important; }
 .nav-item-new svg { fill: #0f172a !important; }
 .nav-item-new.active span { color: #5b21b6 !important; }
 .nav-item-new.active svg { fill: #5b21b6 !important; }
 
-/* ---------- 17) Petits textes icônes monochromes ---------- */
 .transfer-detail-row-icon svg,
 .result-info-box svg,
 .info-text svg,
@@ -2011,7 +1884,6 @@ input, select, textarea { font-family: inherit; }
 .verify-header-icon svg,
 .processing-details-header svg { fill: #0f172a !important; }
 
-/* ---------- 18) Reçus/status badges — contraste renforcé ---------- */
 .transfer-detail-status-badge.done,
 .receipt-status-done { color: #065f46 !important; background: #d1fae5 !important; }
 .transfer-detail-status-badge.failed { color: #7f1d1d !important; background: #fee2e2 !important; }
@@ -2019,251 +1891,277 @@ input, select, textarea { font-family: inherit; }
 .transfer-detail-status-badge.refund { color: #1e3a8a !important; background: #dbeafe !important; }
 .transfer-detail-status-badge.pending { color: #78350f !important; background: #fef3c7 !important; }
 
-/* ---------- 19) Tableau admin récap — chiffres bien noirs ---------- */
 .admin-pending-amount { color: #78350f !important; }
 .admin-transfer-amount { color: #7f1d1d !important; }
 .admin-identity-card strong { color: #1e3a8a !important; }
 
-/* ---------- 20) Bordures textuelles sur fond coloré ---------- */
 .amount-error-msg { color: #7f1d1d !important; background: #fee2e2 !important; }
 .form-input.input-error { color: #7f1d1d !important; background: #fef2f2 !important; }
 
 /* ===================================================== */
-/* ★★★ AJUSTEMENTS DEMANDÉS — COMPACITÉ + ESPACEMENT ★★★ */
-/* 1) Affichage du compte client réduit (champs + textes) */
-/* 2) Espacement accru entre les champs (client + admin)  */
-/* AUCUN texte supprimé, AUCUN bouton modifié, AUCUNE clé */
+/* ★★★  RÉDUCTION AFFICHAGE CLIENT + ESPACEMENT CHAMPS ★★★ */
+/*  Utilise html body pour garantir la plus haute        */
+/*  spécificité face aux styles injectés par JavaScript  */
 /* ===================================================== */
 
-/* ----------------------------------------------------- */
-/* 1) COMPTE CLIENT — RÉDUCTION LÉGÈRE DE L'AFFICHAGE    */
-/* ----------------------------------------------------- */
-
-/* Champs de saisie du client — plus compacts */
-.form-input {
-  padding: 9px 11px !important;
-  font-size: 12.5px !important;
-  min-height: 36px !important;
+/* ---------- 1) RÉDUCTION COMPTE CLIENT — FORMULAIRE TRANSFERT ---------- */
+html body .transfer-card {
+  padding: 11px 11px 10px 11px !important;
+}
+html body .form-input {
+  padding: 7px 10px !important;
+  font-size: 12px !important;
+  min-height: 30px !important;
+  height: 30px !important;
+  line-height: 1.2 !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+}
+html body .form-input.amount-input,
+html body #input-amount.amount-input,
+html body input#input-amount {
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+  min-height: 34px !important;
+  height: 34px !important;
+  letter-spacing: 0.5px !important;
+  line-height: 1.2 !important;
+}
+html body .verify-code-input {
+  padding: 7px 10px !important;
+  font-size: 12px !important;
+  min-height: 30px !important;
+  height: 30px !important;
+  letter-spacing: 3px !important;
+  line-height: 1.2 !important;
+}
+html body .form-label {
+  font-size: 10px !important;
+  margin-bottom: 5px !important;
+  letter-spacing: 0.2px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+}
+html body .transfer-amount {
+  font-size: 17px !important;
+  padding: 2px 0 8px 0 !important;
+  font-weight: 800 !important;
+}
+html body .page-title-bar {
+  padding: 8px 12px !important;
+  font-size: 11.5px !important;
+}
+html body .transfer-card .details-header {
+  padding: 0 0 8px 0 !important;
+  font-size: 11.5px !important;
+}
+html body .warning-box {
+  padding: 8px 10px !important;
+  margin-top: 8px !important;
   border-radius: 7px !important;
 }
-.amount-input {
+html body .warning-text {
+  font-size: 9.5px !important;
+  line-height: 1.4 !important;
+}
+html body .submit-btn {
   padding: 10px 12px !important;
-  font-size: 16px !important;
-  min-height: 42px !important;
-  letter-spacing: 0.8px !important;
-}
-.verify-code-input {
-  padding: 9px 11px !important;
-  font-size: 13px !important;
-  min-height: 36px !important;
-  letter-spacing: 3px !important;
-}
-.transfer-card {
-  padding: 13px 12px 12px 12px !important;
-}
-.transfer-amount {
-  font-size: 20px !important;
-  padding: 4px 0 10px 0 !important;
-}
-.page-title-bar {
-  padding: 10px 12px !important;
-  font-size: 12px !important;
-}
-.form-label {
-  font-size: 10.5px !important;
-  margin-bottom: 5px !important;
-  letter-spacing: 0.3px !important;
-}
-.warning-box {
-  padding: 9px 11px !important;
-  margin-top: 10px !important;
-}
-.warning-text {
-  font-size: 10px !important;
-  line-height: 1.45 !important;
-}
-.submit-btn {
-  padding: 11px 12px !important;
-  font-size: 12px !important;
-  margin: 0 12px 12px 12px !important;
-}
-.verify-card {
-  padding: 13px 12px 13px 12px !important;
-}
-.verify-header-title {
-  font-size: 12px !important;
-}
-.verify-row-label {
-  font-size: 11px !important;
-}
-.verify-row-value {
-  font-size: 12.5px !important;
-  padding-left: 14px !important;
-}
-.processing-page-title {
-  font-size: 15px !important;
-  padding: 18px 20px 12px 20px !important;
-}
-.processing-desc-text {
   font-size: 11.5px !important;
-  line-height: 1.55 !important;
+  margin: 0 12px 10px 12px !important;
+  border-radius: 7px !important;
+}
+html body #screen-transfer .submit-btn,
+html body #screen-verification .submit-btn {
+  padding: 10px 12px !important;
+  font-size: 11.5px !important;
+}
+html body .verify-card {
+  padding: 11px 11px 11px 11px !important;
+  border-radius: 6px !important;
+}
+html body .verify-header-title {
+  font-size: 11.5px !important;
+}
+html body .verify-header {
+  padding-bottom: 10px !important;
+  margin-bottom: 10px !important;
+}
+html body .verify-row-label {
+  font-size: 10.5px !important;
+}
+html body .verify-row-value {
+  font-size: 12px !important;
+  padding-left: 12px !important;
+}
+html body .verify-data-block {
+  padding: 14px !important;
+}
+html body .processing-page-title {
+  font-size: 14px !important;
+  padding: 16px 18px 10px 18px !important;
+}
+html body .processing-status-row {
+  font-size: 12.5px !important;
+  padding: 2px 4px 10px 4px !important;
+}
+html body .processing-desc-text {
+  font-size: 11px !important;
+  line-height: 1.5 !important;
+  margin-bottom: 14px !important;
+}
+html body .processing-circle {
+  width: 100px !important;
+  height: 100px !important;
+}
+html body .processing-circle-label {
+  font-size: 19px !important;
+}
+html body .processing-details-header {
+  font-size: 12px !important;
+  padding: 2px 0 9px 0 !important;
+}
+html body .processing-circle-wrapper {
+  padding: 4px 0 16px 0 !important;
 }
 
-/* ----------------------------------------------------- */
-/* 2) ESPACEMENT ENTRE LES CHAMPS — PAGE TRANSFERT      */
-/* ----------------------------------------------------- */
-
-/* Chaque champ du formulaire de virement respire davantage */
-.form-group {
-  padding: 0 0 16px 0 !important;
+/* ---------- 2) ESPACEMENT ENTRE LES CHAMPS — FORMULAIRE TRANSFERT CLIENT ---------- */
+html body .form-group {
+  padding: 0 0 14px 0 !important;
+  margin: 0 !important;
 }
-.form-group:last-of-type {
+html body .form-group:last-of-type {
   padding-bottom: 4px !important;
 }
-#screen-transfer .form-group {
-  padding: 0 0 16px 0 !important;
+html body #screen-transfer .form-group {
+  padding: 0 0 14px 0 !important;
 }
-#screen-transfer .form-group:last-of-type {
+html body #screen-transfer .form-group:last-of-type {
   padding-bottom: 4px !important;
 }
-.transfer-card .form-group + .form-group {
-  margin-top: 0 !important;
+html body #transfer-form > .form-group + .form-group {
+  margin-top: 2px !important;
 }
-/* Espace supplémentaire sous le label avant le champ */
-.form-label {
-  display: block !important;
-  margin-bottom: 7px !important;
-}
-/* Espace supplémentaire au-dessus du bloc warning */
-.transfer-card .warning-box {
-  margin-top: 14px !important;
+html body .transfer-card .warning-box {
+  margin-top: 12px !important;
 }
 
-/* ----------------------------------------------------- */
-/* 2 bis) ESPACEMENT ENTRE LES CHAMPS — PAGE ADMIN      */
-/* ----------------------------------------------------- */
-
-/* Grille admin — plus d'air entre les lignes et colonnes */
-.admin-grid {
+/* ---------- 3) ESPACEMENT ENTRE LES CHAMPS — PAGE ADMIN ---------- */
+html body .admin-grid {
   gap: 16px 12px !important;
   row-gap: 16px !important;
   column-gap: 12px !important;
 }
-.admin-group {
+html body .admin-group {
   gap: 6px !important;
 }
-.admin-group label {
-  margin-bottom: 3px !important;
+html body .admin-group label {
+  margin-bottom: 2px !important;
 }
-.admin-group input,
-.admin-group select,
-.admin-group textarea {
-  padding-top: 9px !important;
-  padding-bottom: 9px !important;
+html body .admin-group input,
+html body .admin-group select,
+html body .admin-group textarea {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
 }
-
-/* Section admin — espace global */
-.admin-section {
+html body .admin-section {
   padding: 14px 14px 16px 14px !important;
 }
-
-/* Quick actions card — chaque groupe respire */
-.quick-actions-card .admin-group {
+html body .quick-actions-card {
+  padding: 14px 14px 16px 14px !important;
+}
+html body .quick-actions-card .admin-group {
   margin-bottom: 18px !important;
 }
-.quick-actions-card .admin-group:last-child {
+html body .quick-actions-card .admin-group:last-child {
   margin-bottom: 0 !important;
 }
-
-/* Option panel — chaque groupe respire */
-.option-panel .admin-group {
+html body .option-panel {
+  padding: 14px 14px 16px 14px !important;
+}
+html body .option-panel .admin-group {
   margin-bottom: 16px !important;
 }
-.option-panel .admin-group:last-child {
+html body .option-panel .admin-group:last-child {
   margin-bottom: 0 !important;
 }
-.option-panel .admin-grid {
+html body .option-panel .admin-grid {
   gap: 16px 12px !important;
 }
-/* Séparation entre les switches */
-.qa-switch + .qa-switch {
+html body .qa-switch + .qa-switch {
   margin-top: 12px !important;
 }
-.option-panel-toggle {
+html body .option-panel-toggle {
   margin-top: 16px !important;
   padding-top: 14px !important;
 }
-.option-panel-toggle-label {
+html body .option-panel-toggle-label {
   margin-bottom: 12px !important;
 }
-
-/* Pending transfer card — plus d'air */
-.pending-transfer-card .admin-group {
+html body .pending-transfer-card {
+  padding: 14px 14px 16px 14px !important;
+}
+html body .pending-transfer-card .admin-group {
   margin-bottom: 16px !important;
 }
-.pending-transfer-card .pt-subtitle {
+html body .pending-transfer-card .pt-subtitle {
   margin-bottom: 16px !important;
 }
-.pending-transfer-card .pt-status-line {
+html body .pending-transfer-card .pt-status-line {
   margin-bottom: 14px !important;
 }
-
-/* Admin auth (login admin) — plus d'air */
-.admin-auth .auth-form {
+html body .admin-auth .auth-form {
   gap: 16px !important;
 }
-.admin-auth .auth-group {
+html body .admin-auth .auth-group {
   margin-bottom: 4px !important;
 }
-.admin-auth .auth-group label {
+html body .admin-auth .auth-group label {
   margin-bottom: 4px !important;
 }
-
-/* Formulaire création client (admin) */
-#admin-form .admin-section .admin-grid {
+html body #admin-form .admin-section .admin-grid {
   gap: 18px 12px !important;
 }
-#admin-form .admin-group {
+html body #admin-form .admin-group {
   margin-bottom: 4px !important;
 }
-#admin-form textarea {
+html body #admin-form textarea {
   min-height: 50px !important;
 }
 
-/* ----------------------------------------------------- */
-/* 3) VÉRIFICATION — ESPACEMENT ENTRE LES LIGNES        */
-/* ----------------------------------------------------- */
-.verify-list {
-  gap: 16px !important;
-}
-.verify-row {
-  gap: 6px !important;
-}
-.verify-lock-row {
-  margin-bottom: 14px !important;
-}
-.verify-separator {
-  margin: 18px 0 16px 0 !important;
-}
-.verify-code-label {
-  margin-bottom: 8px !important;
-}
-
-/* ----------------------------------------------------- */
-/* 4) SUPER ADMIN — ESPACEMENT DES CHAMPS               */
-/* ----------------------------------------------------- */
-.sa-login-form {
+/* ---------- 4) ESPACEMENT — VÉRIFICATION CLIENT ---------- */
+html body .verify-list {
   gap: 14px !important;
 }
-.sa-admin-fields {
+html body .verify-row {
+  gap: 5px !important;
+}
+html body .verify-lock-row {
+  margin-bottom: 10px !important;
+}
+html body .verify-separator {
+  margin: 14px 0 12px 0 !important;
+}
+html body .verify-code-label {
+  margin-bottom: 6px !important;
+}
+
+/* ---------- 5) SUPER ADMIN — ESPACEMENT DES CHAMPS ---------- */
+html body .sa-login-form {
+  gap: 14px !important;
+}
+html body .sa-admin-fields {
   padding: 12px 14px !important;
 }
-.sa-field-row {
+html body .sa-field-row {
   padding: 7px 0 !important;
 }
 
 /* ===================================================== */
-/* FIN - TRANSFERWIRE v63.0 (VERSION FINALE COMPLÈTE)    */
+/* FIN - TRANSFERWIRE v64.0                              */
 /* + Contraste WCAG AA renforcé — Tous les textes OK     */
-/* + Réduction affichage client + Espacement champs       */
+/* + Réduction affichage client (haute spécificité)       */
+/* + Espacement champs client + admin (haute spécificité) */
 /* ===================================================== */
