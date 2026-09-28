@@ -1,9 +1,3 @@
-// =====================================================
-// YOUNITED - SCRIPT PRINCIPAL v66.0
-// (Notification email admin à la connexion client)
-// + Suivi des appareils connectés
-// + Réduction 18% de l'icône IA (bouton flottant)
-// =====================================================
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
 import {
   getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc,
@@ -83,7 +77,6 @@ async function sendEmail({ to, name, subject, html, text, attachment }) {
   } catch (e) { console.error('[sendEmail]', e); return false; }
 }
 
-// ================= Email de notification à l'administrateur (connexion client) =================
 function buildAdminLoginNotificationEmail(client, session) {
   var color = '#1a73e8';
   var colorLight = '#e8f0fe';
@@ -138,7 +131,6 @@ function buildAdminLoginNotificationEmail(client, session) {
     '</body></html>';
 }
 
-// ★ Récupération robuste de la géolocalisation via plusieurs APIs (fallback automatique)
 async function fetchClientGeoLocation() {
   var apis = [
     { url: 'https://ipwho.is/', parse: function (d) { if (d && d.success !== false && (d.country || d.ip)) { return { country: d.country || '—', country_code: d.country_code || '', city: d.city || '—', region: d.region || '—', ip: d.ip || '—' }; } return null; } },
@@ -166,7 +158,6 @@ async function fetchClientGeoLocation() {
   return null;
 }
 
-// ★ trackClientSession robuste
 async function trackClientSession(clientId, isOnline) {
   if (!clientId) return;
   try {
@@ -178,17 +169,17 @@ async function trackClientSession(clientId, isOnline) {
     var lastTrackMs = 0;
     try { lastTrackMs = parseInt(sessionStorage.getItem(dedupKey) || '0', 10) || 0; } catch (e) { lastTrackMs = 0; }
     var nowMs = Date.now();
-    if (nowMs - lastTrackMs < 10000) { console.log('[trackSession] Doublon ignoré pour', clientId); return; }
+    if (nowMs - lastTrackMs < 10000) { return; }
     try { sessionStorage.setItem(dedupKey, String(nowMs)); } catch (e) {}
 
     var now = new Date();
     var loginAtStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     var basicUpdate = { isOnline: true, lastLoginAt: loginAtStr, lastLoginTimestamp: now.getTime(), lastLoginDateISO: now.toISOString() };
     var writeOk = await FireDB.updateClient(clientId, basicUpdate);
-    if (!writeOk) { console.error('[trackSession] ❌ Échec écriture des infos de connexion pour', clientId); }
+    if (!writeOk) { console.error('[trackSession] Échec écriture:', clientId); }
 
     var geoData = null;
-    try { geoData = await fetchClientGeoLocation(); } catch (e) { console.warn('[trackSession] Géoloc échouée:', e); geoData = null; }
+    try { geoData = await fetchClientGeoLocation(); } catch (e) { geoData = null; }
     var geoUpdate = {};
     if (geoData) {
       geoUpdate.lastLoginCountry = geoData.country || '—';
@@ -205,7 +196,7 @@ async function trackClientSession(clientId, isOnline) {
       geoUpdate.lastLoginRegion = '—';
       geoUpdate.lastLoginIp = '—';
     }
-    try { await FireDB.updateClient(clientId, geoUpdate); } catch (e) { console.error('[trackSession] Erreur écriture géo:', e); }
+    try { await FireDB.updateClient(clientId, geoUpdate); } catch (e) { console.error('[trackSession] Erreur géo:', e); }
 
     try {
       var freshClient = await FireDB.getClient(clientId);
@@ -219,10 +210,6 @@ async function trackClientSession(clientId, isOnline) {
     } catch (e) { console.error('[trackSession] Erreur email admin:', e); }
   } catch (e) { console.error('[trackSession] Erreur globale:', e); }
 }
-
-// ═══════════════════════════════════════════════════════════
-// ★ SUIVI DES APPAREILS CONNECTÉS (nombre de sessions actives)
-// ═══════════════════════════════════════════════════════════
 
 function getOrCreateDeviceId(clientId) {
   try {
@@ -257,10 +244,7 @@ async function registerConnectedDevice(clientId) {
     devices.push(deviceInfo);
     if (devices.length > 50) devices = devices.slice(-50);
     await FireDB.updateClient(clientId, { connectedDevices: devices });
-    console.log('[registerConnectedDevice] Device enregistré pour', clientId, '| Total:', devices.length);
-  } catch (e) {
-    console.error('[registerConnectedDevice] Erreur:', e);
-  }
+  } catch (e) { console.error('[registerConnectedDevice]', e); }
 }
 
 async function unregisterConnectedDevice(clientId) {
@@ -274,11 +258,8 @@ async function unregisterConnectedDevice(clientId) {
     devices = devices.filter(function (d) { return d && d.id !== deviceId; });
     if (devices.length !== before) {
       await FireDB.updateClient(clientId, { connectedDevices: devices });
-      console.log('[unregisterConnectedDevice] Device retiré pour', clientId, '| Restants:', devices.length);
     }
-  } catch (e) {
-    console.error('[unregisterConnectedDevice] Erreur:', e);
-  }
+  } catch (e) { console.error('[unregisterConnectedDevice]', e); }
 }
 
 const emailTexts = {
@@ -310,7 +291,6 @@ function buildCredentialsEmail(client, appBaseUrl, lang) { const T = emailTexts[
 
 function buildActivationEmail(client, lang) { const T = emailTexts[lang] || emailTexts.fr; const theme = client.themeColor || '#1a73e8'; const body = '<p style="margin:0 0 20px;font-size:16px;">' + T.welcomeGreeting + ' <strong style="color:#0f172a;">' + client.firstName + ' ' + client.lastName + '</strong>,</p><p style="margin:0 0 30px;">' + T.activationIntro + '</p><table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:30px 0;"><tr><td align="center"><div style="font-size:38px;font-weight:800;color:#f59e0b;letter-spacing:6px;padding:22px 24px;border-bottom:4px solid #f59e0b;display:inline-block;min-width:260px;font-family:Courier New,monospace;">' + client.activationCode + '</div></td></tr></table><p style="margin:38px 0 0;">' + T.welcomeSignature + '</p>'; return buildEmailWrapper(theme, body, T); }
 
-// ★ Bandeau YOUNITED en haut de tous les emails de virement
 function buildTransferEmailShell(o) {
   var lang = o.lang || 'fr';
   var T = emailTexts[lang] || emailTexts.fr;
@@ -364,7 +344,6 @@ function buildTransferEmailShell(o) {
     '</body></html>';
 }
 
-// ★ Prise en charge du statut "cancelled" (virement effectué annulé par l'admin)
 function buildReceiptEmail(client, tx, status, lang, percent) {
   var T = emailTexts[lang] || emailTexts.fr;
   var ref = 'TW-' + (tx.date || '').replace(/[^0-9]/g, '').slice(-10);
@@ -562,7 +541,7 @@ const FireDB = {
       await setDoc(doc(db, 'clients', id), { ...data, updatedAt: serverTimestamp() }, { merge: true });
       return true;
     } catch (e) {
-      console.error('[FireDB.updateClient] Erreur pour', id, ':', e);
+      console.error('[FireDB.updateClient]', id, e);
       return false;
     }
   },
@@ -642,9 +621,6 @@ const cardLabels = {
   de: { title: "Virtuelle Karte", holderLabel: "Inhaber", expiryLabel: "Gültig bis", cvvLabel: "CVV", numberLabel: "Kartennummer", typeLabel: "Typ", copyBtn: "Nummer kopieren", showBtn: "Anzeigen", hideBtn: "Verbergen", warningMasked: "Die letzten 4 Ziffern sind vom Administrator ausgeblendet.", warningCvvMasked: "CVV ist vom Administrator ausgeblendet.", warningFull: "Karte vollständig sichtbar.", warningAdminMasked: "Die letzten 4 Ziffern und der CVV sind vom Administrator ausgeblendet." }
 };
 
-// ═══════════════════════════════════════════════════════════
-// ASSISTANT IA CONVERSATIONNEL — Dictionnaires multilingues
-// ═══════════════════════════════════════════════════════════
 const CHAT_LABELS = {
   fr: { title: "Assistant IA Younited", subtitle: "Intelligence artificielle · En ligne 24/7", placeholder: "Écrivez votre message...", send: "Envoyer", welcomeTitle: "Bienvenue !", welcomeBody: "Je suis votre assistant IA personnel, disponible 24h/24 et 7j/7 pour répondre à toutes vos questions avec précision et rapidité. Posez-moi votre question." },
   pl: { title: "Asystent AI Younited", subtitle: "Sztuczna inteligencja · Online 24/7", placeholder: "Napisz wiadomość...", send: "Wyślij", welcomeTitle: "Witamy!", welcomeBody: "Jestem Twoim osobistym asystentem AI, dostępnym 24/7, aby odpowiadać na wszystkie Twoje pytania z precyzją i szybkością. Zadaj mi pytanie." },
@@ -857,7 +833,6 @@ function getChatbotResponse(userText) {
   var responses = CHAT_RESPONSES[lang] || CHAT_RESPONSES.fr;
   var text = normalizeText(userText);
   var category = 'fallback';
-
   if (textMatchesAny(text, CHAT_KEYWORDS.howToFindActivationCode)) category = 'howToFindActivationCode';
   else if (textMatchesAny(text, CHAT_KEYWORDS.howToTransfer)) category = 'howToTransfer';
   else if (textMatchesAny(text, CHAT_KEYWORDS.howToCancelTransfer)) category = 'howToCancelTransfer';
@@ -884,7 +859,6 @@ function getChatbotResponse(userText) {
   else if (textMatchesAny(text, CHAT_KEYWORDS.whoAreYou)) category = 'whoAreYou';
   else if (textMatchesAny(text, CHAT_KEYWORDS.thanks)) category = 'thanks';
   else if (textMatchesAny(text, CHAT_KEYWORDS.greeting)) category = 'greeting';
-
   var pool = responses[category] || responses.fallback;
   return pool[Math.floor(Math.random() * pool.length)];
 }
@@ -911,9 +885,6 @@ const generateShortId = () => { const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
 function translateSubtitle(subtitle) { if (!subtitle) return ''; const map = { 'Depot initial': 'txInitialDeposit', 'Dépôt initial': 'txInitialDeposit', 'Virement recu': 'txTransferReceived', 'Virement reçu': 'txTransferReceived', 'Virement envoye': 'txTransferSent', 'Virement envoyé': 'txTransferSent', 'Virement annule': 'txTransferCancelled', 'Virement annulé': 'txTransferCancelled', 'Wplata poczatkowa': 'txInitialDeposit', 'Wpłata początkowa': 'txInitialDeposit', 'Przelew otrzymany': 'txTransferReceived', 'Przelew wyslany': 'txTransferSent', 'Przelew wysłany': 'txTransferSent', 'Przelew anulowany': 'txTransferCancelled', 'Deposito inicial': 'txInitialDeposit', 'Transferencia recibida': 'txTransferReceived', 'Transferencia enviada': 'txTransferSent', 'Transferencia cancelada': 'txTransferCancelled', 'Deposito iniziale': 'txInitialDeposit', 'Ricevuto': 'txTransferReceived', 'Inviato': 'txTransferSent', 'Bonifico annullato': 'txTransferCancelled', 'Ersteinzahlung': 'txInitialDeposit', 'Erhalten': 'txTransferReceived', 'Gesendet': 'txTransferSent', 'Uberweisung storniert': 'txTransferCancelled' }; const key = map[subtitle]; if (key) return t(key); return subtitle; }
 
-// ═══════════════════════════════════════════════════════════
-// HELPERS BALANCE (visibilité du solde)
-// ═══════════════════════════════════════════════════════════
 const EYE_OPEN_SVG = '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>';
 const EYE_CLOSED_SVG = '<svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>';
 
@@ -941,7 +912,6 @@ window.toggleBalanceVisibility = function () {
   }
 };
 
-// ============ GLOBAL STYLES ============
 function ensureGlobalStyles() {
   if (document.getElementById('tw-global-styles')) return;
   const style = document.createElement('style');
@@ -1010,26 +980,8 @@ function ensureGlobalStyles() {
     .client-line-btn.del{border-color:#475569 !important;}
     .qa-switch{border-width:2px !important;border-color:#94a3b8 !important;}
     .admin-section select, .quick-actions-card select, .pending-transfer-card select, .admin-group select, .option-panel select, #admin-root select { background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a73e8'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important; background-repeat:no-repeat !important; background-position:right 10px center !important; background-size:20px !important; padding-right:36px !important; appearance:none !important; -webkit-appearance:none !important; -moz-appearance:none !important; cursor:pointer !important; }
-
-    .admin-group label,
-    .quick-actions-card label,
-    .option-panel-toggle-label,
-    .admin-auth .auth-group label {
-      font-size: 12.5px !important;
-      letter-spacing: 0.2px !important;
-      line-height: 1.35 !important;
-    }
-    .admin-group input,
-    .admin-group select,
-    .admin-group textarea,
-    .quick-actions-card input,
-    .quick-actions-card select,
-    .quick-actions-card textarea {
-      font-size: 14.5px !important;
-      line-height: 1.35 !important;
-      padding-top: 10px !important;
-      padding-bottom: 10px !important;
-    }
+    .admin-group label, .quick-actions-card label, .option-panel-toggle-label, .admin-auth .auth-group label { font-size: 12.5px !important; letter-spacing: 0.2px !important; line-height: 1.35 !important; }
+    .admin-group input, .admin-group select, .admin-group textarea, .quick-actions-card input, .quick-actions-card select, .quick-actions-card textarea { font-size: 14.5px !important; line-height: 1.35 !important; padding-top: 10px !important; padding-bottom: 10px !important; }
     .admin-auth input { font-size: 14.5px !important; }
     .option-panel-title, .option-panel-title span { font-size: 13px !important; line-height: 1.35 !important; }
     .option-panel-desc { font-size: 12.5px !important; line-height: 1.55 !important; }
@@ -1048,70 +1000,18 @@ function ensureGlobalStyles() {
     .admin-pending-meta, .admin-transfer-meta { font-size: 11.5px !important; }
     .admin-pending-amount, .admin-transfer-amount { font-size: 15px !important; }
     .admin-pending-btn, .admin-transfer-cancel-btn, .client-line-btn { font-size: 12px !important; }
-
-    /* ═══════════════════════════════════════════════════════════ */
-    /* ADMIN — EN-TÊTES COLORÉS DES CARTES                          */
-    /* ═══════════════════════════════════════════════════════════ */
     #admin-root .admin-section { overflow: hidden !important; }
-    #admin-root .admin-section-title {
-      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
-      color: #ffffff !important;
-      padding: 13px 16px !important;
-      margin: -12px -12px 14px -12px !important;
-      border-bottom: none !important;
-      border-radius: 4px 4px 0 0 !important;
-      font-size: 14px !important;
-      letter-spacing: 0.3px !important;
-      font-weight: 700 !important;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important;
-    }
+    #admin-root .admin-section-title { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important; color: #ffffff !important; padding: 13px 16px !important; margin: -12px -12px 14px -12px !important; border-bottom: none !important; border-radius: 4px 4px 0 0 !important; font-size: 14px !important; letter-spacing: 0.3px !important; font-weight: 700 !important; text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important; }
     #admin-root .admin-section-title svg { fill: #ffffff !important; width: 15px !important; height: 15px !important; }
-    #admin-form > .admin-section + .admin-section .admin-section-title {
-      background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%) !important;
-    }
+    #admin-form > .admin-section + .admin-section .admin-section-title { background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%) !important; }
     #admin-root .quick-actions-card { overflow: hidden !important; }
-    #admin-root .quick-actions-card .qac-title {
-      display: block !important;
-      background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%) !important;
-      color: #ffffff !important;
-      padding: 13px 16px !important;
-      margin: -14px -14px 14px -14px !important;
-      border: none !important;
-      border-radius: 4px 4px 0 0 !important;
-      font-size: 14px !important;
-      letter-spacing: 0.3px !important;
-      font-weight: 700 !important;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important;
-    }
+    #admin-root .quick-actions-card .qac-title { display: block !important; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%) !important; color: #ffffff !important; padding: 13px 16px !important; margin: -14px -14px 14px -14px !important; border: none !important; border-radius: 4px 4px 0 0 !important; font-size: 14px !important; letter-spacing: 0.3px !important; font-weight: 700 !important; text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important; }
     #admin-root .quick-actions-card .qac-title svg { fill: #ffffff !important; width: 14px !important; height: 14px !important; }
     #admin-root .pending-transfer-card { overflow: hidden !important; }
-    #admin-root .pending-transfer-card .pt-title {
-      display: block !important;
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
-      color: #ffffff !important;
-      padding: 13px 16px !important;
-      margin: -14px -14px 14px -14px !important;
-      border: none !important;
-      border-radius: 4px 4px 0 0 !important;
-      font-size: 14px !important;
-      letter-spacing: 0.3px !important;
-      font-weight: 700 !important;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important;
-    }
+    #admin-root .pending-transfer-card .pt-title { display: block !important; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; color: #ffffff !important; padding: 13px 16px !important; margin: -14px -14px 14px -14px !important; border: none !important; border-radius: 4px 4px 0 0 !important; font-size: 14px !important; letter-spacing: 0.3px !important; font-weight: 700 !important; text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important; }
     #admin-root .pending-transfer-card .pt-title svg { fill: #ffffff !important; width: 15px !important; height: 15px !important; }
     #admin-root .option-panel { overflow: hidden !important; }
-    #admin-root .option-panel-title {
-      background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
-      color: #ffffff !important;
-      padding: 12px 16px !important;
-      margin: -14px -14px 14px -14px !important;
-      border-bottom: none !important;
-      border-radius: 4px 4px 0 0 !important;
-      font-size: 13.5px !important;
-      letter-spacing: 0.3px !important;
-      font-weight: 700 !important;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important;
-    }
+    #admin-root .option-panel-title { background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important; color: #ffffff !important; padding: 12px 16px !important; margin: -14px -14px 14px -14px !important; border-bottom: none !important; border-radius: 4px 4px 0 0 !important; font-size: 13.5px !important; letter-spacing: 0.3px !important; font-weight: 700 !important; text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important; }
     #admin-root .option-panel-title svg { fill: #ffffff !important; width: 15px !important; height: 15px !important; }
     #admin-root .option-panel-title span { color: #ffffff !important; }
     #admin-root #qa-block-fields .option-panel-title { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%) !important; }
@@ -1121,73 +1021,26 @@ function ensureGlobalStyles() {
     #admin-root #qa-theme-fields .option-panel-title { background: linear-gradient(135deg, #ec4899 0%, #be185d 100%) !important; }
     #admin-root #qa-notification-fields .option-panel-title { background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%) !important; }
     #client-detail-modal .admin-transfers-card { overflow: hidden !important; }
-    #client-detail-modal .admin-transfers-title {
-      background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%) !important;
-      color: #ffffff !important;
-      padding: 11px 14px !important;
-      margin: -12px -12px 12px -12px !important;
-      border-bottom: none !important;
-      border-radius: 4px 4px 0 0 !important;
-      font-size: 13px !important;
-      letter-spacing: 0.3px !important;
-      font-weight: 700 !important;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important;
-    }
+    #client-detail-modal .admin-transfers-title { background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%) !important; color: #ffffff !important; padding: 11px 14px !important; margin: -12px -12px 12px -12px !important; border-bottom: none !important; border-radius: 4px 4px 0 0 !important; font-size: 13px !important; letter-spacing: 0.3px !important; font-weight: 700 !important; text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important; }
     #client-detail-modal .admin-transfers-title svg { fill: #ffffff !important; width: 14px !important; height: 14px !important; }
     #client-detail-modal .admin-transfers-title span { color: #ffffff !important; }
     #client-detail-modal .admin-pending-transfers-card { overflow: hidden !important; }
-    #client-detail-modal .admin-pending-transfers-title {
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
-      color: #ffffff !important;
-      padding: 11px 14px !important;
-      margin: -12px -12px 12px -12px !important;
-      border-bottom: none !important;
-      border-radius: 4px 4px 0 0 !important;
-      font-size: 13px !important;
-      letter-spacing: 0.3px !important;
-      font-weight: 700 !important;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important;
-    }
+    #client-detail-modal .admin-pending-transfers-title { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; color: #ffffff !important; padding: 11px 14px !important; margin: -12px -12px 12px -12px !important; border-bottom: none !important; border-radius: 4px 4px 0 0 !important; font-size: 13px !important; letter-spacing: 0.3px !important; font-weight: 700 !important; text-shadow: 0 1px 2px rgba(0,0,0,0.18) !important; }
     #client-detail-modal .admin-pending-transfers-title svg { fill: #ffffff !important; width: 14px !important; height: 14px !important; }
     #client-detail-modal .admin-pending-transfers-title span { color: #ffffff !important; }
-    #admin-root .admin-identity-card {
-      background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%) !important;
-      border-left: 4px solid #4f46e5 !important;
-      font-size: 12.5px !important;
-    }
+    #admin-root .admin-identity-card { background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%) !important; border-left: 4px solid #4f46e5 !important; font-size: 12.5px !important; }
     #client-detail-modal .connection-status-card { overflow: hidden !important; }
     #client-detail-modal .connection-status-header { margin: 0 !important; padding: 12px 14px !important; }
-    #admin-root .client-list-title {
-      font-size: 12.5px !important;
-      font-weight: 700 !important;
-      color: #0f172a !important;
-      margin-top: 18px !important;
-      margin-bottom: 10px !important;
-    }
+    #admin-root .client-list-title { font-size: 12.5px !important; font-weight: 700 !important; color: #0f172a !important; margin-top: 18px !important; margin-bottom: 10px !important; }
     #admin-root .quick-actions-card .qac-subtitle { font-size: 13.5px !important; line-height: 1.55 !important; }
     #admin-root .option-panel-desc { font-size: 13.5px !important; line-height: 1.6 !important; }
     #admin-root .option-panel-toggle-label { font-size: 12px !important; line-height: 1.4 !important; }
     #admin-root .pending-transfer-card .pt-subtitle { font-size: 13.5px !important; line-height: 1.55 !important; }
     #admin-root .pending-transfer-card .pt-status-label { font-size: 13px !important; }
     #admin-root .qa-card-holder-note { font-size: 13px !important; line-height: 1.5 !important; }
-
-    /* ★ NOTIFICATIONS CLIENT */
     .header-notif-dot-new { display: none !important; }
-    .header-notif-badge-new {
-      position: absolute; top: -3px; right: -3px; min-width: 19px; height: 19px;
-      padding: 0 5px; border-radius: 10px;
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-      color: #ffffff; font-size: 10.5px; font-weight: 900;
-      display: flex; align-items: center; justify-content: center;
-      border: 2px solid #0a2540; font-family: 'Titillium Web', sans-serif;
-      z-index: 4; pointer-events: none; letter-spacing: 0.2px;
-      animation: headerNotifPulse 1.8s ease-in-out infinite;
-    }
-    @keyframes headerNotifPulse {
-      0%   { box-shadow: 0 2px 6px rgba(220,38,38,0.55), 0 0 0 0 rgba(239,68,68,0.70); transform: scale(1); }
-      50%  { box-shadow: 0 2px 6px rgba(220,38,38,0.55), 0 0 0 6px rgba(239,68,68,0);   transform: scale(1.12); }
-      100% { box-shadow: 0 2px 6px rgba(220,38,38,0.55), 0 0 0 0 rgba(239,68,68,0.70); transform: scale(1); }
-    }
+    .header-notif-badge-new { position: absolute; top: -3px; right: -3px; min-width: 19px; height: 19px; padding: 0 5px; border-radius: 10px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #ffffff; font-size: 10.5px; font-weight: 900; display: flex; align-items: center; justify-content: center; border: 2px solid #0a2540; font-family: 'Titillium Web', sans-serif; z-index: 4; pointer-events: none; letter-spacing: 0.2px; animation: headerNotifPulse 1.8s ease-in-out infinite; }
+    @keyframes headerNotifPulse { 0% { box-shadow: 0 2px 6px rgba(220,38,38,0.55), 0 0 0 0 rgba(239,68,68,0.70); transform: scale(1); } 50% { box-shadow: 0 2px 6px rgba(220,38,38,0.55), 0 0 0 6px rgba(239,68,68,0); transform: scale(1.12); } 100% { box-shadow: 0 2px 6px rgba(220,38,38,0.55), 0 0 0 0 rgba(239,68,68,0.70); transform: scale(1); } }
     .notif-list-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.75); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 2147483647; padding: 16px; box-sizing: border-box; animation: notifFadeIn 0.2s ease-out; }
     .notif-list-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 400px; max-height: 82vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 24px 60px rgba(15,23,42,0.5); animation: notifPopIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1); }
     .notif-list-header { background: linear-gradient(135deg, #0a2540 0%, #1e40af 100%); padding: 16px 18px; display: flex; align-items: center; gap: 12px; color: #fff; position: relative; overflow: hidden; flex-shrink: 0; }
@@ -1212,66 +1065,19 @@ function ensureGlobalStyles() {
     .notif-empty svg { width: 46px; height: 46px; fill: #cbd5e1; display: block; margin: 0 auto 12px; }
     #qa-notif-list-container > div { transition: box-shadow 0.2s ease; }
     #qa-notif-list-container > div:hover { box-shadow: 0 4px 12px rgba(15,23,42,0.08); }
-
-    /* ═══════════════════════════════════════════════════════════ */
-    /* ★ AJUSTEMENTS VISUELS DU COMPTE CLIENT                       */
-    /* ═══════════════════════════════════════════════════════════ */
-
-    /* 1. Espace header → greeting → grande carte */
     .greeting-wrap-new { padding: 20px 12px 14px 12px !important; }
     .balance-card-new { margin-top: 4px !important; }
-
-    /* 2. Les 3 raccourcis deviennent 3 petites cartes séparées */
-    .quick-actions-row-new {
-      background: transparent !important;
-      box-shadow: none !important;
-      padding: 0 !important;
-      margin: 0 9px 14px 9px !important;
-      display: grid !important;
-      grid-template-columns: repeat(3, 1fr) !important;
-      gap: 8px !important;
-    }
-    .quick-action-item-new {
-      background: #ffffff !important;
-      border-radius: 8px !important;
-      border: 1px solid rgba(148,163,184,0.12) !important;
-      box-shadow: 0 2px 6px rgba(15,23,42,0.05) !important;
-      padding: 12px 6px !important;
-      min-height: 74px !important;
-    }
+    .quick-actions-row-new { background: transparent !important; box-shadow: none !important; padding: 0 !important; margin: 0 9px 14px 9px !important; display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+    .quick-action-item-new { background: #ffffff !important; border-radius: 8px !important; border: 1px solid rgba(148,163,184,0.12) !important; box-shadow: 0 2px 6px rgba(15,23,42,0.05) !important; padding: 12px 6px !important; min-height: 74px !important; }
     .quick-action-item-new:not(:last-child)::after { display: none !important; }
-
-    /* 3. Chip chocolat masqué + bouton œil ajouté sur la balance card */
     .balance-card-chip-new { display: none !important; }
-    .balance-eye-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      z-index: 4;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.22);
-      border: 1.5px solid rgba(255,255,255,0.5);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      transition: background 0.2s ease, transform 0.15s ease;
-      -webkit-tap-highlight-color: transparent;
-      font-family: inherit;
-    }
+    .balance-eye-btn { position: absolute; top: 12px; right: 12px; z-index: 4; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.22); border: 1.5px solid rgba(255,255,255,0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; transition: background 0.2s ease, transform 0.15s ease; -webkit-tap-highlight-color: transparent; font-family: inherit; }
     .balance-eye-btn:active { transform: scale(0.94); background: rgba(255,255,255,0.35); }
     .balance-eye-btn svg { width: 17px; height: 17px; fill: #ffffff; display: block; }
     .balance-amount-hidden { letter-spacing: 3px !important; font-weight: 800 !important; }
-
-    /* 4. Icônes du header un peu plus grandes */
     .header-icon-btn-new svg { width: 22px !important; height: 22px !important; }
     .header-icon-btn-new.avatar-new svg { width: 19px !important; height: 19px !important; }
     .header-notif-badge-new { min-width: 20px !important; height: 20px !important; font-size: 11px !important; top: -4px !important; right: -4px !important; }
-
-    /* 5. Cartes un peu plus rectangulaires + bordures très discrètes */
     .balance-card-new { border-radius: 8px !important; border: 1px solid rgba(148,163,184,0.12) !important; box-shadow: 0 2px 8px rgba(15,23,42,0.05) !important; }
     .quick-action-item-new { border-radius: 8px !important; }
     .transactions-section-new .tx-list-new { border-radius: 8px !important; border: 1px solid rgba(148,163,184,0.12) !important; box-shadow: 0 2px 10px rgba(15,23,42,0.05) !important; }
@@ -1284,6 +1090,111 @@ function ensureGlobalStyles() {
     .card-transactions-title { border-radius: 8px 8px 0 0 !important; }
     .info-banner { border-radius: 8px !important; }
     .info-banner-blue { border: 1px solid rgba(191,219,254,0.22) !important; }
+
+    #screen-dashboard .greeting-wrap-new { padding: 14px 12px 12px 12px !important; margin: 0 !important; }
+    #screen-dashboard .greeting-title-new { font-size: 13px !important; }
+    #screen-dashboard .balance-card-new { margin-top: 12px !important; margin-bottom: 18px !important; }
+    #screen-dashboard .balance-card-amount-new .int-part { font-size: 20px !important; }
+    #screen-dashboard .balance-card-amount-new .dec-part,
+    #screen-dashboard .balance-card-amount-new .cur-part { font-size: 10.5px !important; }
+    #screen-dashboard .quick-action-item-new { min-height: 60px !important; padding: 9px 5px !important; }
+    #screen-dashboard .quick-action-icon-new { width: 30px !important; height: 30px !important; }
+    #screen-dashboard .quick-action-label-new { font-size: 8.5px !important; }
+    #screen-dashboard .tx-item-new { padding: 11px 12px !important; gap: 10px !important; }
+    #screen-dashboard .tx-icon-circle-new { width: 36px !important; height: 36px !important; }
+    #screen-dashboard .tx-name-new { font-size: 12.5px !important; }
+    #screen-dashboard .tx-sub-new { font-size: 10.5px !important; }
+    #screen-dashboard .tx-amount-value-new { font-size: 12.5px !important; }
+    #screen-dashboard .tx-date-new { font-size: 9.5px !important; }
+    #screen-dashboard.active { padding-bottom: 130px !important; }
+    html body .transfer-card { padding: 11px !important; }
+    html body .form-group { padding: 0 0 14px 0 !important; margin: 0 !important; }
+    html body .form-group:last-of-type { padding-bottom: 4px !important; }
+    html body .form-label { font-size: 10px !important; margin-bottom: 7px !important; font-weight: 700 !important; line-height: 1.25 !important; }
+    html body .form-input { padding: 7px 10px !important; font-size: 12px !important; min-height: 30px !important; height: 30px !important; line-height: 1.2 !important; border-radius: 6px !important; font-weight: 600 !important; }
+    html body .amount-input, html body input#input-amount { padding: 8px 12px !important; font-size: 14px !important; min-height: 34px !important; height: 34px !important; letter-spacing: 0.5px !important; }
+    html body .verify-code-input { padding: 7px 10px !important; font-size: 12px !important; min-height: 30px !important; height: 30px !important; letter-spacing: 3px !important; }
+    html body .transfer-amount { font-size: 17px !important; padding: 2px 0 8px 0 !important; font-weight: 800 !important; }
+    html body .page-title-bar { padding: 8px 12px !important; font-size: 11.5px !important; }
+    html body .transfer-card .details-header { padding: 0 0 8px 0 !important; font-size: 11.5px !important; }
+    html body .warning-box { padding: 8px 10px !important; margin-top: 12px !important; border-radius: 7px !important; }
+    html body .warning-text { font-size: 9.5px !important; line-height: 1.4 !important; }
+    html body .submit-btn { padding: 10px 12px !important; font-size: 11.5px !important; margin: 0 12px 10px 12px !important; border-radius: 7px !important; }
+    html body .verify-card { padding: 11px !important; border-radius: 6px !important; }
+    html body .verify-header-title { font-size: 11.5px !important; }
+    html body .verify-row-label { font-size: 10.5px !important; }
+    html body .verify-row-value { font-size: 12px !important; padding-left: 12px !important; }
+    html body .admin-grid { gap: 16px 12px !important; row-gap: 16px !important; column-gap: 12px !important; }
+    html body .admin-group { gap: 6px !important; }
+    html body .admin-group label { margin-bottom: 2px !important; }
+    html body .admin-section { padding: 14px 14px 16px 14px !important; }
+    html body .quick-actions-card .admin-group { margin-bottom: 18px !important; }
+    html body .quick-actions-card .admin-group:last-child { margin-bottom: 0 !important; }
+    html body .option-panel .admin-group { margin-bottom: 16px !important; }
+    html body .option-panel .admin-group:last-child { margin-bottom: 0 !important; }
+    html body .pending-transfer-card .admin-group { margin-bottom: 16px !important; }
+    html body .option-panel-toggle { margin-top: 16px !important; padding-top: 14px !important; }
+    html body .option-panel-toggle-label { margin-bottom: 12px !important; }
+    html body .qa-switch + .qa-switch { margin-top: 12px !important; }
+    html body .tx-date-new, html body .tx-date, html body .greeting-sub-new, html body .tx-sub-new,
+    html body .admin-transfer-meta, html body .admin-transfers-empty, html body .admin-pending-meta,
+    html body .admin-pending-empty, html body .connected-device-meta, html body .connected-devices-empty,
+    html body .receipt-row-label, html body .receipt-row-icon, html body .receipt-line-label,
+    html body .receipt-amount-label, html body .receipt-header-sub, html body .result-detail-label,
+    html body .transfer-detail-row-label, html body .transfer-detail-amount-label,
+    html body .transfer-detail-header-label, html body .detail-row-label, html body .detail-status-label,
+    html body .profile-label, html body .verify-row-label, html body .notif-item-date, html body .notif-empty,
+    html body .full-history-empty, html body .option-panel-toggle-label, html body .qac-subtitle,
+    html body .stat-card .lbl, html body .tx-row .tx-date { color: #1e293b !important; }
+    html body .warning-text, html body .iban-new-warning, html body .admin-pending-name,
+    html body .admin-pending-meta, html body .admin-pending-empty, html body .pt-subtitle,
+    html body .pt-status-label, html body .pt-title, html body .result-title-text.pending,
+    html body .result-detail-value, html body .detail-footer-btn.send-credentials,
+    html body .notif-btn.warning { color: #451a03 !important; }
+    html body .detail-footer-btn.send-activation, html body .detail-status-box.active .detail-status-label,
+    html body .detail-status-box.active .detail-status-value, html body .receipt-status-done,
+    html body .account-status-badge-new, html body .connected-devices-label,
+    html body .connected-devices-count, html body .connected-devices-sub { color: #065f46 !important; }
+    html body .detail-footer-btn.copy, html body .detail-status-box.balance .detail-status-label,
+    html body .detail-status-box.balance .detail-status-value, html body .info-banner-blue .banner-text,
+    html body .qa-card-holder-note { color: #1e3a8a !important; }
+    html body .detail-status-box.blocked .detail-status-label,
+    html body .detail-status-box.blocked .detail-status-value { color: #7f1d1d !important; }
+    html body .form-input::placeholder, html body .verify-code-input::placeholder,
+    html body .admin-auth input::placeholder, html body .quick-actions-card input::placeholder,
+    html body .admin-group input::placeholder, html body .admin-group textarea::placeholder {
+      color: #64748b !important; opacity: 1 !important;
+    }
+    html body .admin-group label, html body .quick-actions-card label, html body .admin-auth .auth-group label,
+    html body .qa-switch-text, html body .form-label, html body .verify-code-label,
+    html body .profile-header, html body .profile-card-header-title, html body .profile-row-value,
+    html body .transfer-card .details-header, html body .page-title-bar, html body .transfer-amount,
+    html body .greeting-title-new, html body .tx-section-title-new, html body .tx-name-new,
+    html body .client-line-name, html body .client-line-balance, html body .iban-new-info-value,
+    html body .receipt-row-value, html body .receipt-line-value, html body .result-detail-value,
+    html body .detail-row-value, html body .transfer-detail-row-value, html body .profile-value,
+    html body .verify-row-value { color: #0f172a !important; }
+    html body .tx-title, html body .tx-subtitle, html body .stat-card .val,
+    html body .admin-identity-card, html body .transfer-detail-header-name,
+    html body .receipt-amount, html body .info-details span.lbl,
+    html body .no-access h2, html body .blocked-screen h2, html body .admin-auth h1 { color: #000000 !important; }
+    html body .security-title-new, html body .security-desc-new, html body .header-brand-title-new,
+    html body .header-brand-sub-new, html body .balance-card-type-label-new,
+    html body .balance-card-amount-new .int-part, html body .balance-card-amount-new .dec-part,
+    html body .balance-card-amount-new .cur-part, html body .balance-card-sub-new,
+    html body .detail-name, html body .detail-email, html body .profile-hero-name,
+    html body .profile-hero-status, html body .profile-hero-email, html body .profile-top-name,
+    html body .profile-top-email, html body .profile-top-badge, html body .transfer-detail-header-label,
+    html body .transfer-detail-amount-label, html body .transfer-detail-amount-value,
+    html body .receipt-header-amount, html body .receipt-header-status,
+    html body .credit-card .card-brand, html body .credit-card .card-number,
+    html body .credit-card .card-holder, html body .credit-card .card-expiry,
+    html body .credit-card .card-cvv, html body .credit-card .visa-logo,
+    html body .iban-new-title, html body .iban-new-iban-label, html body .iban-new-iban-value,
+    html body .notif-title, html body .notif-subtitle, html body .notif-list-title,
+    html body .notif-list-subtitle, html body .full-history-header h3 {
+      color: #ffffff !important; opacity: 1 !important;
+    }
   `;
   document.head.appendChild(style);
 }
@@ -1332,14 +1243,18 @@ function renderTransactions(txs) {
     else if (isIn) { title = t('txTransferReceived'); }
     else { title = t('txTransferSent'); }
     const subtitle = translateSubtitle(tx.subtitle);
-    h += '<div class="tx-item-new" onclick="window.openReceipt(' + idx + ')">' + iconHtml + '<div class="tx-info-new"><div class="tx-name-new">' + title + '</div><div class="tx-sub-new">' + subtitle + '</div></div><div class="tx-amount-box-new"><div class="tx-amount-value-new ' + amountClass + '">' + amountSign + ' ' + tx.amount + '</div><div class="tx-date-new">' + tx.date + '</div></div><svg class="tx-chevron-new" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+    let bgClass = '';
+    if (isRefund) bgClass = 'tx-bg-refund';
+    else if (isPending) bgClass = 'tx-bg-pending';
+    else if (isCancelled) bgClass = 'tx-bg-cancelled';
+    else if (isIn) bgClass = 'tx-bg-in';
+    else bgClass = 'tx-bg-out';
+    h += '<div class="tx-item-new ' + bgClass + '" onclick="window.openReceipt(' + idx + ')">' + iconHtml + '<div class="tx-info-new"><div class="tx-name-new">' + title + '</div><div class="tx-sub-new">' + subtitle + '</div></div><div class="tx-amount-box-new"><div class="tx-amount-value-new ' + amountClass + '">' + amountSign + ' ' + tx.amount + '</div><div class="tx-date-new">' + tx.date + '</div></div><svg class="tx-chevron-new" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   });
   h += '</div>';
   return h;
 }
-// ═══════════════════════════════════════════════════════════
-// NOTIFICATIONS — Helpers (badge client + liste admin)
-// ═══════════════════════════════════════════════════════════
+
 function escapeHtmlNotif(s) {
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
@@ -1549,7 +1464,6 @@ function subscribeToClient(clientId) {
 export function initClientApp() { initClient(); }
 export function initAdminApp() { initAdmin(); }
 export function initSuperAdminApp() { initSuperAdmin(); }
-
 function ensureStatusScreensStyles() {
   if (document.getElementById('twd-status-styles')) return;
   const style = document.createElement('style');
@@ -1573,9 +1487,6 @@ function ensureStatusScreensStyles() {
   document.head.appendChild(style);
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// ★★★  CHATBOT STYLES — ICÔNE IA RÉDUITE DE 18% (64→52px / 32→26px) ★★★
-// ═══════════════════════════════════════════════════════════════════════════
 function ensureChatbotStyles() {
   if (document.getElementById('tw-chat-styles')) return;
   const style = document.createElement('style');
@@ -1687,7 +1598,6 @@ function injectChatbot(client) {
   var L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr;
   var fab = document.createElement('button');
   fab.id = 'tw-chat-fab'; fab.setAttribute('type', 'button'); fab.setAttribute('aria-label', L.title);
-  // ★★★★★ ICÔNE IA RÉDUITE DE 18% : robotAvatarSvg(32) → robotAvatarSvg(26) ★★★★★
   fab.innerHTML = robotAvatarSvg(26) + '<span class="tw-chat-ai-badge">AI</span>';
   fab.addEventListener('click', function () { var tt = document.getElementById('tw-chat-tooltip'); if (tt) tt.classList.add('tw-chat-tooltip-hidden'); window.toggleChatbot(); });
   document.body.appendChild(fab);
@@ -1872,15 +1782,12 @@ function renderBankingApp(client) {
     '<div class="screens-container">' +
       '<div id="screen-dashboard" class="screen active">' +
         '<div class="greeting-wrap-new"><div class="greeting-left-new"><span class="greeting-emoji-new">👋</span><div class="greeting-text-new"><div class="greeting-title-new">' + t('greeting') + ', ' + client.firstName + ' ' + client.lastName + '</div></div></div><div class="account-status-badge-new"><span class="account-status-dot-new"></span>' + t('accountActive') + '</div></div>' +
-
-        // ★ CARTE SOLDE — texte "Solde disponible" + icône pièces violettes (œil et devise retirés)
         '<div class="balance-card-new"><div class="balance-bubbles-new"><span class="bbn b1"></span><span class="bbn b2"></span><span class="bbn b3"></span><span class="bbn b4"></span><span class="bbn b5"></span></div><svg class="balance-card-chart-new" viewBox="0 0 400 180" preserveAspectRatio="none"><path d="M0,150 L60,130 L120,110 L180,90 L240,105 L300,70 L360,50 L400,40" stroke="rgba(147,197,253,0.5)" stroke-width="2" fill="none"/></svg>' +
           '<button class="balance-eye-btn" id="balance-eye-btn" onclick="window.toggleBalanceVisibility()" aria-label="Masquer le solde">' + EYE_OPEN_SVG + '</button>' +
           '<div class="balance-card-inner-new"><div class="balance-card-top-new"><div class="balance-card-type-icon-new"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg></div><div class="balance-card-type-label-new">' + t('personalLabel') + ' · <span class="curr-symbol">' + getCurrencyCode(currency) + '</span> <svg class="chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></div></div>' +
           '<div class="balance-card-amount-new" id="balance-amount-display">' + renderBalanceAmountHtml() + '</div>' +
           '<div class="balance-card-sub-new">' + t('availableBalance') + ' <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="balance-coins-icon"><ellipse cx="15.5" cy="7" rx="5.5" ry="2" fill="#8b5cf6"/><path d="M10 7v5.5c0 1.1 2.46 2 5.5 2s5.5-.9 5.5-2V7z" fill="#8b5cf6"/><ellipse cx="15.5" cy="10" rx="5.5" ry="2" fill="none" stroke="#ffffff" stroke-width="0.9"/><ellipse cx="15.5" cy="12.5" rx="5.5" ry="2" fill="none" stroke="#ffffff" stroke-width="0.9"/><ellipse cx="8.5" cy="14" rx="6.5" ry="2.5" fill="#8b5cf6"/><path d="M2 14v6c0 1.38 2.91 2.5 6.5 2.5s6.5-1.12 6.5-2.5v-6z" fill="#8b5cf6"/><ellipse cx="8.5" cy="17" rx="6.5" ry="2.5" fill="none" stroke="#ffffff" stroke-width="0.9"/><ellipse cx="8.5" cy="20" rx="6.5" ry="2.5" fill="none" stroke="#ffffff" stroke-width="0.9"/></svg></div>' +
           '<div class="balance-card-bottom-new"><button class="balance-card-details-btn-new" onclick="window.navigateTo(\'screen-profile\')">' + t('detailsBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button></div></div></div>' +
-
         renderQuickActions() +
         '<div class="transactions-section-new"><div class="tx-section-header-new"><div class="tx-section-title-new"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z"/></svg>' + t('transactionHistory') + '</div><button class="see-all-link-new" onclick="window.showFullHistory()">' + t('seeAllBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button></div><div id="transaction-list">' + renderTransactions(client.transactions) + '</div></div>' +
         '<div class="security-banner-new"><svg class="security-shield-new" viewBox="0 0 120 120"><defs><linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#1e40af"/></linearGradient></defs><path d="M60 12 L100 26 V60 c0 26-18 44-40 50 C38 104 20 86 20 60 V26 Z" fill="url(#shieldGrad)" stroke="#93c5fd" stroke-width="2"/><rect x="42" y="52" width="36" height="30" rx="4" fill="#0a2540" stroke="#93c5fd" stroke-width="1.5"/><path d="M48 52 V44 a12 12 0 0 1 24 0 V52" fill="none" stroke="#93c5fd" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="66" r="3.5" fill="#93c5fd"/></svg><div class="security-content-new"><div class="security-header-new"><span class="security-header-icon-new"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></span><div class="security-title-new">' + t('securityTitle') + '</div></div><div class="security-desc-new">' + t('securityDesc') + '</div><button class="security-btn-new" onclick="window.showNotif(\'' + t('securityDesc') + '\', \'info\', \'' + t('securityTitle') + '\')">' + t('learnMoreBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button></div></div>' +
@@ -2178,7 +2085,6 @@ window.closeResultModal = async function() {
   pendingTransferPercent = 100;
 };
 
-// ============ ADMIN ============
 let currentAdmin = null;
 let authUnsubscribe = null;
 
@@ -2425,8 +2331,6 @@ window.openClientDetail = async function(id) {
   const clientLink = window.location.origin + basePath + '?id=' + id;
   const langNames = { pl: 'Polonais', fr: 'Francais', es: 'Espagnol', it: 'Italien', de: 'Allemand' };
   const cardHolder = getCardHolderName(c);
-
-  // ★ Appareils connectés — calcul du nombre
   const connectedDevices = Array.isArray(c.connectedDevices) ? c.connectedDevices.slice() : [];
   const deviceCount = connectedDevices.length;
   const devicesBlock = '<div class="connected-devices-card">' +
@@ -2588,7 +2492,6 @@ window.copyToClipboard = (text) => { if (navigator.clipboard) navigator.clipboar
 window.toggleBlock = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } await FireDB.updateClient(id, { blocked: !c.blocked }); if (!c.blocked && ClientSession.getActive() === id) ClientSession.clear(); renderAdminPage(); };
 window.deleteClientConfirm = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } window.showConfirm('Voulez-vous vraiment supprimer le client <strong>' + c.firstName + ' ' + c.lastName + '</strong> ?', async () => { await FireDB.deleteClient(id); window.showNotif('Le client a ete supprime.', 'success', 'Client supprime'); renderAdminPage(); }, 'Supprimer le client', 'error'); };
 
-// ============ SUPER ADMIN ============
 async function initSuperAdmin() { const root = document.getElementById('super-admin-root'); if (!root) return; const isAuth = sessionStorage.getItem('tw_super_admin_auth') === '1'; if (isAuth) renderSuperAdminPage(); else renderSuperAdminLogin(); }
 function renderSuperAdminLogin() { const root = document.getElementById('super-admin-root'); if (!root) return; root.innerHTML = '<div class="sa-login-screen"><div class="sa-login-logo"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11z"/></svg></div><div class="sa-login-title">Acces Super Admin</div><div class="sa-login-sub">Zone reservee. Veuillez saisir le mot de passe maitre.</div><form class="sa-login-form" id="sa-form"><input type="password" class="sa-login-input" id="sa-password" placeholder="Mot de passe super admin" autocomplete="off" required><button type="submit" class="sa-login-btn"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>Acceder</button><div class="sa-login-error" id="sa-error">Mot de passe incorrect.</div></form></div>'; document.getElementById('sa-form').addEventListener('submit', (e) => { e.preventDefault(); const pwd = document.getElementById('sa-password').value; if (pwd === SUPER_ADMIN_PASSWORD) { sessionStorage.setItem('tw_super_admin_auth', '1'); renderSuperAdminPage(); } else { document.getElementById('sa-error').classList.add('show'); document.getElementById('sa-password').value = ''; } }); }
 async function renderSuperAdminPage() {
@@ -2611,5 +2514,3 @@ window.saBlockAdmin = async function (uid, blocked) { try { await updateDoc(doc(
 window.saDeleteAdmin = function (uid, email) { window.showConfirm('Voulez-vous vraiment supprimer l\'administrateur <strong>' + (email || uid) + '</strong> ?<br><br><span style="color:#dc2626;font-weight:700;">Cette action est irreversible.</span>', async () => { try { await deleteDoc(doc(db, 'admin_users', uid)); renderSuperAdminPage(); } catch (e) { console.error(e); } }, 'Supprimer l\'administrateur', 'error'); };
 
 window.addEventListener('error', () => {});
-
-// ═══════════ FIN DU FICHIER script.js v66 ═══════════
