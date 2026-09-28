@@ -1710,5 +1710,323 @@ input, select, textarea { font-family: inherit; }
 }
 
 /* ===================================================== */
+/* ★★★  LISIBILITÉ RENFORCÉE — CONTRASTE OPTIMAL  ★★★    */
+/* Tous les textes ont un contraste conforme WCAG AA     */
+/* (≥ 4.5:1 pour texte normal, ≥ 3:1 pour texte large)  */
+/* AUCUN texte gris n'est "noyé" dans son arrière-plan  */
+/* ===================================================== */
+
+/* ---------- 1) Textes gris clairs sur fond blanc → gris foncés ---------- */
+.quick-actions-card .qac-subtitle,
+.option-panel-toggle-label,
+.stat-card .lbl,
+.empty-state p,
+.tx-row .tx-date,
+.full-history-empty,
+.tx-date,
+.tx-date-new,
+.greeting-sub-new,
+.tx-sub-new,
+.admin-transfer-meta,
+.admin-transfers-empty,
+.admin-pending-meta,
+.admin-pending-empty,
+.connected-device-meta,
+.connected-devices-empty,
+.receipt-row-label,
+.receipt-row-label span,
+.receipt-row-icon,
+.receipt-line-label,
+.receipt-amount-label,
+.receipt-header-sub,
+.result-detail-label,
+.transfer-detail-row-label,
+.transfer-detail-amount-label,
+.transfer-detail-header-label,
+.detail-row-label,
+.detail-status-label,
+.profile-label,
+.verify-row-label,
+.profile-row-label,
+.option-panel-toggle-label,
+.notif-item-date,
+.notif-empty {
+  color: #1e293b !important;
+}
+
+/* Icônes grises (chevrons, stylos, indicateurs) → gris foncé */
+.receipt-row-icon svg,
+.receipt-row-label svg,
+.tx-chevron-new,
+.profile-card-header-chev {
+  fill: #334155 !important;
+  color: #334155 !important;
+}
+
+/* ---------- 2) Placeholders — gris moyen bien lisible ---------- */
+.form-input::placeholder,
+.verify-code-input::placeholder,
+.yld-input-group input::placeholder,
+.login-input-group input::placeholder,
+.admin-auth input::placeholder,
+.sa-login-input::placeholder,
+.quick-actions-card input::placeholder,
+.quick-actions-card textarea::placeholder,
+.admin-group input::placeholder,
+.admin-group textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+/* ---------- 3) Textes sur fond sombre — BLANC pur garanti ---------- */
+.header-brand-title-new,
+.header-brand-sub-new,
+.balance-card-type-label-new,
+.balance-card-type-label-new .curr-symbol,
+.balance-card-amount-new .int-part,
+.balance-card-amount-new .dec-part,
+.balance-card-amount-new .cur-part,
+.balance-card-sub-new,
+.detail-name,
+.detail-email,
+.security-title-new,
+.security-desc-new,
+.profile-hero-name,
+.profile-hero-status,
+.profile-hero-email,
+.profile-top-name,
+.profile-top-email,
+.profile-top-badge,
+.transfer-detail-header-name,
+.transfer-detail-header-label,
+.transfer-detail-amount-label,
+.transfer-detail-amount-value,
+.receipt-header-amount,
+.receipt-header-status,
+.credit-card .card-brand,
+.credit-card .card-number,
+.credit-card .card-holder,
+.credit-card .card-expiry,
+.credit-card .card-cvv,
+.credit-card .visa-logo,
+.iban-new-title,
+.iban-new-iban-label,
+.iban-new-iban-value,
+.notif-title,
+.notif-subtitle,
+.notif-list-title,
+.notif-list-subtitle,
+.full-history-header h3,
+.connected-devices-icon svg {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Opacités faibles → 100% pour ne plus "baver" */
+.header-brand-sub-new,
+.security-desc-new,
+.profile-hero-email,
+.balance-card-sub-new,
+.balance-card-type-label-new .chev,
+.receipt-header-status,
+.transfer-detail-amount-label,
+.transfer-detail-header-label {
+  opacity: 1 !important;
+}
+
+/* ---------- 4) Textes sur fond orange/jaune (pending, warn) ---------- */
+.warning-text,
+.iban-new-warning,
+.iban-new-warning span,
+.admin-pending-name,
+.admin-pending-meta,
+.admin-pending-empty,
+.pending-transfer-card .pt-subtitle,
+.pending-transfer-card .pt-status-label,
+.pending-transfer-card .pt-title,
+.result-title-text.pending,
+.result-detail-value,
+.detail-footer-btn.send-credentials,
+.notif-btn.warning {
+  color: #451a03 !important;
+}
+.admin-pending-amount,
+.pending-transfer-card .pt-title svg,
+.iban-new-warning svg {
+  color: #78350f !important;
+  fill: #78350f !important;
+}
+.detail-footer-btn.send-credentials svg { fill: #451a03 !important; }
+
+/* ---------- 5) Textes sur fond vert clair (success) ---------- */
+.detail-status-box.active .detail-status-label { color: #14532d !important; }
+.detail-status-box.active .detail-status-value { color: #166534 !important; }
+.detail-footer-btn.send-activation { color: #14532d !important; }
+.detail-footer-btn.send-activation svg { fill: #14532d !important; }
+.receipt-status-done,
+.receipt-status-done svg { color: #065f46 !important; fill: #065f46 !important; }
+.account-status-badge-new { color: #14532d !important; }
+.connected-devices-label { color: #064e3b !important; }
+.connected-devices-count { color: #065f46 !important; }
+.connected-devices-count small { color: #065f46 !important; }
+.connected-devices-sub { color: #065f46 !important; }
+
+/* ---------- 6) Textes sur fond bleu clair (balance/info) ---------- */
+.detail-status-box.balance .detail-status-label { color: #1e3a8a !important; }
+.detail-status-box.balance .detail-status-value { color: #1e40af !important; }
+.info-banner-blue .banner-text { color: #1e3a8a !important; }
+.qa-card-holder-note { color: #1e3a8a !important; }
+.qa-card-holder-note svg { fill: #1e3a8a !important; }
+.detail-footer-btn.copy { color: #1e3a8a !important; }
+.detail-footer-btn.copy svg { fill: #1e3a8a !important; }
+
+/* ---------- 7) Textes sur fond rouge clair (blocked) ---------- */
+.detail-status-box.blocked .detail-status-label { color: #7f1d1d !important; }
+.detail-status-box.blocked .detail-status-value { color: #991b1b !important; }
+
+/* ---------- 8) Labels de formulaire (admin + client) — contraste max ---------- */
+.admin-group label,
+.quick-actions-card label,
+.admin-auth .auth-group label,
+.option-panel-toggle-label,
+.qa-switch-text,
+.form-label,
+.verify-code-label,
+.verify-row-label,
+.verify-lock-row span,
+.profile-header,
+.profile-card-header-title,
+.profile-row-value,
+.transfer-card .details-header,
+.page-title-bar,
+.transfer-amount,
+.greeting-title-new,
+.tx-section-title-new,
+.tx-name-new,
+.client-line-name,
+.client-line-balance,
+.iban-new-info-value,
+.receipt-row-value,
+.receipt-line-value,
+.result-detail-value,
+.detail-row-value,
+.transfer-detail-row-value {
+  color: #0f172a !important;
+}
+
+/* ---------- 9) Titres / valeurs — noir pur garanti ---------- */
+.receipt-row-value,
+.transfer-detail-row-value,
+.detail-row-value,
+.verify-row-value,
+.profile-value,
+.client-line-name,
+.client-line-balance,
+.tx-title,
+.tx-subtitle,
+.stat-card .val,
+.admin-identity-card,
+.transfer-detail-header-name,
+.receipt-amount,
+.result-detail-value,
+.receipt-line-value,
+.verify-row-value,
+.info-details span.lbl,
+.receipt-amount,
+.iban-new-info-value,
+.tx-row .tx-name,
+.receipt-modal .receipt-row-value,
+.receipt-modal .receipt-amount,
+.no-access h2,
+.blocked-screen h2,
+.admin-auth h1 {
+  color: #000000 !important;
+}
+
+/* ---------- 10) SUPER ADMIN — textes sur fond sombre ---------- */
+.sa-admin-email,
+.sa-login-title { color: #ffffff !important; }
+.sa-admin-meta { color: #e2e8f0 !important; }
+.sa-stat-lbl { color: #e2e8f0 !important; }
+.sa-login-sub { color: #e2e8f0 !important; }
+.sa-field-label { color: #cbd5e1 !important; }
+.sa-field-value { color: #f1f5f9 !important; }
+.sa-field-value.password { color: #fbbf24 !important; }
+.sa-empty { color: #e2e8f0 !important; }
+.sa-empty p { color: #e2e8f0 !important; }
+.sa-section-title { color: #fbbf24 !important; }
+.sa-badge.active { color: #34d399 !important; background: rgba(52, 211, 153, 0.18) !important; }
+.sa-badge.blocked { color: #fca5a5 !important; background: rgba(252, 165, 165, 0.18) !important; }
+.sa-topbar .sa-brand { color: #ffffff !important; }
+.sa-topbar .sa-brand span { color: #fbbf24 !important; }
+
+/* ---------- 11) BOUTONS — textes lisibles sur tous les fonds ---------- */
+.notif-btn.cancel { color: #0f172a !important; }
+.btn-close,
+.result-close-action,
+.transfer-detail-btn-close { color: #0f172a !important; }
+.client-line-btn.del { color: #0f172a !important; }
+.detail-footer-btn { color: #0f172a !important; }
+.detail-footer-btn svg { fill: currentColor !important; }
+
+/* ---------- 12) PAGE LOGIN v63 — textes contrastés ---------- */
+.yld-logo-text,
+.yld-hero-title { color: #0a1f44 !important; }
+.yld-badge { color: #0f172a !important; }
+.yld-badge svg { fill: #0f172a !important; }
+.yld-footer-item span { color: #0f172a !important; }
+.yld-footer-item svg { stroke: #0f172a !important; }
+.yld-input-group input { color: #0f172a !important; }
+
+/* ---------- 13) Cartes TRANSFERT — labels + valeurs ---------- */
+.form-label,
+.verify-row-label,
+.verify-code-label,
+.iban-new-info-label { color: #0f172a !important; }
+.iban-new-info-value { color: #000000 !important; }
+.receipt-line-label { color: #334155 !important; }
+
+/* ---------- 14) Bandeau sécurité — texte blanc pur ---------- */
+.security-title-new { color: #ffffff !important; font-weight: 800 !important; }
+.security-desc-new { color: #ffffff !important; font-weight: 600 !important; }
+.security-btn-new { color: #0a2540 !important; font-weight: 800 !important; }
+.security-btn-new svg { fill: #0a2540 !important; }
+
+/* ---------- 15) Badge "Compte actif" — vert foncé sur fond vert clair ---------- */
+.account-status-badge-new { color: #14532d !important; font-weight: 800 !important; }
+
+/* ---------- 16) Étoile / couronne / pastilles de nav — haute lisibilité ---------- */
+.nav-item-new span { color: #0f172a !important; font-weight: 800 !important; }
+.nav-item-new svg { fill: #0f172a !important; }
+.nav-item-new.active span { color: #5b21b6 !important; }
+.nav-item-new.active svg { fill: #5b21b6 !important; }
+
+/* ---------- 17) Petits textes icônes monochromes ---------- */
+.transfer-detail-row-icon svg,
+.result-info-box svg,
+.info-text svg,
+.warning-box svg,
+.verify-header-icon svg,
+.processing-details-header svg { fill: #0f172a !important; }
+
+/* ---------- 18) Reçus/status badges — contraste renforcé ---------- */
+.transfer-detail-status-badge.done,
+.receipt-status-done { color: #065f46 !important; background: #d1fae5 !important; }
+.transfer-detail-status-badge.failed { color: #7f1d1d !important; background: #fee2e2 !important; }
+.transfer-detail-status-badge.cancelled { color: #4c1d95 !important; background: #ede9fe !important; }
+.transfer-detail-status-badge.refund { color: #1e3a8a !important; background: #dbeafe !important; }
+.transfer-detail-status-badge.pending { color: #78350f !important; background: #fef3c7 !important; }
+
+/* ---------- 19) Tableau admin récap — chiffres bien noirs ---------- */
+.admin-pending-amount { color: #78350f !important; }
+.admin-transfer-amount { color: #7f1d1d !important; }
+.admin-identity-card strong { color: #1e3a8a !important; }
+
+/* ---------- 20) Bordures textuelles sur fond coloré ---------- */
+.amount-error-msg { color: #7f1d1d !important; background: #fee2e2 !important; }
+.form-input.input-error { color: #7f1d1d !important; background: #fef2f2 !important; }
+
+/* ===================================================== */
 /* FIN - TRANSFERWIRE v63.0 (VERSION FINALE COMPLÈTE)    */
+/* + Contraste WCAG AA renforcé — Tous les textes OK     */
 /* ===================================================== */
