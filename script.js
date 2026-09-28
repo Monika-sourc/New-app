@@ -2,6 +2,7 @@
 // YOUNITED - SCRIPT PRINCIPAL v66.0
 // (Notification email admin à la connexion client)
 // + Suivi des appareils connectés
+// + Réduction 18% de l'icône IA (bouton flottant)
 // =====================================================
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
 import {
@@ -1572,26 +1573,29 @@ function ensureStatusScreensStyles() {
   document.head.appendChild(style);
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// ★★★  CHATBOT STYLES — ICÔNE IA RÉDUITE DE 18% (64→52px / 32→26px) ★★★
+// ═══════════════════════════════════════════════════════════════════════════
 function ensureChatbotStyles() {
   if (document.getElementById('tw-chat-styles')) return;
   const style = document.createElement('style');
   style.id = 'tw-chat-styles';
   style.textContent = `
-    #tw-chat-fab { position: fixed; right: 14px; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #ec4899 0%, #a855f7 35%, #6366f1 65%, #06b6d4 100%); border: 2.5px solid rgba(255,255,255,0.9); cursor: pointer; box-shadow: 0 12px 30px rgba(168, 85, 247, 0.55), 0 6px 14px rgba(15, 23, 42, 0.28), inset 0 2px 4px rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; z-index: 9998; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease; -webkit-tap-highlight-color: transparent; animation: twChatFabBounce 3s ease-in-out infinite; }
+    #tw-chat-fab { position: fixed; right: 14px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #ec4899 0%, #a855f7 35%, #6366f1 65%, #06b6d4 100%); border: 2.5px solid rgba(255,255,255,0.9); cursor: pointer; box-shadow: 0 11px 26px rgba(168, 85, 247, 0.55), 0 5px 12px rgba(15, 23, 42, 0.28), inset 0 2px 4px rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; z-index: 9998; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease; -webkit-tap-highlight-color: transparent; animation: twChatFabBounce 3s ease-in-out infinite; }
     #tw-chat-fab:active { transform: scale(0.92); }
-    #tw-chat-fab svg { width: 32px; height: 32px; display: block; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25)); position: relative; z-index: 2; }
+    #tw-chat-fab svg { width: 26px; height: 26px; display: block; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25)); position: relative; z-index: 2; }
     #tw-chat-fab.tw-chat-hidden { display: none !important; }
-    @keyframes twChatFabBounce { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-4px) scale(1.04); } }
-    #tw-chat-fab::before { content: ''; position: absolute; inset: -8px; border-radius: 50%; background: radial-gradient(circle, rgba(236,72,153,0.45) 0%, rgba(99,102,241,0.35) 50%, transparent 75%); animation: twChatPulse 2.2s ease-out infinite; z-index: -1; pointer-events: none; }
-    #tw-chat-fab::after { content: ''; position: absolute; inset: -14px; border-radius: 50%; background: radial-gradient(circle, rgba(6,182,212,0.28) 0%, transparent 70%); animation: twChatPulse 2.2s ease-out infinite 0.5s; z-index: -2; pointer-events: none; }
+    @keyframes twChatFabBounce { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-3px) scale(1.04); } }
+    #tw-chat-fab::before { content: ''; position: absolute; inset: -7px; border-radius: 50%; background: radial-gradient(circle, rgba(236,72,153,0.45) 0%, rgba(99,102,241,0.35) 50%, transparent 75%); animation: twChatPulse 2.2s ease-out infinite; z-index: -1; pointer-events: none; }
+    #tw-chat-fab::after { content: ''; position: absolute; inset: -11px; border-radius: 50%; background: radial-gradient(circle, rgba(6,182,212,0.28) 0%, transparent 70%); animation: twChatPulse 2.2s ease-out infinite 0.5s; z-index: -2; pointer-events: none; }
     @keyframes twChatPulse { 0% { transform: scale(0.85); opacity: 0.85; } 70% { transform: scale(1.35); opacity: 0; } 100% { transform: scale(1.4); opacity: 0; } }
-    .tw-chat-ai-badge { position: absolute; top: -6px; right: -6px; min-width: 24px; height: 20px; padding: 0 6px; border-radius: 10px; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #ffffff; font-size: 10px; font-weight: 900; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 3px 8px rgba(245, 158, 11, 0.55); font-family: 'Titillium Web', sans-serif; z-index: 3; text-transform: uppercase; }
-    .tw-chat-ai-badge::before { content: '✦'; margin-right: 2px; font-size: 9px; }
-    .tw-chat-tooltip { position: fixed; right: 86px; bottom: calc(105px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; padding: 8px 12px; border-radius: 12px; font-size: 11.5px; font-weight: 700; font-family: 'Titillium Web', sans-serif; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.35); white-space: nowrap; z-index: 9997; animation: twChatTooltipIn 0.5s ease-out 1s both; pointer-events: none; border: 1px solid rgba(255,255,255,0.15); }
+    .tw-chat-ai-badge { position: absolute; top: -5px; right: -5px; min-width: 20px; height: 17px; padding: 0 5px; border-radius: 9px; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #ffffff; font-size: 9px; font-weight: 900; letter-spacing: 0.4px; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 3px 8px rgba(245, 158, 11, 0.55); font-family: 'Titillium Web', sans-serif; z-index: 3; text-transform: uppercase; }
+    .tw-chat-ai-badge::before { content: '✦'; margin-right: 2px; font-size: 8px; }
+    .tw-chat-tooltip { position: fixed; right: 74px; bottom: calc(98px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; padding: 8px 12px; border-radius: 12px; font-size: 11.5px; font-weight: 700; font-family: 'Titillium Web', sans-serif; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.35); white-space: nowrap; z-index: 9997; animation: twChatTooltipIn 0.5s ease-out 1s both; pointer-events: none; border: 1px solid rgba(255,255,255,0.15); }
     .tw-chat-tooltip::after { content: ''; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 6px solid #1e293b; }
     .tw-chat-tooltip.tw-chat-tooltip-hidden { display: none !important; }
     @keyframes twChatTooltipIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
-    #tw-chat-window { position: fixed; right: 14px; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); width: calc(100vw - 28px); max-width: 380px; height: 72vh; max-height: 580px; background: #ffffff; border-radius: 20px; box-shadow: 0 26px 70px rgba(168, 85, 247, 0.35), 0 10px 30px rgba(15, 23, 42, 0.22); display: none; flex-direction: column; overflow: hidden; z-index: 9999; transform-origin: bottom right; animation: twChatOpen 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); border: 2px solid rgba(168, 85, 247, 0.25); }
+    #tw-chat-window { position: fixed; right: 14px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); width: calc(100vw - 28px); max-width: 380px; height: 72vh; max-height: 580px; background: #ffffff; border-radius: 20px; box-shadow: 0 26px 70px rgba(168, 85, 247, 0.35), 0 10px 30px rgba(15, 23, 42, 0.22); display: none; flex-direction: column; overflow: hidden; z-index: 9999; transform-origin: bottom right; animation: twChatOpen 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); border: 2px solid rgba(168, 85, 247, 0.25); }
     #tw-chat-window.tw-chat-open { display: flex; }
     @keyframes twChatOpen { from { opacity: 0; transform: translateY(20px) scale(0.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
     .tw-chat-header { background: linear-gradient(135deg, #ec4899 0%, #a855f7 30%, #6366f1 65%, #06b6d4 100%); padding: 14px 16px; display: flex; align-items: center; gap: 11px; color: #ffffff; flex-shrink: 0; position: relative; overflow: hidden; }
@@ -1639,7 +1643,7 @@ function ensureChatbotStyles() {
     #tw-chat-send { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #06b6d4 100%); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 6px 16px rgba(168, 85, 247, 0.45); transition: transform 0.15s ease, box-shadow 0.2s ease; -webkit-tap-highlight-color: transparent; }
     #tw-chat-send:active { transform: scale(0.9); }
     #tw-chat-send svg { width: 19px; height: 19px; fill: #ffffff; }
-    @media (max-width: 420px) { #tw-chat-fab { right: 12px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); width: 60px; height: 60px; } #tw-chat-fab svg { width: 30px; height: 30px; } #tw-chat-window { right: 8px; left: 8px; width: auto; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); height: 74vh; max-height: none; border-radius: 18px; } .tw-chat-tooltip { right: 80px; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); font-size: 11px; padding: 7px 10px; } }
+    @media (max-width: 420px) { #tw-chat-fab { right: 12px; bottom: calc(78px + env(safe-area-inset-bottom, 0px)); width: 49px; height: 49px; } #tw-chat-fab svg { width: 25px; height: 25px; } #tw-chat-window { right: 8px; left: 8px; width: auto; bottom: calc(78px + env(safe-area-inset-bottom, 0px)); height: 74vh; max-height: none; border-radius: 18px; } .tw-chat-tooltip { right: 68px; bottom: calc(94px + env(safe-area-inset-bottom, 0px)); font-size: 11px; padding: 7px 10px; } }
   `;
   document.head.appendChild(style);
 }
@@ -1683,7 +1687,8 @@ function injectChatbot(client) {
   var L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr;
   var fab = document.createElement('button');
   fab.id = 'tw-chat-fab'; fab.setAttribute('type', 'button'); fab.setAttribute('aria-label', L.title);
-  fab.innerHTML = robotAvatarSvg(30) + '<span class="tw-chat-ai-badge">AI</span>';
+  // ★★★★★ ICÔNE IA RÉDUITE DE 18% : robotAvatarSvg(32) → robotAvatarSvg(26) ★★★★★
+  fab.innerHTML = robotAvatarSvg(26) + '<span class="tw-chat-ai-badge">AI</span>';
   fab.addEventListener('click', function () { var tt = document.getElementById('tw-chat-tooltip'); if (tt) tt.classList.add('tw-chat-tooltip-hidden'); window.toggleChatbot(); });
   document.body.appendChild(fab);
   var tooltip = document.createElement('div');
