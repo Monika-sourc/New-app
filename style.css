@@ -792,6 +792,7 @@ input, select, textarea {
   overflow: hidden;
   margin-bottom: 20px;
 }
+/* MODIF 5 : Nom + solde + 2 boutons sur une seule ligne */
 .client-line {
   display: flex;
   align-items: center;
@@ -799,12 +800,13 @@ input, select, textarea {
   padding: 11px 12px;
   border-bottom: 1px solid #f1f5f9;
   background: #fff;
-  flex-wrap: wrap;
+  flex-wrap: nowrap !important;
+  overflow: hidden;
 }
 .client-line:last-child { border-bottom: none; }
 .client-line-name {
-  flex: 1;
-  min-width: 120px;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
   font-size: 12.5px;
   font-weight: 700;
   color: #1a73e8;
@@ -813,20 +815,20 @@ input, select, textarea {
   text-underline-offset: 3px;
   cursor: pointer;
   line-height: 1.3;
-  white-space: normal;
-  word-break: break-word;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 .client-line-name:active { opacity: 0.7; }
 .client-line-balance {
   font-size: 12px;
   font-weight: 700;
   color: #000000;
-  flex-shrink: 0;
-  white-space: normal;
-  word-break: break-word;
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
 }
 .client-line-btn {
-  flex-shrink: 0;
+  flex: 0 0 auto !important;
   border: none;
   border-radius: 4px;
   padding: 6px 10px;
@@ -834,8 +836,7 @@ input, select, textarea {
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
-  white-space: normal;
-  word-break: break-word;
+  white-space: nowrap !important;
   text-align: center;
   transition: transform 0.1s ease;
 }
@@ -6260,6 +6261,14 @@ input, select, textarea {
   padding: 12px 12px !important;
 }
 
+/* MODIF 4 : Espace entre chaque champ du formulaire de virement */
+#app-root #screen-transfer .form-group {
+  padding-bottom: 16px !important;
+}
+#app-root #screen-transfer .form-group:last-of-type {
+  padding-bottom: 0 !important;
+}
+
 #app-root .profile-wrap-new { padding: 7px !important; gap: 7px !important; }
 #app-root .profile-hero-new { padding: 10px 9px 12px 9px !important; }
 #app-root .profile-avatar-new { width: 50px !important; height: 50px !important; }
@@ -6310,7 +6319,7 @@ input, select, textarea {
 #app-root #screen-verification .verify-row-label { font-size: 10px !important; }
 #app-root #screen-verification .verify-row-value { font-size: 11.5px !important; }
 
-/* ===== ADMIN - BORDURES (MODIF 1 : bordures des champs adoucies) ===== */
+/* ===== ADMIN - BORDURES ===== */
 #admin-root .admin-identity-card,
 #admin-root .admin-section,
 #admin-root .quick-actions-card,
@@ -6336,7 +6345,8 @@ input, select, textarea {
 #admin-root .qa-switch {
   border: 1px solid #0f172a !important;
 }
-/* MODIF 1 — Bordures des champs admin adoucies (visibles comme les autres) */
+/* MODIF 1 — Bordures des champs admin adoucies ET flèche ▼ visible sur les selects */
+/* (background-color à la place de background : la flèche SVG n'est plus écrasée) */
 #admin-root .admin-group input,
 #admin-root .admin-group select,
 #admin-root .admin-group textarea,
@@ -6347,7 +6357,20 @@ input, select, textarea {
 #admin-root .option-panel select,
 #admin-root .option-panel textarea {
   border: 1px solid #cbd5e1 !important;
-  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+#admin-root .admin-group select,
+#admin-root .quick-actions-card select,
+#admin-root .option-panel select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a73e8'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 10px center !important;
+  background-size: 20px !important;
+  padding-right: 36px !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  cursor: pointer !important;
 }
 #admin-root .admin-group input:focus,
 #admin-root .admin-group select:focus,
@@ -6649,7 +6672,7 @@ input, select, textarea {
 #client-detail-modal .connected-devices-icon { width: 40px !important; height: 40px !important; }
 #client-detail-modal .connected-devices-icon svg { width: 20px !important; height: 20px !important; max-width: 20px !important; max-height: 20px !important; }
 
-/* ===== MODIF 1 - ESPACEMENT DES 3 BOUTONS ACTIONS ===== */
+/* ===== ESPACEMENT DES 3 BOUTONS ACTIONS ===== */
 #app-root .quick-actions-row-new {
   gap: 12px !important;
   margin: 0 10px 12px 10px !important;
@@ -6696,33 +6719,81 @@ input, select, textarea {
 #tw-chat-send svg { width: 15px !important; height: 15px !important; max-width: 15px !important; max-height: 15px !important; }
 
 /* ============================================================ */
-/* ===== MODIF 2 : Textes saisis en gris (page transfert) ===== */
+/* ===== MODIF 2 : Option panel en fenêtre modale ============ */
 /* ============================================================ */
-/* Force les textes tapés par l'utilisateur dans les champs du */
-/* formulaire de virement (IBAN, Swift, Banque, Nom, Motif)    */
-/* à être en gris (#64748b). Le Montant garde sa couleur       */
-/* bleue primaire et sa mise en forme (classe .amount-input).  */
-#app-root #screen-transfer .form-input:not(.amount-input) {
-  color: #64748b !important;
+/* Quand un .option-panel est affiché (display:block via JS),  */
+/* tout le .quick-actions-card devient une fenêtre modale      */
+/* centrée avec backdrop flouté. Le titre/sous-titre et les    */
+/* selects (client + action) sont masqués. La fenêtre se ferme */
+/* automatiquement après applyQuickAction car renderAdminPage  */
+/* reconstruit entièrement le contenu du #admin-root.           */
+.quick-actions-card:has(.option-panel[style*="display: block"]),
+.quick-actions-card:has(.option-panel[style*="display:block"]) {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 2147483647 !important;
+  width: 92vw !important;
+  max-width: 420px !important;
+  max-height: 88vh !important;
+  overflow-y: auto !important;
+  margin: 0 !important;
+  padding: 14px !important;
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.55) !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  border: 1px solid #0f172a !important;
+  animation: notifPopIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.quick-actions-card:has(.option-panel[style*="display: block"]) .qac-title,
+.quick-actions-card:has(.option-panel[style*="display: block"]) .qac-subtitle,
+.quick-actions-card:has(.option-panel[style*="display: block"]) > .admin-group,
+.quick-actions-card:has(.option-panel[style*="display:block"]) .qac-title,
+.quick-actions-card:has(.option-panel[style*="display:block"]) .qac-subtitle,
+.quick-actions-card:has(.option-panel[style*="display:block"]) > .admin-group {
+  display: none !important;
+}
+
+/* Backdrop sombre derrière la fenêtre */
+body:has(.quick-actions-card:has(.option-panel[style*="display: block"]))::before,
+body:has(.quick-actions-card:has(.option-panel[style*="display:block"]))::before {
+  content: '' !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+  z-index: 2147483646 !important;
+  pointer-events: none !important;
+}
+
+/* Empêche le scroll du body quand la fenêtre est ouverte */
+body:has(.quick-actions-card:has(.option-panel[style*="display: block"])),
+body:has(.quick-actions-card:has(.option-panel[style*="display:block"])) {
+  overflow: hidden !important;
+}
+
+/* Pour l'action "Envoyer une notification", la fenêtre a déjà son propre bouton
+   d'envoi dans le panneau : on masque le bouton "Appliquer" du bas pour éviter la duplication */
+.quick-actions-card:has(#qa-notification-fields[style*="display: block"]) > .btn-admin-submit,
+.quick-actions-card:has(#qa-notification-fields[style*="display:block"]) > .btn-admin-submit {
+  display: none !important;
 }
 
 /* ============================================================ */
-/* ===== MODIF 3 : Labels / Valeurs distincts ================ */
+/* ===== MODIF 3 : Texte saisi en gris plus clair (transfert) */
 /* ============================================================ */
-/* Pages CODE D'ACTIVATION + PROGRESSION + CONFIRMATION :      */
-/*  → Labels (ex : "Montant :", "Nom du bénéficiaire :")       */
-/*    passent en gris (#64748b) — lisibles mais pas trop noirs.*/
-/*  → Valeurs (montants, IBAN, noms) restent en vrai noir      */
-/*    (#000000) — bien noires et reconnaissables.              */
-/* Les autres pages ne sont pas touchées.                       */
-#screen-verification .verify-row-label,
-#screen-processing .verify-row-label,
-#screen-verification .verify-code-label,
-#screen-result .result-detail-label {
-  color: #64748b !important;
-}
-#screen-verification .verify-row-value,
-#screen-processing .verify-row-value,
-#screen-result .result-detail-value {
-  color: #000000 !important;
+/* Les textes tapés dans les champs du formulaire de virement   */
+/* (IBAN, Swift, Banque, Nom, Motif) sont plus clairs (#94a3b8) */
+/* que les sous-titres (#334155). Le champ Montant garde sa    */
+/* couleur bleue primaire et sa mise en forme (classe          */
+/* .amount-input).                                              */
+#app-root #screen-transfer .form-input:not(.amount-input) {
+  color: #94a3b8 !important;
 }
