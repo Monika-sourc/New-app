@@ -4058,9 +4058,6 @@ input, select, textarea {
 .notif-btn.cancel { background: #e2e8f0; color: #334155; box-shadow: none; }
 .notif-btn.cancel:hover { background: #cbd5e1; }
 
-/* ============================================================ */
-/* ===== Liste des notifications (bouton cloche en haut à droite) */
-/* ============================================================ */
 .notif-list-overlay {
   position: fixed;
   top: 0;
@@ -6885,12 +6882,8 @@ input, select, textarea {
 #tw-chat-send svg { width: 15px !important; height: 15px !important; max-width: 15px !important; max-height: 15px !important; }
 
 /* ============================================================ */
-/* ===== MODIF : Fenêtre d'options — arrière-plan NOIR ====== */
+/* ===== Fenêtre d'options — arrière-plan NOIR ====== */
 /* ============================================================ */
-/* Quand un .option-panel est affiché, TOUT ce qui se trouve    */
-/* derrière la fenêtre est masqué et l'arrière-plan devient     */
-/* NOIR. Seule la fenêtre .quick-actions-card reste visible.    */
-
 .quick-actions-card:has(.option-panel[style*="display: block"]),
 .quick-actions-card:has(.option-panel[style*="display:block"]) {
   position: fixed !important;
@@ -6920,28 +6913,20 @@ input, select, textarea {
 .quick-actions-card:has(.option-panel[style*="display:block"]) > .admin-group {
   display: none !important;
 }
-
-/* Masquer la topbar admin */
 #admin-root:has(.option-panel[style*="display: block"]) .admin-topbar,
 #admin-root:has(.option-panel[style*="display:block"]) .admin-topbar {
   visibility: hidden !important;
 }
-
-/* Masquer TOUS les enfants directs du .admin-body sauf la fenêtre */
 #admin-root:has(.option-panel[style*="display: block"]) .admin-body > *:not(.quick-actions-card),
 #admin-root:has(.option-panel[style*="display:block"]) .admin-body > *:not(.quick-actions-card) {
   visibility: hidden !important;
 }
-
-/* Fond NOIR sur le wrapper, le body admin et tout ce qui reste */
 #admin-root:has(.option-panel[style*="display: block"]) .admin-wrapper,
 #admin-root:has(.option-panel[style*="display:block"]) .admin-wrapper,
 #admin-root:has(.option-panel[style*="display: block"]) .admin-body,
 #admin-root:has(.option-panel[style*="display:block"]) .admin-body {
   background: #000000 !important;
 }
-
-/* Pseudo-élément plein écran NOIR derrière la fenêtre */
 body:has(.option-panel[style*="display: block"])::before,
 body:has(.option-panel[style*="display:block"])::before {
   content: '' !important;
@@ -6954,20 +6939,15 @@ body:has(.option-panel[style*="display:block"])::before {
   z-index: 1 !important;
   pointer-events: none !important;
 }
-
-/* Empêcher le défilement du body quand la fenêtre est ouverte */
 body:has(.option-panel[style*="display: block"]),
 body:has(.option-panel[style*="display:block"]) {
   overflow: hidden !important;
 }
-
-/* Pour l'action "Envoyer une notification" : masquer le bouton "Appliquer" du bas */
 .quick-actions-card:has(#qa-notification-fields[style*="display: block"]) > .btn-admin-submit,
 .quick-actions-card:has(#qa-notification-fields[style*="display:block"]) > .btn-admin-submit {
   display: none !important;
 }
 
-/* Bouton ✕ pour fermer la fenêtre */
 #admin-root .qa-modal-close {
   position: absolute !important;
   top: 10px !important;
@@ -6991,21 +6971,14 @@ body:has(.option-panel[style*="display:block"]) {
   box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25) !important;
   transition: transform 0.12s ease, background 0.2s ease !important;
 }
-#admin-root .qa-modal-close:hover {
-  background: #fecaca !important;
-  transform: scale(1.08);
-}
-#admin-root .qa-modal-close:active {
-  transform: scale(0.94);
-}
+#admin-root .qa-modal-close:hover { background: #fecaca !important; transform: scale(1.08); }
+#admin-root .qa-modal-close:active { transform: scale(0.94); }
 
-/* Texte saisi en gris foncé (page transfert) */
 #app-root #screen-transfer .form-input:not(.amount-input) {
   color: #475569 !important;
   font-weight: 700 !important;
 }
 
-/* Liste clients : tout sur une seule ligne */
 #admin-root .client-list-card .client-line {
   flex-wrap: nowrap !important;
   overflow: hidden !important;
@@ -7032,4 +7005,145 @@ body:has(.option-panel[style*="display:block"]) {
   padding: 5px 8px !important;
   font-size: 9.5px !important;
   letter-spacing: 0 !important;
+}
+
+/* ============================================================ */
+/* ===== MODIF 1 : Bottom nav client — plus grand + visible === */
+/* ============================================================ */
+#app-root .bottom-nav-new {
+  padding: 6px 8px 8px 8px !important;
+}
+@supports (padding: env(safe-area-inset-bottom)) {
+  #app-root .bottom-nav-new { padding-bottom: calc(8px + env(safe-area-inset-bottom)) !important; }
+}
+#app-root .bottom-nav-inner-new {
+  padding: 5px !important;
+  border-radius: 16px !important;
+  gap: 4px !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.16) !important;
+}
+#app-root .nav-item-new {
+  gap: 3px !important;
+  padding: 8px 4px !important;
+  border-radius: 12px !important;
+}
+#app-root .nav-item-new svg {
+  width: 20px !important;
+  height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  fill: #0f172a !important;
+  transition: fill 0.15s ease, transform 0.15s ease !important;
+}
+#app-root .nav-item-new span {
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  letter-spacing: 0.1px !important;
+  line-height: 1.15 !important;
+}
+#app-root .nav-item-new.active {
+  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%) !important;
+}
+#app-root .nav-item-new.active svg {
+  fill: #6d28d9 !important;
+  transform: scale(1.08) !important;
+}
+#app-root .nav-item-new.active span {
+  color: #5b21b6 !important;
+  font-weight: 900 !important;
+}
+
+/* ============================================================ */
+/* ===== MODIF 2 : Labels/Valeurs + Séparations (3 pages) === */
+/* ============================================================ */
+
+/* --- Page code d'activation (screen-verification) --- */
+#screen-verification .verify-row-label {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #64748b !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  padding-bottom: 2px !important;
+  border-bottom: 1px dashed #cbd5e1 !important;
+}
+#screen-verification .verify-row-value {
+  font-size: 14.5px !important;
+  font-weight: 800 !important;
+  color: #000000 !important;
+  letter-spacing: 0.2px !important;
+  padding-left: 8px !important;
+}
+#screen-verification .verify-row {
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+#screen-verification .verify-row:last-child {
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+}
+
+/* --- Page progression (screen-processing) --- */
+#screen-processing .verify-row-label {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #64748b !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  padding-bottom: 2px !important;
+  border-bottom: 1px dashed #cbd5e1 !important;
+}
+#screen-processing .verify-row-value {
+  font-size: 14.5px !important;
+  font-weight: 800 !important;
+  color: #000000 !important;
+  letter-spacing: 0.2px !important;
+  padding-left: 8px !important;
+}
+#screen-processing .verify-row {
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+#screen-processing .verify-row:last-child {
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+}
+
+/* --- Page confirmation (screen-result) --- */
+#screen-result .result-details-list {
+  gap: 0 !important;
+  padding: 4px 0 !important;
+}
+#screen-result .result-detail-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  padding: 10px 0 !important;
+  border-bottom: 1px dashed #cbd5e1 !important;
+  gap: 12px !important;
+}
+#screen-result .result-detail-row:last-child {
+  border-bottom: none !important;
+}
+#screen-result .result-detail-label {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #64748b !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  flex-shrink: 0 !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+}
+#screen-result .result-detail-value {
+  font-size: 13.5px !important;
+  font-weight: 800 !important;
+  color: #000000 !important;
+  letter-spacing: 0.2px !important;
+  text-align: right !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+  word-break: break-word !important;
 }
