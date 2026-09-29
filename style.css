@@ -792,7 +792,6 @@ input, select, textarea {
   overflow: hidden;
   margin-bottom: 20px;
 }
-/* MODIF 2 : tout sur une seule ligne (nom + solde + 2 boutons) */
 .client-line {
   display: flex;
   align-items: center;
@@ -6261,7 +6260,6 @@ input, select, textarea {
   padding: 12px 12px !important;
 }
 
-/* MODIF : Espace entre chaque champ du formulaire de virement */
 #app-root #screen-transfer .form-group {
   padding-bottom: 16px !important;
 }
@@ -6319,7 +6317,6 @@ input, select, textarea {
 #app-root #screen-verification .verify-row-label { font-size: 10px !important; }
 #app-root #screen-verification .verify-row-value { font-size: 11.5px !important; }
 
-/* ===== ADMIN - BORDURES ===== */
 #admin-root .admin-identity-card,
 #admin-root .admin-section,
 #admin-root .quick-actions-card,
@@ -6541,7 +6538,6 @@ input, select, textarea {
 #admin-root .client-line-balance { font-size: 11px !important; }
 #admin-root .client-line-btn { padding: 5px 9px !important; font-size: 9.5px !important; }
 
-/* ===== DÉTAIL CLIENT - NETTOYAGE ===== */
 #client-detail-modal > div {
   border: 1px solid #0f172a !important;
   border-radius: 8px !important;
@@ -6670,7 +6666,6 @@ input, select, textarea {
 #client-detail-modal .connected-devices-icon { width: 40px !important; height: 40px !important; }
 #client-detail-modal .connected-devices-icon svg { width: 20px !important; height: 20px !important; max-width: 20px !important; max-height: 20px !important; }
 
-/* ===== ESPACEMENT DES 3 BOUTONS ACTIONS ===== */
 #app-root .quick-actions-row-new {
   gap: 12px !important;
   margin: 0 10px 12px 10px !important;
@@ -6695,7 +6690,6 @@ input, select, textarea {
   display: none !important;
 }
 
-/* ===== CHATBOT ===== */
 #tw-chat-fab { width: 38px !important; height: 38px !important; right: 9px !important; bottom: calc(54px + env(safe-area-inset-bottom, 0px)) !important; }
 #tw-chat-fab svg { width: 18px !important; height: 18px !important; max-width: 18px !important; max-height: 18px !important; }
 .tw-chat-ai-badge { min-width: 14px !important; height: 11px !important; font-size: 6px !important; }
@@ -6717,14 +6711,14 @@ input, select, textarea {
 #tw-chat-send svg { width: 15px !important; height: 15px !important; max-width: 15px !important; max-height: 15px !important; }
 
 /* ============================================================ */
-/* ===== MODIF 2a : Option panel en fenêtre modale ========== */
+/* ===== MODIF : Fenêtre d'options — arrière-plan TOUT caché = */
 /* ============================================================ */
-/* Quand un .option-panel est affiché (display:block via JS),  */
-/* tout le .quick-actions-card devient une fenêtre modale      */
-/* centrée avec backdrop flouté. Le titre/sous-titre et les    */
-/* selects (client + action) sont masqués. La fenêtre se ferme */
-/* automatiquement après applyQuickAction car renderAdminPage  */
-/* reconstruit entièrement le contenu du #admin-root.           */
+/* Quand un .option-panel est affiché, TOUT ce qui se trouve    */
+/* derrière la fenêtre est masqué (visibility:hidden). Seule    */
+/* la fenêtre .quick-actions-card reste visible. Aucun effet    */
+/* de flou, aucun filtre, aucun élément visible en arrière.     */
+
+/* Rendre la fenêtre elle-même en position fixe centrée */
 .quick-actions-card:has(.option-panel[style*="display: block"]),
 .quick-actions-card:has(.option-panel[style*="display:block"]) {
   position: fixed !important;
@@ -6746,6 +6740,8 @@ input, select, textarea {
   border: 1px solid #0f172a !important;
   animation: notifPopIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
+/* Masquer le titre / sous-titre / select d'action de la fenêtre */
 .quick-actions-card:has(.option-panel[style*="display: block"]) .qac-title,
 .quick-actions-card:has(.option-panel[style*="display: block"]) .qac-subtitle,
 .quick-actions-card:has(.option-panel[style*="display: block"]) > .admin-group,
@@ -6755,42 +6751,54 @@ input, select, textarea {
   display: none !important;
 }
 
-/* MODIF 1 — Backdrop 100% opaque derrière la fenêtre : plus rien ne s'affiche derrière */
-body:has(.quick-actions-card:has(.option-panel[style*="display: block"]))::before,
-body:has(.quick-actions-card:has(.option-panel[style*="display:block"]))::before {
+/* ===== CACHER TOUT CE QUI EST DERRIÈRE LA FENÊTRE ===== */
+/* Masquer la topbar admin */
+#admin-root:has(.option-panel[style*="display: block"]) .admin-topbar,
+#admin-root:has(.option-panel[style*="display:block"]) .admin-topbar {
+  visibility: hidden !important;
+}
+
+/* Masquer TOUS les enfants directs du .admin-body sauf la fenêtre .quick-actions-card */
+#admin-root:has(.option-panel[style*="display: block"]) .admin-body > *:not(.quick-actions-card),
+#admin-root:has(.option-panel[style*="display:block"]) .admin-body > *:not(.quick-actions-card) {
+  visibility: hidden !important;
+}
+
+/* Fond blanc plein pour couvrir toute la surface derrière la fenêtre */
+#admin-root:has(.option-panel[style*="display: block"]) .admin-wrapper,
+#admin-root:has(.option-panel[style*="display:block"]) .admin-wrapper,
+#admin-root:has(.option-panel[style*="display: block"]) .admin-body,
+#admin-root:has(.option-panel[style*="display:block"]) .admin-body {
+  background: #ffffff !important;
+}
+
+/* Masquer aussi tout élément hors admin-root (par sécurité) */
+body:has(.option-panel[style*="display: block"])::before,
+body:has(.option-panel[style*="display:block"])::before {
   content: '' !important;
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  background: #e2e8f0 !important;
-  background-image: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  z-index: 2147483646 !important;
+  background: #ffffff !important;
+  z-index: 1 !important;
   pointer-events: none !important;
-  opacity: 1 !important;
-  visibility: visible !important;
 }
 
-/* Empêche le scroll du body quand la fenêtre est ouverte */
-body:has(.quick-actions-card:has(.option-panel[style*="display: block"])),
-body:has(.quick-actions-card:has(.option-panel[style*="display:block"])) {
+/* Empêcher le défilement du body quand la fenêtre est ouverte */
+body:has(.option-panel[style*="display: block"]),
+body:has(.option-panel[style*="display:block"]) {
   overflow: hidden !important;
 }
 
-/* Pour l'action "Envoyer une notification" : masquer le bouton "Appliquer" en bas */
+/* Pour l'action "Envoyer une notification" : masquer le bouton "Appliquer" du bas */
 .quick-actions-card:has(#qa-notification-fields[style*="display: block"]) > .btn-admin-submit,
 .quick-actions-card:has(#qa-notification-fields[style*="display:block"]) > .btn-admin-submit {
   display: none !important;
 }
 
-/* ============================================================ */
-/* ===== MODIF 2b : Bouton ✕ pour fermer la fenêtre ========= */
-/* ============================================================ */
-/* Ce bouton est injecté via JavaScript (voir script.js).       */
-/* Il est placé en haut à droite de la fenêtre modale.          */
+/* ===== Bouton ✕ pour fermer la fenêtre ===== */
 #admin-root .qa-modal-close {
   position: absolute !important;
   top: 10px !important;
@@ -6822,25 +6830,13 @@ body:has(.quick-actions-card:has(.option-panel[style*="display:block"])) {
   transform: scale(0.94);
 }
 
-/* ============================================================ */
-/* ===== MODIF 1 : Texte saisi en gris foncé (page transfert) */
-/* ============================================================ */
-/* Les textes tapés dans les champs vides du formulaire de      */
-/* virement (IBAN, Swift, Banque, Nom, Motif) sont en gris      */
-/* foncé (#475569) et en gras : bien visibles mais pas noirs.   */
-/* Le champ Montant garde sa couleur bleue primaire et sa mise  */
-/* en forme (classe .amount-input).                             */
+/* Texte saisi en gris foncé (page transfert) */
 #app-root #screen-transfer .form-input:not(.amount-input) {
   color: #475569 !important;
   font-weight: 700 !important;
 }
 
-/* ============================================================ */
-/* ===== MODIF 2 : Liste clients — tout sur une seule ligne == */
-/* ============================================================ */
-/* Nom + Montant + Bouton 1 + Bouton 2 restent OBLIGATOIREMENT  */
-/* sur la même ligne, quelle que soit la longueur du nom ou du  */
-/* montant. Le nom est tronqué avec "..." si trop long.         */
+/* Liste clients : tout sur une seule ligne */
 #admin-root .client-list-card .client-line {
   flex-wrap: nowrap !important;
   overflow: hidden !important;
