@@ -792,7 +792,6 @@ input, select, textarea {
   overflow: hidden;
   margin-bottom: 20px;
 }
-/* MODIF 5 : Nom + solde + 2 boutons sur une seule ligne */
 .client-line {
   display: flex;
   align-items: center;
@@ -6345,8 +6344,6 @@ input, select, textarea {
 #admin-root .qa-switch {
   border: 1px solid #0f172a !important;
 }
-/* MODIF 1 — Bordures des champs admin adoucies ET flèche ▼ visible sur les selects */
-/* (background-color à la place de background : la flèche SVG n'est plus écrasée) */
 #admin-root .admin-group input,
 #admin-root .admin-group select,
 #admin-root .admin-group textarea,
@@ -6719,7 +6716,7 @@ input, select, textarea {
 #tw-chat-send svg { width: 15px !important; height: 15px !important; max-width: 15px !important; max-height: 15px !important; }
 
 /* ============================================================ */
-/* ===== MODIF 2 : Option panel en fenêtre modale ============ */
+/* ===== MODIF 2a : Option panel en fenêtre modale ========== */
 /* ============================================================ */
 /* Quand un .option-panel est affiché (display:block via JS),  */
 /* tout le .quick-actions-card devient une fenêtre modale      */
@@ -6779,21 +6776,57 @@ body:has(.quick-actions-card:has(.option-panel[style*="display:block"])) {
   overflow: hidden !important;
 }
 
-/* Pour l'action "Envoyer une notification", la fenêtre a déjà son propre bouton
-   d'envoi dans le panneau : on masque le bouton "Appliquer" du bas pour éviter la duplication */
+/* Pour l'action "Envoyer une notification" : masquer le bouton "Appliquer" en bas */
 .quick-actions-card:has(#qa-notification-fields[style*="display: block"]) > .btn-admin-submit,
 .quick-actions-card:has(#qa-notification-fields[style*="display:block"]) > .btn-admin-submit {
   display: none !important;
 }
 
 /* ============================================================ */
-/* ===== MODIF 3 : Texte saisi en gris plus clair (transfert) */
+/* ===== MODIF 2b : Bouton ✕ pour fermer la fenêtre ========= */
 /* ============================================================ */
-/* Les textes tapés dans les champs du formulaire de virement   */
-/* (IBAN, Swift, Banque, Nom, Motif) sont plus clairs (#94a3b8) */
-/* que les sous-titres (#334155). Le champ Montant garde sa    */
-/* couleur bleue primaire et sa mise en forme (classe          */
-/* .amount-input).                                              */
+/* Ce bouton est injecté via JavaScript (voir script.js).       */
+/* Il est placé en haut à droite de la fenêtre modale.          */
+#admin-root .qa-modal-close {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background: #fee2e2 !important;
+  color: #dc2626 !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  z-index: 30 !important;
+  border: 1px solid #fca5a5 !important;
+  padding: 0 !important;
+  font-family: 'Titillium Web', sans-serif !important;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25) !important;
+  transition: transform 0.12s ease, background 0.2s ease !important;
+}
+#admin-root .qa-modal-close:hover {
+  background: #fecaca !important;
+  transform: scale(1.08);
+}
+#admin-root .qa-modal-close:active {
+  transform: scale(0.94);
+}
+
+/* ============================================================ */
+/* ===== MODIF 1 : Texte saisi en gris foncé (page transfert) */
+/* ============================================================ */
+/* Les textes tapés dans les champs vides du formulaire de      */
+/* virement (IBAN, Swift, Banque, Nom, Motif) sont en gris      */
+/* foncé (#475569) et en gras : bien visibles mais pas noirs.   */
+/* Le champ Montant garde sa couleur bleue primaire et sa mise  */
+/* en forme (classe .amount-input).                             */
 #app-root #screen-transfer .form-input:not(.amount-input) {
-  color: #94a3b8 !important;
+  color: #475569 !important;
+  font-weight: 700 !important;
 }
