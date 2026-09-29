@@ -1,8 +1,3 @@
-/* =====================================================
-   TRANSFERWIRE - STYLES
-   v66.0 - FINAL (contraste universel + fonds tx + espacement)
-   ===================================================== */
-
 :root {
   --primary: #1a73e8;
   --primary-dark: #1557b0;
@@ -173,7 +168,7 @@ input, select, textarea {
   word-break: break-word;
 }
 
-/* ========== ADMIN AUTH ========== */
+/* ADMIN AUTH */
 .admin-auth {
   display: flex;
   flex-direction: column;
@@ -325,7 +320,7 @@ input, select, textarea {
   word-break: break-word;
 }
 
-/* ========== ADMIN DASHBOARD ========== */
+/* ADMIN DASHBOARD */
 .admin-wrapper {
   display: flex;
   flex-direction: column;
@@ -1008,7 +1003,7 @@ input, select, textarea {
 .tx-row .tx-amt.pos { color: var(--success); }
 .tx-row .tx-amt.neg { color: var(--danger); }
 
-/* ========== DÉTAIL CLIENT ========== */
+/* DÉTAIL CLIENT */
 .detail-header {
   background: linear-gradient(135deg, #1a73e8, #1557b0);
   padding: 16px 18px;
@@ -1556,9 +1551,6 @@ input, select, textarea {
 }
 .transfer-detail-btn-close:hover { background: #e2e8f0; }
 
-/* ===================================================== */
-/* ADMIN - Indicateur visuel sur les champs de sélection */
-/* ===================================================== */
 .admin-section select,
 .quick-actions-card select,
 .pending-transfer-card select,
@@ -1576,7 +1568,7 @@ input, select, textarea {
   cursor: pointer !important;
 }
 
-/* ========== LOGIN CLIENT (legacy — conservé au cas où) ========== */
+/* LOGIN CLIENT */
 .login-page {
   display: flex;
   align-items: center;
@@ -1816,7 +1808,6 @@ input, select, textarea {
 }
 .screen.active { display: flex; background: var(--bg-gray); }
 
-/* ========== LEGACY DASHBOARD ========== */
 .greeting {
   padding: 14px 12px 6px 12px;
   font-size: 15px;
@@ -2128,7 +2119,6 @@ input, select, textarea {
   word-break: break-word;
 }
 
-/* ========== ANCIEN BOTTOM NAV (legacy) ========== */
 .bottom-nav {
   background: var(--bg-gray);
   padding: 7px 10px 8px 10px;
@@ -2792,7 +2782,6 @@ input, select, textarea {
 }
 .result-close-action:hover { background: var(--gray-200); }
 
-/* ========== REÇU ========== */
 .receipt-overlay {
   position: fixed;
   inset: 0;
@@ -3120,7 +3109,6 @@ input, select, textarea {
 }
 .receipt-btn-close:active { transform: scale(0.97); }
 
-/* ========== PROFIL ========== */
 .profile-top-card {
   background: linear-gradient(160deg, var(--primary) 0%, var(--primary-dark) 100%);
   border-radius: 18px;
@@ -4081,9 +4069,7 @@ input, select, textarea {
 .notif-btn.cancel { background: #e2e8f0; color: #334155; box-shadow: none; }
 .notif-btn.cancel:hover { background: #cbd5e1; }
 
-/* ===================================================== */
 /* SUPER ADMIN */
-/* ===================================================== */
 .sa-wrapper {
   display: flex;
   flex-direction: column;
@@ -4482,9 +4468,7 @@ input, select, textarea {
   100% { left: 150%; }
 }
 
-/* ===================================================== */
-/* RÈGLES FINALES DE LISIBILITÉ                          */
-/* ===================================================== */
+/* LISIBILITÉ FINALE */
 .receipt-row-value,
 .transfer-detail-row-value,
 .detail-row-value,
@@ -4525,11 +4509,7 @@ input, select, textarea {
 .receipt-row-label svg,
 .receipt-row-icon { fill: #64748b !important; }
 
-/* ===================================================== */
-/* INTERFACE CLIENT v63.0 - FINALE (textes complets)     */
-/* ===================================================== */
-
-/* ---------- HEADER BLEU FONCÉ ---------- */
+/* INTERFACE CLIENT */
 .header-new {
   background: linear-gradient(135deg, #0a2540 0%, #0f2f5c 55%, #1e40af 100%);
   padding: 9px 11px;
@@ -4643,7 +4623,6 @@ input, select, textarea {
   border: 1.5px solid #0a2540;
 }
 
-/* ---------- GREETING ---------- */
 .greeting-wrap-new {
   background: #ffffff;
   padding: 11px 11px 10px 11px;
@@ -4706,7 +4685,6 @@ input, select, textarea {
   flex-shrink: 0;
 }
 
-/* ---------- CARTE SOLDE ---------- */
 .balance-card-new {
   background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 55%, var(--primary) 100%);
   border-radius: 13px;
@@ -4884,7 +4862,6 @@ input, select, textarea {
   flex-shrink: 0;
 }
 
-/* ---------- 3 QUICK ACTIONS ---------- */
 .quick-actions-row-new {
   background: #ffffff;
   margin: 0 9px 10px 9px;
@@ -4951,7 +4928,6 @@ input, select, textarea {
   padding: 0 !important;
 }
 
-/* ---------- HISTORIQUE TRANSACTIONS ---------- */
 .transactions-section-new { margin: 0 9px 10px 9px; }
 .tx-section-header-new {
   display: flex;
@@ -5113,7 +5089,6 @@ input, select, textarea {
   margin-left: 4px;
 }
 
-/* ---------- BANNIÈRE SÉCURITÉ ---------- */
 .security-banner-new {
   margin: 0;
   background: linear-gradient(135deg, #0a2540 0%, #1e3a8a 55%, #1e40af 100%);
@@ -5227,7 +5202,6 @@ input, select, textarea {
   padding-bottom: 110px;
 }
 
-/* ---------- BOTTOM NAV ---------- */
 .bottom-nav-new {
   background: var(--bg-gray);
   padding: 6px 9px 7px 9px;
@@ -5299,7 +5273,6 @@ input, select, textarea {
 .nav-item-new.active span { color: #7c3aed; }
 .nav-item-new.active::after { display: none; }
 
-/* ---------- MODAL HISTORIQUE COMPLET ---------- */
 .full-history-overlay {
   position: fixed;
   inset: 0;
@@ -5391,7 +5364,6 @@ input, select, textarea {
   margin-right: auto;
 }
 
-/* ---------- ANIMATIONS ---------- */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
@@ -5435,9 +5407,7 @@ input, select, textarea {
 .security-btn-new:hover,
 .security-btn-new:active { transform: scale(1.05); }
 
-/* ===================================================== */
-/* LOGIN PAGE v63 - RECTANGULAIRE + PLUS PETITE          */
-/* ===================================================== */
+/* LOGIN v63 */
 .yld-page {
   display: flex;
   align-items: center;
@@ -5823,9 +5793,7 @@ input, select, textarea {
   }
 }
 
-/* ===================================================== */
-/* ★ AJUSTEMENTS VISUELS DU COMPTE CLIENT                */
-/* ===================================================== */
+/* AJUSTEMENTS CLIENT */
 .greeting-wrap-new { padding: 20px 12px 14px 12px !important; }
 .balance-card-new { margin-top: 4px !important; }
 .quick-actions-row-new {
@@ -5931,9 +5899,6 @@ input, select, textarea {
 .info-banner { border-radius: 8px !important; }
 .info-banner-blue { border: 1px solid rgba(191, 219, 254, 0.22) !important; }
 
-/* ===================================================== */
-/* ★ CARTE "APPAREILS CONNECTÉS" DANS LE DÉTAIL CLIENT   */
-/* ===================================================== */
 .connected-devices-card {
   display: flex;
   align-items: center;
@@ -6047,13 +6012,7 @@ input, select, textarea {
   font-weight: 600;
 }
 
-/* ===================================================== */
-/* ★★★ MODIFICATION 1 — CONTRASTE UNIVERSEL ★★★          */
-/* Tous les textes gris sont reconnus et renforcés       */
-/* Tous les textes non gris sont préservés tels quels    */
-/* ===================================================== */
-
-/* — Tous les textes gris clairs sur fond blanc → gris foncés — */
+/* CONTRASTE UNIVERSEL */
 .quick-actions-card .qac-subtitle,
 .option-panel-toggle-label,
 .stat-card .lbl,
@@ -6098,7 +6057,6 @@ input, select, textarea {
   color: #334155 !important;
 }
 
-/* — Placeholders lisibles — */
 .form-input::placeholder,
 .verify-code-input::placeholder,
 .yld-input-group input::placeholder,
@@ -6113,7 +6071,6 @@ input, select, textarea {
   opacity: 1 !important;
 }
 
-/* — Textes sur fond sombre → blanc pur — */
 .header-brand-title-new,
 .header-brand-sub-new,
 .balance-card-type-label-new,
@@ -6168,7 +6125,6 @@ input, select, textarea {
   opacity: 1 !important;
 }
 
-/* — Textes sur fond orange/jaune → brun foncé — */
 .warning-text,
 .iban-new-warning,
 .iban-new-warning span,
@@ -6192,7 +6148,6 @@ input, select, textarea {
 }
 .detail-footer-btn.send-credentials svg { fill: #451a03 !important; }
 
-/* — Textes sur fond vert clair — */
 .detail-status-box.active .detail-status-label { color: #14532d !important; }
 .detail-status-box.active .detail-status-value { color: #166534 !important; }
 .detail-footer-btn.send-activation { color: #14532d !important; }
@@ -6205,7 +6160,6 @@ input, select, textarea {
 .connected-devices-count small { color: #065f46 !important; }
 .connected-devices-sub { color: #065f46 !important; }
 
-/* — Textes sur fond bleu clair — */
 .detail-status-box.balance .detail-status-label { color: #1e3a8a !important; }
 .detail-status-box.balance .detail-status-value { color: #1e40af !important; }
 .info-banner-blue .banner-text { color: #1e3a8a !important; }
@@ -6214,11 +6168,9 @@ input, select, textarea {
 .detail-footer-btn.copy { color: #1e3a8a !important; }
 .detail-footer-btn.copy svg { fill: #1e3a8a !important; }
 
-/* — Textes sur fond rouge clair — */
 .detail-status-box.blocked .detail-status-label { color: #7f1d1d !important; }
 .detail-status-box.blocked .detail-status-value { color: #991b1b !important; }
 
-/* — Labels de formulaire — contraste max — */
 .admin-group label,
 .quick-actions-card label,
 .admin-auth .auth-group label,
@@ -6248,7 +6200,6 @@ input, select, textarea {
   color: #0f172a !important;
 }
 
-/* — Titres / valeurs — noir pur — */
 .receipt-row-value,
 .transfer-detail-row-value,
 .detail-row-value,
@@ -6275,7 +6226,6 @@ input, select, textarea {
   color: #000000 !important;
 }
 
-/* — Super Admin — */
 .sa-admin-email,
 .sa-login-title { color: #ffffff !important; }
 .sa-admin-meta { color: #e2e8f0 !important; }
@@ -6292,7 +6242,6 @@ input, select, textarea {
 .sa-topbar .sa-brand { color: #ffffff !important; }
 .sa-topbar .sa-brand span { color: #fbbf24 !important; }
 
-/* — Boutons secondaires — */
 .notif-btn.cancel { color: #0f172a !important; }
 .btn-close,
 .result-close-action,
@@ -6301,7 +6250,6 @@ input, select, textarea {
 .detail-footer-btn { color: #0f172a !important; }
 .detail-footer-btn svg { fill: currentColor !important; }
 
-/* — Login v63 — */
 .yld-logo-text,
 .yld-hero-title { color: #0a1f44 !important; }
 .yld-badge { color: #0f172a !important; }
@@ -6310,19 +6258,16 @@ input, select, textarea {
 .yld-footer-item svg { stroke: #0f172a !important; }
 .yld-input-group input { color: #0f172a !important; }
 
-/* — Bandeau sécurité — */
 .security-title-new { color: #ffffff !important; font-weight: 800 !important; }
 .security-desc-new { color: #ffffff !important; font-weight: 600 !important; }
 .security-btn-new { color: #0a2540 !important; font-weight: 800 !important; }
 .security-btn-new svg { fill: #0a2540 !important; }
 
-/* — Nav — */
 .nav-item-new span { color: #0f172a !important; font-weight: 800 !important; }
 .nav-item-new svg { fill: #0f172a !important; }
 .nav-item-new.active span { color: #5b21b6 !important; }
 .nav-item-new.active svg { fill: #5b21b6 !important; }
 
-/* — Icônes monochromes — */
 .transfer-detail-row-icon svg,
 .result-info-box svg,
 .info-text svg,
@@ -6330,7 +6275,6 @@ input, select, textarea {
 .verify-header-icon svg,
 .processing-details-header svg { fill: #0f172a !important; }
 
-/* — Badges de statut — */
 .transfer-detail-status-badge.done,
 .receipt-status-done { color: #065f46 !important; background: #d1fae5 !important; }
 .transfer-detail-status-badge.failed { color: #7f1d1d !important; background: #fee2e2 !important; }
@@ -6338,83 +6282,52 @@ input, select, textarea {
 .transfer-detail-status-badge.refund { color: #1e3a8a !important; background: #dbeafe !important; }
 .transfer-detail-status-badge.pending { color: #78350f !important; background: #fef3c7 !important; }
 
-/* — Admin récap — */
 .admin-pending-amount { color: #78350f !important; }
 .admin-transfer-amount { color: #7f1d1d !important; }
 .admin-identity-card strong { color: #1e3a8a !important; }
 
-/* — Erreurs — */
 .amount-error-msg { color: #7f1d1d !important; background: #fee2e2 !important; }
 .form-input.input-error { color: #7f1d1d !important; background: #fef2f2 !important; }
 
-/* ===================================================== */
-/* ★★★ MODIFICATION 2 — FOND COLORÉ PAR TRANSACTION ★★★ */
-/* Chaque transaction a un fond très léger selon l'action */
-/* Vert clair  = entrant / reçu / complété                */
-/* Rouge clair = sortant / échoué                         */
-/* Violet clair = annulé                                  */
-/* Bleu clair  = remboursement                            */
-/* Jaune clair = en attente                               */
-/* ===================================================== */
-
-/* — Historique principal (dashboard) — */
+/* FONDS COLORÉS TRANSACTIONS (SANS TRAITS LATÉRAUX) */
 .tx-item-new.tx-bg-in {
-  background: linear-gradient(90deg, rgba(220, 252, 231, 0.55) 0%, rgba(255, 255, 255, 1) 70%) !important;
-  border-left: 3px solid #22c55e !important;
+  background: linear-gradient(90deg, rgba(220, 252, 231, 0.50) 0%, rgba(255, 255, 255, 1) 80%) !important;
 }
 .tx-item-new.tx-bg-out {
-  background: linear-gradient(90deg, rgba(254, 226, 226, 0.55) 0%, rgba(255, 255, 255, 1) 70%) !important;
-  border-left: 3px solid #ef4444 !important;
+  background: linear-gradient(90deg, rgba(254, 226, 226, 0.50) 0%, rgba(255, 255, 255, 1) 80%) !important;
 }
 .tx-item-new.tx-bg-cancelled {
-  background: linear-gradient(90deg, rgba(237, 233, 254, 0.60) 0%, rgba(255, 255, 255, 1) 70%) !important;
-  border-left: 3px solid #8b5cf6 !important;
+  background: linear-gradient(90deg, rgba(237, 233, 254, 0.55) 0%, rgba(255, 255, 255, 1) 80%) !important;
 }
 .tx-item-new.tx-bg-refund {
-  background: linear-gradient(90deg, rgba(219, 234, 254, 0.60) 0%, rgba(255, 255, 255, 1) 70%) !important;
-  border-left: 3px solid #2563eb !important;
+  background: linear-gradient(90deg, rgba(219, 234, 254, 0.55) 0%, rgba(255, 255, 255, 1) 80%) !important;
 }
 .tx-item-new.tx-bg-pending {
-  background: linear-gradient(90deg, rgba(254, 243, 199, 0.60) 0%, rgba(255, 255, 255, 1) 70%) !important;
-  border-left: 3px solid #f59e0b !important;
+  background: linear-gradient(90deg, rgba(254, 243, 199, 0.55) 0%, rgba(255, 255, 255, 1) 80%) !important;
 }
 
-/* — Historique legacy (transaction-item) — */
 .transaction-item.tx-bg-in {
-  background: linear-gradient(90deg, rgba(220, 252, 231, 0.55) 0%, rgba(255, 255, 255, 1) 70%) !important;
-  border-left: 3px solid #22c55e !important;
+  background: linear-gradient(90deg, rgba(220, 252, 231, 0.50) 0%, rgba(255, 255, 255, 1) 80%) !important;
 }
 .transaction-item.tx-bg-out {
-  background: linear-gradient(90deg, rgba(254, 226, 226, 0.55) 0%, rgba(255, 255, 255, 1) 70%) !important;
-  border-left: 3px solid #ef4444 !important;
+  background: linear-gradient(90deg, rgba(254, 226, 226, 0.50) 0%, rgba(255, 255, 255, 1) 80%) !important;
 }
 .transaction-item.tx-bg-cancelled {
-  background: linear-gradient(90deg, rgba(237, 233, 254, 0.60) 0%, rgba(255, 255, 255, 1) 70%) !important;
-  border-left: 3px solid #8b5cf6 !important;
+  background: linear-gradient(90deg, rgba(237, 233, 254, 0.55) 0%, rgba(255, 255, 255, 1) 80%) !important;
 }
 .transaction-item.tx-bg-refund {
-  background: linear-gradient(90deg, rgba(219, 234, 254, 0.60) 0%, rgba(255, 255, 255, 1) 70%) !important;
-  border-left: 3px solid #2563eb !important;
+  background: linear-gradient(90deg, rgba(219, 234, 254, 0.55) 0%, rgba(255, 255, 255, 1) 80%) !important;
 }
 .transaction-item.tx-bg-pending {
-  background: linear-gradient(90deg, rgba(254, 243, 199, 0.60) 0%, rgba(255, 255, 255, 1) 70%) !important;
-  border-left: 3px solid #f59e0b !important;
+  background: linear-gradient(90deg, rgba(254, 243, 199, 0.55) 0%, rgba(255, 255, 255, 1) 80%) !important;
 }
 
-/* — Historique dans la modale plein écran — */
-.full-history-body .tx-item-new.tx-bg-in { background: linear-gradient(90deg, rgba(220, 252, 231, 0.55) 0%, rgba(255, 255, 255, 1) 70%) !important; border-left: 3px solid #22c55e !important; }
-.full-history-body .tx-item-new.tx-bg-out { background: linear-gradient(90deg, rgba(254, 226, 226, 0.55) 0%, rgba(255, 255, 255, 1) 70%) !important; border-left: 3px solid #ef4444 !important; }
-.full-history-body .tx-item-new.tx-bg-cancelled { background: linear-gradient(90deg, rgba(237, 233, 254, 0.60) 0%, rgba(255, 255, 255, 1) 70%) !important; border-left: 3px solid #8b5cf6 !important; }
-.full-history-body .tx-item-new.tx-bg-refund { background: linear-gradient(90deg, rgba(219, 234, 254, 0.60) 0%, rgba(255, 255, 255, 1) 70%) !important; border-left: 3px solid #2563eb !important; }
-.full-history-body .tx-item-new.tx-bg-pending { background: linear-gradient(90deg, rgba(254, 243, 199, 0.60) 0%, rgba(255, 255, 255, 1) 70%) !important; border-left: 3px solid #f59e0b !important; }
+.full-history-body .tx-item-new.tx-bg-in { background: linear-gradient(90deg, rgba(220, 252, 231, 0.50) 0%, rgba(255, 255, 255, 1) 80%) !important; }
+.full-history-body .tx-item-new.tx-bg-out { background: linear-gradient(90deg, rgba(254, 226, 226, 0.50) 0%, rgba(255, 255, 255, 1) 80%) !important; }
+.full-history-body .tx-item-new.tx-bg-cancelled { background: linear-gradient(90deg, rgba(237, 233, 254, 0.55) 0%, rgba(255, 255, 255, 1) 80%) !important; }
+.full-history-body .tx-item-new.tx-bg-refund { background: linear-gradient(90deg, rgba(219, 234, 254, 0.55) 0%, rgba(255, 255, 255, 1) 80%) !important; }
+.full-history-body .tx-item-new.tx-bg-pending { background: linear-gradient(90deg, rgba(254, 243, 199, 0.55) 0%, rgba(255, 255, 255, 1) 80%) !important; }
 
-/* ===================================================== */
-/* ★★★ MODIFICATION 3 — ESPACEMENT ACCUEIL ★★★           */
-/* Espace entre le header et le nom/prénom                */
-/* Espace entre le nom/prénom et la grande carte          */
-/* ===================================================== */
-
-/* — Espace header ↔ nom + nom ↔ grande carte — */
 #screen-dashboard .greeting-wrap-new {
   padding: 20px 12px 16px 12px !important;
   margin: 0 !important;
@@ -6423,16 +6336,79 @@ input, select, textarea {
   margin-top: 14px !important;
   margin-bottom: 22px !important;
 }
-
-/* — Respiration générale du dashboard — */
 #screen-dashboard.active {
   padding-bottom: 130px !important;
 }
 
-/* ===================================================== */
-/* FIN - TRANSFERWIRE v66.0                              */
-/* + Contraste universel (tous les textes lisibles)      */
-/* + Fond coloré par type de transaction                  */
-/* + Espacement accueil (header ↔ nom ↔ carte)           */
-/* + Réduction formulaire + Espacement admin              */
-/* ===================================================== */
+/* RÉDUCTION AFFICHAGE CLIENT */
+.header-new { padding: 7px 10px !important; min-height: 44px !important; }
+.header-new .hamburger-btn svg { width: 18px !important; height: 18px !important; }
+.header-logo-new { width: 22px !important; height: 22px !important; }
+.header-brand-title-new { font-size: 12.5px !important; }
+.header-brand-sub-new { font-size: 7px !important; }
+.header-icon-btn-new { width: 26px !important; height: 26px !important; }
+.header-icon-btn-new svg { width: 17px !important; height: 17px !important; }
+.header-icon-btn-new.avatar-new svg { width: 15px !important; height: 15px !important; }
+.header-notif-badge-new { min-width: 16px !important; height: 16px !important; font-size: 9px !important; top: -3px !important; right: -3px !important; }
+
+#screen-dashboard .greeting-wrap-new { padding: 10px 11px 9px 11px !important; }
+.greeting-emoji-new { font-size: 17px !important; }
+.greeting-title-new { font-size: 13px !important; }
+.account-status-badge-new { padding: 3px 8px !important; font-size: 8.5px !important; }
+
+.balance-card-new { padding: 9px 10px 9px 10px !important; min-height: 112px !important; margin: 0 8px 14px 8px !important; }
+.balance-card-type-icon-new { width: 20px !important; height: 20px !important; }
+.balance-card-type-icon-new svg { width: 11px !important; height: 11px !important; }
+.balance-card-type-label-new { font-size: 9px !important; }
+.balance-card-amount-new { margin-top: 10px !important; padding-left: 18px !important; }
+.balance-card-amount-new .int-part { font-size: 22px !important; }
+.balance-card-amount-new .dec-part { font-size: 11px !important; }
+.balance-card-amount-new .cur-part { font-size: 11px !important; }
+.balance-card-sub-new { font-size: 8.5px !important; margin-top: 8px !important; padding-left: 18px !important; }
+.balance-card-sub-new .balance-coins-icon { width: 13px !important; height: 13px !important; }
+.balance-card-details-btn-new { padding: 5px 9px !important; font-size: 9px !important; }
+.balance-card-details-btn-new svg { width: 9px !important; height: 9px !important; }
+.balance-eye-btn { width: 28px !important; height: 28px !important; top: 9px !important; right: 9px !important; }
+.balance-eye-btn svg { width: 14px !important; height: 14px !important; }
+
+.quick-actions-row-new { margin: 0 8px 11px 8px !important; gap: 6px !important; }
+.quick-action-item-new { min-height: 60px !important; padding: 9px 5px !important; }
+.quick-action-icon-new { width: 32px !important; height: 32px !important; }
+.quick-action-icon-new svg { width: 15px !important; height: 15px !important; }
+.quick-action-label-new { font-size: 8px !important; }
+
+.transactions-section-new { margin: 0 8px 10px 8px !important; }
+.tx-section-title-new { font-size: 12.5px !important; }
+.tx-section-title-new svg { width: 14px !important; height: 14px !important; }
+.see-all-link-new { font-size: 9.5px !important; }
+
+.tx-list-new { border-radius: 7px !important; }
+.tx-item-new { padding: 10px 11px !important; gap: 9px !important; border-radius: 0 !important; }
+.tx-icon-circle-new { width: 36px !important; height: 36px !important; }
+.tx-icon-circle-new svg { width: 18px !important; height: 18px !important; }
+.tx-name-new { font-size: 12px !important; }
+.tx-sub-new { font-size: 10px !important; }
+.tx-amount-value-new { font-size: 12px !important; }
+.tx-date-new { font-size: 9px !important; }
+.tx-chevron-new { width: 14px !important; height: 14px !important; }
+
+.security-banner-new { min-height: 62px !important; padding: 7px 9px !important; }
+.security-shield-new { width: 52px !important; height: 52px !important; }
+.security-header-icon-new { width: 20px !important; height: 20px !important; }
+.security-header-icon-new svg { width: 10px !important; height: 10px !important; }
+.security-title-new { font-size: 9px !important; }
+.security-desc-new { font-size: 7.5px !important; }
+.security-btn-new { padding: 4px 8px !important; font-size: 8px !important; }
+.security-btn-new svg { width: 8px !important; height: 8px !important; }
+
+.bottom-nav-new { padding: 5px 8px 6px 8px !important; }
+.bottom-nav-inner-new { padding: 3px !important; border-radius: 15px !important; }
+.nav-item-new { padding: 4px 2px !important; gap: 1.5px !important; }
+.nav-item-new svg { width: 12px !important; height: 12px !important; }
+.nav-item-new span { font-size: 6.8px !important; }
+
+#tw-chat-fab { width: 46px !important; height: 46px !important; right: 12px !important; bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important; }
+#tw-chat-fab svg { width: 22px !important; height: 22px !important; }
+.tw-chat-ai-badge { min-width: 17px !important; height: 14px !important; font-size: 7.5px !important; }
+
+#screen-dashboard.active { padding-bottom: 100px !important; }
