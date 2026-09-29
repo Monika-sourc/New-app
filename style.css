@@ -6310,7 +6310,7 @@ input, select, textarea {
 #app-root #screen-verification .verify-row-label { font-size: 10px !important; }
 #app-root #screen-verification .verify-row-value { font-size: 11.5px !important; }
 
-/* ===== ADMIN - BORDURES NOIRES FINES ===== */
+/* ===== ADMIN - BORDURES (MODIF 1 : bordures des champs adoucies) ===== */
 #admin-root .admin-identity-card,
 #admin-root .admin-section,
 #admin-root .quick-actions-card,
@@ -6336,6 +6336,7 @@ input, select, textarea {
 #admin-root .qa-switch {
   border: 1px solid #0f172a !important;
 }
+/* MODIF 1 — Bordures des champs admin adoucies (visibles comme les autres) */
 #admin-root .admin-group input,
 #admin-root .admin-group select,
 #admin-root .admin-group textarea,
@@ -6345,7 +6346,7 @@ input, select, textarea {
 #admin-root .option-panel input,
 #admin-root .option-panel select,
 #admin-root .option-panel textarea {
-  border: 1px solid #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
   background: #ffffff !important;
 }
 #admin-root .admin-group input:focus,
@@ -6693,3 +6694,35 @@ input, select, textarea {
 #tw-chat-input { padding: 8px 11px !important; font-size: 11px !important; border-radius: 18px !important; }
 #tw-chat-send { width: 36px !important; height: 36px !important; }
 #tw-chat-send svg { width: 15px !important; height: 15px !important; max-width: 15px !important; max-height: 15px !important; }
+
+/* ============================================================ */
+/* ===== MODIF 2 : Textes saisis en gris (page transfert) ===== */
+/* ============================================================ */
+/* Force les textes tapés par l'utilisateur dans les champs du */
+/* formulaire de virement (IBAN, Swift, Banque, Nom, Motif)    */
+/* à être en gris (#64748b). Le Montant garde sa couleur       */
+/* bleue primaire et sa mise en forme (classe .amount-input).  */
+#app-root #screen-transfer .form-input:not(.amount-input) {
+  color: #64748b !important;
+}
+
+/* ============================================================ */
+/* ===== MODIF 3 : Labels / Valeurs distincts ================ */
+/* ============================================================ */
+/* Pages CODE D'ACTIVATION + PROGRESSION + CONFIRMATION :      */
+/*  → Labels (ex : "Montant :", "Nom du bénéficiaire :")       */
+/*    passent en gris (#64748b) — lisibles mais pas trop noirs.*/
+/*  → Valeurs (montants, IBAN, noms) restent en vrai noir      */
+/*    (#000000) — bien noires et reconnaissables.              */
+/* Les autres pages ne sont pas touchées.                       */
+#screen-verification .verify-row-label,
+#screen-processing .verify-row-label,
+#screen-verification .verify-code-label,
+#screen-result .result-detail-label {
+  color: #64748b !important;
+}
+#screen-verification .verify-row-value,
+#screen-processing .verify-row-value,
+#screen-result .result-detail-value {
+  color: #000000 !important;
+}
