@@ -919,13 +919,13 @@ function ensureGlobalStyles() {
   style.textContent = `
     .balance-card-new{position:relative;overflow:hidden;}
     .balance-bubbles-new{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;border-radius:9px;}
-    .bbn{position:absolute;border-radius:50%;opacity:0.45;filter:blur(18px);mix-blend-mode:screen;animation-name:bbnFloat;animation-timing-function:ease-in-out;animation-iteration-count:infinite;pointer-events:none;}
-    .bbn.b1{width:100px;height:100px;left:-30px;bottom:-20px;background:radial-gradient(circle at 30% 30%,rgba(244,114,182,0.95) 0%,rgba(236,72,153,0.55) 40%,transparent 100%);animation-duration:8s;}
-    .bbn.b2{width:70px;height:70px;left:55%;bottom:-20px;background:radial-gradient(circle at 30% 30%,rgba(34,211,238,0.95) 0%,rgba(6,182,212,0.55) 40%,transparent 100%);animation-duration:10s;animation-delay:-2s;}
-    .bbn.b3{width:110px;height:110px;right:-40px;top:-30px;background:radial-gradient(circle at 30% 30%,rgba(251,191,36,0.95) 0%,rgba(245,158,11,0.55) 40%,transparent 100%);animation-duration:9s;animation-delay:-4s;}
-    .bbn.b4{width:60px;height:60px;left:35%;top:25%;background:radial-gradient(circle at 30% 30%,rgba(167,139,250,0.95) 0%,rgba(139,92,246,0.55) 40%,transparent 100%);animation-duration:11s;animation-delay:-6s;}
-    .bbn.b5{width:80px;height:80px;right:5%;bottom:10%;background:radial-gradient(circle at 30% 30%,rgba(74,222,128,0.95) 0%,rgba(34,197,94,0.55) 40%,transparent 100%);animation-duration:12s;animation-delay:-3s;}
-    @keyframes bbnFloat{0%,100%{transform:translate(0,0) rotate(0deg) scale(0.95);opacity:0.45;}50%{transform:translate(15px,-20px) rotate(12deg) scale(1.08);opacity:0.55;}}
+    .bbn{position:absolute;border-radius:50%;opacity:0.85;filter:blur(8px);animation-name:bbnFloat;animation-timing-function:ease-in-out;animation-iteration-count:infinite;pointer-events:none;box-shadow:0 0 25px rgba(255,255,255,0.25),inset 0 0 15px rgba(255,255,255,0.35);}
+    .bbn.b1{width:130px;height:130px;left:-40px;bottom:-30px;background:radial-gradient(circle at 30% 30%,rgba(255,120,200,1) 0%,rgba(236,72,153,0.9) 45%,transparent 100%);animation-duration:8s;}
+    .bbn.b2{width:90px;height:90px;left:55%;bottom:-30px;background:radial-gradient(circle at 30% 30%,rgba(80,235,255,1) 0%,rgba(6,182,212,0.9) 45%,transparent 100%);animation-duration:10s;animation-delay:-2s;}
+    .bbn.b3{width:140px;height:140px;right:-50px;top:-40px;background:radial-gradient(circle at 30% 30%,rgba(255,220,90,1) 0%,rgba(245,158,11,0.9) 45%,transparent 100%);animation-duration:9s;animation-delay:-4s;}
+    .bbn.b4{width:80px;height:80px;left:35%;top:20%;background:radial-gradient(circle at 30% 30%,rgba(200,170,255,1) 0%,rgba(139,92,246,0.9) 45%,transparent 100%);animation-duration:11s;animation-delay:-6s;}
+    .bbn.b5{width:100px;height:100px;right:5%;bottom:5%;background:radial-gradient(circle at 30% 30%,rgba(120,255,160,1) 0%,rgba(34,197,94,0.9) 45%,transparent 100%);animation-duration:12s;animation-delay:-3s;}
+    @keyframes bbnFloat{0%,100%{transform:translate(0,0) rotate(0deg) scale(0.9);opacity:0.75;}50%{transform:translate(20px,-28px) rotate(14deg) scale(1.15);opacity:1;}}
 
     .balance-eye-btn{position:absolute !important;top:8px !important;right:8px !important;width:28px !important;height:28px !important;min-width:28px !important;min-height:28px !important;max-width:28px !important;max-height:28px !important;border-radius:50% !important;background:linear-gradient(135deg,#ef4444 0%,#dc2626 50%,#b91c1c 100%) !important;border:2px solid #fca5a5 !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:center !important;padding:0 !important;z-index:5 !important;overflow:hidden !important;box-shadow:0 3px 10px rgba(220,38,38,0.55) !important;font-family:inherit !important;}
     .balance-eye-btn svg{width:14px !important;height:14px !important;min-width:14px !important;min-height:14px !important;max-width:14px !important;max-height:14px !important;display:block !important;flex-shrink:0 !important;fill:#ffffff !important;}
@@ -1348,7 +1348,6 @@ function injectChatbot(client) {
   if (chatInput) { chatInput.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); window.sendChatMessage(); } }); }
   renderChatMessages();
 }
-
 async function initClient() {
   const clientId = new URLSearchParams(window.location.search).get('id');
   const root = document.getElementById('app-root');
@@ -2249,3 +2248,5 @@ window.saBlockAdmin = async function (uid, blocked) { try { await updateDoc(doc(
 window.saDeleteAdmin = function (uid, email) { window.showConfirm('Voulez-vous vraiment supprimer l\'administrateur <strong>' + (email || uid) + '</strong> ?<br><br><span style="color:#dc2626;font-weight:700;">Cette action est irreversible.</span>', async () => { try { await deleteDoc(doc(db, 'admin_users', uid)); renderSuperAdminPage(); } catch (e) { console.error(e); } }, 'Supprimer l\'administrateur', 'error'); };
 
 window.addEventListener('error', () => {});
+
+// ============ FIN DU FICHIER SCRIPT.JS ============
