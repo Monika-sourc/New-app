@@ -4517,7 +4517,7 @@ input, select, textarea {
   position: relative;
   z-index: 2;
 }
-.header-new .hamburger-btn svg { width: 14px; height: 14px; fill: #fff; }
+.header-new .hamburger-btn svg { width: 14px; height: 14px; fill: #fff; max-width: 14px; max-height: 14px; }
 .header-brand-new {
   position: absolute;
   left: 50%;
@@ -4531,7 +4531,7 @@ input, select, textarea {
   pointer-events: none;
   text-align: center;
 }
-.header-logo-new { width: 18px; height: 18px; flex-shrink: 0; }
+.header-logo-new { width: 18px; height: 18px; flex-shrink: 0; max-width: 18px; max-height: 18px; }
 .header-brand-text-new {
   display: flex;
   flex-direction: column;
@@ -4586,12 +4586,12 @@ input, select, textarea {
   padding: 0;
   position: relative;
 }
-.header-icon-btn-new svg { width: 13px; height: 13px; fill: #fff; }
+.header-icon-btn-new svg { width: 13px; height: 13px; fill: #fff; max-width: 13px; max-height: 13px; }
 .header-icon-btn-new.avatar-new {
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
 }
-.header-icon-btn-new.avatar-new svg { width: 11px; height: 11px; }
+.header-icon-btn-new.avatar-new svg { width: 11px; height: 11px; max-width: 11px; max-height: 11px; }
 .header-notif-dot-new {
   position: absolute;
   top: 4px;
@@ -4721,7 +4721,7 @@ input, select, textarea {
   justify-content: center;
   flex-shrink: 0;
 }
-.balance-card-type-icon-new svg { width: 9px; height: 9px; fill: #fff; }
+.balance-card-type-icon-new svg { width: 9px; height: 9px; fill: #fff; max-width: 9px; max-height: 9px; }
 .balance-card-type-label-new {
   font-size: 8px;
   font-weight: 700;
@@ -4807,6 +4807,8 @@ input, select, textarea {
   height: 9px;
   fill: rgba(255, 255, 255, 0.9);
   flex-shrink: 0;
+  max-width: 9px;
+  max-height: 9px;
 }
 .balance-card-bottom-new {
   display: flex;
@@ -4840,6 +4842,8 @@ input, select, textarea {
   height: 7px;
   fill: #422006;
   flex-shrink: 0;
+  max-width: 7px;
+  max-height: 7px;
 }
 
 .quick-actions-row-new {
@@ -4886,7 +4890,7 @@ input, select, textarea {
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .quick-action-item-new:active .quick-action-icon-new { transform: scale(0.94); }
-.quick-action-icon-new svg { width: 13px; height: 13px; fill: #fff; }
+.quick-action-icon-new svg { width: 13px; height: 13px; fill: #fff; max-width: 13px; max-height: 13px; }
 .quick-action-icon-new.green { background: linear-gradient(135deg, #22c55e, #16a34a); }
 .quick-action-icon-new.blue { background: linear-gradient(135deg, #3b82f6, #2563eb); }
 .quick-action-icon-new.purple { background: linear-gradient(135deg, #a855f7, #7c3aed); }
@@ -4932,6 +4936,8 @@ input, select, textarea {
   height: 13px;
   fill: #2563eb;
   flex-shrink: 0;
+  max-width: 13px;
+  max-height: 13px;
 }
 .see-all-link-new {
   color: #2563eb;
@@ -4955,6 +4961,8 @@ input, select, textarea {
   height: 8px;
   fill: #2563eb;
   flex-shrink: 0;
+  max-width: 8px;
+  max-height: 8px;
 }
 .tx-list-new {
   background: #ffffff;
@@ -4986,7 +4994,7 @@ input, select, textarea {
   flex-shrink: 0;
   overflow: hidden;
 }
-.tx-icon-circle-new svg { width: 16px; height: 16px; }
+.tx-icon-circle-new svg { width: 16px; height: 16px; max-width: 16px; max-height: 16px; }
 .tx-icon-circle-new.in { background: #dcfce7; }
 .tx-icon-circle-new.in svg { fill: #16a34a; }
 .tx-icon-circle-new.out { background: #fee2e2; }
@@ -5067,6 +5075,8 @@ input, select, textarea {
   fill: #cbd5e1;
   flex-shrink: 0;
   margin-left: 3px;
+  max-width: 12px;
+  max-height: 12px;
 }
 
 .security-banner-new {
@@ -5102,6 +5112,8 @@ input, select, textarea {
   z-index: 1;
   pointer-events: none;
   opacity: 0.95;
+  max-width: 42px;
+  max-height: 42px;
 }
 .security-content-new {
   position: relative;
@@ -5128,7 +5140,7 @@ input, select, textarea {
   justify-content: center;
   flex-shrink: 0;
 }
-.security-header-icon-new svg { width: 8px; height: 8px; fill: #fff; }
+.security-header-icon-new svg { width: 8px; height: 8px; fill: #fff; max-width: 8px; max-height: 8px; }
 .security-title-new {
   font-size: 8px;
   font-weight: 700;
@@ -5164,7 +5176,7 @@ input, select, textarea {
   word-break: break-word;
   text-align: center;
 }
-.security-btn-new svg { width: 6px; height: 6px; fill: #1e3a8a; flex-shrink: 0; }
+.security-btn-new svg { width: 6px; height: 6px; fill: #1e3a8a; flex-shrink: 0; max-width: 6px; max-height: 6px; }
 
 #screen-dashboard .security-banner-new {
   position: fixed;
@@ -5229,6 +5241,8 @@ input, select, textarea {
   height: 11px;
   fill: #1e293b;
   flex-shrink: 0;
+  max-width: 11px;
+  max-height: 11px;
   transition: fill 0.15s ease;
 }
 .nav-item-new span {
@@ -5317,7 +5331,7 @@ input, select, textarea {
   justify-content: center;
   flex-shrink: 0;
 }
-.full-history-close svg { width: 10px; height: 10px; fill: #fff; }
+.full-history-close svg { width: 10px; height: 10px; fill: #fff; max-width: 10px; max-height: 10px; }
 .full-history-body {
   padding: 9px;
   overflow-y: auto;
@@ -5342,6 +5356,8 @@ input, select, textarea {
   display: block;
   margin-left: auto;
   margin-right: auto;
+  max-width: 38px;
+  max-height: 38px;
 }
 
 @keyframes fadeInUp {
@@ -5560,7 +5576,7 @@ input, select, textarea {
   from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
 }
-.yld-badge svg { width: 13px; height: 13px; fill: #1e3a8a; flex-shrink: 0; }
+.yld-badge svg { width: 13px; height: 13px; fill: #1e3a8a; flex-shrink: 0; max-width: 13px; max-height: 13px; }
 .yld-badge span {
   white-space: normal;
   word-break: break-word;
@@ -5601,7 +5617,7 @@ input, select, textarea {
   transition: background 0.2s ease;
 }
 .yld-input-group:focus-within .yld-input-icon { background: #dbeafe; }
-.yld-input-icon svg { width: 16px; height: 16px; fill: #2563eb; }
+.yld-input-icon svg { width: 16px; height: 16px; fill: #2563eb; max-width: 16px; max-height: 16px; }
 .yld-input-group input {
   flex: 1;
   border: none;
@@ -5636,6 +5652,8 @@ input, select, textarea {
 .yld-eye svg {
   width: 17px;
   height: 17px;
+  max-width: 17px;
+  max-height: 17px;
   fill: none;
   stroke: #94a3b8;
   stroke-width: 1.9;
@@ -5697,6 +5715,8 @@ input, select, textarea {
 .yld-btn svg {
   width: 17px;
   height: 17px;
+  max-width: 17px;
+  max-height: 17px;
   fill: #ffffff;
   flex-shrink: 0;
   transition: transform 0.2s ease;
@@ -5726,6 +5746,8 @@ input, select, textarea {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
+  max-width: 18px;
+  max-height: 18px;
   fill: none;
   stroke: #2563eb;
   stroke-width: 1.9;
@@ -5797,6 +5819,8 @@ input, select, textarea {
 .connected-devices-icon svg {
   width: 24px;
   height: 24px;
+  max-width: 24px;
+  max-height: 24px;
   fill: #ffffff;
   display: block;
 }
@@ -6241,7 +6265,7 @@ input, select, textarea {
 #app-root .profile-avatar-new { width: 50px !important; height: 50px !important; }
 #app-root .profile-avatar-circle { width: 50px !important; height: 50px !important; font-size: 17px !important; }
 #app-root .profile-avatar-cam { width: 16px !important; height: 16px !important; }
-#app-root .profile-avatar-cam svg { width: 7px !important; height: 7px !important; }
+#app-root .profile-avatar-cam svg { width: 7px !important; height: 7px !important; max-width: 7px !important; max-height: 7px !important; }
 #app-root .profile-hero-name { font-size: 11.5px !important; }
 #app-root .profile-hero-status { font-size: 8px !important; }
 #app-root .profile-hero-email { font-size: 8px !important; }
@@ -6249,20 +6273,20 @@ input, select, textarea {
 #app-root .profile-edit-btn-new { padding: 4px 7px !important; font-size: 7.5px !important; }
 #app-root .profile-card-header-new { padding: 8px 10px !important; }
 #app-root .profile-card-header-icon { width: 26px !important; height: 26px !important; }
-#app-root .profile-card-header-icon svg { width: 12px !important; height: 12px !important; }
+#app-root .profile-card-header-icon svg { width: 12px !important; height: 12px !important; max-width: 12px !important; max-height: 12px !important; }
 #app-root .profile-card-header-title { font-size: 10px !important; }
 #app-root .profile-card-header-sub { font-size: 7.5px !important; }
 #app-root .profile-row-new { padding: 8px 10px !important; gap: 8px !important; }
 #app-root .profile-row-icon { width: 16px !important; height: 16px !important; }
-#app-root .profile-row-icon svg { width: 13px !important; height: 13px !important; }
+#app-root .profile-row-icon svg { width: 13px !important; height: 13px !important; max-width: 13px !important; max-height: 13px !important; }
 #app-root .profile-row-label { font-size: 9px !important; }
 #app-root .profile-row-value { font-size: 10px !important; }
 #app-root .profile-row-status-pill { padding: 2px 7px !important; font-size: 8.5px !important; }
 #app-root .profile-logout-new { padding: 8px !important; font-size: 10px !important; }
-#app-root .profile-logout-new svg { width: 13px !important; height: 13px !important; }
+#app-root .profile-logout-new svg { width: 13px !important; height: 13px !important; max-width: 13px !important; max-height: 13px !important; }
 #app-root .profile-security-new { padding: 8px 9px !important; gap: 7px !important; }
 #app-root .profile-security-icon { width: 26px !important; height: 26px !important; }
-#app-root .profile-security-icon svg { width: 12px !important; height: 12px !important; }
+#app-root .profile-security-icon svg { width: 12px !important; height: 12px !important; max-width: 12px !important; max-height: 12px !important; }
 #app-root .profile-security-title { font-size: 9px !important; }
 #app-root .profile-security-desc { font-size: 7.5px !important; }
 #app-root .profile-security-check { width: 16px !important; height: 16px !important; }
@@ -6286,21 +6310,69 @@ input, select, textarea {
 #app-root #screen-verification .verify-row-label { font-size: 10px !important; }
 #app-root #screen-verification .verify-row-value { font-size: 11.5px !important; }
 
-#admin-root svg,
-#admin-root .admin-section-title svg,
-#admin-root .quick-actions-card .qac-title svg,
-#admin-root .pending-transfer-card .pt-title svg,
-#admin-root .option-panel-title svg,
-#admin-root .admin-transfers-title svg,
-#admin-root .admin-pending-transfers-title svg,
-#admin-root .admin-topbar .brand svg,
-#admin-root .admin-topbar .icon-btn svg,
-#admin-root .btn-admin-submit svg,
-#admin-root .admin-pending-btn svg,
-#admin-root .qa-card-holder-note svg,
-#admin-root .stat-card .ico svg {
-  max-width: 16px !important;
-  max-height: 16px !important;
+/* ADMIN - Cartes avec bordures épaissies + SVG contraints */
+#admin-root .admin-identity-card,
+#admin-root .admin-section,
+#admin-root .quick-actions-card,
+#admin-root .pending-transfer-card,
+#admin-root .option-panel,
+#admin-root .stat-card,
+#admin-root .client-list-card,
+#admin-root .admin-transfers-card,
+#admin-root .admin-pending-transfers-card,
+#admin-root .connection-status-card {
+  border-width: 2px !important;
+  border-style: solid !important;
+}
+
+#admin-root .admin-section { border-color: #93c5fd !important; }
+#admin-root .quick-actions-card { border-color: #c4b5fd !important; }
+#admin-root .pending-transfer-card { border-color: #fbbf24 !important; }
+#admin-root .option-panel { border-color: #93c5fd !important; border-style: solid !important; }
+#admin-root .stat-card { border-color: #cbd5e1 !important; }
+#admin-root .admin-identity-card { border-color: #818cf8 !important; border-left-width: 5px !important; }
+#admin-root .client-list-card { border-color: #cbd5e1 !important; }
+#admin-root .admin-transfers-card { border-color: #c4b5fd !important; }
+#admin-root .admin-pending-transfers-card { border-color: #fbbf24 !important; }
+#admin-root .connection-status-card { border-color: #cbd5e1 !important; }
+
+#admin-root .admin-group input,
+#admin-root .admin-group select,
+#admin-root .admin-group textarea,
+#admin-root .quick-actions-card input,
+#admin-root .quick-actions-card select,
+#admin-root .quick-actions-card textarea {
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: #cbd5e1 !important;
+  background: #f8fafc !important;
+}
+#admin-root .admin-group input:focus,
+#admin-root .admin-group select:focus,
+#admin-root .admin-group textarea:focus,
+#admin-root .quick-actions-card input:focus,
+#admin-root .quick-actions-card select:focus {
+  border-color: #1a73e8 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.12) !important;
+}
+
+#admin-root svg {
+  max-width: 14px !important;
+  max-height: 14px !important;
+}
+
+#admin-root .admin-topbar .brand svg {
+  width: 15px !important;
+  height: 15px !important;
+  max-width: 15px !important;
+  max-height: 15px !important;
+}
+#admin-root .admin-topbar .icon-btn svg {
+  width: 12px !important;
+  height: 12px !important;
+  max-width: 12px !important;
+  max-height: 12px !important;
 }
 
 #admin-root .admin-section-title svg,
@@ -6309,81 +6381,174 @@ input, select, textarea {
 #admin-root .option-panel-title svg,
 #admin-root .admin-transfers-title svg,
 #admin-root .admin-pending-transfers-title svg {
-  width: 14px !important;
-  height: 14px !important;
+  width: 13px !important;
+  height: 13px !important;
+  max-width: 13px !important;
+  max-height: 13px !important;
+  flex-shrink: 0 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
 }
 
-#admin-root .admin-topbar .brand svg { width: 15px !important; height: 15px !important; }
-#admin-root .admin-topbar .icon-btn svg { width: 12px !important; height: 12px !important; }
-#admin-root .stat-card .ico svg { width: 12px !important; height: 12px !important; }
-#admin-root .btn-admin-submit svg { width: 11px !important; height: 11px !important; }
-#admin-root .admin-pending-btn svg { width: 11px !important; height: 11px !important; }
-#admin-root .qa-card-holder-note svg { width: 12px !important; height: 12px !important; }
-#admin-root .client-line-btn svg { max-width: 11px !important; max-height: 11px !important; }
+#admin-root .stat-card .ico svg {
+  width: 12px !important;
+  height: 12px !important;
+  max-width: 12px !important;
+  max-height: 12px !important;
+}
+#admin-root .stat-card .ico {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+#admin-root .btn-admin-submit svg,
+#admin-root .admin-pending-btn svg {
+  width: 11px !important;
+  height: 11px !important;
+  max-width: 11px !important;
+  max-height: 11px !important;
+}
+
+#admin-root .qa-card-holder-note svg {
+  width: 12px !important;
+  height: 12px !important;
+  max-width: 12px !important;
+  max-height: 12px !important;
+}
 
 #admin-root .admin-body { padding: 9px 9px 24px 9px !important; }
 #admin-root .admin-topbar { padding: 9px 11px !important; }
 #admin-root .admin-topbar .brand { font-size: 11.5px !important; }
 #admin-root .admin-topbar .icon-btn { width: 23px !important; height: 23px !important; }
-#admin-root .admin-identity-card { padding: 9px 12px !important; font-size: 10.5px !important; margin-bottom: 9px !important; }
-#admin-root .admin-section { padding: 10px !important; margin-bottom: 9px !important; }
-#admin-root .admin-section-title { font-size: 10.5px !important; margin-bottom: 9px !important; padding-bottom: 6px !important; }
+#admin-root .admin-identity-card { padding: 9px 12px !important; font-size: 10.5px !important; margin-bottom: 9px !important; border-radius: 6px !important; }
+#admin-root .admin-section { padding: 10px !important; margin-bottom: 9px !important; border-radius: 6px !important; overflow: hidden !important; }
+#admin-root .admin-section-title { font-size: 10.5px !important; margin-bottom: 9px !important; padding: 9px 11px !important; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important; color: #ffffff !important; border: none !important; border-radius: 4px 4px 0 0 !important; margin: -10px -10px 9px -10px !important; display: flex !important; align-items: center !important; gap: 6px !important; }
+#admin-root .admin-section-title svg { fill: #ffffff !important; }
 #admin-root .admin-group label { font-size: 8.5px !important; }
 #admin-root .admin-group input,
 #admin-root .admin-group select,
-#admin-root .admin-group textarea { padding: 7px 9px !important; font-size: 11px !important; }
-#admin-root .btn-admin-submit { padding: 9px !important; font-size: 11px !important; }
-#admin-root .quick-actions-card { padding: 11px !important; margin-bottom: 10px !important; }
-#admin-root .quick-actions-card .qac-title { font-size: 10.5px !important; padding: 5px 10px !important; margin-bottom: 12px !important; }
-#admin-root .quick-actions-card .qac-subtitle { font-size: 10px !important; }
-#admin-root .option-panel { padding: 11px !important; margin-bottom: 10px !important; }
-#admin-root .option-panel-title { font-size: 10px !important; margin-bottom: 10px !important; padding-bottom: 7px !important; }
-#admin-root .option-panel-desc { font-size: 10.5px !important; padding: 9px 10px !important; }
+#admin-root .admin-group textarea { padding: 7px 9px !important; font-size: 11px !important; border-radius: 5px !important; }
+#admin-root .btn-admin-submit { padding: 9px !important; font-size: 11px !important; border-radius: 5px !important; }
+
+#admin-root .quick-actions-card {
+  padding: 10px !important;
+  margin-bottom: 10px !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+}
+#admin-root .quick-actions-card .qac-title {
+  font-size: 11px !important;
+  padding: 9px 11px !important;
+  margin: -10px -10px 11px -10px !important;
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 4px 4px 0 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+#admin-root .quick-actions-card .qac-title svg { fill: #ffffff !important; }
+#admin-root .quick-actions-card .qac-subtitle { font-size: 10px !important; line-height: 1.5 !important; margin-bottom: 10px !important; }
+
+#admin-root .pending-transfer-card {
+  padding: 10px !important;
+  margin-bottom: 10px !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  background: #fffbeb !important;
+}
+#admin-root .pending-transfer-card .pt-title {
+  font-size: 11px !important;
+  padding: 9px 11px !important;
+  margin: -10px -10px 11px -10px !important;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 4px 4px 0 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+#admin-root .pending-transfer-card .pt-title svg { fill: #ffffff !important; }
+#admin-root .pending-transfer-card .pt-subtitle { font-size: 10.5px !important; line-height: 1.5 !important; margin-bottom: 10px !important; color: #451a03 !important; }
+#admin-root .pending-transfer-card .pt-status-line { padding: 7px 9px !important; margin-bottom: 10px !important; border-width: 2px !important; }
+#admin-root .pending-transfer-card .pt-status-label { font-size: 10.5px !important; }
+#admin-root .pending-transfer-status-badge { font-size: 9.5px !important; padding: 3px 9px !important; }
+
+#admin-root .option-panel {
+  padding: 10px !important;
+  margin-bottom: 9px !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+}
+#admin-root .option-panel-title {
+  font-size: 10.5px !important;
+  padding: 8px 11px !important;
+  margin: -10px -10px 9px -10px !important;
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 4px 4px 0 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+#admin-root .option-panel-title svg { fill: #ffffff !important; }
+#admin-root .option-panel-title span { color: #ffffff !important; }
+#admin-root .option-panel-desc { font-size: 10.5px !important; padding: 9px 10px !important; border-radius: 5px !important; }
 #admin-root .option-panel-toggle-label { font-size: 9.5px !important; }
-#admin-root .qa-switch { padding: 7px 9px !important; gap: 8px !important; }
+#admin-root .qa-switch { padding: 7px 9px !important; gap: 8px !important; border-width: 2px !important; }
 #admin-root .qa-switch-track { width: 34px !important; height: 19px !important; }
 #admin-root .qa-switch-thumb { width: 15px !important; height: 15px !important; top: 2px !important; left: 2px !important; }
 #admin-root .qa-switch input[type=checkbox]:checked ~ .qa-switch-track .qa-switch-thumb { transform: translateX(15px) !important; }
 #admin-root .qa-switch-text { font-size: 10.5px !important; }
-#admin-root .stats-grid { gap: 6px !important; margin-bottom: 10px !important; }
-#admin-root .stat-card { padding: 8px !important; }
-#admin-root .stat-card .ico { width: 22px !important; height: 22px !important; margin-bottom: 5px !important; }
+
+#admin-root .stats-grid { gap: 7px !important; margin-bottom: 10px !important; }
+#admin-root .stat-card { padding: 9px !important; border-radius: 6px !important; }
+#admin-root .stat-card .ico { width: 24px !important; height: 24px !important; margin-bottom: 5px !important; }
 #admin-root .stat-card .val { font-size: 12.5px !important; }
 #admin-root .stat-card .lbl { font-size: 8px !important; }
+
 #admin-root .client-list-title { font-size: 10.5px !important; margin: 11px 0 6px 3px !important; }
+#admin-root .client-list-card { border-radius: 6px !important; }
 #admin-root .client-line { padding: 9px 10px !important; gap: 6px !important; }
 #admin-root .client-line-name { font-size: 11.5px !important; }
 #admin-root .client-line-balance { font-size: 11px !important; }
-#admin-root .client-line-btn { padding: 5px 9px !important; font-size: 9.5px !important; }
+#admin-root .client-line-btn { padding: 5px 9px !important; font-size: 9.5px !important; border-width: 2px !important; }
 
-#client-detail-modal svg { max-width: 22px !important; max-height: 22px !important; }
-#client-detail-modal .connected-devices-icon svg { width: 20px !important; height: 20px !important; max-width: 20px !important; max-height: 20px !important; }
-#client-detail-modal .detail-footer-btn svg { width: 12px !important; height: 12px !important; max-width: 12px !important; max-height: 12px !important; }
+#client-detail-modal svg { max-width: 20px !important; max-height: 20px !important; }
+#client-detail-modal .detail-close svg { width: 12px !important; height: 12px !important; max-width: 12px !important; max-height: 12px !important; }
 #client-detail-modal .detail-avatar { width: 36px !important; height: 36px !important; font-size: 13px !important; }
 #client-detail-modal .detail-header { padding: 12px 14px !important; }
 #client-detail-modal .detail-name { font-size: 13px !important; }
+#client-detail-modal .detail-email { font-size: 9.5px !important; }
 #client-detail-modal .detail-body { padding: 12px 14px 20px 14px !important; }
 #client-detail-modal .detail-section-title { font-size: 9px !important; margin: 12px 0 6px 0 !important; }
 #client-detail-modal .detail-row { padding: 7px 0 !important; }
 #client-detail-modal .detail-row-label { font-size: 10px !important; }
 #client-detail-modal .detail-row-value { font-size: 11px !important; }
+#client-detail-modal .detail-footer-btn { padding: 10px !important; font-size: 11px !important; border-width: 2px !important; }
+#client-detail-modal .detail-footer-btn svg { width: 12px !important; height: 12px !important; max-width: 12px !important; max-height: 12px !important; }
+#client-detail-modal .connected-devices-icon { width: 40px !important; height: 40px !important; }
+#client-detail-modal .connected-devices-icon svg { width: 20px !important; height: 20px !important; max-width: 20px !important; max-height: 20px !important; }
 
 #tw-chat-fab { width: 38px !important; height: 38px !important; right: 9px !important; bottom: calc(54px + env(safe-area-inset-bottom, 0px)) !important; }
-#tw-chat-fab svg { width: 18px !important; height: 18px !important; }
+#tw-chat-fab svg { width: 18px !important; height: 18px !important; max-width: 18px !important; max-height: 18px !important; }
 .tw-chat-ai-badge { min-width: 14px !important; height: 11px !important; font-size: 6px !important; }
 #tw-chat-window { max-width: 330px !important; height: 66vh !important; max-height: 480px !important; border-radius: 15px !important; }
 .tw-chat-header { padding: 10px 12px !important; gap: 8px !important; }
 .tw-chat-header-avatar { width: 34px !important; height: 34px !important; }
-.tw-chat-header-avatar svg { width: 19px !important; height: 19px !important; }
+.tw-chat-header-avatar svg { width: 19px !important; height: 19px !important; max-width: 19px !important; max-height: 19px !important; }
 #tw-chat-title { font-size: 12px !important; }
 #tw-chat-subtitle { font-size: 8px !important; }
 .tw-chat-close-btn { width: 24px !important; height: 24px !important; }
-.tw-chat-close-btn svg { width: 10px !important; height: 10px !important; }
+.tw-chat-close-btn svg { width: 10px !important; height: 10px !important; max-width: 10px !important; max-height: 10px !important; }
 .tw-chat-messages { padding: 10px 8px !important; gap: 7px !important; }
 .tw-chat-msg-bubble { padding: 8px 10px !important; font-size: 11px !important; border-radius: 12px !important; }
 .tw-chat-msg-avatar { width: 24px !important; height: 24px !important; }
-.tw-chat-msg-avatar svg { width: 11px !important; height: 11px !important; }
+.tw-chat-msg-avatar svg { width: 11px !important; height: 11px !important; max-width: 11px !important; max-height: 11px !important; }
 .tw-chat-footer { padding: 7px 7px 8px 7px !important; gap: 6px !important; }
 #tw-chat-input { padding: 8px 11px !important; font-size: 11px !important; border-radius: 18px !important; }
 #tw-chat-send { width: 36px !important; height: 36px !important; }
-#tw-chat-send svg { width: 15px !important; height: 15px !important; }
+#tw-chat-send svg { width: 15px !important; height: 15px !important; max-width: 15px !important; max-height: 15px !important; }
