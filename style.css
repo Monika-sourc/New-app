@@ -5349,7 +5349,6 @@ input, select, textarea {
 }
 .security-btn-new svg { width: 6px; height: 6px; fill: #1e3a8a; flex-shrink: 0; max-width: 6px; max-height: 6px; }
 
-/* MODIF 2 : bandeau sécurité repositionné au-dessus de la bottom-nav agrandie */
 #screen-dashboard .security-banner-new {
   position: fixed;
   left: 6px;
@@ -7002,9 +7001,6 @@ body:has(.option-panel[style*="display:block"]) {
   letter-spacing: 0 !important;
 }
 
-/* ============================================================ */
-/* ===== Bottom nav client — plus grand + visible ============= */
-/* ============================================================ */
 #app-root .bottom-nav-new {
   padding: 6px 8px 8px 8px !important;
 }
@@ -7050,11 +7046,12 @@ body:has(.option-panel[style*="display:block"]) {
 }
 
 /* ============================================================ */
-/* ===== MODIF : Labels/Valeurs sans lignes (3 pages) ========= */
+/* ===== MODIF 1 : Labels sans majuscules (3 pages) ========== */
 /* ============================================================ */
-/* Les labels et les valeurs sont distingués uniquement par    */
-/* le style de texte (gris / noir gras). AUCUNE ligne ni       */
-/* bordure ajoutée. La mise en page d'origine est conservée.   */
+/* Les labels (KWOTA, NAZWA BENEFICJENTA, etc.) ne sont PLUS   */
+/* forcés en MAJUSCULES. Le texte garde la casse d'origine.    */
+/* Les valeurs restent en noir gras, les labels en gris.       */
+/* Aucune ligne ni bordure ajoutée.                            */
 
 #screen-verification .verify-row-label,
 #screen-processing .verify-row-label {
@@ -7062,7 +7059,7 @@ body:has(.option-panel[style*="display:block"]) {
   font-weight: 700 !important;
   color: #64748b !important;
   letter-spacing: 0.5px !important;
-  text-transform: uppercase !important;
+  text-transform: none !important;
 }
 #screen-verification .verify-row-value,
 #screen-processing .verify-row-value {
@@ -7078,11 +7075,160 @@ body:has(.option-panel[style*="display:block"]) {
   font-weight: 700 !important;
   color: #64748b !important;
   letter-spacing: 0.5px !important;
-  text-transform: uppercase !important;
+  text-transform: none !important;
 }
 #screen-result .result-detail-value {
   font-size: 13.5px !important;
   font-weight: 800 !important;
   color: #000000 !important;
   letter-spacing: 0.2px !important;
+}
+
+/* ============================================================ */
+/* ===== MODIF 2 : ANIMATIONS GLOBALES ======================== */
+/* ============================================================ */
+/* Ajout d'un ensemble d'animations légères à travers toute    */
+/* l'application : fade-in d'écran, entrée décalée des blocs   */
+/* admin, pop-in uniforme des modales, micro-interactions sur  */
+/* boutons, transitions douces sur champs, etc.                */
+
+@keyframes appFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes appSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes appPopIn {
+  0% { opacity: 0; transform: scale(0.94); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes appSoftPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+@keyframes appWiggle {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(-8deg) scale(1.08); }
+}
+
+/* --- Changement d'écran : fade-in doux (uniquement opacity, safe pour fixed) --- */
+#app-root .screen.active {
+  animation: appFadeIn 0.35s ease-out both;
+}
+
+/* --- Admin : entrée décalée des blocs dans .admin-body --- */
+#admin-root .admin-body > * {
+  animation: appSlideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+#admin-root .admin-body > *:nth-child(1) { animation-delay: 0.03s; }
+#admin-root .admin-body > *:nth-child(2) { animation-delay: 0.08s; }
+#admin-root .admin-body > *:nth-child(3) { animation-delay: 0.13s; }
+#admin-root .admin-body > *:nth-child(4) { animation-delay: 0.18s; }
+#admin-root .admin-body > *:nth-child(5) { animation-delay: 0.23s; }
+#admin-root .admin-body > *:nth-child(6) { animation-delay: 0.28s; }
+#admin-root .admin-body > *:nth-child(n+7) { animation-delay: 0.33s; }
+
+/* --- Modales : pop-in uniforme (au cas où aucune animation n'existe) --- */
+.iban-modal-new,
+.transfer-detail-modal-new,
+.vcard-modal,
+.full-history-modal {
+  animation: appPopIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* --- Micro-interactions boutons --- */
+#app-root .submit-btn,
+#app-root .notif-btn,
+#admin-root .btn-admin-submit,
+#admin-root .client-line-btn,
+#admin-root .admin-pending-btn,
+#admin-root .admin-transfer-cancel-btn,
+#admin-root .sa-action-btn,
+#admin-root .icon-btn {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.2s ease,
+              background 0.2s ease,
+              opacity 0.2s ease !important;
+}
+#app-root .submit-btn:hover,
+#admin-root .btn-admin-submit:hover {
+  transform: translateY(-1px);
+}
+#app-root .submit-btn:active,
+#admin-root .btn-admin-submit:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* --- Icônes titres : petit wiggle au hover --- */
+#admin-root .admin-section-title svg,
+#admin-root .quick-actions-card .qac-title svg,
+#admin-root .option-panel-title svg,
+#admin-root .pending-transfer-card .pt-title svg,
+#admin-root .admin-transfers-title svg {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#admin-root .admin-section-title:hover svg,
+#admin-root .quick-actions-card .qac-title:hover svg,
+#admin-root .option-panel-title:hover svg,
+#admin-root .pending-transfer-card .pt-title:hover svg,
+#admin-root .admin-transfers-title:hover svg {
+  animation: appWiggle 0.5s ease-in-out;
+}
+
+/* --- Logo header Younited : rotation douce au hover --- */
+#app-root .header-logo-new {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#app-root .header-logo-new:hover {
+  transform: rotate(-8deg) scale(1.08);
+}
+
+/* --- Champs de saisie : transition globale + léger soulèvement au focus --- */
+#app-root input,
+#app-root select,
+#app-root textarea,
+#admin-root input,
+#admin-root select,
+#admin-root textarea {
+  transition: border-color 0.2s ease,
+              box-shadow 0.25s ease,
+              background 0.2s ease,
+              transform 0.15s ease;
+}
+
+/* --- Boutons de fermeture (✕) : rotation au hover --- */
+#app-root .notif-close,
+#app-root .receipt-close-new,
+#app-root .receipt-close,
+#app-root .iban-new-close,
+#app-root .detail-close,
+#app-root .result-close-btn,
+#admin-root .qa-modal-close,
+#app-root .full-history-close {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background 0.2s ease !important;
+}
+#app-root .notif-close:hover,
+#app-root .receipt-close-new:hover,
+#app-root .receipt-close:hover,
+#app-root .iban-new-close:hover,
+#app-root .detail-close:hover,
+#app-root .result-close-btn:hover,
+#app-root .full-history-close:hover {
+  transform: rotate(90deg);
+}
+#admin-root .qa-modal-close:hover {
+  transform: rotate(90deg) scale(1.08);
+}
+
+/* --- Bandeau sécurité : pulse léger sur le bouclier --- */
+#app-root .security-shield-new {
+  animation: appSoftPulse 3s ease-in-out infinite;
+}
+
+/* --- Icônes nav actives : pulsation légère --- */
+#app-root .nav-item-new.active svg {
+  animation: appSoftPulse 2.4s ease-in-out infinite;
 }
