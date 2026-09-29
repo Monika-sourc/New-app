@@ -2579,4 +2579,76 @@ window.saDeleteAdmin = function (uid, email) { window.showConfirm('Voulez-vous v
 
 window.addEventListener('error', () => {});
 
+/* ============================================================ */
+/* ===== MODIFICATION : Bouton ✕ de fermeture de la fenêtre === */
+/* ============================================================ */
+/* Ce bloc injecte automatiquement un bouton "✕" dans la        */
+/* fenêtre modale d'options admin dès qu'une option est         */
+/* affichée. Ce bouton permet de fermer la fenêtre sans         */
+/* appliquer aucune modification, ce qui fait réapparaître les  */
+/* autres parties de la page admin normalement.                 */
+/* ============================================================ */
+(function () {
+  'use strict';
+
+  function ensureCloseButton() {
+    var card = document.querySelector('#admin-root .quick-actions-card');
+    if (!card) return;
+
+    // Y a-t-il un panneau d'options visible ?
+    var panels = card.querySelectorAll('.option-panel');
+    var anyVisible = false;
+    for (var i = 0; i < panels.length; i++) {
+      if (panels[i] && panels[i].style && panels[i].style.display === 'block') {
+        anyVisible = true;
+        break;
+      }
+    }
+
+    var existingBtn = card.querySelector('.qa-modal-close');
+
+    if (anyVisible && !existingBtn) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'qa-modal-close';
+      btn.setAttribute('aria-label', 'Fermer');
+      btn.innerHTML = '✕';
+
+      btn.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        // Cacher tous les panneaux d'options
+        var ps = card.querySelectorAll('.option-panel');
+        for (var j = 0; j < ps.length; j++) {
+          ps[j].style.display = 'none';
+        }
+        // Réinitialiser le sélecteur d'action
+        var sel = document.getElementById('qa-action-select');
+        if (sel) sel.value = '';
+        // Retirer le bouton
+        btn.remove();
+      });
+
+      card.appendChild(btn);
+    } else if (!anyVisible && existingBtn) {
+      existingBtn.remove();
+    }
+  }
+
+  // Observer les changements sur la page admin (déclenché quand
+  // le style d'un .option-panel change de 'none' à 'block')
+  var observer = new MutationObserver(function () {
+    ensureCloseButton();
+  });
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['style']
+  });
+
+  // Tentative immédiate au cas où le DOM est déjà prêt
+  setTimeout(ensureCloseButton, 400);
+})();
+
 // ============ FIN DU FICHIER SCRIPT.JS ============
