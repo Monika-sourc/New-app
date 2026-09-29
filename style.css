@@ -5349,11 +5349,12 @@ input, select, textarea {
 }
 .security-btn-new svg { width: 6px; height: 6px; fill: #1e3a8a; flex-shrink: 0; max-width: 6px; max-height: 6px; }
 
+/* MODIF 2 : bandeau sécurité repositionné au-dessus de la bottom-nav agrandie */
 #screen-dashboard .security-banner-new {
   position: fixed;
   left: 6px;
   right: 6px;
-  bottom: calc(54px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px));
   z-index: 50;
   margin: 0;
   pointer-events: auto;
@@ -5362,7 +5363,7 @@ input, select, textarea {
 #screen-dashboard.active {
   display: block;
   min-height: 100%;
-  padding-bottom: 84px;
+  padding-bottom: 122px;
 }
 
 .bottom-nav-new {
@@ -6402,9 +6403,6 @@ input, select, textarea {
   margin-top: 9px !important;
   margin-bottom: 13px !important;
 }
-#screen-dashboard.active {
-  padding-bottom: 92px !important;
-}
 
 #app-root #screen-transfer .form-input,
 #app-root #screen-transfer #input-iban,
@@ -6881,9 +6879,6 @@ input, select, textarea {
 #tw-chat-send { width: 36px !important; height: 36px !important; }
 #tw-chat-send svg { width: 15px !important; height: 15px !important; max-width: 15px !important; max-height: 15px !important; }
 
-/* ============================================================ */
-/* ===== Fenêtre d'options — arrière-plan NOIR ====== */
-/* ============================================================ */
 .quick-actions-card:has(.option-panel[style*="display: block"]),
 .quick-actions-card:has(.option-panel[style*="display:block"]) {
   position: fixed !important;
@@ -7008,7 +7003,7 @@ body:has(.option-panel[style*="display:block"]) {
 }
 
 /* ============================================================ */
-/* ===== MODIF 1 : Bottom nav client — plus grand + visible === */
+/* ===== Bottom nav client — plus grand + visible ============= */
 /* ============================================================ */
 #app-root .bottom-nav-new {
   padding: 6px 8px 8px 8px !important;
@@ -7055,45 +7050,21 @@ body:has(.option-panel[style*="display:block"]) {
 }
 
 /* ============================================================ */
-/* ===== MODIF 2 : Labels/Valeurs + Séparations (3 pages) === */
+/* ===== MODIF : Labels/Valeurs sans lignes (3 pages) ========= */
 /* ============================================================ */
+/* Les labels et les valeurs sont distingués uniquement par    */
+/* le style de texte (gris / noir gras). AUCUNE ligne ni       */
+/* bordure ajoutée. La mise en page d'origine est conservée.   */
 
-/* --- Page code d'activation (screen-verification) --- */
-#screen-verification .verify-row-label {
-  font-size: 11px !important;
-  font-weight: 700 !important;
-  color: #64748b !important;
-  letter-spacing: 0.5px !important;
-  text-transform: uppercase !important;
-  padding-bottom: 2px !important;
-  border-bottom: 1px dashed #cbd5e1 !important;
-}
-#screen-verification .verify-row-value {
-  font-size: 14.5px !important;
-  font-weight: 800 !important;
-  color: #000000 !important;
-  letter-spacing: 0.2px !important;
-  padding-left: 8px !important;
-}
-#screen-verification .verify-row {
-  padding-bottom: 8px !important;
-  border-bottom: 1px solid #e2e8f0 !important;
-}
-#screen-verification .verify-row:last-child {
-  border-bottom: none !important;
-  padding-bottom: 0 !important;
-}
-
-/* --- Page progression (screen-processing) --- */
+#screen-verification .verify-row-label,
 #screen-processing .verify-row-label {
   font-size: 11px !important;
   font-weight: 700 !important;
   color: #64748b !important;
   letter-spacing: 0.5px !important;
   text-transform: uppercase !important;
-  padding-bottom: 2px !important;
-  border-bottom: 1px dashed #cbd5e1 !important;
 }
+#screen-verification .verify-row-value,
 #screen-processing .verify-row-value {
   font-size: 14.5px !important;
   font-weight: 800 !important;
@@ -7101,49 +7072,17 @@ body:has(.option-panel[style*="display:block"]) {
   letter-spacing: 0.2px !important;
   padding-left: 8px !important;
 }
-#screen-processing .verify-row {
-  padding-bottom: 8px !important;
-  border-bottom: 1px solid #e2e8f0 !important;
-}
-#screen-processing .verify-row:last-child {
-  border-bottom: none !important;
-  padding-bottom: 0 !important;
-}
 
-/* --- Page confirmation (screen-result) --- */
-#screen-result .result-details-list {
-  gap: 0 !important;
-  padding: 4px 0 !important;
-}
-#screen-result .result-detail-row {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  flex-wrap: nowrap !important;
-  padding: 10px 0 !important;
-  border-bottom: 1px dashed #cbd5e1 !important;
-  gap: 12px !important;
-}
-#screen-result .result-detail-row:last-child {
-  border-bottom: none !important;
-}
 #screen-result .result-detail-label {
   font-size: 11px !important;
   font-weight: 700 !important;
   color: #64748b !important;
   letter-spacing: 0.5px !important;
   text-transform: uppercase !important;
-  flex-shrink: 0 !important;
-  text-align: left !important;
-  white-space: nowrap !important;
 }
 #screen-result .result-detail-value {
   font-size: 13.5px !important;
   font-weight: 800 !important;
   color: #000000 !important;
   letter-spacing: 0.2px !important;
-  text-align: right !important;
-  flex: 1 !important;
-  min-width: 0 !important;
-  word-break: break-word !important;
 }
