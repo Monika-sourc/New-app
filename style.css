@@ -792,6 +792,7 @@ input, select, textarea {
   overflow: hidden;
   margin-bottom: 20px;
 }
+/* MODIF 2 : tout sur une seule ligne (nom + solde + 2 boutons) */
 .client-line {
   display: flex;
   align-items: center;
@@ -6260,7 +6261,7 @@ input, select, textarea {
   padding: 12px 12px !important;
 }
 
-/* MODIF 4 : Espace entre chaque champ du formulaire de virement */
+/* MODIF : Espace entre chaque champ du formulaire de virement */
 #app-root #screen-transfer .form-group {
   padding-bottom: 16px !important;
 }
@@ -6754,7 +6755,7 @@ input, select, textarea {
   display: none !important;
 }
 
-/* Backdrop sombre derrière la fenêtre */
+/* MODIF 1 — Backdrop 100% opaque derrière la fenêtre : plus rien ne s'affiche derrière */
 body:has(.quick-actions-card:has(.option-panel[style*="display: block"]))::before,
 body:has(.quick-actions-card:has(.option-panel[style*="display:block"]))::before {
   content: '' !important;
@@ -6763,11 +6764,14 @@ body:has(.quick-actions-card:has(.option-panel[style*="display:block"]))::before
   left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  background: rgba(15, 23, 42, 0.65) !important;
-  backdrop-filter: blur(4px) !important;
-  -webkit-backdrop-filter: blur(4px) !important;
+  background: #e2e8f0 !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   z-index: 2147483646 !important;
   pointer-events: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /* Empêche le scroll du body quand la fenêtre est ouverte */
@@ -6829,4 +6833,38 @@ body:has(.quick-actions-card:has(.option-panel[style*="display:block"])) {
 #app-root #screen-transfer .form-input:not(.amount-input) {
   color: #475569 !important;
   font-weight: 700 !important;
+}
+
+/* ============================================================ */
+/* ===== MODIF 2 : Liste clients — tout sur une seule ligne == */
+/* ============================================================ */
+/* Nom + Montant + Bouton 1 + Bouton 2 restent OBLIGATOIREMENT  */
+/* sur la même ligne, quelle que soit la longueur du nom ou du  */
+/* montant. Le nom est tronqué avec "..." si trop long.         */
+#admin-root .client-list-card .client-line {
+  flex-wrap: nowrap !important;
+  overflow: hidden !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+#admin-root .client-list-card .client-line-name {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+#admin-root .client-list-card .client-line-balance {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+  padding: 0 4px !important;
+  font-size: 11px !important;
+}
+#admin-root .client-list-card .client-line-btn {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+  padding: 5px 8px !important;
+  font-size: 9.5px !important;
+  letter-spacing: 0 !important;
 }
