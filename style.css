@@ -6310,7 +6310,7 @@ input, select, textarea {
 #app-root #screen-verification .verify-row-label { font-size: 10px !important; }
 #app-root #screen-verification .verify-row-value { font-size: 11.5px !important; }
 
-/* ADMIN - Cartes avec bordures épaissies + SVG contraints */
+/* ===== ADMIN - BORDURES NOIRES FINES ===== */
 #admin-root .admin-identity-card,
 #admin-root .admin-section,
 #admin-root .quick-actions-card,
@@ -6321,40 +6321,42 @@ input, select, textarea {
 #admin-root .admin-transfers-card,
 #admin-root .admin-pending-transfers-card,
 #admin-root .connection-status-card {
-  border-width: 2px !important;
-  border-style: solid !important;
+  border: 1px solid #0f172a !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
 }
-
-#admin-root .admin-section { border-color: #93c5fd !important; }
-#admin-root .quick-actions-card { border-color: #c4b5fd !important; }
-#admin-root .pending-transfer-card { border-color: #fbbf24 !important; }
-#admin-root .option-panel { border-color: #93c5fd !important; border-style: solid !important; }
-#admin-root .stat-card { border-color: #cbd5e1 !important; }
-#admin-root .admin-identity-card { border-color: #818cf8 !important; border-left-width: 5px !important; }
-#admin-root .client-list-card { border-color: #cbd5e1 !important; }
-#admin-root .admin-transfers-card { border-color: #c4b5fd !important; }
-#admin-root .admin-pending-transfers-card { border-color: #fbbf24 !important; }
-#admin-root .connection-status-card { border-color: #cbd5e1 !important; }
-
+#admin-root .admin-identity-card {
+  border-left-width: 4px !important;
+}
+#admin-root .btn-admin-submit,
+#admin-root .client-line-btn,
+#admin-root .admin-pending-btn,
+#admin-root .admin-transfer-cancel-btn,
+#admin-root .admin-topbar .icon-btn,
+#admin-root .qa-switch {
+  border: 1px solid #0f172a !important;
+}
 #admin-root .admin-group input,
 #admin-root .admin-group select,
 #admin-root .admin-group textarea,
 #admin-root .quick-actions-card input,
 #admin-root .quick-actions-card select,
-#admin-root .quick-actions-card textarea {
-  border-width: 2px !important;
-  border-style: solid !important;
-  border-color: #cbd5e1 !important;
-  background: #f8fafc !important;
+#admin-root .quick-actions-card textarea,
+#admin-root .option-panel input,
+#admin-root .option-panel select,
+#admin-root .option-panel textarea {
+  border: 1px solid #0f172a !important;
+  background: #ffffff !important;
 }
 #admin-root .admin-group input:focus,
 #admin-root .admin-group select:focus,
 #admin-root .admin-group textarea:focus,
 #admin-root .quick-actions-card input:focus,
-#admin-root .quick-actions-card select:focus {
+#admin-root .quick-actions-card select:focus,
+#admin-root .option-panel input:focus,
+#admin-root .option-panel select:focus {
   border-color: #1a73e8 !important;
-  background: #ffffff !important;
-  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.12) !important;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15) !important;
 }
 
 #admin-root svg {
@@ -6472,7 +6474,7 @@ input, select, textarea {
 }
 #admin-root .pending-transfer-card .pt-title svg { fill: #ffffff !important; }
 #admin-root .pending-transfer-card .pt-subtitle { font-size: 10.5px !important; line-height: 1.5 !important; margin-bottom: 10px !important; color: #451a03 !important; }
-#admin-root .pending-transfer-card .pt-status-line { padding: 7px 9px !important; margin-bottom: 10px !important; border-width: 2px !important; }
+#admin-root .pending-transfer-card .pt-status-line { padding: 7px 9px !important; margin-bottom: 10px !important; border-width: 1px !important; border-color: #0f172a !important; }
 #admin-root .pending-transfer-card .pt-status-label { font-size: 10.5px !important; }
 #admin-root .pending-transfer-status-badge { font-size: 9.5px !important; padding: 3px 9px !important; }
 
@@ -6498,7 +6500,7 @@ input, select, textarea {
 #admin-root .option-panel-title span { color: #ffffff !important; }
 #admin-root .option-panel-desc { font-size: 10.5px !important; padding: 9px 10px !important; border-radius: 5px !important; }
 #admin-root .option-panel-toggle-label { font-size: 9.5px !important; }
-#admin-root .qa-switch { padding: 7px 9px !important; gap: 8px !important; border-width: 2px !important; }
+#admin-root .qa-switch { padding: 7px 9px !important; gap: 8px !important; }
 #admin-root .qa-switch-track { width: 34px !important; height: 19px !important; }
 #admin-root .qa-switch-thumb { width: 15px !important; height: 15px !important; top: 2px !important; left: 2px !important; }
 #admin-root .qa-switch input[type=checkbox]:checked ~ .qa-switch-track .qa-switch-thumb { transform: translateX(15px) !important; }
@@ -6515,7 +6517,120 @@ input, select, textarea {
 #admin-root .client-line { padding: 9px 10px !important; gap: 6px !important; }
 #admin-root .client-line-name { font-size: 11.5px !important; }
 #admin-root .client-line-balance { font-size: 11px !important; }
-#admin-root .client-line-btn { padding: 5px 9px !important; font-size: 9.5px !important; border-width: 2px !important; }
+#admin-root .client-line-btn { padding: 5px 9px !important; font-size: 9.5px !important; }
+
+/* ===== DÉTAIL CLIENT - NETTOYAGE ===== */
+#client-detail-modal > div {
+  border: 1px solid #0f172a !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+#client-detail-modal .detail-header {
+  border-bottom: 1px solid #0f172a !important;
+  padding: 14px 16px !important;
+}
+#client-detail-modal .detail-body {
+  padding: 14px 16px 24px 16px !important;
+  background: #f8fafc !important;
+}
+#client-detail-modal .detail-section-title {
+  margin: 18px 0 8px 0 !important;
+  padding: 9px 0 7px 0 !important;
+  border-bottom: 1.5px solid #0f172a !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.6px !important;
+  color: #0f172a !important;
+  text-transform: uppercase !important;
+}
+#client-detail-modal .detail-status-grid {
+  gap: 8px !important;
+  margin-bottom: 12px !important;
+}
+#client-detail-modal .detail-status-box {
+  border: 1px solid #0f172a !important;
+  border-radius: 6px !important;
+  padding: 10px 12px !important;
+}
+#client-detail-modal .detail-row {
+  padding: 10px 12px !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 5px !important;
+  margin-bottom: 6px !important;
+  gap: 10px !important;
+}
+#client-detail-modal .detail-row:last-child {
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+#client-detail-modal .detail-row-label {
+  font-size: 10.5px !important;
+  color: #475569 !important;
+  font-weight: 700 !important;
+}
+#client-detail-modal .detail-row-value {
+  font-size: 12px !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+#client-detail-modal .connected-devices-card {
+  border: 1px solid #0f172a !important;
+  border-radius: 6px !important;
+  padding: 12px 14px !important;
+  margin-bottom: 12px !important;
+}
+#client-detail-modal .connection-status-card,
+#client-detail-modal .admin-pending-transfers-card,
+#client-detail-modal .admin-transfers-card {
+  border: 1px solid #0f172a !important;
+  border-radius: 6px !important;
+  margin-bottom: 14px !important;
+  background: #ffffff !important;
+}
+#client-detail-modal .connection-status-header,
+#client-detail-modal .admin-pending-transfers-title,
+#client-detail-modal .admin-transfers-title {
+  border-bottom: 1px solid #0f172a !important;
+}
+#client-detail-modal .detail-link-box {
+  border: 1px dashed #0f172a !important;
+  background: #ffffff !important;
+  border-radius: 5px !important;
+  padding: 10px 12px !important;
+}
+#client-detail-modal .detail-footer {
+  gap: 8px !important;
+  padding-top: 14px !important;
+  margin-top: 16px !important;
+  border-top: 1.5px solid #0f172a !important;
+}
+#client-detail-modal .detail-footer-btn {
+  border: 1px solid #0f172a !important;
+  border-radius: 6px !important;
+  padding: 12px !important;
+}
+#client-detail-modal .connected-device-item {
+  border: 1px solid #0f172a !important;
+  border-radius: 6px !important;
+  padding: 9px 11px !important;
+  margin-bottom: 6px !important;
+}
+#client-detail-modal .admin-pending-item {
+  border: 1px solid #0f172a !important;
+  border-radius: 6px !important;
+  padding: 10px !important;
+  background: #ffffff !important;
+}
+#client-detail-modal .admin-transfer-item {
+  border-bottom: 1px dashed #cbd5e1 !important;
+  padding: 9px 4px !important;
+}
+#client-detail-modal .admin-transfer-item:last-child {
+  border-bottom: none !important;
+}
+#client-detail-modal .detail-close {
+  border: 1px solid #0f172a !important;
+}
 
 #client-detail-modal svg { max-width: 20px !important; max-height: 20px !important; }
 #client-detail-modal .detail-close svg { width: 12px !important; height: 12px !important; max-width: 12px !important; max-height: 12px !important; }
@@ -6528,11 +6643,37 @@ input, select, textarea {
 #client-detail-modal .detail-row { padding: 7px 0 !important; }
 #client-detail-modal .detail-row-label { font-size: 10px !important; }
 #client-detail-modal .detail-row-value { font-size: 11px !important; }
-#client-detail-modal .detail-footer-btn { padding: 10px !important; font-size: 11px !important; border-width: 2px !important; }
+#client-detail-modal .detail-footer-btn { padding: 10px !important; font-size: 11px !important; }
 #client-detail-modal .detail-footer-btn svg { width: 12px !important; height: 12px !important; max-width: 12px !important; max-height: 12px !important; }
 #client-detail-modal .connected-devices-icon { width: 40px !important; height: 40px !important; }
 #client-detail-modal .connected-devices-icon svg { width: 20px !important; height: 20px !important; max-width: 20px !important; max-height: 20px !important; }
 
+/* ===== MODIF 1 - ESPACEMENT DES 3 BOUTONS ACTIONS ===== */
+#app-root .quick-actions-row-new {
+  gap: 12px !important;
+  margin: 0 10px 12px 10px !important;
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+#app-root .quick-action-item-new {
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06) !important;
+  padding: 10px 5px !important;
+  min-height: 62px !important;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+#app-root .quick-action-item-new:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12) !important;
+}
+#app-root .quick-action-item-new:not(:last-child)::after {
+  display: none !important;
+}
+
+/* ===== CHATBOT ===== */
 #tw-chat-fab { width: 38px !important; height: 38px !important; right: 9px !important; bottom: calc(54px + env(safe-area-inset-bottom, 0px)) !important; }
 #tw-chat-fab svg { width: 18px !important; height: 18px !important; max-width: 18px !important; max-height: 18px !important; }
 .tw-chat-ai-badge { min-width: 14px !important; height: 11px !important; font-size: 6px !important; }
