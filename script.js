@@ -885,8 +885,8 @@ const generateShortId = () => { const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
 function translateSubtitle(subtitle) { if (!subtitle) return ''; const map = { 'Depot initial': 'txInitialDeposit', 'Dépôt initial': 'txInitialDeposit', 'Virement recu': 'txTransferReceived', 'Virement reçu': 'txTransferReceived', 'Virement envoye': 'txTransferSent', 'Virement envoyé': 'txTransferSent', 'Virement annule': 'txTransferCancelled', 'Virement annulé': 'txTransferCancelled', 'Wplata poczatkowa': 'txInitialDeposit', 'Wpłata początkowa': 'txInitialDeposit', 'Przelew otrzymany': 'txTransferReceived', 'Przelew wyslany': 'txTransferSent', 'Przelew wysłany': 'txTransferSent', 'Przelew anulowany': 'txTransferCancelled', 'Deposito inicial': 'txInitialDeposit', 'Transferencia recibida': 'txTransferReceived', 'Transferencia enviada': 'txTransferSent', 'Transferencia cancelada': 'txTransferCancelled', 'Deposito iniziale': 'txInitialDeposit', 'Ricevuto': 'txTransferReceived', 'Inviato': 'txTransferSent', 'Bonifico annullato': 'txTransferCancelled', 'Ersteinzahlung': 'txInitialDeposit', 'Erhalten': 'txTransferReceived', 'Gesendet': 'txTransferSent', 'Uberweisung storniert': 'txTransferCancelled' }; const key = map[subtitle]; if (key) return t(key); return subtitle; }
 
-const EYE_OPEN_SVG = '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>';
-const EYE_CLOSED_SVG = '<svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>';
+const EYE_OPEN_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" style="width:16px;height:16px;max-width:16px;max-height:16px;display:block;flex-shrink:0;"><path fill="#ffffff" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>';
+const EYE_CLOSED_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" style="width:16px;height:16px;max-width:16px;max-height:16px;display:block;flex-shrink:0;"><path fill="#ffffff" d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>';
 
 function renderBalanceAmountHtml() {
   if (!currentClient) return '';
@@ -917,14 +917,19 @@ function ensureGlobalStyles() {
   const style = document.createElement('style');
   style.id = 'tw-bubbles-styles';
   style.textContent = `
-    .balance-bubbles-new{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;border-radius:13px;}
-    .bbn{position:absolute;border-radius:50%;opacity:0.75;animation-name:bbnFloat;animation-timing-function:ease-in-out;animation-iteration-count:infinite;filter:blur(2px);mix-blend-mode:screen;}
-    .bbn.b1{width:180px;height:180px;left:-50px;bottom:-20px;background:radial-gradient(circle at 30% 30%,rgba(244,114,182,0.95) 0%,rgba(236,72,153,0.55) 40%,transparent 100%);animation-duration:8s;}
-    .bbn.b2{width:130px;height:130px;left:60%;bottom:-20px;background:radial-gradient(circle at 30% 30%,rgba(34,211,238,0.95) 0%,rgba(6,182,212,0.55) 40%,transparent 100%);animation-duration:10s;animation-delay:-2s;}
-    .bbn.b3{width:200px;height:200px;right:-60px;top:-30px;background:radial-gradient(circle at 30% 30%,rgba(251,191,36,0.95) 0%,rgba(245,158,11,0.55) 40%,transparent 100%);animation-duration:9s;animation-delay:-4s;}
-    .bbn.b4{width:110px;height:110px;left:35%;top:25%;background:radial-gradient(circle at 30% 30%,rgba(167,139,250,0.95) 0%,rgba(139,92,246,0.55) 40%,transparent 100%);animation-duration:11s;animation-delay:-6s;}
-    .bbn.b5{width:150px;height:150px;right:5%;bottom:10%;background:radial-gradient(circle at 30% 30%,rgba(74,222,128,0.95) 0%,rgba(34,197,94,0.55) 40%,transparent 100%);animation-duration:12s;animation-delay:-3s;}
-    @keyframes bbnFloat{0%,100%{transform:translate(0,0) rotate(0deg) scale(0.95);opacity:0.75;}50%{transform:translate(20px,-30px) rotate(15deg) scale(1.1);opacity:1;}}
+    .balance-card-new{position:relative;overflow:hidden;}
+    .balance-bubbles-new{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;border-radius:9px;}
+    .bbn{position:absolute;border-radius:50%;opacity:0.45;filter:blur(18px);mix-blend-mode:screen;animation-name:bbnFloat;animation-timing-function:ease-in-out;animation-iteration-count:infinite;pointer-events:none;}
+    .bbn.b1{width:100px;height:100px;left:-30px;bottom:-20px;background:radial-gradient(circle at 30% 30%,rgba(244,114,182,0.95) 0%,rgba(236,72,153,0.55) 40%,transparent 100%);animation-duration:8s;}
+    .bbn.b2{width:70px;height:70px;left:55%;bottom:-20px;background:radial-gradient(circle at 30% 30%,rgba(34,211,238,0.95) 0%,rgba(6,182,212,0.55) 40%,transparent 100%);animation-duration:10s;animation-delay:-2s;}
+    .bbn.b3{width:110px;height:110px;right:-40px;top:-30px;background:radial-gradient(circle at 30% 30%,rgba(251,191,36,0.95) 0%,rgba(245,158,11,0.55) 40%,transparent 100%);animation-duration:9s;animation-delay:-4s;}
+    .bbn.b4{width:60px;height:60px;left:35%;top:25%;background:radial-gradient(circle at 30% 30%,rgba(167,139,250,0.95) 0%,rgba(139,92,246,0.55) 40%,transparent 100%);animation-duration:11s;animation-delay:-6s;}
+    .bbn.b5{width:80px;height:80px;right:5%;bottom:10%;background:radial-gradient(circle at 30% 30%,rgba(74,222,128,0.95) 0%,rgba(34,197,94,0.55) 40%,transparent 100%);animation-duration:12s;animation-delay:-3s;}
+    @keyframes bbnFloat{0%,100%{transform:translate(0,0) rotate(0deg) scale(0.95);opacity:0.45;}50%{transform:translate(15px,-20px) rotate(12deg) scale(1.08);opacity:0.55;}}
+
+    .balance-eye-btn{position:absolute !important;top:8px !important;right:8px !important;width:28px !important;height:28px !important;min-width:28px !important;min-height:28px !important;max-width:28px !important;max-height:28px !important;border-radius:50% !important;background:linear-gradient(135deg,#ef4444 0%,#dc2626 50%,#b91c1c 100%) !important;border:2px solid #fca5a5 !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:center !important;padding:0 !important;z-index:5 !important;overflow:hidden !important;box-shadow:0 3px 10px rgba(220,38,38,0.55) !important;font-family:inherit !important;}
+    .balance-eye-btn svg{width:14px !important;height:14px !important;min-width:14px !important;min-height:14px !important;max-width:14px !important;max-height:14px !important;display:block !important;flex-shrink:0 !important;fill:#ffffff !important;}
+    .balance-eye-btn svg path{fill:#ffffff !important;}
   `;
   document.head.appendChild(style);
 }
