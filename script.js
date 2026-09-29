@@ -913,73 +913,44 @@ window.toggleBalanceVisibility = function () {
 };
 
 /* ============================================================ */
-/* ===== ensureGlobalStyles — COMPACT + BORDURE NOIRE ========== */
+/* ===== ensureGlobalStyles — Bordures légères + boules ======= */
 /* ============================================================ */
 function ensureGlobalStyles() {
   if (document.getElementById('tw-bubbles-styles')) return;
   const style = document.createElement('style');
   style.id = 'tw-bubbles-styles';
   style.textContent = `
-    /* ===== 1. BULLES — visibilité légèrement augmentée ===== */
+    /* ===== 1. BULLES — visibilité augmentée légèrement ===== */
     .balance-card-new{position:relative;overflow:hidden;}
     .balance-bubbles-new{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;border-radius:9px;}
-    .bbn{position:absolute;border-radius:50%;opacity:0.78;filter:blur(6px);animation-name:bbnFloat;animation-timing-function:ease-in-out;animation-iteration-count:infinite;pointer-events:none;box-shadow:0 0 28px 5px rgba(255,255,255,0.4),inset 0 0 16px rgba(255,255,255,0.45);}
-    .bbn.b1{width:135px;height:135px;left:-42px;bottom:-32px;background:radial-gradient(circle at 30% 30%,rgba(255,150,215,0.95) 0%,rgba(236,72,153,0.82) 45%,transparent 100%);animation-duration:8s;}
-    .bbn.b2{width:105px;height:105px;left:55%;bottom:-32px;background:radial-gradient(circle at 30% 30%,rgba(120,235,255,0.95) 0%,rgba(6,182,212,0.82) 45%,transparent 100%);animation-duration:10s;animation-delay:-2s;}
-    .bbn.b3{width:145px;height:145px;right:-52px;top:-42px;background:radial-gradient(circle at 30% 30%,rgba(255,235,120,0.95) 0%,rgba(245,158,11,0.82) 45%,transparent 100%);animation-duration:9s;animation-delay:-4s;}
-    .bbn.b4{width:95px;height:95px;left:35%;top:20%;background:radial-gradient(circle at 30% 30%,rgba(200,175,255,0.95) 0%,rgba(139,92,246,0.82) 45%,transparent 100%);animation-duration:11s;animation-delay:-6s;}
-    .bbn.b5{width:120px;height:120px;right:5%;bottom:5%;background:radial-gradient(circle at 30% 30%,rgba(150,255,180,0.95) 0%,rgba(34,197,94,0.82) 45%,transparent 100%);animation-duration:12s;animation-delay:-3s;}
-    @keyframes bbnFloat{0%,100%{transform:translate(0,0) rotate(0deg) scale(0.92);opacity:0.7;}50%{transform:translate(22px,-28px) rotate(14deg) scale(1.14);opacity:0.95;}}
+    .bbn{position:absolute;border-radius:50%;opacity:0.85;filter:blur(5px);animation-name:bbnFloat;animation-timing-function:ease-in-out;animation-iteration-count:infinite;pointer-events:none;box-shadow:0 0 32px 6px rgba(255,255,255,0.5),inset 0 0 18px rgba(255,255,255,0.55);}
+    .bbn.b1{width:140px;height:140px;left:-45px;bottom:-35px;background:radial-gradient(circle at 30% 30%,rgba(255,150,215,0.98) 0%,rgba(236,72,153,0.88) 45%,transparent 100%);animation-duration:8s;}
+    .bbn.b2{width:110px;height:110px;left:55%;bottom:-35px;background:radial-gradient(circle at 30% 30%,rgba(120,235,255,0.98) 0%,rgba(6,182,212,0.88) 45%,transparent 100%);animation-duration:10s;animation-delay:-2s;}
+    .bbn.b3{width:150px;height:150px;right:-55px;top:-45px;background:radial-gradient(circle at 30% 30%,rgba(255,235,120,0.98) 0%,rgba(245,158,11,0.88) 45%,transparent 100%);animation-duration:9s;animation-delay:-4s;}
+    .bbn.b4{width:100px;height:100px;left:35%;top:20%;background:radial-gradient(circle at 30% 30%,rgba(200,175,255,0.98) 0%,rgba(139,92,246,0.88) 45%,transparent 100%);animation-duration:11s;animation-delay:-6s;}
+    .bbn.b5{width:125px;height:125px;right:5%;bottom:5%;background:radial-gradient(circle at 30% 30%,rgba(150,255,180,0.98) 0%,rgba(34,197,94,0.88) 45%,transparent 100%);animation-duration:12s;animation-delay:-3s;}
+    @keyframes bbnFloat{0%,100%{transform:translate(0,0) rotate(0deg) scale(0.92);opacity:0.78;}50%{transform:translate(24px,-30px) rotate(14deg) scale(1.16);opacity:1;}}
 
     .balance-eye-btn{position:absolute !important;top:8px !important;right:8px !important;width:28px !important;height:28px !important;min-width:28px !important;min-height:28px !important;max-width:28px !important;max-height:28px !important;border-radius:50% !important;background:linear-gradient(135deg,#ef4444 0%,#dc2626 50%,#b91c1c 100%) !important;border:2px solid #fca5a5 !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:center !important;padding:0 !important;z-index:5 !important;overflow:hidden !important;box-shadow:0 3px 10px rgba(220,38,38,0.55) !important;font-family:inherit !important;}
     .balance-eye-btn svg{width:14px !important;height:14px !important;min-width:14px !important;min-height:14px !important;max-width:14px !important;max-height:14px !important;display:block !important;flex-shrink:0 !important;fill:#ffffff !important;}
     .balance-eye-btn svg path{fill:#ffffff !important;}
 
-    /* ============================================================ */
-    /* ===== 2. PAGE ADMIN — VERSION COMPACTE + BORDURE NOIRE ===== */
-    /* ============================================================ */
-
+    /* ===== 2. PAGE ADMIN — Bordures légères ===== */
     #admin-root{background:#f1f5f9 !important;}
     #admin-root .admin-wrapper{background:#f1f5f9 !important;}
     #admin-root .admin-body{background:#f1f5f9 !important;padding:10px 10px 30px 10px !important;}
 
-    /* ---- TOPBAR COMPACT ---- */
-    #admin-root .admin-topbar{
-      background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 100%) !important;
-      box-shadow:0 2px 10px rgba(30,58,138,0.25) !important;
-      padding:9px 12px !important;
-    }
-    #admin-root .admin-topbar .brand{
-      font-size:12px !important;font-weight:700 !important;letter-spacing:0.3px !important;
-      gap:7px !important;
-    }
+    #admin-root .admin-topbar{background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 100%) !important;box-shadow:0 2px 10px rgba(30,58,138,0.25) !important;padding:9px 12px !important;}
+    #admin-root .admin-topbar .brand{font-size:12px !important;font-weight:700 !important;letter-spacing:0.3px !important;gap:7px !important;}
     #admin-root .admin-topbar .brand svg{width:15px !important;height:15px !important;max-width:15px !important;max-height:15px !important;}
-    #admin-root .admin-topbar .icon-btn{
-      width:28px !important;height:28px !important;border-radius:7px !important;
-      background:rgba(255,255,255,0.15) !important;
-      border:1px solid #0f172a !important;
-      transition:background 0.2s ease,transform 0.15s ease !important;
-    }
+    #admin-root .admin-topbar .icon-btn{width:28px !important;height:28px !important;border-radius:7px !important;background:rgba(255,255,255,0.15) !important;border:1px solid #0f172a !important;transition:background 0.2s ease,transform 0.15s ease !important;}
     #admin-root .admin-topbar .icon-btn:hover{background:rgba(255,255,255,0.28) !important;}
     #admin-root .admin-topbar .icon-btn:active{transform:scale(0.94);}
     #admin-root .admin-topbar .icon-btn svg{width:12px !important;height:12px !important;max-width:12px !important;max-height:12px !important;}
 
-    /* ---- IDENTITY CARD COMPACT ---- */
-    #admin-root .admin-identity-card{
-      background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%) !important;
-      border:1px solid #0f172a !important;
-      border-left:3px solid #3b82f6 !important;
-      border-radius:8px !important;
-      padding:10px 12px !important;
-      font-size:11px !important;
-      color:#1e3a8a !important;
-      font-weight:600 !important;
-      margin-bottom:10px !important;
-      box-shadow:0 1px 4px rgba(30,58,138,0.06) !important;
-    }
+    #admin-root .admin-identity-card{background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%) !important;border:1px solid #cbd5e1 !important;border-left:3px solid #3b82f6 !important;border-radius:8px !important;padding:10px 12px !important;font-size:11px !important;color:#1e3a8a !important;font-weight:600 !important;margin-bottom:10px !important;box-shadow:0 1px 4px rgba(30,58,138,0.06) !important;}
     #admin-root .admin-identity-card strong{color:#1d4ed8 !important;font-weight:700 !important;}
 
-    /* ---- CARTES COMPACTES + BORDURE NOIRE LÉGÈRE ---- */
     #admin-root .admin-section,
     #admin-root .quick-actions-card,
     #admin-root .pending-transfer-card,
@@ -988,166 +959,47 @@ function ensureGlobalStyles() {
     #admin-root .client-list-card,
     #admin-root .admin-transfers-card,
     #admin-root .admin-pending-transfers-card,
-    #admin-root .connection-status-card{
-      background:#ffffff !important;
-      border:1px solid #0f172a !important;
-      border-radius:9px !important;
-      box-shadow:0 1px 5px rgba(15,23,42,0.06) !important;
-      margin-bottom:10px !important;
-      overflow:hidden !important;
-    }
+    #admin-root .connection-status-card{background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:9px !important;box-shadow:0 1px 4px rgba(15,23,42,0.04) !important;margin-bottom:10px !important;overflow:hidden !important;}
+    #admin-root .pending-transfer-card{border-color:#fcd34d !important;}
 
-    /* ---- SECTION ---- */
     #admin-root .admin-section{padding:0 !important;}
-    #admin-root .admin-section-title{
-      background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%) !important;
-      color:#ffffff !important;
-      font-size:11px !important;
-      font-weight:700 !important;
-      letter-spacing:0.2px !important;
-      padding:9px 12px !important;
-      margin:0 !important;
-      display:flex !important;
-      align-items:center !important;
-      gap:7px !important;
-      border:none !important;
-      border-bottom:1px solid #0f172a !important;
-    }
+    #admin-root .admin-section-title{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%) !important;color:#ffffff !important;font-size:11px !important;font-weight:700 !important;letter-spacing:0.2px !important;padding:9px 12px !important;margin:0 !important;display:flex !important;align-items:center !important;gap:7px !important;border:none !important;border-bottom:1px solid #e2e8f0 !important;}
     #admin-root .admin-section-title svg{fill:#ffffff !important;width:13px !important;height:13px !important;max-width:13px !important;max-height:13px !important;flex-shrink:0 !important;}
     #admin-root .admin-grid{padding:10px 12px 12px 12px !important;gap:9px !important;}
 
-    /* ---- QUICK ACTIONS CARD COMPACT ---- */
     #admin-root .quick-actions-card{padding:0 !important;}
-    #admin-root .quick-actions-card .qac-title{
-      background:linear-gradient(135deg,#8b5cf6 0%,#6d28d9 100%) !important;
-      color:#ffffff !important;
-      font-size:11px !important;
-      font-weight:700 !important;
-      letter-spacing:0.2px !important;
-      padding:9px 12px !important;
-      margin:0 !important;
-      display:flex !important;
-      align-items:center !important;
-      gap:7px !important;
-      border:none !important;
-      border-bottom:1px solid #0f172a !important;
-      border-radius:0 !important;
-      width:100% !important;
-    }
+    #admin-root .quick-actions-card .qac-title{background:linear-gradient(135deg,#8b5cf6 0%,#6d28d9 100%) !important;color:#ffffff !important;font-size:11px !important;font-weight:700 !important;letter-spacing:0.2px !important;padding:9px 12px !important;margin:0 !important;display:flex !important;align-items:center !important;gap:7px !important;border:none !important;border-bottom:1px solid #e2e8f0 !important;border-radius:0 !important;width:100% !important;}
     #admin-root .quick-actions-card .qac-title svg{fill:#ffffff !important;width:13px !important;height:13px !important;max-width:13px !important;max-height:13px !important;flex-shrink:0 !important;margin-right:0 !important;}
-    #admin-root .quick-actions-card .qac-subtitle{
-      font-size:10.5px !important;
-      color:#475569 !important;
-      line-height:1.5 !important;
-      margin:0 !important;
-      padding:10px 12px 0 12px !important;
-      font-weight:500 !important;
-    }
-    #admin-root .quick-actions-card .admin-group{
-      padding:0 12px !important;
-      margin-top:10px !important;
-      margin-bottom:0 !important;
-    }
+    #admin-root .quick-actions-card .qac-subtitle{font-size:10.5px !important;color:#475569 !important;line-height:1.5 !important;margin:0 !important;padding:10px 12px 0 12px !important;font-weight:500 !important;}
+    #admin-root .quick-actions-card .admin-group{padding:0 12px !important;margin-top:10px !important;margin-bottom:0 !important;}
     #admin-root .quick-actions-card .admin-group:first-of-type{margin-top:10px !important;}
     #admin-root .quick-actions-card .btn-admin-submit{margin:12px !important;width:calc(100% - 24px) !important;}
     #admin-root .quick-actions-card .option-panel{margin:0 12px 10px 12px !important;}
 
-    /* ---- PENDING TRANSFER CARD COMPACT ---- */
-    #admin-root .pending-transfer-card{padding:0 !important;background:#fffbeb !important;border-color:#0f172a !important;}
-    #admin-root .pending-transfer-card .pt-title{
-      background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%) !important;
-      color:#ffffff !important;
-      font-size:11px !important;
-      font-weight:700 !important;
-      letter-spacing:0.2px !important;
-      padding:9px 12px !important;
-      margin:0 !important;
-      display:flex !important;
-      align-items:center !important;
-      gap:7px !important;
-      border:none !important;
-      border-bottom:1px solid #0f172a !important;
-    }
+    #admin-root .pending-transfer-card{padding:0 !important;background:#fffbeb !important;}
+    #admin-root .pending-transfer-card .pt-title{background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%) !important;color:#ffffff !important;font-size:11px !important;font-weight:700 !important;letter-spacing:0.2px !important;padding:9px 12px !important;margin:0 !important;display:flex !important;align-items:center !important;gap:7px !important;border:none !important;border-bottom:1px solid #e2e8f0 !important;}
     #admin-root .pending-transfer-card .pt-title svg{fill:#ffffff !important;width:13px !important;height:13px !important;max-width:13px !important;max-height:13px !important;flex-shrink:0 !important;}
-    #admin-root .pending-transfer-card .pt-subtitle{
-      font-size:10.5px !important;
-      color:#78350f !important;
-      line-height:1.5 !important;
-      margin:0 !important;
-      padding:10px 12px 0 12px !important;
-      font-weight:500 !important;
-    }
-    #admin-root .pending-transfer-card .admin-group{
-      padding:0 12px !important;
-      margin-top:10px !important;
-      margin-bottom:10px !important;
-    }
+    #admin-root .pending-transfer-card .pt-subtitle{font-size:10.5px !important;color:#78350f !important;line-height:1.5 !important;margin:0 !important;padding:10px 12px 0 12px !important;font-weight:500 !important;}
+    #admin-root .pending-transfer-card .admin-group{padding:0 12px !important;margin-top:10px !important;margin-bottom:10px !important;}
     #admin-root .pending-transfer-card .btn-admin-submit{margin:0 12px 12px 12px !important;width:calc(100% - 24px) !important;}
     #admin-root #pt-status-container{padding:0 12px !important;margin-bottom:10px !important;}
 
-    /* ---- OPTION PANEL COMPACT ---- */
-    #admin-root .option-panel{
-      background:#f8fafc !important;
-      border:1px solid #0f172a !important;
-      border-radius:8px !important;
-      padding:0 !important;
-      margin-top:10px !important;
-      margin-bottom:10px !important;
-      overflow:hidden !important;
-    }
-    #admin-root .option-panel-title{
-      background:linear-gradient(135deg,#0ea5e9 0%,#0284c7 100%) !important;
-      color:#ffffff !important;
-      font-size:10.5px !important;
-      font-weight:700 !important;
-      letter-spacing:0.2px !important;
-      padding:8px 11px !important;
-      margin:0 !important;
-      display:flex !important;
-      align-items:center !important;
-      gap:7px !important;
-      border:none !important;
-      border-bottom:1px solid #0f172a !important;
-    }
+    #admin-root .option-panel{background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;padding:0 !important;margin-top:10px !important;margin-bottom:10px !important;overflow:hidden !important;}
+    #admin-root .option-panel-title{background:linear-gradient(135deg,#0ea5e9 0%,#0284c7 100%) !important;color:#ffffff !important;font-size:10.5px !important;font-weight:700 !important;letter-spacing:0.2px !important;padding:8px 11px !important;margin:0 !important;display:flex !important;align-items:center !important;gap:7px !important;border:none !important;border-bottom:1px solid #e2e8f0 !important;}
     #admin-root .option-panel-title svg{fill:#ffffff !important;width:12px !important;height:12px !important;max-width:12px !important;max-height:12px !important;flex-shrink:0 !important;}
     #admin-root .option-panel-title span{color:#ffffff !important;flex:1 !important;}
-    #admin-root .option-panel-desc{
-      font-size:10.5px !important;
-      color:#475569 !important;
-      line-height:1.5 !important;
-      background:#ffffff !important;
-      border-radius:7px !important;
-      padding:9px 11px !important;
-      border:1px solid #0f172a !important;
-      margin:9px 11px !important;
-      font-weight:500 !important;
-    }
+    #admin-root .option-panel-desc{font-size:10.5px !important;color:#475569 !important;line-height:1.5 !important;background:#ffffff !important;border-radius:7px !important;padding:9px 11px !important;border:1px solid #e2e8f0 !important;margin:9px 11px !important;font-weight:500 !important;}
     #admin-root .option-panel .admin-grid{padding:9px 11px !important;gap:8px !important;}
     #admin-root .option-panel-toggle{margin:9px 11px 11px 11px !important;padding-top:9px !important;border-top:1px dashed #cbd5e1 !important;}
-    #admin-root .option-panel-toggle-label{
-      font-size:9.5px !important;
-      color:#64748b !important;
-      font-weight:600 !important;
-      letter-spacing:0.2px !important;
-      margin-bottom:8px !important;
-      display:block !important;
-    }
+    #admin-root .option-panel-toggle-label{font-size:9.5px !important;color:#64748b !important;font-weight:600 !important;letter-spacing:0.2px !important;margin-bottom:8px !important;display:block !important;}
 
-    /* ---- LABELS COMPACT ---- */
     #admin-root .admin-group label,
     #admin-root .quick-actions-card label,
-    #admin-root .option-panel label{
-      font-size:9.5px !important;
-      font-weight:600 !important;
-      color:#475569 !important;
-      letter-spacing:0.2px !important;
-      margin-bottom:5px !important;
-      display:block !important;
-    }
+    #admin-root .option-panel label{font-size:9.5px !important;font-weight:600 !important;color:#475569 !important;letter-spacing:0.2px !important;margin-bottom:5px !important;display:block !important;}
     #admin-root .admin-group label .req,
     #admin-root label .req{color:#dc2626 !important;font-weight:700 !important;}
 
-    /* ---- CHAMPS COMPACTS + BORDURE NOIRE ---- */
+    /* Champs : bordure légère grise */
     #admin-root input[type=text],
     #admin-root input[type=number],
     #admin-root input[type=email],
@@ -1156,412 +1008,122 @@ function ensureGlobalStyles() {
     #admin-root input[type=time],
     #admin-root input[type=password],
     #admin-root select,
-    #admin-root textarea{
-      width:100% !important;
-      padding:8px 10px !important;
-      border:1px solid #0f172a !important;
-      border-radius:7px !important;
-      font-size:11.5px !important;
-      color:#0f172a !important;
-      font-weight:500 !important;
-      background:#ffffff !important;
-      outline:none !important;
-      font-family:inherit !important;
-      transition:border-color 0.2s ease,box-shadow 0.2s ease,background 0.2s ease !important;
-      box-shadow:0 1px 2px rgba(15,23,42,0.03) !important;
-    }
+    #admin-root textarea{width:100% !important;padding:8px 10px !important;border:1px solid #cbd5e1 !important;border-radius:7px !important;font-size:11.5px !important;color:#0f172a !important;font-weight:500 !important;background:#ffffff !important;outline:none !important;font-family:inherit !important;transition:border-color 0.2s ease,box-shadow 0.2s ease,background 0.2s ease !important;box-shadow:0 1px 2px rgba(15,23,42,0.03) !important;}
     #admin-root input:hover:not(:focus),
     #admin-root select:hover:not(:focus),
-    #admin-root textarea:hover:not(:focus){border-color:#1e40af !important;}
+    #admin-root textarea:hover:not(:focus){border-color:#94a3b8 !important;}
     #admin-root input:focus,
     #admin-root select:focus,
-    #admin-root textarea:focus{
-      border-color:#3b82f6 !important;
-      background:#ffffff !important;
-      box-shadow:0 0 0 3px rgba(59,130,246,0.15) !important;
-    }
+    #admin-root textarea:focus{border-color:#3b82f6 !important;background:#ffffff !important;box-shadow:0 0 0 3px rgba(59,130,246,0.15) !important;}
     #admin-root input::placeholder,
-    #admin-root textarea::placeholder{
-      color:#94a3b8 !important;
-      font-weight:500 !important;
-      opacity:1 !important;
-    }
-    #admin-root select{
-      background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230f172a'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important;
-      background-repeat:no-repeat !important;
-      background-position:right 8px center !important;
-      background-size:14px !important;
-      padding-right:28px !important;
-      appearance:none !important;
-      -webkit-appearance:none !important;
-      cursor:pointer !important;
-    }
+    #admin-root textarea::placeholder{color:#94a3b8 !important;font-weight:400 !important;font-style:italic !important;opacity:1 !important;}
+    #admin-root select{background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233b82f6'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important;background-repeat:no-repeat !important;background-position:right 8px center !important;background-size:20px !important;padding-right:32px !important;appearance:none !important;-webkit-appearance:none !important;-moz-appearance:none !important;cursor:pointer !important;border-color:#94a3b8 !important;background-color:#ffffff !important;}
+    #admin-root select:hover{border-color:#3b82f6 !important;background-color:#f8fafc !important;}
+    #admin-root select:focus{border-color:#3b82f6 !important;}
 
-    /* ---- BOUTON PRINCIPAL + BORDURE NOIRE ---- */
-    #admin-root .btn-admin-submit{
-      background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%) !important;
-      color:#ffffff !important;
-      border:1px solid #0f172a !important;
-      border-radius:8px !important;
-      padding:9px 12px !important;
-      font-size:11.5px !important;
-      font-weight:700 !important;
-      cursor:pointer !important;
-      display:flex !important;
-      align-items:center !important;
-      justify-content:center !important;
-      gap:6px !important;
-      box-shadow:0 2px 6px rgba(59,130,246,0.22) !important;
-      transition:transform 0.12s ease,box-shadow 0.2s ease !important;
-      letter-spacing:0.2px !important;
-    }
+    #admin-root .btn-admin-submit{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%) !important;color:#ffffff !important;border:1px solid #0f172a !important;border-radius:8px !important;padding:9px 12px !important;font-size:11.5px !important;font-weight:700 !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:center !important;gap:6px !important;box-shadow:0 2px 6px rgba(59,130,246,0.22) !important;transition:transform 0.12s ease,box-shadow 0.2s ease !important;letter-spacing:0.2px !important;}
     #admin-root .btn-admin-submit:hover{box-shadow:0 4px 10px rgba(59,130,246,0.32) !important;}
     #admin-root .btn-admin-submit:active{transform:scale(0.98);}
     #admin-root .btn-admin-submit svg{fill:#ffffff !important;width:12px !important;height:12px !important;max-width:12px !important;max-height:12px !important;flex-shrink:0 !important;}
 
-    /* ---- STAT CARDS COMPACT ---- */
     #admin-root .stats-grid{gap:8px !important;margin-bottom:10px !important;}
     #admin-root .stat-card{padding:10px !important;}
-    #admin-root .stat-card .ico{
-      width:26px !important;height:26px !important;
-      border-radius:7px !important;
-      margin-bottom:6px !important;
-    }
+    #admin-root .stat-card .ico{width:26px !important;height:26px !important;border-radius:7px !important;margin-bottom:6px !important;}
     #admin-root .stat-card .ico svg{width:13px !important;height:13px !important;max-width:13px !important;max-height:13px !important;}
-    #admin-root .stat-card .val{
-      font-size:15px !important;
-      font-weight:700 !important;
-      color:#0f172a !important;
-      margin-bottom:2px !important;
-      line-height:1.1 !important;
-    }
-    #admin-root .stat-card .lbl{
-      font-size:9.5px !important;
-      color:#64748b !important;
-      font-weight:600 !important;
-      letter-spacing:0.2px !important;
-    }
+    #admin-root .stat-card .val{font-size:15px !important;font-weight:700 !important;color:#0f172a !important;margin-bottom:2px !important;line-height:1.1 !important;}
+    #admin-root .stat-card .lbl{font-size:9.5px !important;color:#64748b !important;font-weight:600 !important;letter-spacing:0.2px !important;}
 
-    /* ---- LISTE CLIENT COMPACT ---- */
-    #admin-root .client-list-title{
-      font-size:11px !important;
-      font-weight:700 !important;
-      color:#1e293b !important;
-      letter-spacing:0.3px !important;
-      margin:14px 3px 8px 3px !important;
-      padding:0 !important;
-      display:flex !important;
-      align-items:center !important;
-      justify-content:space-between !important;
-    }
-    #admin-root .client-list-title .count{
-      background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%) !important;
-      color:#ffffff !important;
-      padding:2px 8px !important;
-      border-radius:10px !important;
-      font-size:9.5px !important;
-      font-weight:700 !important;
-      border:1px solid #0f172a !important;
-    }
+    #admin-root .client-list-title{font-size:11px !important;font-weight:700 !important;color:#1e293b !important;letter-spacing:0.3px !important;margin:14px 3px 8px 3px !important;padding:0 !important;display:flex !important;align-items:center !important;justify-content:space-between !important;}
+    #admin-root .client-list-title .count{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%) !important;color:#ffffff !important;padding:2px 8px !important;border-radius:10px !important;font-size:9.5px !important;font-weight:700 !important;border:1px solid #0f172a !important;}
     #admin-root .client-list-card{padding:0 !important;}
-    #admin-root .client-line{
-      display:flex !important;
-      align-items:center !important;
-      gap:8px !important;
-      padding:10px 12px !important;
-      border-bottom:1px solid #f1f5f9 !important;
-      flex-wrap:wrap !important;
-      transition:background 0.15s ease !important;
-    }
+    #admin-root .client-line{display:flex !important;align-items:center !important;gap:8px !important;padding:10px 12px !important;border-bottom:1px solid #f1f5f9 !important;flex-wrap:wrap !important;transition:background 0.15s ease !important;}
     #admin-root .client-line:last-child{border-bottom:none !important;}
     #admin-root .client-line:hover{background:#f8fafc !important;}
-    #admin-root .client-line-name{
-      flex:1 !important;
-      min-width:100px !important;
-      font-size:11.5px !important;
-      font-weight:600 !important;
-      color:#2563eb !important;
-      text-decoration:none !important;
-      cursor:pointer !important;
-      line-height:1.3 !important;
-      padding:2px 0 !important;
-    }
+    #admin-root .client-line-name{flex:1 !important;min-width:100px !important;font-size:11.5px !important;font-weight:600 !important;color:#2563eb !important;text-decoration:none !important;cursor:pointer !important;line-height:1.3 !important;padding:2px 0 !important;}
     #admin-root .client-line-name:hover{text-decoration:underline !important;}
-    #admin-root .client-line-balance{
-      font-size:11.5px !important;
-      font-weight:700 !important;
-      color:#0f172a !important;
-      flex-shrink:0 !important;
-      padding:0 5px !important;
-    }
-    #admin-root .client-line-btn{
-      flex-shrink:0 !important;
-      border:1px solid #0f172a !important;
-      border-radius:6px !important;
-      padding:5px 9px !important;
-      font-size:10px !important;
-      font-weight:600 !important;
-      cursor:pointer !important;
-      letter-spacing:0.2px !important;
-      transition:transform 0.12s ease,opacity 0.2s ease !important;
-    }
+    #admin-root .client-line-balance{font-size:11.5px !important;font-weight:700 !important;color:#0f172a !important;flex-shrink:0 !important;padding:0 5px !important;}
+    #admin-root .client-line-btn{flex-shrink:0 !important;border:1px solid #0f172a !important;border-radius:6px !important;padding:5px 9px !important;font-size:10px !important;font-weight:600 !important;cursor:pointer !important;letter-spacing:0.2px !important;transition:transform 0.12s ease,opacity 0.2s ease !important;}
     #admin-root .client-line-btn:active{transform:scale(0.96);}
     #admin-root .client-line-btn.block{background:#fee2e2 !important;color:#b91c1c !important;}
     #admin-root .client-line-btn.unblock{background:#dcfce7 !important;color:#15803d !important;}
     #admin-root .client-line-btn.del{background:#f1f5f9 !important;color:#475569 !important;}
     #admin-root .client-line-btn:hover{opacity:0.85;}
 
-    /* ---- EMPTY STATE COMPACT ---- */
-    #admin-root .empty-state{
-      text-align:center !important;
-      padding:28px 16px !important;
-      color:#64748b !important;
-      background:#ffffff !important;
-      border:1px dashed #0f172a !important;
-      border-radius:9px !important;
-    }
+    #admin-root .empty-state{text-align:center !important;padding:28px 16px !important;color:#64748b !important;background:#ffffff !important;border:1px dashed #cbd5e1 !important;border-radius:9px !important;}
     #admin-root .empty-state svg{fill:#94a3b8 !important;width:34px !important;height:34px !important;max-width:34px !important;max-height:34px !important;margin-bottom:8px !important;display:block !important;margin-left:auto !important;margin-right:auto !important;}
     #admin-root .empty-state p{font-size:11px !important;font-weight:500 !important;color:#64748b !important;}
 
-    /* ---- NOTIFICATIONS ADMIN COMPACT ---- */
-    #admin-root #qa-notif-list-container > div{
-      background:#ffffff !important;
-      border:1px solid #0f172a !important;
-      border-radius:8px !important;
-      padding:10px 12px !important;
-      margin-bottom:7px !important;
-      box-shadow:0 1px 3px rgba(15,23,42,0.04) !important;
-      transition:box-shadow 0.15s ease !important;
-    }
+    #admin-root #qa-notif-list-container > div{background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;padding:10px 12px !important;margin-bottom:7px !important;box-shadow:0 1px 3px rgba(15,23,42,0.04) !important;transition:box-shadow 0.15s ease !important;}
     #admin-root #qa-notif-list-container > div:hover{box-shadow:0 2px 6px rgba(15,23,42,0.08) !important;}
-    #admin-root .admin-pending-empty{
-      font-size:10.5px !important;
-      color:#64748b !important;
-      text-align:center !important;
-      padding:18px 11px !important;
-      font-weight:500 !important;
-      background:#f8fafc !important;
-      border:1px dashed #0f172a !important;
-      border-radius:8px !important;
-    }
+    #admin-root .admin-pending-empty{font-size:10.5px !important;color:#64748b !important;text-align:center !important;padding:18px 11px !important;font-weight:500 !important;background:#f8fafc !important;border:1px dashed #cbd5e1 !important;border-radius:8px !important;}
 
     #admin-root textarea{min-height:66px !important;resize:vertical !important;line-height:1.5 !important;}
 
-    /* ---- SWITCH COMPACT ---- */
-    #admin-root .qa-switch{
-      padding:9px 11px !important;
-      gap:9px !important;
-      border:1px solid #0f172a !important;
-      border-radius:8px !important;
-      background:#ffffff !important;
-      transition:border-color 0.2s ease !important;
-    }
+    #admin-root .qa-switch{padding:9px 11px !important;gap:9px !important;border:1px solid #cbd5e1 !important;border-radius:8px !important;background:#ffffff !important;transition:border-color 0.2s ease !important;}
     #admin-root .qa-switch:hover{border-color:#3b82f6 !important;}
     #admin-root .qa-switch-track{width:36px !important;height:20px !important;}
     #admin-root .qa-switch-thumb{width:16px !important;height:16px !important;}
     #admin-root .qa-switch input[type=checkbox]:checked ~ .qa-switch-track .qa-switch-thumb{transform:translateX(16px) !important;}
     #admin-root .qa-switch-text{font-size:10.5px !important;color:#1e293b !important;font-weight:500 !important;line-height:1.4 !important;}
 
-    /* ---- COLOR PRESETS COMPACT ---- */
     #admin-root .color-presets{gap:6px !important;margin-top:6px !important;flex-wrap:wrap !important;}
-    #admin-root .color-preset{
-      width:26px !important;height:26px !important;border-radius:7px !important;
-      border:1px solid #0f172a !important;
-      cursor:pointer !important;
-      transition:transform 0.15s ease,border-color 0.15s ease !important;
-      box-shadow:0 1px 2px rgba(15,23,42,0.1) !important;
-    }
+    #admin-root .color-preset{width:26px !important;height:26px !important;border-radius:7px !important;border:1px solid #cbd5e1 !important;cursor:pointer !important;transition:transform 0.15s ease,border-color 0.15s ease !important;box-shadow:0 1px 2px rgba(15,23,42,0.1) !important;}
     #admin-root .color-preset:hover{transform:scale(1.08);}
-    #admin-root .color-preset.selected{box-shadow:0 0 0 2px #ffffff inset,0 2px 5px rgba(15,23,42,0.2) !important;}
+    #admin-root .color-preset.selected{border-color:#0f172a !important;box-shadow:0 0 0 2px #ffffff inset,0 2px 5px rgba(15,23,42,0.2) !important;}
     #admin-root .color-picker-row{gap:8px !important;margin-top:8px !important;}
-    #admin-root .color-picker-row input[type=color]{
-      width:38px !important;height:32px !important;
-      border:1px solid #0f172a !important;
-      border-radius:7px !important;
-      cursor:pointer !important;
-      background:#ffffff !important;
-      padding:2px !important;
-    }
-    #admin-root .color-picker-row input[type=text]{
-      flex:1 !important;
-      padding:7px 9px !important;
-      font-size:11px !important;
-      font-family:'Courier New',monospace !important;
-      letter-spacing:0.8px !important;
-      font-weight:600 !important;
-      background:#f8fafc !important;
-      border:1px solid #0f172a !important;
-      border-radius:7px !important;
-      color:#0f172a !important;
-    }
+    #admin-root .color-picker-row input[type=color]{width:38px !important;height:32px !important;border:1px solid #cbd5e1 !important;border-radius:7px !important;cursor:pointer !important;background:#ffffff !important;padding:2px !important;}
+    #admin-root .color-picker-row input[type=text]{flex:1 !important;padding:7px 9px !important;font-size:11px !important;font-family:'Courier New',monospace !important;letter-spacing:0.8px !important;font-weight:600 !important;background:#f8fafc !important;border:1px solid #cbd5e1 !important;border-radius:7px !important;color:#0f172a !important;}
 
-    /* ---- BADGE STATUT ---- */
-    #admin-root .pending-transfer-status-badge{
-      display:inline-block !important;
-      padding:4px 11px !important;
-      border-radius:12px !important;
-      font-size:10px !important;
-      font-weight:700 !important;
-      letter-spacing:0.2px !important;
-      border:1px solid #0f172a !important;
-    }
+    #admin-root .pending-transfer-status-badge{display:inline-block !important;padding:4px 11px !important;border-radius:12px !important;font-size:10px !important;font-weight:700 !important;letter-spacing:0.2px !important;border:1px solid #e2e8f0 !important;}
     #admin-root .pending-transfer-status-badge.enabled{background:#dcfce7 !important;color:#15803d !important;}
     #admin-root .pending-transfer-status-badge.disabled{background:#fee2e2 !important;color:#b91c1c !important;}
     #admin-root .pt-status-line{display:flex !important;align-items:center !important;gap:8px !important;font-size:10.5px !important;}
     #admin-root .pt-status-label{font-weight:600 !important;color:#475569 !important;}
 
-    #admin-root .qa-card-holder-note{
-      display:flex !important;align-items:flex-start !important;gap:7px !important;
-      background:#eff6ff !important;border:1px solid #0f172a !important;
-      border-radius:7px !important;padding:9px 11px !important;
-      margin:9px 11px !important;
-      font-size:10.5px !important;color:#1e40af !important;line-height:1.5 !important;font-weight:500 !important;
-    }
+    #admin-root .qa-card-holder-note{display:flex !important;align-items:flex-start !important;gap:7px !important;background:#eff6ff !important;border:1px solid #bfdbfe !important;border-radius:7px !important;padding:9px 11px !important;margin:9px 11px !important;font-size:10.5px !important;color:#1e40af !important;line-height:1.5 !important;font-weight:500 !important;}
     #admin-root .qa-card-holder-note svg{fill:#2563eb !important;width:12px !important;height:12px !important;max-width:12px !important;max-height:12px !important;flex-shrink:0 !important;margin-top:2px !important;}
 
-    /* ============================================================ */
-    /* ===== 3. MODALE DÉTAIL CLIENT — COMPACT + BORDURE NOIRE ==== */
-    /* ============================================================ */
-
-    #client-detail-modal > div{
-      border:1px solid #0f172a !important;
-      border-radius:11px !important;
-      overflow:hidden !important;
-      box-shadow:0 20px 45px rgba(15,23,42,0.4) !important;
-    }
-    #client-detail-modal .detail-header{
-      background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 100%) !important;
-      padding:14px 16px !important;
-      border-bottom:1px solid #0f172a !important;
-    }
-    #client-detail-modal .detail-avatar{
-      width:42px !important;height:42px !important;
-      background:rgba(255,255,255,0.22) !important;
-      border:2px solid rgba(255,255,255,0.4) !important;
-      font-size:14px !important;font-weight:700 !important;
-    }
-    #client-detail-modal .detail-name{
-      font-size:14px !important;font-weight:700 !important;color:#ffffff !important;
-    }
-    #client-detail-modal .detail-email{
-      font-size:10.5px !important;color:rgba(255,255,255,0.85) !important;margin-top:2px !important;
-    }
-    #client-detail-modal .detail-close{
-      width:28px !important;height:28px !important;
-      background:rgba(255,255,255,0.15) !important;
-      border:1px solid #0f172a !important;
-    }
+    /* ===== 3. MODALE DÉTAIL CLIENT — Cartes par section ===== */
+    #client-detail-modal > div{border:1px solid #e2e8f0 !important;border-radius:11px !important;overflow:hidden !important;box-shadow:0 20px 45px rgba(15,23,42,0.4) !important;}
+    #client-detail-modal .detail-header{background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 100%) !important;padding:14px 16px !important;border-bottom:1px solid #0f172a !important;}
+    #client-detail-modal .detail-avatar{width:42px !important;height:42px !important;background:rgba(255,255,255,0.22) !important;border:2px solid rgba(255,255,255,0.4) !important;font-size:14px !important;font-weight:700 !important;}
+    #client-detail-modal .detail-name{font-size:14px !important;font-weight:700 !important;color:#ffffff !important;}
+    #client-detail-modal .detail-email{font-size:10.5px !important;color:rgba(255,255,255,0.85) !important;margin-top:2px !important;}
+    #client-detail-modal .detail-close{width:28px !important;height:28px !important;background:rgba(255,255,255,0.15) !important;border:1px solid rgba(255,255,255,0.3) !important;}
     #client-detail-modal .detail-close:hover{background:rgba(255,255,255,0.28) !important;}
     #client-detail-modal .detail-close svg{fill:#ffffff !important;width:12px !important;height:12px !important;}
-    #client-detail-modal .detail-body{
-      padding:14px 16px 22px 16px !important;
-      background:#f8fafc !important;
-    }
-    #client-detail-modal .detail-section-title{
-      font-size:10px !important;
-      font-weight:700 !important;
-      color:#0f172a !important;
-      letter-spacing:0.4px !important;
-      margin:16px 0 8px 0 !important;
-      padding:0 0 6px 0 !important;
-      border-bottom:1px solid #0f172a !important;
-      text-transform:uppercase !important;
-    }
-    #client-detail-modal .detail-section-title:first-of-type{margin-top:0 !important;}
-    #client-detail-modal .detail-status-grid{gap:8px !important;margin-bottom:10px !important;}
-    #client-detail-modal .detail-status-box{
-      border:1px solid #0f172a !important;
-      border-radius:8px !important;
-      padding:9px 11px !important;
-    }
+    #client-detail-modal .detail-body{padding:12px 12px 20px 12px !important;background:#f1f5f9 !important;}
+
+    /* Cartes groupées par section */
+    #client-detail-modal .detail-section-card{background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:9px !important;margin-bottom:12px !important;overflow:hidden !important;box-shadow:0 1px 3px rgba(15,23,42,0.04) !important;}
+    #client-detail-modal .detail-section-title{background:#f8fafc !important;color:#1e293b !important;font-size:10.5px !important;font-weight:700 !important;letter-spacing:0.4px !important;margin:0 !important;padding:9px 12px !important;border-bottom:1px solid #e2e8f0 !important;text-transform:uppercase !important;display:flex !important;align-items:center !important;gap:6px !important;}
+    #client-detail-modal .detail-section-title::before{content:'' !important;display:inline-block !important;width:3px !important;height:13px !important;background:linear-gradient(180deg,#3b82f6,#1e40af) !important;border-radius:2px !important;flex-shrink:0 !important;}
+    #client-detail-modal .detail-section-card > .detail-row:last-child{border-bottom:none !important;}
+
+    /* Lignes label + valeur avec séparateurs */
+    #client-detail-modal .detail-row{display:flex !important;align-items:flex-start !important;gap:10px !important;padding:10px 12px !important;background:#ffffff !important;border:none !important;border-bottom:1px dashed #e2e8f0 !important;border-radius:0 !important;margin:0 !important;flex-wrap:wrap !important;}
+    #client-detail-modal .detail-row-label{min-width:110px !important;flex-shrink:0 !important;font-size:10px !important;font-weight:600 !important;color:#64748b !important;letter-spacing:0.2px !important;padding-top:2px !important;line-height:1.4 !important;display:flex !important;align-items:center !important;gap:5px !important;}
+    #client-detail-modal .detail-row-label::before{content:'▸' !important;color:#3b82f6 !important;font-size:9px !important;font-weight:700 !important;flex-shrink:0 !important;}
+    #client-detail-modal .detail-row-value{flex:1 !important;min-width:80px !important;font-size:11.5px !important;font-weight:600 !important;color:#0f172a !important;line-height:1.4 !important;word-break:break-word !important;text-align:right !important;}
+    #client-detail-modal .detail-row-value.mono{font-family:'Courier New',monospace !important;letter-spacing:0.5px !important;color:#1e293b !important;font-size:11px !important;}
+
+    #client-detail-modal .detail-status-grid{display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important;padding:12px !important;background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:9px !important;margin-bottom:12px !important;box-shadow:0 1px 3px rgba(15,23,42,0.04) !important;}
+    #client-detail-modal .detail-status-box{border:none !important;border-radius:7px !important;padding:10px 12px !important;}
     #client-detail-modal .detail-status-box.active{background:#dcfce7 !important;}
     #client-detail-modal .detail-status-box.blocked{background:#fee2e2 !important;}
     #client-detail-modal .detail-status-box.balance{background:#dbeafe !important;}
-    #client-detail-modal .detail-status-label{
-      font-size:9px !important;font-weight:700 !important;
-      letter-spacing:0.3px !important;margin-bottom:4px !important;
-    }
+    #client-detail-modal .detail-status-label{font-size:9px !important;font-weight:700 !important;letter-spacing:0.4px !important;margin-bottom:4px !important;text-transform:uppercase !important;}
     #client-detail-modal .detail-status-box.active .detail-status-label{color:#166534 !important;}
     #client-detail-modal .detail-status-box.blocked .detail-status-label{color:#991b1b !important;}
     #client-detail-modal .detail-status-box.balance .detail-status-label{color:#1e40af !important;}
-    #client-detail-modal .detail-status-value{
-      font-size:12.5px !important;font-weight:700 !important;line-height:1.3 !important;
-    }
+    #client-detail-modal .detail-status-value{font-size:13px !important;font-weight:700 !important;line-height:1.3 !important;}
     #client-detail-modal .detail-status-box.active .detail-status-value{color:#16a34a !important;}
     #client-detail-modal .detail-status-box.blocked .detail-status-value{color:#dc2626 !important;}
     #client-detail-modal .detail-status-box.balance .detail-status-value{color:#1d4ed8 !important;}
 
-    #client-detail-modal .detail-row{
-      display:flex !important;
-      align-items:flex-start !important;
-      gap:10px !important;
-      padding:8px 11px !important;
-      background:#ffffff !important;
-      border:1px solid #0f172a !important;
-      border-radius:7px !important;
-      margin-bottom:6px !important;
-      flex-wrap:wrap !important;
-    }
-    #client-detail-modal .detail-row:last-child{margin-bottom:0 !important;}
-    #client-detail-modal .detail-row-label{
-      min-width:100px !important;
-      flex-shrink:0 !important;
-      font-size:10px !important;
-      font-weight:600 !important;
-      color:#64748b !important;
-      letter-spacing:0.2px !important;
-      padding-top:2px !important;
-      line-height:1.4 !important;
-    }
-    #client-detail-modal .detail-row-value{
-      flex:1 !important;
-      min-width:80px !important;
-      font-size:11.5px !important;
-      font-weight:600 !important;
-      color:#0f172a !important;
-      line-height:1.4 !important;
-      word-break:break-word !important;
-    }
-    #client-detail-modal .detail-row-value.mono{
-      font-family:'Courier New',monospace !important;
-      letter-spacing:0.5px !important;
-      color:#1e293b !important;
-    }
-    #client-detail-modal .detail-link-box{
-      background:#ffffff !important;
-      border:1px dashed #0f172a !important;
-      border-radius:7px !important;
-      padding:9px 11px !important;
-      margin-top:8px !important;
-      font-family:'Courier New',monospace !important;
-      font-size:10px !important;
-      color:#1e40af !important;
-      word-break:break-all !important;
-      line-height:1.5 !important;
-      font-weight:600 !important;
-    }
-    #client-detail-modal .detail-footer{
-      display:grid !important;
-      grid-template-columns:1fr !important;
-      gap:8px !important;
-      margin-top:16px !important;
-      padding-top:12px !important;
-      border-top:1px solid #0f172a !important;
-    }
-    #client-detail-modal .detail-footer-btn{
-      display:flex !important;
-      align-items:center !important;
-      justify-content:center !important;
-      gap:8px !important;
-      border:1px solid #0f172a !important;
-      border-radius:8px !important;
-      padding:10px !important;
-      font-size:11.5px !important;
-      font-weight:600 !important;
-      cursor:pointer !important;
-      transition:transform 0.12s ease,opacity 0.2s ease !important;
-      letter-spacing:0.2px !important;
-    }
+    #client-detail-modal .detail-link-box{background:#f8fafc !important;border:1px dashed #cbd5e1 !important;border-radius:7px !important;padding:9px 11px !important;margin:10px 12px !important;font-family:'Courier New',monospace !important;font-size:10px !important;color:#1e40af !important;word-break:break-all !important;line-height:1.5 !important;font-weight:600 !important;}
+    #client-detail-modal .detail-footer{display:grid !important;grid-template-columns:1fr !important;gap:8px !important;margin-top:4px !important;padding:12px !important;background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:9px !important;}
+    #client-detail-modal .detail-footer-btn{display:flex !important;align-items:center !important;justify-content:center !important;gap:8px !important;border:1px solid #0f172a !important;border-radius:8px !important;padding:10px !important;font-size:11.5px !important;font-weight:600 !important;cursor:pointer !important;transition:transform 0.12s ease,opacity 0.2s ease !important;letter-spacing:0.2px !important;}
     #client-detail-modal .detail-footer-btn:hover{opacity:0.9;}
     #client-detail-modal .detail-footer-btn:active{transform:scale(0.98);}
     #client-detail-modal .detail-footer-btn.copy{background:#dbeafe !important;color:#1e40af !important;}
@@ -1572,158 +1134,49 @@ function ensureGlobalStyles() {
     #client-detail-modal .detail-footer-btn.send-activation svg{fill:#166534 !important;}
     #client-detail-modal .detail-footer-btn svg{width:13px !important;height:13px !important;max-width:13px !important;max-height:13px !important;flex-shrink:0 !important;}
 
-    #client-detail-modal .connected-devices-card{
-      display:flex !important;
-      align-items:center !important;
-      gap:12px !important;
-      background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%) !important;
-      border:1px solid #0f172a !important;
-      border-radius:10px !important;
-      padding:11px 13px !important;
-      margin-bottom:12px !important;
-    }
-    #client-detail-modal .connected-devices-icon{
-      width:42px !important;height:42px !important;
-      border-radius:50% !important;
-      background:linear-gradient(135deg,#10b981 0%,#059669 100%) !important;
-      box-shadow:0 3px 8px rgba(16,185,129,0.3) !important;
-    }
+    #client-detail-modal .connected-devices-card{display:flex !important;align-items:center !important;gap:12px !important;background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%) !important;border:1px solid #a7f3d0 !important;border-radius:10px !important;padding:11px 13px !important;margin-bottom:12px !important;box-shadow:0 1px 3px rgba(15,23,42,0.04) !important;}
+    #client-detail-modal .connected-devices-icon{width:42px !important;height:42px !important;border-radius:50% !important;background:linear-gradient(135deg,#10b981 0%,#059669 100%) !important;box-shadow:0 3px 8px rgba(16,185,129,0.3) !important;}
     #client-detail-modal .connected-devices-icon svg{fill:#ffffff !important;width:20px !important;height:20px !important;max-width:20px !important;max-height:20px !important;}
-    #client-detail-modal .connected-devices-label{font-size:9.5px !important;font-weight:700 !important;color:#065f46 !important;letter-spacing:0.5px !important;margin-bottom:3px !important;}
+    #client-detail-modal .connected-devices-label{font-size:9.5px !important;font-weight:700 !important;color:#065f46 !important;letter-spacing:0.5px !important;margin-bottom:3px !important;text-transform:uppercase !important;}
     #client-detail-modal .connected-devices-count{font-size:20px !important;font-weight:700 !important;color:#047857 !important;line-height:1 !important;}
     #client-detail-modal .connected-devices-count small{font-size:11px !important;font-weight:600 !important;color:#047857 !important;margin-left:4px !important;}
     #client-detail-modal .connected-devices-sub{font-size:10px !important;color:#065f46 !important;margin-top:4px !important;line-height:1.4 !important;}
-    #client-detail-modal .connected-device-item{
-      display:flex !important;
-      align-items:center !important;
-      gap:10px !important;
-      padding:9px 11px !important;
-      background:#ffffff !important;
-      border:1px solid #0f172a !important;
-      border-radius:7px !important;
-      margin-bottom:6px !important;
-    }
-    #client-detail-modal .connected-device-num{
-      width:24px !important;height:24px !important;
-      border-radius:50% !important;
-      background:linear-gradient(135deg,#10b981 0%,#059669 100%) !important;
-      color:#ffffff !important;
-      font-size:11px !important;font-weight:700 !important;
-      display:flex !important;align-items:center !important;justify-content:center !important;
-      flex-shrink:0 !important;
-    }
+    #client-detail-modal .connected-device-item{display:flex !important;align-items:center !important;gap:10px !important;padding:9px 11px !important;background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:7px !important;margin-bottom:6px !important;}
+    #client-detail-modal .connected-device-num{width:24px !important;height:24px !important;border-radius:50% !important;background:linear-gradient(135deg,#10b981 0%,#059669 100%) !important;color:#ffffff !important;font-size:11px !important;font-weight:700 !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;}
     #client-detail-modal .connected-device-ua{font-size:11px !important;font-weight:600 !important;color:#0f172a !important;line-height:1.35 !important;margin-bottom:2px !important;}
     #client-detail-modal .connected-device-meta{font-size:10px !important;color:#64748b !important;font-weight:500 !important;line-height:1.3 !important;}
-    #client-detail-modal .connected-devices-empty{
-      padding:14px 11px !important;
-      background:#f8fafc !important;
-      border:1px dashed #0f172a !important;
-      border-radius:7px !important;
-      text-align:center !important;
-      font-size:10.5px !important;
-      color:#64748b !important;
-      font-weight:500 !important;
-    }
+    #client-detail-modal .connected-devices-empty{padding:14px 11px !important;background:#f8fafc !important;border:1px dashed #cbd5e1 !important;border-radius:7px !important;text-align:center !important;font-size:10.5px !important;color:#64748b !important;font-weight:500 !important;}
 
-    #client-detail-modal .connection-status-card{
-      border:1px solid #0f172a !important;
-      border-radius:9px !important;
-      background:#ffffff !important;
-      overflow:hidden !important;
-      margin-bottom:12px !important;
-    }
-    #client-detail-modal .connection-status-header{
-      padding:10px 12px !important;
-      font-size:11.5px !important;font-weight:700 !important;
-      display:flex !important;align-items:center !important;gap:8px !important;
-      border-bottom:1px solid #0f172a !important;
-    }
+    #client-detail-modal .connection-status-card{border:1px solid #e2e8f0 !important;border-radius:9px !important;background:#ffffff !important;overflow:hidden !important;margin-bottom:12px !important;}
+    #client-detail-modal .connection-status-header{padding:10px 12px !important;font-size:11.5px !important;font-weight:700 !important;display:flex !important;align-items:center !important;gap:8px !important;border-bottom:1px solid #e2e8f0 !important;}
 
-    #client-detail-modal .admin-pending-item{
-      background:#fffbeb !important;
-      border:1px solid #0f172a !important;
-      border-radius:8px !important;
-      padding:10px 12px !important;
-      margin:8px 12px !important;
-    }
+    #client-detail-modal .admin-pending-item{background:#fffbeb !important;border:1px solid #fde68a !important;border-radius:8px !important;padding:10px 12px !important;margin:8px 12px !important;}
     #client-detail-modal .admin-pending-name{font-size:11.5px !important;font-weight:700 !important;color:#78350f !important;margin-bottom:3px !important;}
     #client-detail-modal .admin-pending-meta{font-size:10px !important;color:#a16207 !important;font-weight:500 !important;margin-bottom:5px !important;}
     #client-detail-modal .admin-pending-amount{font-size:13px !important;font-weight:700 !important;color:#b45309 !important;margin-bottom:8px !important;}
     #client-detail-modal .admin-pending-actions{display:grid !important;grid-template-columns:1fr 1fr !important;gap:7px !important;}
-    #client-detail-modal .admin-pending-btn{
-      border:1px solid #0f172a !important;border-radius:7px !important;padding:8px !important;
-      font-size:10.5px !important;font-weight:700 !important;cursor:pointer !important;
-      display:flex !important;align-items:center !important;justify-content:center !important;gap:5px !important;
-      letter-spacing:0.2px !important;
-    }
+    #client-detail-modal .admin-pending-btn{border:1px solid #0f172a !important;border-radius:7px !important;padding:8px !important;font-size:10.5px !important;font-weight:700 !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:center !important;gap:5px !important;letter-spacing:0.2px !important;}
     #client-detail-modal .admin-pending-btn.validate{background:#16a34a !important;color:#ffffff !important;}
     #client-detail-modal .admin-pending-btn.cancel{background:#dc2626 !important;color:#ffffff !important;}
     #client-detail-modal .admin-pending-btn svg{fill:#ffffff !important;width:11px !important;height:11px !important;}
-    #client-detail-modal .admin-pending-transfers-title{
-      background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%) !important;
-      color:#ffffff !important;
-      font-size:11px !important;font-weight:700 !important;
-      padding:9px 12px !important;
-      display:flex !important;align-items:center !important;gap:7px !important;
-      border-bottom:1px solid #0f172a !important;
-    }
+    #client-detail-modal .admin-pending-transfers-title{background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%) !important;color:#ffffff !important;font-size:11px !important;font-weight:700 !important;padding:9px 12px !important;display:flex !important;align-items:center !important;gap:7px !important;border-bottom:1px solid #e2e8f0 !important;}
     #client-detail-modal .admin-pending-transfers-title svg{fill:#ffffff !important;width:13px !important;height:13px !important;}
-    #client-detail-modal .admin-pending-transfers-card{
-      border:1px solid #0f172a !important;border-radius:9px !important;
-      background:#ffffff !important;overflow:hidden !important;margin-bottom:12px !important;
-    }
+    #client-detail-modal .admin-pending-transfers-card{border:1px solid #fde68a !important;border-radius:9px !important;background:#ffffff !important;overflow:hidden !important;margin-bottom:12px !important;}
 
-    #client-detail-modal .admin-transfers-card{
-      border:1px solid #0f172a !important;border-radius:9px !important;
-      background:#ffffff !important;overflow:hidden !important;margin-bottom:12px !important;
-    }
-    #client-detail-modal .admin-transfers-title{
-      background:linear-gradient(135deg,#8b5cf6 0%,#6d28d9 100%) !important;
-      color:#ffffff !important;
-      font-size:11px !important;font-weight:700 !important;
-      padding:9px 12px !important;
-      display:flex !important;align-items:center !important;gap:7px !important;
-      border-bottom:1px solid #0f172a !important;
-    }
+    #client-detail-modal .admin-transfers-card{border:1px solid #e2e8f0 !important;border-radius:9px !important;background:#ffffff !important;overflow:hidden !important;margin-bottom:12px !important;}
+    #client-detail-modal .admin-transfers-title{background:linear-gradient(135deg,#8b5cf6 0%,#6d28d9 100%) !important;color:#ffffff !important;font-size:11px !important;font-weight:700 !important;padding:9px 12px !important;display:flex !important;align-items:center !important;gap:7px !important;border-bottom:1px solid #e2e8f0 !important;}
     #client-detail-modal .admin-transfers-title svg{fill:#ffffff !important;width:13px !important;height:13px !important;}
-    #client-detail-modal .admin-transfers-empty{
-      font-size:10.5px !important;color:#64748b !important;
-      text-align:center !important;padding:16px 11px !important;
-      font-weight:500 !important;
-    }
-    #client-detail-modal .admin-transfer-item{
-      display:flex !important;align-items:center !important;gap:8px !important;
-      padding:9px 12px !important;
-      border-bottom:1px solid #f1f5f9 !important;
-      flex-wrap:wrap !important;
-    }
+    #client-detail-modal .admin-transfers-empty{font-size:10.5px !important;color:#64748b !important;text-align:center !important;padding:16px 11px !important;font-weight:500 !important;}
+    #client-detail-modal .admin-transfer-item{display:flex !important;align-items:center !important;gap:8px !important;padding:9px 12px !important;border-bottom:1px solid #f1f5f9 !important;flex-wrap:wrap !important;}
     #client-detail-modal .admin-transfer-item:last-child{border-bottom:none !important;}
     #client-detail-modal .admin-transfer-item.cancelled{background:#f3e8ff !important;opacity:0.75 !important;}
-    #client-detail-modal .admin-transfer-name{
-      font-size:11.5px !important;font-weight:600 !important;
-      color:#2563eb !important;cursor:pointer !important;
-    }
+    #client-detail-modal .admin-transfer-name{font-size:11.5px !important;font-weight:600 !important;color:#2563eb !important;cursor:pointer !important;}
     #client-detail-modal .admin-transfer-name:hover{text-decoration:underline !important;}
     #client-detail-modal .admin-transfer-meta{font-size:10px !important;color:#64748b !important;margin-top:2px !important;font-weight:500 !important;}
     #client-detail-modal .admin-transfer-amount{font-size:12px !important;font-weight:700 !important;color:#dc2626 !important;flex-shrink:0 !important;}
-    #client-detail-modal .admin-transfer-cancel-btn{
-      flex-shrink:0 !important;border:1px solid #0f172a !important;border-radius:6px !important;
-      padding:5px 10px !important;font-size:10px !important;font-weight:600 !important;
-      background:#fee2e2 !important;color:#b91c1c !important;cursor:pointer !important;
-    }
+    #client-detail-modal .admin-transfer-cancel-btn{flex-shrink:0 !important;border:1px solid #0f172a !important;border-radius:6px !important;padding:5px 10px !important;font-size:10px !important;font-weight:600 !important;background:#fee2e2 !important;color:#b91c1c !important;cursor:pointer !important;}
 
-    #admin-root .err{
-      color:#b91c1c !important;
-      background:#fee2e2 !important;
-      border:1px solid #0f172a !important;
-      border-radius:7px !important;
-      padding:8px 11px !important;
-      font-size:10.5px !important;
-      font-weight:600 !important;
-      line-height:1.5 !important;
-      text-align:center !important;
-      margin-top:7px !important;
-    }
+    #admin-root .err{color:#b91c1c !important;background:#fee2e2 !important;border:1px solid #fca5a5 !important;border-radius:7px !important;padding:8px 11px !important;font-size:10.5px !important;font-weight:600 !important;line-height:1.5 !important;text-align:center !important;margin-top:7px !important;}
   `;
   document.head.appendChild(style);
 }
@@ -2679,22 +2132,22 @@ async function renderAdminPage() {
     '<div class="admin-group"><label>Selectionner l\'acces client <span class="req">requis</span></label><select id="qa-client-select">' + clientOptionsHtml + '</select></div>' +
     '<div class="admin-group"><label>Liste des action(s) possible(s) <span class="req">requis</span></label><select id="qa-action-select"><option value="">Choisissez une action</option><optgroup label="Compte"><option value="reset">Reinitialiser l\'historique et le solde</option><option value="block">Suspendre le compte</option><option value="unblock">Activer le compte</option></optgroup><optgroup label="Identite du client"><option value="edit-name">Modifier nom et prenom</option><option value="edit-email">Modifier l\'adresse e-mail</option><option value="edit-phone">Modifier le numero de telephone</option><option value="edit-address">Modifier l\'adresse de residence</option><option value="edit-country">Modifier le pays</option><option value="edit-language">Modifier la langue</option></optgroup><optgroup label="Banque et carte"><option value="edit-iban">Modifier IBAN / BIC</option><option value="edit-card">Modifier la carte virtuelle</option><option value="edit-currency">Modifier la devise</option><option value="add-transfer">Ajouter un virement au compte</option></optgroup><optgroup label="Notifications"><option value="send-notification">Envoyer une notification au client</option></optgroup><optgroup label="Apparence et securite"><option value="edit-theme">Modifier la couleur de l\'interface</option><option value="edit-stop-percent">Modifier l\'arret du pourcentage</option><option value="edit-pin">Modifier le code PIN</option><option value="edit-activation-code">Modifier le code d\'activation</option><option value="edit-message">Modifier le message de fin</option></optgroup></select></div>' +
     '<div id="qa-reset-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg><span>Reinitialisation</span></div><div class="option-panel-desc">Cette action va effacer tout l\'historique des transactions et remettre le solde a zero.</div></div>' +
-    '<div id="qa-transfer-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg><span>Ajouter un virement</span></div><div class="admin-grid"><div class="admin-group"><label>Montant <span class="req">*</span></label><input type="number" id="qa-transfer-amount" step="0.01" placeholder="Ex: 5000"></div><div class="admin-group"><label>Type <span class="req">*</span></label><select id="qa-transfer-type"><option value="in">Entrant (+)</option><option value="out">Sortant (-)</option></select></div><div class="admin-group full-width"><label>Banque <span class="req">*</span></label><select id="qa-transfer-bank"><option value="">Selectionnez une banque</option></select></div><div class="admin-group full-width"><label>Libelle / Source</label><input type="text" id="qa-transfer-label" placeholder="Ex: BNP Paribas"></div><div class="admin-group"><label>Date</label><input type="date" id="qa-transfer-date"></div><div class="admin-group"><label>Heure</label><input type="time" id="qa-transfer-time"></div></div></div>' +
-    '<div id="qa-iban-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg><span>Modifier IBAN / BIC</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Numero IBAN</label><input type="text" id="qa-iban-value"></div><div class="admin-group full-width"><label>BIC / SWIFT</label><input type="text" id="qa-bic-value"></div></div><div class="option-panel-toggle"><div class="option-panel-toggle-label">Affichage des 4 derniers caracteres</div><label class="qa-switch"><input type="checkbox" id="qa-iban-masked"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers caracteres dans l\'application</span></label></div></div>' +
-    '<div id="qa-card-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg><span>Modifier la carte virtuelle</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Titulaire de la carte</label><input type="text" id="qa-card-holder" style="font-weight:700;text-transform:uppercase;"></div><div class="admin-group full-width"><label>Numero de carte</label><input type="text" id="qa-card-number" maxlength="19"></div><div class="admin-group"><label>Date d\'expiration</label><input type="text" id="qa-card-expiry" maxlength="5" placeholder="MM/YY"></div><div class="admin-group"><label>CVV</label><input type="text" id="qa-card-cvv" maxlength="4"></div><div class="admin-group full-width"><label>Type de carte</label><input type="text" id="qa-card-type"></div></div><div class="qa-card-holder-note"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span>Le titulaire est affiche par defaut avec le nom et prenom du client.</span></div><div class="option-panel-toggle"><div class="option-panel-toggle-label">Options de masquage (force le client)</div><label class="qa-switch"><input type="checkbox" id="qa-card-mask-last4"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers chiffres (definitif)</span></label><label class="qa-switch" style="margin-top:8px;"><input type="checkbox" id="qa-card-mask-cvv"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer le CVV (definitif)</span></label></div></div>' +
-    '<div id="qa-name-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Nom et prénom du client</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Nom et prénom du client <span class="req">*</span></label><input type="text" id="qa-fullName" placeholder="Ex: Jean Dupont"></div></div></div>' +
-    '<div id="qa-email-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>Adresse e-mail du client</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Adresse e-mail <span class="req">*</span></label><input type="email" id="qa-email"></div></div></div>' +
-    '<div id="qa-phone-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span>Numero de telephone</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Telephone</label><input type="tel" id="qa-phone"></div></div></div>' +
-    '<div id="qa-address-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span>Adresse de residence</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Adresse de residence complete</label><input type="text" id="qa-address"></div></div></div>' +
+    '<div id="qa-transfer-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg><span>Ajouter un virement</span></div><div class="admin-grid"><div class="admin-group"><label>Montant <span class="req">*</span></label><input type="number" id="qa-transfer-amount" step="0.01" placeholder="Ex : 5000"></div><div class="admin-group"><label>Type <span class="req">*</span></label><select id="qa-transfer-type"><option value="in">Entrant (+)</option><option value="out">Sortant (-)</option></select></div><div class="admin-group full-width"><label>Banque <span class="req">*</span></label><select id="qa-transfer-bank"><option value="">Selectionnez une banque</option></select></div><div class="admin-group full-width"><label>Libelle / Source</label><input type="text" id="qa-transfer-label" placeholder="Ex : BNP Paribas"></div><div class="admin-group"><label>Date</label><input type="date" id="qa-transfer-date"></div><div class="admin-group"><label>Heure</label><input type="time" id="qa-transfer-time"></div></div></div>' +
+    '<div id="qa-iban-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg><span>Modifier IBAN / BIC</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Numero IBAN</label><input type="text" id="qa-iban-value" placeholder="Ex : FR7612345678901234567890123"></div><div class="admin-group full-width"><label>BIC / SWIFT</label><input type="text" id="qa-bic-value" placeholder="Ex : BNPAFRPPXXX"></div></div><div class="option-panel-toggle"><div class="option-panel-toggle-label">Affichage des 4 derniers caracteres</div><label class="qa-switch"><input type="checkbox" id="qa-iban-masked"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers caracteres dans l\'application</span></label></div></div>' +
+    '<div id="qa-card-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg><span>Modifier la carte virtuelle</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Titulaire de la carte</label><input type="text" id="qa-card-holder" placeholder="Ex : JEAN DUPONT" style="font-weight:700;text-transform:uppercase;"></div><div class="admin-group full-width"><label>Numero de carte</label><input type="text" id="qa-card-number" maxlength="19" placeholder="Ex : 4944 5953 4428 3327"></div><div class="admin-group"><label>Date d\'expiration</label><input type="text" id="qa-card-expiry" maxlength="5" placeholder="Ex : 02/28"></div><div class="admin-group"><label>CVV</label><input type="text" id="qa-card-cvv" maxlength="4" placeholder="Ex : 843"></div><div class="admin-group full-width"><label>Type de carte</label><input type="text" id="qa-card-type" placeholder="Ex : Visa Debit"></div></div><div class="qa-card-holder-note"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span>Le titulaire est affiche par defaut avec le nom et prenom du client.</span></div><div class="option-panel-toggle"><div class="option-panel-toggle-label">Options de masquage (force le client)</div><label class="qa-switch"><input type="checkbox" id="qa-card-mask-last4"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer les 4 derniers chiffres (definitif)</span></label><label class="qa-switch" style="margin-top:8px;"><input type="checkbox" id="qa-card-mask-cvv"><span class="qa-switch-track"><span class="qa-switch-thumb"></span></span><span class="qa-switch-text">Masquer le CVV (definitif)</span></label></div></div>' +
+    '<div id="qa-name-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Nom et prénom du client</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Nom et prénom du client <span class="req">*</span></label><input type="text" id="qa-fullName" placeholder="Ex : Jean Dupont"></div></div></div>' +
+    '<div id="qa-email-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>Adresse e-mail du client</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Adresse e-mail <span class="req">*</span></label><input type="email" id="qa-email" placeholder="Ex : client@email.com"></div></div></div>' +
+    '<div id="qa-phone-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span>Numero de telephone</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Telephone</label><input type="tel" id="qa-phone" placeholder="Ex : +33 6 12 34 56 78"></div></div></div>' +
+    '<div id="qa-address-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span>Adresse de residence</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Adresse de residence complete</label><input type="text" id="qa-address" placeholder="Ex : 12 rue de la Paix, 75001 Paris"></div></div></div>' +
     '<div id="qa-country-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg><span>Pays du client</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Pays <span class="req">*</span></label><select id="qa-country"><option value="France">France</option><option value="Pologne">Pologne</option><option value="Espagne">Espagne</option><option value="Italie">Italie</option><option value="Allemagne">Allemagne</option></select></div></div></div>' +
     '<div id="qa-language-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/></svg><span>Langue de l\'application</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Langue <span class="req">*</span></label><select id="qa-language"><option value="pl">Polonais</option><option value="fr">Francais</option><option value="es">Espagnol</option><option value="it">Italien</option><option value="de">Allemand</option></select></div></div></div>' +
     '<div id="qa-currency-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg><span>Devise du compte</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Devise <span class="req">*</span></label><select id="qa-currency"><option value="€">EUR (€)</option><option value="$">USD ($)</option><option value="£">GBP (£)</option><option value="zł">PLN (zł)</option></select></div></div></div>' +
     '<div id="qa-theme-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z"/></svg><span>Couleur de l\'interface</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="qa-color-presets"></div><div class="color-picker-row"><input type="color" id="qa-themeColor" value="#1a73e8"><input type="text" id="qa-themeColorHex" value="#1a73e8" readonly></div></div></div></div>' +
-    '<div id="qa-stop-percent-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2.03 0v8.99H22c-.47-4.74-4.24-8.52-8.97-8.99zm0 11.01V22c4.74-.47 8.5-4.25 8.97-8.99h-8.97z"/></svg><span>Pourcentage du transfert</span></div><div class="admin-grid"><div class="admin-group"><label>Depart %</label><input type="number" id="qa-startPercent" min="0" max="100"></div><div class="admin-group"><label>Arret % <span class="req">*</span></label><input type="number" id="qa-stopPercent" min="0" max="100"></div></div></div>' +
-    '<div id="qa-pin-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><span>Code PIN de connexion</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Code PIN <span class="req">*</span></label><input type="text" id="qa-pin"></div></div></div>' +
-    '<div id="qa-activation-code-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg><span>Code d\'activation transfert</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Code d\'activation <span class="req">*</span></label><input type="text" id="qa-activation-code"></div></div></div>' +
-    '<div id="qa-message-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span>Message apres le code d\'activation</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Message affiche au client</label><textarea id="qa-message" rows="3"></textarea></div></div></div>' +
-    '<div id="qa-notification-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg><span>Envoyer une notification</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Titre (optionnel)</label><input type="text" id="qa-notif-title" maxlength="80" placeholder="Ex: Information importante"></div><div class="admin-group full-width"><label>Message <span class="req">*</span></label><textarea id="qa-notif-message" rows="4" placeholder="Ecrivez le message de la notification..."></textarea></div></div><button class="btn-admin-submit" style="margin-top:10px;" onclick="window.sendNotificationToClient()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>Envoyer la notification</button><div style="margin-top:18px;padding-top:14px;border-top:2px dashed #cbd5e1;"><div class="option-panel-toggle-label" style="margin-bottom:10px;">Notifications déjà envoyées</div><div id="qa-notif-list-container"><div class="admin-pending-empty">Aucune notification envoyée</div></div></div></div>' +
+    '<div id="qa-stop-percent-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2.03 0v8.99H22c-.47-4.74-4.24-8.52-8.97-8.99zm0 11.01V22c4.74-.47 8.5-4.25 8.97-8.99h-8.97z"/></svg><span>Pourcentage du transfert</span></div><div class="admin-grid"><div class="admin-group"><label>Depart %</label><input type="number" id="qa-startPercent" min="0" max="100" placeholder="Ex : 0"></div><div class="admin-group"><label>Arret % <span class="req">*</span></label><input type="number" id="qa-stopPercent" min="0" max="100" placeholder="Ex : 100"></div></div></div>' +
+    '<div id="qa-pin-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><span>Code PIN de connexion</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Code PIN <span class="req">*</span></label><input type="text" id="qa-pin" placeholder="Ex : 1234"></div></div></div>' +
+    '<div id="qa-activation-code-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg><span>Code d\'activation transfert</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Code d\'activation <span class="req">*</span></label><input type="text" id="qa-activation-code" placeholder="Ex : 987654"></div></div></div>' +
+    '<div id="qa-message-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span>Message apres le code d\'activation</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Message affiche au client</label><textarea id="qa-message" rows="3" placeholder="Ex : Votre virement a été validé avec succès."></textarea></div></div></div>' +
+    '<div id="qa-notification-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg><span>Envoyer une notification</span></div><div class="admin-grid"><div class="admin-group full-width"><label>Titre (optionnel)</label><input type="text" id="qa-notif-title" maxlength="80" placeholder="Ex : Information importante"></div><div class="admin-group full-width"><label>Message <span class="req">*</span></label><textarea id="qa-notif-message" rows="4" placeholder="Ex : Votre virement a été validé, il sera traité sous 24h."></textarea></div></div><button class="btn-admin-submit" style="margin-top:10px;" onclick="window.sendNotificationToClient()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>Envoyer la notification</button><div style="margin-top:18px;padding-top:14px;border-top:2px dashed #cbd5e1;"><div class="option-panel-toggle-label" style="margin-bottom:10px;">Notifications déjà envoyées</div><div id="qa-notif-list-container"><div class="admin-pending-empty">Aucune notification envoyée</div></div></div></div>' +
     '<div id="qa-block-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg><span>Suspendre le compte</span></div><div class="option-panel-desc">Le client ne pourra plus acceder a son application.</div></div>' +
     '<div id="qa-unblock-fields" class="option-panel" style="display:none;"><div class="option-panel-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg><span>Activer le compte</span></div><div class="option-panel-desc">Le client pourra a nouveau acceder a son application.</div></div>' +
     '<button class="btn-admin-submit" onclick="window.applyQuickAction()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Appliquer la modification</button></div>';
@@ -2706,7 +2159,7 @@ async function renderAdminPage() {
   root.innerHTML = '<div class="view active"><div class="admin-wrapper"><div class="admin-topbar"><div class="brand"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>ADMIN</div><div class="actions"><button class="icon-btn" onclick="window.refreshAdminPage()"><svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button><button class="icon-btn" onclick="window.adminLogout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button></div></div>' +
     '<div class="admin-body"><div class="admin-identity-card"><div>Connecte en tant que : <strong>' + (currentAdmin.email || '') + '</strong></div></div>' + pendingTransferCardHtml + quickActionsCardHtml +
       '<div class="stats-grid"><div class="stat-card"><div class="ico blue"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><div class="val">' + list.length + '</div><div class="lbl">Mes Clients</div></div><div class="stat-card"><div class="ico purple"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="val">' + active + '</div><div class="lbl">Actifs</div></div></div>' +
-      '<form id="admin-form"><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Informations client</div><div class="admin-grid"><div class="admin-group full-width"><label>Nom et prénom du client <span class="req">*</span></label><input type="text" id="fullName" placeholder="Ex: Jean Dupont" required></div><div class="admin-group"><label>Pays <span class="req">*</span></label><select id="country"><option value="France">France</option><option value="Pologne">Pologne</option><option value="Espagne">Espagne</option><option value="Italie">Italie</option><option value="Allemagne">Allemagne</option></select></div><div class="admin-group"><label>Telephone</label><input type="tel" id="phone"></div><div class="admin-group"><label>Email <span class="req">*</span></label><input type="email" id="email" required></div><div class="admin-group"><label>Langue <span class="req">*</span></label><select id="language"><option value="pl">Polonais</option><option value="fr" selected>Francais</option><option value="es">Espagnol</option><option value="it">Italien</option><option value="de">Allemand</option></select></div><div class="admin-group full-width"><label>Adresse de residence</label><input type="text" id="address"></div></div></div><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>Compte et securite</div><div class="admin-grid"><div class="admin-group full-width"><label>Banque emettrice <span class="req">*</span></label><select id="bankName"><option value="">Selectionnez une banque</option></select></div><div class="admin-group"><label>Solde <span class="req">*</span></label><input type="number" id="balance" step="0.01" placeholder="5000" required></div><div class="admin-group"><label>Devise <span class="req">*</span></label><select id="currency"><option value="€">EUR</option><option value="$">USD</option><option value="£">GBP</option><option value="zł">PLN</option></select></div><div class="admin-group"><label>Depart % <span class="req">*</span></label><input type="number" id="startPercent" min="0" max="100" value="0" required></div><div class="admin-group"><label>Arret % <span class="req">*</span></label><input type="number" id="stopPercent" min="0" max="100" value="100" required></div><div class="admin-group"><label>Code PIN <span class="req">*</span></label><input type="text" id="pin" placeholder="1234" required></div><div class="admin-group"><label>Code d\'activation <span class="req">*</span></label><input type="text" id="activationCode" placeholder="987654" required></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="message" rows="2"></textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="color-presets"></div><div class="color-picker-row"><input type="color" id="themeColor" value="#1a73e8"><input type="text" id="themeColorHex" value="#1a73e8" readonly></div></div></div><button type="submit" class="btn-admin-submit"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Creer le client</button></div></form>' +
+      '<form id="admin-form"><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Informations client</div><div class="admin-grid"><div class="admin-group full-width"><label>Nom et prénom du client <span class="req">*</span></label><input type="text" id="fullName" placeholder="Ex : Jean Dupont" required></div><div class="admin-group"><label>Pays <span class="req">*</span></label><select id="country"><option value="France">France</option><option value="Pologne">Pologne</option><option value="Espagne">Espagne</option><option value="Italie">Italie</option><option value="Allemagne">Allemagne</option></select></div><div class="admin-group"><label>Telephone</label><input type="tel" id="phone" placeholder="Ex : +33 6 12 34 56 78"></div><div class="admin-group"><label>Email <span class="req">*</span></label><input type="email" id="email" placeholder="Ex : client@email.com" required></div><div class="admin-group"><label>Langue <span class="req">*</span></label><select id="language"><option value="pl">Polonais</option><option value="fr" selected>Francais</option><option value="es">Espagnol</option><option value="it">Italien</option><option value="de">Allemand</option></select></div><div class="admin-group full-width"><label>Adresse de residence</label><input type="text" id="address" placeholder="Ex : 12 rue de la Paix, 75001 Paris"></div></div></div><div class="admin-section"><div class="admin-section-title"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>Compte et securite</div><div class="admin-grid"><div class="admin-group full-width"><label>Banque emettrice <span class="req">*</span></label><select id="bankName"><option value="">Selectionnez une banque</option></select></div><div class="admin-group"><label>Solde <span class="req">*</span></label><input type="number" id="balance" step="0.01" placeholder="Ex : 5000" required></div><div class="admin-group"><label>Devise <span class="req">*</span></label><select id="currency"><option value="€">EUR</option><option value="$">USD</option><option value="£">GBP</option><option value="zł">PLN</option></select></div><div class="admin-group"><label>Depart % <span class="req">*</span></label><input type="number" id="startPercent" min="0" max="100" value="0" required></div><div class="admin-group"><label>Arret % <span class="req">*</span></label><input type="number" id="stopPercent" min="0" max="100" value="100" required></div><div class="admin-group"><label>Code PIN <span class="req">*</span></label><input type="text" id="pin" placeholder="Ex : 1234" required></div><div class="admin-group"><label>Code d\'activation <span class="req">*</span></label><input type="text" id="activationCode" placeholder="Ex : 987654" required></div><div class="admin-group full-width"><label>Message de fin</label><textarea id="message" rows="2" placeholder="Ex : Votre virement a été traité avec succès."></textarea></div><div class="admin-group full-width"><label>Couleur du theme</label><div class="color-presets" id="color-presets"></div><div class="color-picker-row"><input type="color" id="themeColor" value="#1a73e8"><input type="text" id="themeColorHex" value="#1a73e8" readonly></div></div></div><button type="submit" class="btn-admin-submit"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Creer le client</button></div></form>' +
       '<div class="client-list-title">Mes Clients <span class="count">' + list.length + '</span></div><div class="client-list" style="padding-bottom:40px!important;">' + clientsHtml + '</div></div></div></div>';
 
   const ptSelect = document.getElementById('pt-client-select');
@@ -2864,7 +2317,7 @@ window.openClientDetail = async function(id) {
   const devicesBlock = '<div class="connected-devices-card">' +
       '<div class="connected-devices-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>' +
       '<div class="connected-devices-text">' +
-        '<div class="connected-devices-label">APPAREILS CONNECTÉS</div>' +
+        '<div class="connected-devices-label">APPAREILS CONNECTES</div>' +
         '<div class="connected-devices-count">' + deviceCount + ' <small>appareil' + (deviceCount > 1 ? 's' : '') + '</small></div>' +
         '<div class="connected-devices-sub">' + (deviceCount === 0 ? 'Aucun appareil actuellement connecté à ce compte' : (deviceCount === 1 ? '1 appareil est actuellement connecté à ce compte' : deviceCount + ' appareils sont actuellement connectés à ce compte')) + '</div>' +
       '</div>' +
@@ -2900,25 +2353,108 @@ window.openClientDetail = async function(id) {
 
   const ov = document.createElement('div');
   ov.id = 'client-detail-modal';
-  ov.style.cssText = 'position:fixed!important;inset:0!important;background:rgba(15,23,42,0.75)!important;display:block!important;z-index:2147483647!important;overflow-y:auto!important;padding:20px 12px 40px 12px!important;box-sizing:border-box!important;';
+  ov.style.cssText = 'position:fixed!important;inset:0!important;background:rgba(15,23,42,0.75)!important;display:block!important;z-index:2147483647!important;overflow-y:auto!important;padding:16px 10px 30px 10px!important;box-sizing:border-box!important;';
+
+  /* ROWS dans cartes */
   const row = (label, value, mono) => '<div class="detail-row"><div class="detail-row-label">' + label + '</div><div class="detail-row-value' + (mono ? ' mono' : '') + '">' + (value || '-') + '</div></div>';
-  const sectionTitle = (title) => '<div class="detail-section-title">' + title + '</div>';
+  const sectionCard = (title, contentHtml) => '<div class="detail-section-card"><div class="detail-section-title">' + title + '</div>' + contentHtml + '</div>';
+
   const pendingTxs = (c.transactions || []).map((tx, idx) => ({ tx, idx })).filter(o => o.tx.status === 'pending');
   let pendingHtml = '';
   if (pendingTxs.length === 0) { pendingHtml = '<div class="admin-pending-empty">' + t('adminPendingEmpty') + '</div>'; }
   else { pendingTxs.forEach(o => { const tx = o.tx; pendingHtml += '<div class="admin-pending-item"><div class="admin-pending-name">' + (tx.subtitle || '—') + '</div><div class="admin-pending-meta">' + (tx.date || '') + ' · ' + (tx.recipientBank || '—') + '</div><div class="admin-pending-amount">' + (tx.amount || '—') + '</div><div class="admin-pending-actions"><button class="admin-pending-btn validate" onclick="window.validatePendingTransfer(\'' + id + '\',' + o.idx + ')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>' + t('adminPendingValidateBtn') + '</button><button class="admin-pending-btn cancel" onclick="window.cancelPendingTransfer(\'' + id + '\',' + o.idx + ')"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>' + t('adminPendingCancelBtn') + '</button></div></div>'; }); }
   const pendingCard = '<div class="admin-pending-transfers-card"><div class="admin-pending-transfers-title"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg><span>' + t('adminPendingSectionTitle') + ' (' + pendingTxs.length + ')</span></div>' + pendingHtml + '</div>';
+
   const txs = (c.transactions || []).filter(tx => (tx.type === 'out' && tx.status !== 'cancelledPending') || tx.type === 'cancelled');
   let transfersHtml = '';
   if (txs.length === 0) { transfersHtml = '<div class="admin-transfers-empty">Aucun virement effectue</div>'; }
   else { let itemsHtml = ''; txs.forEach((tx) => { const realIdx = (c.transactions || []).indexOf(tx); const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true); const isPending = tx.status === 'pending'; const isCancelledPending = tx.status === 'cancelledPending'; const txName = tx.subtitle || '—'; const txAmount = tx.amount || '—'; const txDate = tx.date || ''; const cancelBtn = (isCancelled || isPending || isCancelledPending) ? '' : '<button class="admin-transfer-cancel-btn" onclick="window.cancelClientTransfer(\'' + id + '\',' + realIdx + ')">Annuler</button>'; let statusLabel = ''; if (isCancelled) statusLabel = ' · Annule'; else if (isCancelledPending) statusLabel = ' · Annule (rembourse)'; else if (isPending) statusLabel = ' · En attente'; itemsHtml += '<div class="admin-transfer-item' + (isCancelled ? ' cancelled' : '') + '"><div class="admin-transfer-info"><div class="admin-transfer-name" onclick="window.openTransferDetailModal(\'' + id + '\',' + realIdx + ')">' + txName + '</div><div class="admin-transfer-meta">' + txDate + statusLabel + '</div></div><div class="admin-transfer-amount">' + txAmount + '</div>' + cancelBtn + '</div>'; }); transfersHtml = itemsHtml; }
   const transfersCard = '<div class="admin-transfers-card"><div class="admin-transfers-title"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span>Virements effectues</span></div>' + transfersHtml + '</div>';
+
   const isOnline = c.isOnline === true;
   const onlineColor = isOnline ? '#16a34a' : '#dc2626';
   const onlineBg = isOnline ? '#dcfce7' : '#fee2e2';
   const onlineLabel = isOnline ? '● En ligne' : '● Hors ligne';
   const connectionBlock = '<div class="connection-status-card"><div class="connection-status-header" style="background:' + onlineBg + ';color:' + onlineColor + ';"><span class="connection-status-dot" style="background:' + onlineColor + ';"></span><span class="connection-status-text">' + onlineLabel + '</span></div><div class="connection-status-body">' + row('Derniere connexion', c.lastLoginAt || 'Jamais') + row('Pays de connexion', c.lastLoginCountry || '—') + (c.lastLoginCity && c.lastLoginCity !== '—' ? row('Ville', c.lastLoginCity) : '') + (c.lastLoginRegion && c.lastLoginRegion !== '—' ? row('Region', c.lastLoginRegion) : '') + (c.lastLoginIp && c.lastLoginIp !== '—' ? row('Adresse IP', c.lastLoginIp, true) : '') + '</div></div>';
-  ov.innerHTML = '<div style="background:#fff!important;border-radius:4px!important;width:100%!important;max-width:420px!important;margin:0 auto!important;box-shadow:0 20px 50px rgba(0,0,0,0.4)!important;"><div class="detail-header"><div class="detail-avatar">' + ((c.firstName || '').charAt(0) + (c.lastName || '').charAt(0)).toUpperCase() + '</div><div style="flex:1!important;min-width:0!important;"><div class="detail-name">' + c.firstName + ' ' + c.lastName + '</div><div class="detail-email">' + c.email + '</div></div><button class="detail-close" onclick="document.getElementById(\'client-detail-modal\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div><div class="detail-body">' + devicesBlock + '<div class="detail-status-grid"><div class="detail-status-box ' + (c.blocked ? 'blocked' : 'active') + '"><div class="detail-status-label">Statut</div><div class="detail-status-value">' + (c.blocked ? 'Suspendu' : 'Actif') + '</div></div><div class="detail-status-box balance"><div class="detail-status-label">Solde</div><div class="detail-status-value">' + balance + '</div></div></div>' + sectionTitle('Connexion au compte') + connectionBlock + pendingCard + transfersCard + sectionTitle('Appareils connectés') + devicesListHtml + sectionTitle('Identite') + row('Nom', c.lastName) + row('Prenom', c.firstName) + row('Pays', c.country) + row('Langue', langNames[c.language] || c.language) + sectionTitle('Contact') + row('Email', c.email) + row('Telephone', c.phone) + row('Adresse de residence', c.address) + sectionTitle('Securite') + row('Code PIN', c.pin, true) + row('Code activation', c.activationCode, true) + row('Virement en attente', c.pendingTransferEnabled === true ? 'Active' : 'Desactive') + sectionTitle('Banque / IBAN') + row('Banque', c.bankName) + row('IBAN', c.iban, true) + row('BIC / SWIFT', c.bic, true) + row('IBAN masque', c.ibanMasked === true ? 'Oui' : 'Non') + sectionTitle('Carte virtuelle') + row('Titulaire', cardHolder) + row('Numero', c.cardNumber, true) + row('Expiration', c.cardExpiry) + row('CVV', c.cardCvv, true) + row('Type', c.cardType) + row('4 derniers masques', c.cardMaskLast4 === true ? 'Oui' : 'Non') + row('CVV masque', c.cardMaskCvv === true ? 'Oui' : 'Non') + sectionTitle('Parametres transfert') + row('Depart %', (c.startPercent || 0) + '%') + row('Arret %', (c.stopPercent || 100) + '%') + row('Message de fin', c.message) + row('Couleur du theme', c.themeColor || '#1a73e8') + sectionTitle('Lien client') + '<div class="detail-link-box">' + clientLink + '</div><div class="detail-footer" style="grid-template-columns:1fr;gap:8px;"><button class="detail-footer-btn copy" onclick="window.copyToClipboard(\'' + clientLink + '\')"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span>Copier le lien</span></button><button class="detail-footer-btn send-credentials" onclick="window.sendCredentialsEmail(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>Envoyer les identifiants de connexion</span></button><button class="detail-footer-btn send-activation" onclick="window.sendActivationEmail(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><span>Envoyer le code d\'activation</span></button></div></div></div>';
+
+  /* === CONSTRUCTION : chaque sous-titre = carte === */
+  var statusGridHtml = '<div class="detail-status-grid">' +
+      '<div class="detail-status-box ' + (c.blocked ? 'blocked' : 'active') + '"><div class="detail-status-label">Statut</div><div class="detail-status-value">' + (c.blocked ? 'Suspendu' : 'Actif') + '</div></div>' +
+      '<div class="detail-status-box balance"><div class="detail-status-label">Solde</div><div class="detail-status-value">' + balance + '</div></div>' +
+    '</div>';
+
+  var identityCard = sectionCard('Identite',
+    row('Nom', c.lastName) +
+    row('Prenom', c.firstName) +
+    row('Pays', c.country) +
+    row('Langue', langNames[c.language] || c.language)
+  );
+
+  var contactCard = sectionCard('Contact',
+    row('Email', c.email) +
+    row('Telephone', c.phone) +
+    row('Adresse de residence', c.address)
+  );
+
+  var securityCard = sectionCard('Securite',
+    row('Code PIN', c.pin, true) +
+    row('Code activation', c.activationCode, true) +
+    row('Virement en attente', c.pendingTransferEnabled === true ? 'Active' : 'Desactive')
+  );
+
+  var bankCard = sectionCard('Banque / IBAN',
+    row('Banque', c.bankName) +
+    row('IBAN', c.iban, true) +
+    row('BIC / SWIFT', c.bic, true) +
+    row('IBAN masque', c.ibanMasked === true ? 'Oui' : 'Non')
+  );
+
+  var cardVirtualCard = sectionCard('Carte virtuelle',
+    row('Titulaire', cardHolder) +
+    row('Numero', c.cardNumber, true) +
+    row('Expiration', c.cardExpiry) +
+    row('CVV', c.cardCvv, true) +
+    row('Type', c.cardType) +
+    row('4 derniers masques', c.cardMaskLast4 === true ? 'Oui' : 'Non') +
+    row('CVV masque', c.cardMaskCvv === true ? 'Oui' : 'Non')
+  );
+
+  var transferParamsCard = sectionCard('Parametres transfert',
+    row('Depart %', (c.startPercent || 0) + '%') +
+    row('Arret %', (c.stopPercent || 100) + '%') +
+    row('Message de fin', c.message) +
+    row('Couleur du theme', c.themeColor || '#1a73e8')
+  );
+
+  var linkCard = sectionCard('Lien client',
+    '<div class="detail-link-box">' + clientLink + '</div>' +
+    '<div class="detail-footer" style="border:none;margin-top:8px;padding:0 12px 12px 12px;">' +
+      '<button class="detail-footer-btn copy" onclick="window.copyToClipboard(\'' + clientLink + '\')"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span>Copier le lien</span></button>' +
+      '<button class="detail-footer-btn send-credentials" onclick="window.sendCredentialsEmail(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>Envoyer les identifiants de connexion</span></button>' +
+      '<button class="detail-footer-btn send-activation" onclick="window.sendActivationEmail(\'' + id + '\')"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><span>Envoyer le code d\'activation</span></button>' +
+    '</div>'
+  );
+
+  var devicesCard = sectionCard('Appareils connectes', devicesListHtml);
+
+  ov.innerHTML = '<div style="background:#ffffff!important;border-radius:11px!important;width:100%!important;max-width:420px!important;margin:0 auto!important;box-shadow:0 20px 45px rgba(0,0,0,0.4)!important;overflow:hidden!important;">' +
+      '<div class="detail-header"><div class="detail-avatar">' + ((c.firstName || '').charAt(0) + (c.lastName || '').charAt(0)).toUpperCase() + '</div><div style="flex:1!important;min-width:0!important;"><div class="detail-name">' + c.firstName + ' ' + c.lastName + '</div><div class="detail-email">' + c.email + '</div></div><button class="detail-close" onclick="document.getElementById(\'client-detail-modal\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>' +
+      '<div class="detail-body">' +
+        statusGridHtml +
+        devicesBlock +
+        sectionCard('Connexion au compte', connectionBlock) +
+        pendingCard +
+        transfersCard +
+        identityCard +
+        contactCard +
+        securityCard +
+        bankCard +
+        cardVirtualCard +
+        transferParamsCard +
+        devicesCard +
+        linkCard +
+      '</div>' +
+    '</div>';
   ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
   document.body.appendChild(ov);
 };
