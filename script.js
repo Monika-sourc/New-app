@@ -912,24 +912,240 @@ window.toggleBalanceVisibility = function () {
   }
 };
 
+/* ============================================================ */
+/* ===== ensureGlobalStyles — VERSION MODIFIÉE (2 demandes) ==== */
+/* ============================================================ */
 function ensureGlobalStyles() {
   if (document.getElementById('tw-bubbles-styles')) return;
   const style = document.createElement('style');
   style.id = 'tw-bubbles-styles';
   style.textContent = `
+    /* ===== 1. BULLES ANIMÉES — VISIBILITÉ MAXIMALE ===== */
     .balance-card-new{position:relative;overflow:hidden;}
     .balance-bubbles-new{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;border-radius:9px;}
-    .bbn{position:absolute;border-radius:50%;opacity:0.85;filter:blur(8px);animation-name:bbnFloat;animation-timing-function:ease-in-out;animation-iteration-count:infinite;pointer-events:none;box-shadow:0 0 25px rgba(255,255,255,0.25),inset 0 0 15px rgba(255,255,255,0.35);}
-    .bbn.b1{width:130px;height:130px;left:-40px;bottom:-30px;background:radial-gradient(circle at 30% 30%,rgba(255,120,200,1) 0%,rgba(236,72,153,0.9) 45%,transparent 100%);animation-duration:8s;}
-    .bbn.b2{width:90px;height:90px;left:55%;bottom:-30px;background:radial-gradient(circle at 30% 30%,rgba(80,235,255,1) 0%,rgba(6,182,212,0.9) 45%,transparent 100%);animation-duration:10s;animation-delay:-2s;}
-    .bbn.b3{width:140px;height:140px;right:-50px;top:-40px;background:radial-gradient(circle at 30% 30%,rgba(255,220,90,1) 0%,rgba(245,158,11,0.9) 45%,transparent 100%);animation-duration:9s;animation-delay:-4s;}
-    .bbn.b4{width:80px;height:80px;left:35%;top:20%;background:radial-gradient(circle at 30% 30%,rgba(200,170,255,1) 0%,rgba(139,92,246,0.9) 45%,transparent 100%);animation-duration:11s;animation-delay:-6s;}
-    .bbn.b5{width:100px;height:100px;right:5%;bottom:5%;background:radial-gradient(circle at 30% 30%,rgba(120,255,160,1) 0%,rgba(34,197,94,0.9) 45%,transparent 100%);animation-duration:12s;animation-delay:-3s;}
-    @keyframes bbnFloat{0%,100%{transform:translate(0,0) rotate(0deg) scale(0.9);opacity:0.75;}50%{transform:translate(20px,-28px) rotate(14deg) scale(1.15);opacity:1;}}
+    .bbn{position:absolute;border-radius:50%;opacity:1;filter:blur(3px);animation-name:bbnFloat;animation-timing-function:ease-in-out;animation-iteration-count:infinite;pointer-events:none;box-shadow:0 0 35px 6px rgba(255,255,255,0.55),0 0 70px 12px rgba(255,255,255,0.28),inset 0 0 25px rgba(255,255,255,0.7),inset 0 0 8px rgba(255,255,255,0.9);}
+    .bbn.b1{width:170px;height:170px;left:-55px;bottom:-45px;background:radial-gradient(circle at 30% 30%,#ffc0e8 0%,#ff5ebe 40%,rgba(236,72,153,0.6) 70%,transparent 100%);animation-duration:8s;}
+    .bbn.b2{width:125px;height:125px;left:55%;bottom:-45px;background:radial-gradient(circle at 30% 30%,#c4f6ff 0%,#22d9ff 40%,rgba(6,182,212,0.6) 70%,transparent 100%);animation-duration:10s;animation-delay:-2s;}
+    .bbn.b3{width:180px;height:180px;right:-65px;top:-55px;background:radial-gradient(circle at 30% 30%,#fff8b8 0%,#ffcc28 40%,rgba(245,158,11,0.6) 70%,transparent 100%);animation-duration:9s;animation-delay:-4s;}
+    .bbn.b4{width:105px;height:105px;left:35%;top:20%;background:radial-gradient(circle at 30% 30%,#f0e6ff 0%,#c0a0ff 40%,rgba(139,92,246,0.6) 70%,transparent 100%);animation-duration:11s;animation-delay:-6s;}
+    .bbn.b5{width:135px;height:135px;right:5%;bottom:5%;background:radial-gradient(circle at 30% 30%,#d4ffe0 0%,#44f594 40%,rgba(34,197,94,0.6) 70%,transparent 100%);animation-duration:12s;animation-delay:-3s;}
+    @keyframes bbnFloat{0%,100%{transform:translate(0,0) rotate(0deg) scale(0.9);opacity:0.85;}50%{transform:translate(25px,-32px) rotate(16deg) scale(1.2);opacity:1;}}
 
     .balance-eye-btn{position:absolute !important;top:8px !important;right:8px !important;width:28px !important;height:28px !important;min-width:28px !important;min-height:28px !important;max-width:28px !important;max-height:28px !important;border-radius:50% !important;background:linear-gradient(135deg,#ef4444 0%,#dc2626 50%,#b91c1c 100%) !important;border:2px solid #fca5a5 !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:center !important;padding:0 !important;z-index:5 !important;overflow:hidden !important;box-shadow:0 3px 10px rgba(220,38,38,0.55) !important;font-family:inherit !important;}
     .balance-eye-btn svg{width:14px !important;height:14px !important;min-width:14px !important;min-height:14px !important;max-width:14px !important;max-height:14px !important;display:block !important;flex-shrink:0 !important;fill:#ffffff !important;}
     .balance-eye-btn svg path{fill:#ffffff !important;}
+
+    /* ============================================================ */
+    /* ===== 2. HIÉRARCHIE TYPOGRAPHIQUE — CHAQUE TYPE DISTINCT === */
+    /* ============================================================ */
+
+    /* ---- 1. TITRES DE SECTION — Uppercase, très bold, très espacé ---- */
+    .detail-section-title,
+    .admin-section-title,
+    .qac-title,
+    .pt-title,
+    .option-panel-title,
+    .processing-details-header,
+    .full-history-header h3,
+    .client-list-title,
+    .card-transactions-title,
+    .page-title-bar span,
+    .processing-page-title,
+    .profile-card-header-title,
+    .notif-list-title {
+      font-family: 'Titillium Web', -apple-system, sans-serif !important;
+      text-transform: uppercase !important;
+      letter-spacing: 1.5px !important;
+      font-weight: 800 !important;
+      font-style: normal !important;
+    }
+
+    /* ---- 2. LABELS DE FORMULAIRE — Uppercase, small, espacé ---- */
+    .form-label,
+    .admin-group label,
+    .quick-actions-card label,
+    .admin-auth .auth-group label,
+    .verify-row-label,
+    .detail-row-label,
+    .receipt-row-label,
+    .receipt-line-label,
+    .profile-row-label,
+    .transfer-detail-row-label,
+    .verify-code-label,
+    .option-panel-toggle-label,
+    .transfer-detail-amount-label,
+    .receipt-amount-label,
+    .detail-status-label,
+    .profile-card-header-sub,
+    .form-group label {
+      font-family: 'Titillium Web', -apple-system, sans-serif !important;
+      text-transform: uppercase !important;
+      letter-spacing: 1px !important;
+      font-weight: 800 !important;
+      font-style: normal !important;
+      font-size: 9.5px !important;
+    }
+
+    /* ---- 3. MONTANTS & NOMBRES — Monospace bold ---- */
+    .balance-int,
+    .balance-dec,
+    .transfer-amount,
+    .detail-status-value,
+    .receipt-amount,
+    .receipt-header-amount,
+    .transfer-detail-amount-value,
+    .tx-amount-value-new,
+    .admin-pending-amount,
+    .admin-transfer-amount,
+    .stat-card .val,
+    .balance-card-amount-new .int-part,
+    .balance-card-amount-new .dec-part,
+    .balance-card-amount-new .cur-part,
+    .client-line-balance,
+    .profile-row-value.green {
+      font-family: 'Courier New', 'Consolas', 'Menlo', monospace !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.6px !important;
+      font-style: normal !important;
+    }
+
+    /* ---- 4. IBAN / BIC / RÉFÉRENCES — Monospace très espacé ---- */
+    .iban-new-iban-value,
+    .detail-row-value.mono,
+    .receipt-row-value.receipt-mono,
+    .transfer-detail-row-value.mono,
+    #summary-iban,
+    #summary-swift,
+    #processing-iban,
+    .iban-new-copy {
+      font-family: 'Courier New', 'Consolas', 'Menlo', monospace !important;
+      letter-spacing: 2px !important;
+      font-weight: 800 !important;
+      font-style: normal !important;
+    }
+
+    /* ---- 5. VALEURS STANDARD — Gras, normal case ---- */
+    .verify-row-value,
+    .detail-row-value,
+    .receipt-row-value,
+    .profile-row-value,
+    .transfer-detail-row-value,
+    .receipt-line-value,
+    .tx-name-new {
+      font-family: 'Titillium Web', -apple-system, sans-serif !important;
+      font-weight: 800 !important;
+      font-style: normal !important;
+      letter-spacing: 0.3px !important;
+    }
+
+    /* ---- 6. MÉTADONNÉES / SOUS-TITRES — Italique, muted ---- */
+    .tx-sub-new,
+    .qac-subtitle,
+    .option-panel-desc,
+    .connected-device-meta,
+    .greeting-sub-new,
+    .admin-transfers-empty,
+    .admin-pending-empty,
+    .transfer-detail-header-label,
+    .result-detail-label,
+    .profile-label,
+    .info-text,
+    .warning-text {
+      font-family: 'Titillium Web', -apple-system, sans-serif !important;
+      font-style: italic !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.4px !important;
+    }
+
+    /* ---- 7. NOMS DE CLIENT (liste admin) — Monospace gras ---- */
+    .client-line-name,
+    .admin-transfer-name {
+      font-family: 'Courier New', 'Consolas', monospace !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.5px !important;
+      font-style: normal !important;
+    }
+
+    /* ---- 8. PIN / CODE D'ACTIVATION — Monospace large ---- */
+    .sa-field-value,
+    .sa-field-value.password {
+      font-family: 'Courier New', 'Consolas', monospace !important;
+      letter-spacing: 1.5px !important;
+      font-weight: 800 !important;
+    }
+
+    /* ---- 9. SOUS-DESCRIPTIONS BANNIÈRE — Italique muted ---- */
+    .connected-devices-sub,
+    .security-desc-new,
+    .balance-card-sub-new,
+    .profile-hero-email,
+    .header-brand-sub-new {
+      font-style: italic !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.3px !important;
+    }
+
+    /* ---- 10. TITRES DE CARTE / REÇU — Uppercase bold ---- */
+    .receipt-header-title,
+    .notif-title,
+    .transfer-detail-header-name,
+    .detail-name {
+      font-weight: 800 !important;
+      letter-spacing: 0.4px !important;
+      font-style: normal !important;
+    }
+
+    /* ---- 11. TITRES D'ERREUR / STATUT — Bold italic ---- */
+    .no-access h2,
+    .blocked-screen h2,
+    .twd-status-title {
+      font-family: 'Titillium Web', sans-serif !important;
+      font-weight: 900 !important;
+      letter-spacing: 1px !important;
+      font-style: normal !important;
+    }
+
+    /* ---- 12. BADGES DE STATUT (Actif, Effectué…) — Uppercase pill ---- */
+    .receipt-line-status,
+    .transfer-detail-status-badge,
+    .receipt-status-done,
+    .pending-transfer-status-badge,
+    .sa-badge,
+    .profile-row-status-pill {
+      text-transform: uppercase !important;
+      letter-spacing: 1px !important;
+      font-weight: 900 !important;
+      font-style: normal !important;
+    }
+
+    /* ---- 13. DATES & HEURES — Monospace, plus petit ---- */
+    .tx-date-new,
+    .tx-date,
+    .notif-item-date {
+      font-family: 'Courier New', 'Consolas', monospace !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.5px !important;
+      font-style: normal !important;
+    }
+
+    /* ---- 14. BOUTONS — Uppercase bold ---- */
+    .btn-admin-submit,
+    .submit-btn,
+    .verify-submit-btn,
+    .detail-footer-btn,
+    .notif-btn,
+    .client-line-btn,
+    .sa-action-btn,
+    .admin-pending-btn,
+    .admin-transfer-cancel-btn,
+    .receipt-btn-close,
+    .transfer-detail-btn-close,
+    .result-close-action,
+    .profile-logout-new {
+      text-transform: uppercase !important;
+      letter-spacing: 0.9px !important;
+      font-weight: 800 !important;
+    }
   `;
   document.head.appendChild(style);
 }
