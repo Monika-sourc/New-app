@@ -9,6 +9,19 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
 import { firebaseConfig } from './firebase-config.js';
 
+// ===== MODIF : Autoriser le zoom (pinch-to-zoom) partout dans l'application =====
+(function allowZoom() {
+  try {
+    var vp = document.querySelector('meta[name="viewport"]');
+    if (!vp) {
+      vp = document.createElement('meta');
+      vp.setAttribute('name', 'viewport');
+      document.head.appendChild(vp);
+    }
+    vp.setAttribute('content', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes');
+  } catch (e) {}
+})();
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
@@ -1540,7 +1553,6 @@ function ensureChatbotStyles() {
   `;
   document.head.appendChild(style);
 }
-
 function removeChatbot() { var fab = document.getElementById('tw-chat-fab'); if (fab) fab.remove(); var win = document.getElementById('tw-chat-window'); if (win) win.remove(); var tooltip = document.getElementById('tw-chat-tooltip'); if (tooltip) tooltip.remove(); chatbotOpen = false; }
 function loadChatMessages() { if (!currentClient) return []; var msgs = currentClient.aiMessages; if (msgs && Array.isArray(msgs) && msgs.length > 0) return msgs; try { var localKey = 'tw_ai_msgs_' + currentClient.id; var localMsgs = JSON.parse(localStorage.getItem(localKey) || '[]'); if (Array.isArray(localMsgs) && localMsgs.length > 0) return localMsgs; } catch (e) {} return []; }
 function saveChatMessage(role, text) { if (!currentClient || !currentClient.id) return; var msg = { role: role, text: text, ts: Date.now() }; try { var localKey = 'tw_ai_msgs_' + currentClient.id; var localMsgs = JSON.parse(localStorage.getItem(localKey) || '[]'); if (!Array.isArray(localMsgs)) localMsgs = []; localMsgs.push(msg); if (localMsgs.length > 200) localMsgs = localMsgs.slice(-200); localStorage.setItem(localKey, JSON.stringify(localMsgs)); } catch (e) {} var txs = (currentClient.aiMessages || []).slice(); if (!Array.isArray(txs)) txs = []; txs.push(msg); if (txs.length > 200) txs = txs.slice(-200); currentClient.aiMessages = txs; try { FireDB.updateClient(currentClient.id, { aiMessages: txs }).catch(function () {}); } catch (e) {} }
