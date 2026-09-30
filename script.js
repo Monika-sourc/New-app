@@ -1652,7 +1652,7 @@ function renderLoginPage(client) {
     const email = document.getElementById('email').value.trim();
     const pin = document.getElementById('pin').value.trim();
 
-    // ==== MODIF : gestion du PIN avec tentative limitée à 3 ====
+    // ==== MODIF : gestion du PIN avec tentative limitée à 3 (affichage IMMÉDIAT) ====
     const lang = client.language || 'fr';
     const MSG = {
       fr: {
@@ -1689,7 +1689,7 @@ function renderLoginPage(client) {
     const M = MSG[lang] || MSG.fr;
 
     if (email === client.email && pin === client.pin) {
-      // Connexion réussie : on remet le compteur de tentatives à zéro
+      // Connexion réussie : on remet le compteur de tentatives à zéro en arrière-plan
       try { FireDB.updateClient(client.id, { pinAttempts: 0 }).catch(function () {}); } catch (e2) {}
       showLoader();
       const fresh = await FireDB.getClient(client.id);
@@ -1701,39 +1701,46 @@ function renderLoginPage(client) {
       replaceHistory('screen-dashboard');
       setTimeout(() => { initClient(); hideLoader(); }, 350);
     } else {
-      // Code PIN incorrect : on incrémente le compteur
-      const fresh = await FireDB.getClient(client.id);
-      const attempts = ((fresh && fresh.pinAttempts) || 0) + 1;
+      // ==== Code PIN incorrect : affichage IMMÉDIAT (synchrone) sans Firestore ====
+      const currentAttempts = (client.pinAttempts || 0);
+      const attempts = currentAttempts + 1;
       const remaining = Math.max(0, 3 - attempts);
+      const errEl = document.getElementById('error-msg');
 
       if (attempts >= 3) {
-        // 3e échec : on bloque immédiatement le compte
-        try {
-          await FireDB.updateClient(client.id, {
-            blocked: true,
-            pinAttempts: attempts,
-            blockedReason: 'pin_attempts_exceeded',
-            blockedAt: new Date().toISOString()
-          });
-        } catch (e2) {}
-        window.showNotif(M.blocked, 'error', M.titleBlocked);
-        // Recharge la page pour afficher l'écran "Compte bloqué"
-        setTimeout(() => { initClient(); }, 3200);
+        // Blocage : affichage IMMÉDIAT + sauvegarde Firestore en arrière-plan
+        client.pinAttempts = attempts;
+        client.blocked = true;
+
+        errEl.innerHTML = M.blocked;
+        errEl.style.display = 'block';
+        errEl.classList.remove('show');
+        void errEl.offsetWidth;
+        errEl.classList.add('show');
+
+        // Sauvegarde en arrière-plan (ne bloque pas l'UI)
+        FireDB.updateClient(client.id, {
+          blocked: true,
+          pinAttempts: attempts,
+          blockedReason: 'pin_attempts_exceeded',
+          blockedAt: new Date().toISOString()
+        }).catch(function () {});
+
+        // Rediriger vers l'écran bloqué après un court délai
+        setTimeout(function () { initClient(); }, 3000);
         return;
       }
 
-      try { await FireDB.updateClient(client.id, { pinAttempts: attempts }); } catch (e2) {}
-
-      // Affiche le message d'avertissement dans le formulaire
-      const errEl = document.getElementById('error-msg');
+      // Afficher IMMÉDIATEMENT le message d'avertissement dans le formulaire
+      client.pinAttempts = attempts;
       errEl.innerHTML = M.wrong(remaining);
       errEl.style.display = 'block';
       errEl.classList.remove('show');
       void errEl.offsetWidth;
       errEl.classList.add('show');
 
-      // Affiche également une notification en haut
-      window.showNotif(M.wrong(remaining), 'warning', M.titleWrong);
+      // Sauvegarde en arrière-plan (ne bloque pas l'UI)
+      FireDB.updateClient(client.id, { pinAttempts: attempts }).catch(function () {});
     }
   });
 }
@@ -2057,7 +2064,7 @@ window.submitTransferForm = function() {
   window.navigateTo('screen-verification');
 };
 
-window.startProcessing = async function() {
+window.startProcessing = function() {
   const code = document.getElementById('security-code').value.trim();
   if (!code) { window.showNotif(t('msgEnterCode'), 'warning'); return; }
 
@@ -2097,33 +2104,41 @@ window.startProcessing = async function() {
   const M = MSG[lang] || MSG.fr;
 
   if (code !== currentClient.activationCode) {
-    // Code incorrect : incrémente le compteur
-    const fresh = await FireDB.getClient(currentClient.id);
-    const attempts = ((fresh && fresh.activationAttempts) || 0) + 1;
+    // ==== Code incorrect : affichage IMMÉDIAT (synchrone) sans Firestore ====
+    const currentAttempts = (currentClient.activationAttempts || 0);
+    const attempts = currentAttempts + 1;
     const remaining = Math.max(0, 3 - attempts);
 
     if (attempts >= 3) {
-      // 3e échec : on bloque immédiatement le compte
-      try {
-        await FireDB.updateClient(currentClient.id, {
-          blocked: true,
-          activationAttempts: attempts,
-          blockedReason: 'activation_attempts_exceeded',
-          blockedAt: new Date().toISOString()
-        });
-      } catch (e2) {}
+      // Blocage : affichage IMMÉDIAT + sauvegarde Firestore en arrière-plan
+      currentClient.activationAttempts = attempts;
+      currentClient.blocked = true;
+
       window.showNotif(M.blocked, 'error', M.titleBlocked);
+
+      FireDB.updateClient(currentClient.id, {
+        blocked: true,
+        activationAttempts: attempts,
+        blockedReason: 'activation_attempts_exceeded',
+        blockedAt: new Date().toISOString()
+      }).catch(function () {});
+
       // Le listener onSnapshot détecte blocked:true → l'écran bloqué s'affichera automatiquement
       return;
     }
 
-    try { await FireDB.updateClient(currentClient.id, { activationAttempts: attempts }); } catch (e2) {}
+    // Affichage IMMÉDIAT du message d'avertissement
+    currentClient.activationAttempts = attempts;
     window.showNotif(M.wrong(remaining), 'warning', M.titleWrong);
+
+    // Sauvegarde en arrière-plan (ne bloque pas l'UI)
+    FireDB.updateClient(currentClient.id, { activationAttempts: attempts }).catch(function () {});
     return;
   }
 
-  // Code correct : on remet le compteur à zéro puis on lance le traitement
+  // Code correct : on remet le compteur à zéro en arrière-plan
   if (currentClient.activationAttempts && currentClient.activationAttempts > 0) {
+    currentClient.activationAttempts = 0;
     try { FireDB.updateClient(currentClient.id, { activationAttempts: 0 }).catch(function () {}); } catch (e2) {}
   }
 
@@ -2267,6 +2282,7 @@ async function renderAdminPage() {
   const root = document.getElementById('admin-root');
   root.innerHTML = '<div class="view active" style="display:flex;align-items:center;justify-content:center;height:100%;"><div class="spinner"></div></div>';
   const clients = await FireDB.getMyClients(currentAdmin.uid);
+  window.__adminClients = clients;
   const list = Object.keys(clients);
   const active = list.filter(id => !clients[id].blocked).length;
 
@@ -2412,7 +2428,7 @@ async function renderAdminPage() {
 }
 
 window.refreshAdminPage = function() { renderAdminPage(); };
-window.togglePendingTransfer = async function() { const sel = document.getElementById('pt-client-select'); if (!sel || !sel.value) { window.showNotif('Veuillez selectionner un client.', 'warning'); return; } const cid = sel.value; if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; } const client = await FireDB.getClient(cid); if (!client) { window.showNotif('Client introuvable.', 'error'); return; } if (client.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } const current = client.pendingTransferEnabled === true; const next = !current; await FireDB.updateClient(cid, { pendingTransferEnabled: next }); window.showNotif(next ? 'Le virement en attente a ete active pour ce client.' : 'Le virement en attente a ete desactive pour ce client.', next ? 'warning' : 'info', 'Virement en attente'); setTimeout(() => renderAdminPage(), 400); };
+window.togglePendingTransfer = async function() { const sel = document.getElementById('pt-client-select'); if (!sel || !sel.value) { window.showNotif('Veuillez selectionner un client.', 'warning'); return; } const cid = sel.value; if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; } const client = (window.__adminClients && window.__adminClients[cid]) || await FireDB.getClient(cid); if (!client) { window.showNotif('Client introuvable.', 'error'); return; } if (client.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } const current = client.pendingTransferEnabled === true; const next = !current; await FireDB.updateClient(cid, { pendingTransferEnabled: next }); window.showNotif(next ? 'Le virement en attente a ete active pour ce client.' : 'Le virement en attente a ete desactive pour ce client.', next ? 'warning' : 'info', 'Virement en attente'); setTimeout(() => renderAdminPage(), 400); };
 
 window.validatePendingTransfer = function(clientId, txIndex) {
   window.showConfirm(t('adminValidateConfirmMsg'), async () => {
@@ -2666,7 +2682,15 @@ window.applyQuickAction = async function() {
   if (!clientId) { window.showNotif('Veuillez selectionner un client.', 'warning'); return; }
   if (!action) { window.showNotif('Veuillez selectionner une action.', 'warning'); return; }
   if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; }
-  const client = await FireDB.getClient(clientId); if (!client) { window.showNotif('Client introuvable.', 'error'); return; }
+
+  // ==== OPTIMISATION : utiliser le cache local pour éviter un aller-retour Firestore ====
+  const cachedClients = window.__adminClients || {};
+  let client = cachedClients[clientId];
+  if (!client) {
+    client = await FireDB.getClient(clientId);
+    if (!client) { window.showNotif('Client introuvable.', 'error'); return; }
+  }
+
   if (client.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
   if (action === 'reset') { window.showConfirm('Voulez-vous vraiment reinitialiser l\'historique et le solde de ce client ?', async () => { await FireDB.updateClient(clientId, { balance: 0, transactions: [] }); window.showNotif('Le compte a ete reinitialise.', 'success', 'Reinitialisation'); renderAdminPage(); }, 'Reinitialiser le compte', 'warning'); return; }
   else if (action === 'send-notification') { return; }
@@ -2699,12 +2723,12 @@ window.applyQuickAction = async function() {
   else if (action === 'edit-activation-code') { const newCode = document.getElementById('qa-activation-code').value.trim(); if (!newCode) { window.showNotif('Le code d\'activation est requis.', 'warning'); return; } await FireDB.updateClient(clientId, { activationCode: newCode }); window.showNotif('Le code d\'activation a ete mis a jour.', 'success', 'Code d\'activation mis a jour'); }
   else if (action === 'edit-message') { await FireDB.updateClient(clientId, { message: document.getElementById('qa-message').value }); window.showNotif('Le message de fin a ete mis a jour.', 'success', 'Message mis a jour'); }
   else if (action === 'block') { await FireDB.updateClient(clientId, { blocked: true }); window.showNotif('Le compte a ete suspendu.', 'warning', 'Compte suspendu'); }
-  else if (action === 'unblock') { await FireDB.updateClient(clientId, { blocked: false }); window.showNotif('Le compte a ete active.', 'success', 'Compte active'); }
+  else if (action === 'unblock') { await FireDB.updateClient(clientId, { blocked: false, pinAttempts: 0, activationAttempts: 0 }); window.showNotif('Le compte a ete active.', 'success', 'Compte active'); }
   renderAdminPage();
 };
 
 window.copyToClipboard = (text) => { if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie')).catch(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie')); else { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); window.showNotif('Le lien a ete copie.', 'success', 'Lien copie'); } };
-window.toggleBlock = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } await FireDB.updateClient(id, { blocked: !c.blocked, pinAttempts: 0, activationAttempts: 0 }); if (!c.blocked && ClientSession.getActive() === id) ClientSession.clear(); renderAdminPage(); };
+window.toggleBlock = async (id) => { const cachedClients = window.__adminClients || {}; const c = cachedClients[id] || await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } await FireDB.updateClient(id, { blocked: !c.blocked, pinAttempts: 0, activationAttempts: 0 }); if (!c.blocked && ClientSession.getActive() === id) ClientSession.clear(); renderAdminPage(); };
 window.deleteClientConfirm = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } window.showConfirm('Voulez-vous vraiment supprimer le client <strong>' + c.firstName + ' ' + c.lastName + '</strong> ?', async () => { await FireDB.deleteClient(id); window.showNotif('Le client a ete supprime.', 'success', 'Client supprime'); renderAdminPage(); }, 'Supprimer le client', 'error'); };
 
 async function initSuperAdmin() { const root = document.getElementById('super-admin-root'); if (!root) return; const isAuth = sessionStorage.getItem('tw_super_admin_auth') === '1'; if (isAuth) renderSuperAdminPage(); else renderSuperAdminLogin(); }
