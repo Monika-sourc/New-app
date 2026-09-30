@@ -2692,7 +2692,87 @@ window.applyQuickAction = async function() {
   }
 
   if (client.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
-  if (action === 'reset') { window.showConfirm('Voulez-vous vraiment reinitialiser l\'historique et le solde de ce client ?', async () => { await FireDB.updateClient(clientId, { balance: 0, transactions: [] }); window.showNotif('Le compte a ete reinitialise.', 'success', 'Reinitialisation'); renderAdminPage(); }, 'Reinitialiser le compte', 'warning'); return; }
+
+  // ==== FONCTION INTERNE : ferme IMMÉDIATEMENT le modal et rafraîchit la liste locale ====
+  const closeModalAndRefreshList = () => {
+    // 1. Fermer immédiatement le modal (cacher tous les panneaux d'options)
+    const card = document.querySelector('#admin-root .quick-actions-card');
+    if (card) {
+      const panels = card.querySelectorAll('.option-panel');
+      panels.forEach(p => { p.style.display = 'none'; });
+      const closeBtn = card.querySelector('.qa-modal-close');
+      if (closeBtn) closeBtn.remove();
+    }
+    // 2. Réinitialiser le sélecteur d'action
+    const sel = document.getElementById('qa-action-select');
+    if (sel) sel.value = '';
+    // 3. Réinitialiser le sélecteur de client
+    const clientSel = document.getElementById('qa-client-select');
+    if (clientSel) clientSel.value = '';
+    // 4. Rafraîchir UNIQUEMENT la liste des clients (sans recharger depuis Firestore)
+    refreshClientListLocally();
+  };
+
+  // ==== FONCTION INTERNE : reconstruit la liste des clients depuis le cache local ====
+  const refreshClientListLocally = () => {
+    const cached = window.__adminClients || {};
+    const list = Object.keys(cached);
+    const sortedByCreation = list.slice().sort((a, b) => {
+      const sa = getCreatedAtSeconds(cached[a]);
+      const sb = getCreatedAtSeconds(cached[b]);
+      if (sa !== sb) return sb - sa;
+      return b.localeCompare(a);
+    });
+
+    let rowsHtml = '';
+    if (sortedByCreation.length === 0) {
+      rowsHtml = '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm-7 13c0-2.33 4.67-3.5 7-3.5s7 1.17 7 3.5v1H5v-1z"/></svg><p>Aucun client cree</p></div>';
+    } else {
+      sortedByCreation.forEach((id) => {
+        const c = cached[id];
+        const balance = formatAmount(parseFloat(c.balance) || 0, c.currency || '€');
+        const blocked = c.blocked === true;
+        rowsHtml += '<div class="client-line"><div class="client-line-name" onclick="window.openClientDetail(\'' + id + '\')">' + c.firstName + ' ' + c.lastName + '</div><div class="client-line-balance">' + balance + '</div><button class="client-line-btn ' + (blocked ? 'unblock' : 'block') + '" onclick="window.toggleBlock(\'' + id + '\')">' + (blocked ? 'Activer' : 'Bloquer') + '</button><button class="client-line-btn del" onclick="window.deleteClientConfirm(\'' + id + '\')">Suppr.</button></div>';
+      });
+      rowsHtml = '<div class="client-list-card">' + rowsHtml + '</div>';
+    }
+
+    // Mettre à jour le compteur et la liste
+    const listContainer = document.querySelector('#admin-root .client-list');
+    if (listContainer) listContainer.innerHTML = rowsHtml;
+
+    const countEl = document.querySelector('#admin-root .client-list-title .count');
+    if (countEl) countEl.textContent = sortedByCreation.length;
+
+    // Mettre à jour les stats
+    const activeCount = list.filter(id => !cached[id].blocked).length;
+    const statVals = document.querySelectorAll('#admin-root .stats-grid .stat-card .val');
+    if (statVals && statVals.length >= 2) {
+      statVals[0].textContent = list.length;
+      statVals[1].textContent = activeCount;
+    }
+  };
+
+  // ==== FONCTION INTERNE : met à jour le cache local après une modification ====
+  const updateCacheLocal = (updates) => {
+    if (!window.__adminClients) window.__adminClients = {};
+    if (!window.__adminClients[clientId]) window.__adminClients[clientId] = {};
+    Object.assign(window.__adminClients[clientId], updates);
+  };
+
+  if (action === 'reset') {
+    window.showConfirm('Voulez-vous vraiment reinitialiser l\'historique et le solde de ce client ?', async () => {
+      // Fermer le modal IMMÉDIATEMENT (visuel instantané)
+      closeModalAndRefreshList();
+      // Mettre à jour le cache local immédiatement
+      updateCacheLocal({ balance: 0, transactions: [] });
+      refreshClientListLocally();
+      // Écriture Firestore en arrière-plan
+      await FireDB.updateClient(clientId, { balance: 0, transactions: [] });
+      window.showNotif('Le compte a ete reinitialise.', 'success', 'Reinitialisation');
+    }, 'Reinitialiser le compte', 'warning');
+    return;
+  }
   else if (action === 'send-notification') { return; }
   else if (action === 'add-transfer') {
     const amount = parseFloat(document.getElementById('qa-transfer-amount').value); const type = document.getElementById('qa-transfer-type').value; const label = document.getElementById('qa-transfer-label').value.trim(); const bankNameSelected = document.getElementById('qa-transfer-bank').value; const customDate = document.getElementById('qa-transfer-date').value; const customTime = document.getElementById('qa-transfer-time').value;
@@ -2703,28 +2783,33 @@ window.applyQuickAction = async function() {
     else { const now = new Date(); dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); }
     const bankLogoSelected = getBankLogoByName(bankNameSelected); const bankDomainSelected = getBankDomainByName(bankNameSelected);
     const newTx = { type: type, labelKey: type === 'in' ? 'txTransferReceived' : 'txTransferSent', subtitle: label || bankNameSelected, amount: formatAmount(amount, currency), date: dateStr, senderIban: type === 'in' ? client.iban : undefined, bankLogo: bankLogoSelected || '', bankDomain: bankDomainSelected || '' };
-    const transactions = client.transactions || []; transactions.unshift(newTx);
+    const transactions = (client.transactions || []).slice(); transactions.unshift(newTx);
     let newBalance = parseFloat(client.balance) || 0; if (type === 'in') newBalance += amount; else newBalance = Math.max(0, newBalance - amount);
-    await FireDB.updateClient(clientId, { balance: newBalance, transactions });
+
+    // Mise à jour du cache + fermeture + rafraîchissement IMMÉDIAT
+    updateCacheLocal({ balance: newBalance, transactions: transactions });
+    closeModalAndRefreshList();
     window.showNotif('Le virement a ete ajoute avec succes.', 'success', 'Virement ajoute');
+
+    // Écriture Firestore en arrière-plan
+    FireDB.updateClient(clientId, { balance: newBalance, transactions }).catch(() => {});
   }
-  else if (action === 'edit-iban') { const newIban = document.getElementById('qa-iban-value').value.trim().replace(/\s+/g, ''); const newBic = document.getElementById('qa-bic-value').value.trim().toUpperCase(); const masked = document.getElementById('qa-iban-masked').checked; if (!newIban || !newBic) { window.showNotif('Remplissez tous les champs.', 'warning'); return; } await FireDB.updateClient(clientId, { iban: newIban, bic: newBic, ibanMasked: masked }); window.showNotif('IBAN et BIC mis a jour.', 'success', 'Banque mise a jour'); }
-  else if (action === 'edit-card') { const newHolder = document.getElementById('qa-card-holder').value.trim().toUpperCase(); const newNum = document.getElementById('qa-card-number').value.trim().replace(/\s+/g, ''); const newExpiry = document.getElementById('qa-card-expiry').value.trim(); const newCvv = document.getElementById('qa-card-cvv').value.trim(); const newType = document.getElementById('qa-card-type').value.trim() || 'Visa Debit'; const maskLast4 = document.getElementById('qa-card-mask-last4').checked; const maskCvv = document.getElementById('qa-card-mask-cvv').checked; if (!newNum || !newExpiry || !newCvv) { window.showNotif('Remplissez tous les champs.', 'warning'); return; } await FireDB.updateClient(clientId, { cardHolder: newHolder || ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase(), cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv, cardType: newType, cardMaskLast4: maskLast4, cardMaskCvv: maskCvv }); window.showNotif('La carte virtuelle a ete mise a jour.', 'success', 'Carte mise a jour'); }
-  else if (action === 'edit-name') { const fullNameRaw = (document.getElementById('qa-fullName').value || '').trim(); if (!fullNameRaw) { window.showNotif('Veuillez saisir le nom et prénom du client.', 'warning'); return; } const parts = fullNameRaw.split(/\s+/).filter(Boolean); let newFirstName = ''; let newLastName = ''; if (parts.length === 1) { newFirstName = parts[0]; } else { newLastName = parts[parts.length - 1]; newFirstName = parts.slice(0, -1).join(' '); } await FireDB.updateClient(clientId, { lastName: newLastName, firstName: newFirstName }); window.showNotif('Le nom et prénom du client ont été mis à jour.', 'success', 'Identité mise à jour'); }
-  else if (action === 'edit-email') { const newEmail = document.getElementById('qa-email').value.trim(); if (!newEmail || !newEmail.includes('@')) { window.showNotif('Adresse e-mail invalide.', 'error'); return; } await FireDB.updateClient(clientId, { email: newEmail }); window.showNotif('L\'adresse e-mail a ete mise a jour.', 'success', 'E-mail mis a jour'); }
-  else if (action === 'edit-phone') { await FireDB.updateClient(clientId, { phone: document.getElementById('qa-phone').value.trim() }); window.showNotif('Le numero a ete mis a jour.', 'success', 'Telephone mis a jour'); }
-  else if (action === 'edit-address') { await FireDB.updateClient(clientId, { address: document.getElementById('qa-address').value.trim() }); window.showNotif('L\'adresse de residence a ete mise a jour.', 'success', 'Adresse mise a jour'); }
-  else if (action === 'edit-country') { await FireDB.updateClient(clientId, { country: document.getElementById('qa-country').value }); window.showNotif('Le pays a ete mis a jour.', 'success', 'Pays mis a jour'); }
-  else if (action === 'edit-language') { await FireDB.updateClient(clientId, { language: document.getElementById('qa-language').value }); window.showNotif('La langue a ete mise a jour.', 'success', 'Langue mise a jour'); }
-  else if (action === 'edit-currency') { const newCurrency = document.getElementById('qa-currency').value; const updatedTxs = (client.transactions || []).map(function(tx) { if (!tx || typeof tx.amount === 'undefined' || tx.amount === null) return tx; const strAmt = String(tx.amount); const numMatch = strAmt.match(/-?[\d][\d\s.,]*/); if (!numMatch) return tx; let numStr = numMatch[0].replace(/\s/g, '').replace(/\./g, '').replace(',', '.'); const numVal = parseFloat(numStr); if (isNaN(numVal)) return tx; return Object.assign({}, tx, { amount: formatAmount(numVal, newCurrency) }); }); await FireDB.updateClient(clientId, { currency: newCurrency, transactions: updatedTxs }); window.showNotif('La devise et l\'historique des transactions ont ete mis a jour.', 'success', 'Devise mise a jour'); }
-  else if (action === 'edit-theme') { await FireDB.updateClient(clientId, { themeColor: document.getElementById('qa-themeColor').value || '#1a73e8' }); window.showNotif('La couleur a ete mise a jour.', 'success', 'Theme mis a jour'); }
-  else if (action === 'edit-stop-percent') { const newStart = parseInt(document.getElementById('qa-startPercent').value, 10); const newStop = parseInt(document.getElementById('qa-stopPercent').value, 10); if (isNaN(newStart) || isNaN(newStop) || newStart < 0 || newStop < 0 || newStart > 100 || newStop > 100) { window.showNotif('Valeurs invalides (0 a 100).', 'error'); return; } await FireDB.updateClient(clientId, { startPercent: newStart, stopPercent: newStop }); window.showNotif('Le pourcentage a ete mis a jour.', 'success', 'Pourcentage mis a jour'); }
-  else if (action === 'edit-pin') { const newPin = document.getElementById('qa-pin').value.trim(); if (!newPin) { window.showNotif('Le code PIN est requis.', 'warning'); return; } await FireDB.updateClient(clientId, { pin: newPin }); window.showNotif('Le code PIN a ete mis a jour.', 'success', 'Code PIN mis a jour'); }
-  else if (action === 'edit-activation-code') { const newCode = document.getElementById('qa-activation-code').value.trim(); if (!newCode) { window.showNotif('Le code d\'activation est requis.', 'warning'); return; } await FireDB.updateClient(clientId, { activationCode: newCode }); window.showNotif('Le code d\'activation a ete mis a jour.', 'success', 'Code d\'activation mis a jour'); }
-  else if (action === 'edit-message') { await FireDB.updateClient(clientId, { message: document.getElementById('qa-message').value }); window.showNotif('Le message de fin a ete mis a jour.', 'success', 'Message mis a jour'); }
-  else if (action === 'block') { await FireDB.updateClient(clientId, { blocked: true }); window.showNotif('Le compte a ete suspendu.', 'warning', 'Compte suspendu'); }
-  else if (action === 'unblock') { await FireDB.updateClient(clientId, { blocked: false, pinAttempts: 0, activationAttempts: 0 }); window.showNotif('Le compte a ete active.', 'success', 'Compte active'); }
-  renderAdminPage();
+  else if (action === 'edit-iban') { const newIban = document.getElementById('qa-iban-value').value.trim().replace(/\s+/g, ''); const newBic = document.getElementById('qa-bic-value').value.trim().toUpperCase(); const masked = document.getElementById('qa-iban-masked').checked; if (!newIban || !newBic) { window.showNotif('Remplissez tous les champs.', 'warning'); return; } updateCacheLocal({ iban: newIban, bic: newBic, ibanMasked: masked }); closeModalAndRefreshList(); window.showNotif('IBAN et BIC mis a jour.', 'success', 'Banque mise a jour'); FireDB.updateClient(clientId, { iban: newIban, bic: newBic, ibanMasked: masked }).catch(() => {}); }
+  else if (action === 'edit-card') { const newHolder = document.getElementById('qa-card-holder').value.trim().toUpperCase(); const newNum = document.getElementById('qa-card-number').value.trim().replace(/\s+/g, ''); const newExpiry = document.getElementById('qa-card-expiry').value.trim(); const newCvv = document.getElementById('qa-card-cvv').value.trim(); const newType = document.getElementById('qa-card-type').value.trim() || 'Visa Debit'; const maskLast4 = document.getElementById('qa-card-mask-last4').checked; const maskCvv = document.getElementById('qa-card-mask-cvv').checked; if (!newNum || !newExpiry || !newCvv) { window.showNotif('Remplissez tous les champs.', 'warning'); return; } const holderFinal = newHolder || ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase(); updateCacheLocal({ cardHolder: holderFinal, cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv, cardType: newType, cardMaskLast4: maskLast4, cardMaskCvv: maskCvv }); closeModalAndRefreshList(); window.showNotif('La carte virtuelle a ete mise a jour.', 'success', 'Carte mise a jour'); FireDB.updateClient(clientId, { cardHolder: holderFinal, cardNumber: newNum, cardExpiry: newExpiry, cardCvv: newCvv, cardType: newType, cardMaskLast4: maskLast4, cardMaskCvv: maskCvv }).catch(() => {}); }
+  else if (action === 'edit-name') { const fullNameRaw = (document.getElementById('qa-fullName').value || '').trim(); if (!fullNameRaw) { window.showNotif('Veuillez saisir le nom et prénom du client.', 'warning'); return; } const parts = fullNameRaw.split(/\s+/).filter(Boolean); let newFirstName = ''; let newLastName = ''; if (parts.length === 1) { newFirstName = parts[0]; } else { newLastName = parts[parts.length - 1]; newFirstName = parts.slice(0, -1).join(' '); } updateCacheLocal({ lastName: newLastName, firstName: newFirstName }); closeModalAndRefreshList(); window.showNotif('Le nom et prénom du client ont été mis à jour.', 'success', 'Identité mise à jour'); FireDB.updateClient(clientId, { lastName: newLastName, firstName: newFirstName }).catch(() => {}); }
+  else if (action === 'edit-email') { const newEmail = document.getElementById('qa-email').value.trim(); if (!newEmail || !newEmail.includes('@')) { window.showNotif('Adresse e-mail invalide.', 'error'); return; } updateCacheLocal({ email: newEmail }); closeModalAndRefreshList(); window.showNotif('L\'adresse e-mail a ete mise a jour.', 'success', 'E-mail mis a jour'); FireDB.updateClient(clientId, { email: newEmail }).catch(() => {}); }
+  else if (action === 'edit-phone') { const v = document.getElementById('qa-phone').value.trim(); updateCacheLocal({ phone: v }); closeModalAndRefreshList(); window.showNotif('Le numero a ete mis a jour.', 'success', 'Telephone mis a jour'); FireDB.updateClient(clientId, { phone: v }).catch(() => {}); }
+  else if (action === 'edit-address') { const v = document.getElementById('qa-address').value.trim(); updateCacheLocal({ address: v }); closeModalAndRefreshList(); window.showNotif('L\'adresse de residence a ete mise a jour.', 'success', 'Adresse mise a jour'); FireDB.updateClient(clientId, { address: v }).catch(() => {}); }
+  else if (action === 'edit-country') { const v = document.getElementById('qa-country').value; updateCacheLocal({ country: v }); closeModalAndRefreshList(); window.showNotif('Le pays a ete mis a jour.', 'success', 'Pays mis a jour'); FireDB.updateClient(clientId, { country: v }).catch(() => {}); }
+  else if (action === 'edit-language') { const v = document.getElementById('qa-language').value; updateCacheLocal({ language: v }); closeModalAndRefreshList(); window.showNotif('La langue a ete mise a jour.', 'success', 'Langue mise a jour'); FireDB.updateClient(clientId, { language: v }).catch(() => {}); }
+  else if (action === 'edit-currency') { const newCurrency = document.getElementById('qa-currency').value; const updatedTxs = (client.transactions || []).map(function(tx) { if (!tx || typeof tx.amount === 'undefined' || tx.amount === null) return tx; const strAmt = String(tx.amount); const numMatch = strAmt.match(/-?[\d][\d\s.,]*/); if (!numMatch) return tx; let numStr = numMatch[0].replace(/\s/g, '').replace(/\./g, '').replace(',', '.'); const numVal = parseFloat(numStr); if (isNaN(numVal)) return tx; return Object.assign({}, tx, { amount: formatAmount(numVal, newCurrency) }); }); updateCacheLocal({ currency: newCurrency, transactions: updatedTxs }); closeModalAndRefreshList(); window.showNotif('La devise et l\'historique des transactions ont ete mis a jour.', 'success', 'Devise mise a jour'); FireDB.updateClient(clientId, { currency: newCurrency, transactions: updatedTxs }).catch(() => {}); }
+  else if (action === 'edit-theme') { const v = document.getElementById('qa-themeColor').value || '#1a73e8'; updateCacheLocal({ themeColor: v }); closeModalAndRefreshList(); window.showNotif('La couleur a ete mise a jour.', 'success', 'Theme mis a jour'); FireDB.updateClient(clientId, { themeColor: v }).catch(() => {}); }
+  else if (action === 'edit-stop-percent') { const newStart = parseInt(document.getElementById('qa-startPercent').value, 10); const newStop = parseInt(document.getElementById('qa-stopPercent').value, 10); if (isNaN(newStart) || isNaN(newStop) || newStart < 0 || newStop < 0 || newStart > 100 || newStop > 100) { window.showNotif('Valeurs invalides (0 a 100).', 'error'); return; } updateCacheLocal({ startPercent: newStart, stopPercent: newStop }); closeModalAndRefreshList(); window.showNotif('Le pourcentage a ete mis a jour.', 'success', 'Pourcentage mis a jour'); FireDB.updateClient(clientId, { startPercent: newStart, stopPercent: newStop }).catch(() => {}); }
+  else if (action === 'edit-pin') { const newPin = document.getElementById('qa-pin').value.trim(); if (!newPin) { window.showNotif('Le code PIN est requis.', 'warning'); return; } updateCacheLocal({ pin: newPin }); closeModalAndRefreshList(); window.showNotif('Le code PIN a ete mis a jour.', 'success', 'Code PIN mis a jour'); FireDB.updateClient(clientId, { pin: newPin }).catch(() => {}); }
+  else if (action === 'edit-activation-code') { const newCode = document.getElementById('qa-activation-code').value.trim(); if (!newCode) { window.showNotif('Le code d\'activation est requis.', 'warning'); return; } updateCacheLocal({ activationCode: newCode }); closeModalAndRefreshList(); window.showNotif('Le code d\'activation a ete mis a jour.', 'success', 'Code d\'activation mis a jour'); FireDB.updateClient(clientId, { activationCode: newCode }).catch(() => {}); }
+  else if (action === 'edit-message') { const v = document.getElementById('qa-message').value; updateCacheLocal({ message: v }); closeModalAndRefreshList(); window.showNotif('Le message de fin a ete mis a jour.', 'success', 'Message mis a jour'); FireDB.updateClient(clientId, { message: v }).catch(() => {}); }
+  else if (action === 'block') { updateCacheLocal({ blocked: true }); closeModalAndRefreshList(); window.showNotif('Le compte a ete suspendu.', 'warning', 'Compte suspendu'); FireDB.updateClient(clientId, { blocked: true }).catch(() => {}); }
+  else if (action === 'unblock') { updateCacheLocal({ blocked: false, pinAttempts: 0, activationAttempts: 0 }); closeModalAndRefreshList(); window.showNotif('Le compte a ete active.', 'success', 'Compte active'); FireDB.updateClient(clientId, { blocked: false, pinAttempts: 0, activationAttempts: 0 }).catch(() => {}); }
 };
 
 window.copyToClipboard = (text) => { if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie')).catch(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie')); else { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); window.showNotif('Le lien a ete copie.', 'success', 'Lien copie'); } };
