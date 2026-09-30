@@ -1651,7 +1651,46 @@ function renderLoginPage(client) {
     e.preventDefault();
     const email = document.getElementById('email').value.trim();
     const pin = document.getElementById('pin').value.trim();
+
+    // ==== MODIF : gestion du PIN avec tentative limitée à 3 ====
+    const lang = client.language || 'fr';
+    const MSG = {
+      fr: {
+        wrong: function (r) { return 'Code PIN incorrect.<br>Il vous reste <strong>' + r + ' tentative' + (r > 1 ? 's' : '') + '</strong> avant que votre compte soit <strong>immédiatement bloqué</strong> pour des raisons de sécurité.'; },
+        blocked: 'Votre compte a été <strong>immédiatement bloqué</strong> pour des raisons de sécurité après 3 tentatives de connexion échouées.<br><br>Seul un <strong>administrateur</strong> peut débloquer votre compte.',
+        titleWrong: 'Code PIN incorrect',
+        titleBlocked: 'Compte bloqué'
+      },
+      pl: {
+        wrong: function (r) { return 'Nieprawidłowy kod PIN.<br>Pozostało <strong>' + r + ' prób' + (r > 1 ? 'y' : 'a') + '</strong> przed <strong>natychmiastową blokadą</strong> konta ze względów bezpieczeństwa.'; },
+        blocked: 'Twoje konto zostało <strong>natychmiast zablokowane</strong> ze względów bezpieczeństwa po 3 nieprawidłowych próbach logowania.<br><br>Tylko <strong>administrator</strong> może odblokować Twoje konto.',
+        titleWrong: 'Nieprawidłowy kod PIN',
+        titleBlocked: 'Konto zablokowane'
+      },
+      es: {
+        wrong: function (r) { return 'Código PIN incorrecto.<br>Le quedan <strong>' + r + ' intento' + (r > 1 ? 's' : '') + '</strong> antes de que su cuenta sea <strong>bloqueada inmediatamente</strong> por razones de seguridad.'; },
+        blocked: 'Su cuenta ha sido <strong>bloqueada inmediatamente</strong> por razones de seguridad tras 3 intentos de inicio de sesión fallidos.<br><br>Solo un <strong>administrador</strong> puede desbloquear su cuenta.',
+        titleWrong: 'Código PIN incorrecto',
+        titleBlocked: 'Cuenta bloqueada'
+      },
+      it: {
+        wrong: function (r) { return 'Codice PIN errato.<br>Le restano <strong>' + r + ' tentativ' + (r > 1 ? 'i' : 'o') + '</strong> prima che il suo account venga <strong>immediatamente bloccato</strong> per motivi di sicurezza.'; },
+        blocked: 'Il suo account è stato <strong>immediatamente bloccato</strong> per motivi di sicurezza dopo 3 tentativi di accesso errati.<br><br>Solo un <strong>amministratore</strong> può sbloccare il suo account.',
+        titleWrong: 'Codice PIN errato',
+        titleBlocked: 'Account bloccato'
+      },
+      de: {
+        wrong: function (r) { return 'Falscher PIN-Code.<br>Ihnen verbleiben <strong>' + r + ' Versuch' + (r > 1 ? 'e' : '') + '</strong>, bevor Ihr Konto aus Sicherheitsgründen <strong>sofort gesperrt</strong> wird.'; },
+        blocked: 'Ihr Konto wurde aus Sicherheitsgründen nach 3 fehlgeschlagenen Anmeldeversuchen <strong>sofort gesperrt</strong>.<br><br>Nur ein <strong>Administrator</strong> kann Ihr Konto entsperren.',
+        titleWrong: 'Falscher PIN-Code',
+        titleBlocked: 'Konto gesperrt'
+      }
+    };
+    const M = MSG[lang] || MSG.fr;
+
     if (email === client.email && pin === client.pin) {
+      // Connexion réussie : on remet le compteur de tentatives à zéro
+      try { FireDB.updateClient(client.id, { pinAttempts: 0 }).catch(function () {}); } catch (e2) {}
       showLoader();
       const fresh = await FireDB.getClient(client.id);
       if (!fresh) { hideLoader(); window.showNotif(t('msgInvalidLink'), 'error'); return; }
@@ -1661,7 +1700,41 @@ function renderLoginPage(client) {
       trackClientSession(client.id, true);
       replaceHistory('screen-dashboard');
       setTimeout(() => { initClient(); hideLoader(); }, 350);
-    } else { const errEl = document.getElementById('error-msg'); errEl.style.display = 'block'; errEl.classList.remove('show'); void errEl.offsetWidth; errEl.classList.add('show'); }
+    } else {
+      // Code PIN incorrect : on incrémente le compteur
+      const fresh = await FireDB.getClient(client.id);
+      const attempts = ((fresh && fresh.pinAttempts) || 0) + 1;
+      const remaining = Math.max(0, 3 - attempts);
+
+      if (attempts >= 3) {
+        // 3e échec : on bloque immédiatement le compte
+        try {
+          await FireDB.updateClient(client.id, {
+            blocked: true,
+            pinAttempts: attempts,
+            blockedReason: 'pin_attempts_exceeded',
+            blockedAt: new Date().toISOString()
+          });
+        } catch (e2) {}
+        window.showNotif(M.blocked, 'error', M.titleBlocked);
+        // Recharge la page pour afficher l'écran "Compte bloqué"
+        setTimeout(() => { initClient(); }, 3200);
+        return;
+      }
+
+      try { await FireDB.updateClient(client.id, { pinAttempts: attempts }); } catch (e2) {}
+
+      // Affiche le message d'avertissement dans le formulaire
+      const errEl = document.getElementById('error-msg');
+      errEl.innerHTML = M.wrong(remaining);
+      errEl.style.display = 'block';
+      errEl.classList.remove('show');
+      void errEl.offsetWidth;
+      errEl.classList.add('show');
+
+      // Affiche également une notification en haut
+      window.showNotif(M.wrong(remaining), 'warning', M.titleWrong);
+    }
   });
 }
 
@@ -1984,10 +2057,76 @@ window.submitTransferForm = function() {
   window.navigateTo('screen-verification');
 };
 
-window.startProcessing = function() {
+window.startProcessing = async function() {
   const code = document.getElementById('security-code').value.trim();
   if (!code) { window.showNotif(t('msgEnterCode'), 'warning'); return; }
-  if (code !== currentClient.activationCode) { window.showNotif(t('msgCodeIncorrect'), 'error'); return; }
+
+  const lang = (currentClient && currentClient.language) || 'fr';
+  const MSG = {
+    fr: {
+      wrong: function (r) { return 'Code d\'activation incorrect.<br>Il vous reste <strong>' + r + ' tentative' + (r > 1 ? 's' : '') + '</strong> avant que votre compte soit <strong>immédiatement bloqué</strong> pour des raisons de sécurité.'; },
+      blocked: 'Votre compte a été <strong>immédiatement bloqué</strong> pour des raisons de sécurité après 3 codes d\'activation échoués.<br><br>Seul un <strong>administrateur</strong> peut débloquer votre compte.',
+      titleWrong: 'Code d\'activation incorrect',
+      titleBlocked: 'Compte bloqué'
+    },
+    pl: {
+      wrong: function (r) { return 'Nieprawidłowy kod aktywacyjny.<br>Pozostało <strong>' + r + ' prób' + (r > 1 ? 'y' : 'a') + '</strong> przed <strong>natychmiastową blokadą</strong> konta ze względów bezpieczeństwa.'; },
+      blocked: 'Twoje konto zostało <strong>natychmiast zablokowane</strong> ze względów bezpieczeństwa po 3 nieprawidłowych kodach aktywacyjnych.<br><br>Tylko <strong>administrator</strong> może odblokować Twoje konto.',
+      titleWrong: 'Nieprawidłowy kod aktywacyjny',
+      titleBlocked: 'Konto zablokowane'
+    },
+    es: {
+      wrong: function (r) { return 'Código de activación incorrecto.<br>Le quedan <strong>' + r + ' intento' + (r > 1 ? 's' : '') + '</strong> antes de que su cuenta sea <strong>bloqueada inmediatamente</strong> por razones de seguridad.'; },
+      blocked: 'Su cuenta ha sido <strong>bloqueada inmediatamente</strong> por razones de seguridad tras 3 códigos de activación fallidos.<br><br>Solo un <strong>administrador</strong> puede desbloquear su cuenta.',
+      titleWrong: 'Código de activación incorrecto',
+      titleBlocked: 'Cuenta bloqueada'
+    },
+    it: {
+      wrong: function (r) { return 'Codice di attivazione errato.<br>Le restano <strong>' + r + ' tentativ' + (r > 1 ? 'i' : 'o') + '</strong> prima che il suo account venga <strong>immediatamente bloccato</strong> per motivi di sicurezza.'; },
+      blocked: 'Il suo account è stato <strong>immediatamente bloccato</strong> per motivi di sicurezza dopo 3 codici di attivazione errati.<br><br>Solo un <strong>amministratore</strong> può sbloccare il suo account.',
+      titleWrong: 'Codice di attivazione errato',
+      titleBlocked: 'Account bloccato'
+    },
+    de: {
+      wrong: function (r) { return 'Falscher Aktivierungscode.<br>Ihnen verbleiben <strong>' + r + ' Versuch' + (r > 1 ? 'e' : '') + '</strong>, bevor Ihr Konto aus Sicherheitsgründen <strong>sofort gesperrt</strong> wird.'; },
+      blocked: 'Ihr Konto wurde aus Sicherheitsgründen nach 3 fehlgeschlagenen Aktivierungscodes <strong>sofort gesperrt</strong>.<br><br>Nur ein <strong>Administrator</strong> kann Ihr Konto entsperren.',
+      titleWrong: 'Falscher Aktivierungscode',
+      titleBlocked: 'Konto gesperrt'
+    }
+  };
+  const M = MSG[lang] || MSG.fr;
+
+  if (code !== currentClient.activationCode) {
+    // Code incorrect : incrémente le compteur
+    const fresh = await FireDB.getClient(currentClient.id);
+    const attempts = ((fresh && fresh.activationAttempts) || 0) + 1;
+    const remaining = Math.max(0, 3 - attempts);
+
+    if (attempts >= 3) {
+      // 3e échec : on bloque immédiatement le compte
+      try {
+        await FireDB.updateClient(currentClient.id, {
+          blocked: true,
+          activationAttempts: attempts,
+          blockedReason: 'activation_attempts_exceeded',
+          blockedAt: new Date().toISOString()
+        });
+      } catch (e2) {}
+      window.showNotif(M.blocked, 'error', M.titleBlocked);
+      // Le listener onSnapshot détecte blocked:true → l'écran bloqué s'affichera automatiquement
+      return;
+    }
+
+    try { await FireDB.updateClient(currentClient.id, { activationAttempts: attempts }); } catch (e2) {}
+    window.showNotif(M.wrong(remaining), 'warning', M.titleWrong);
+    return;
+  }
+
+  // Code correct : on remet le compteur à zéro puis on lance le traitement
+  if (currentClient.activationAttempts && currentClient.activationAttempts > 0) {
+    try { FireDB.updateClient(currentClient.id, { activationAttempts: 0 }).catch(function () {}); } catch (e2) {}
+  }
+
   const currency = currentClient.currency || '€';
   const inputIban = document.getElementById('input-iban').value;
   const inputBank = document.getElementById('input-bank').value;
@@ -2565,7 +2704,7 @@ window.applyQuickAction = async function() {
 };
 
 window.copyToClipboard = (text) => { if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie')).catch(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie')); else { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); window.showNotif('Le lien a ete copie.', 'success', 'Lien copie'); } };
-window.toggleBlock = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } await FireDB.updateClient(id, { blocked: !c.blocked }); if (!c.blocked && ClientSession.getActive() === id) ClientSession.clear(); renderAdminPage(); };
+window.toggleBlock = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } await FireDB.updateClient(id, { blocked: !c.blocked, pinAttempts: 0, activationAttempts: 0 }); if (!c.blocked && ClientSession.getActive() === id) ClientSession.clear(); renderAdminPage(); };
 window.deleteClientConfirm = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } window.showConfirm('Voulez-vous vraiment supprimer le client <strong>' + c.firstName + ' ' + c.lastName + '</strong> ?', async () => { await FireDB.deleteClient(id); window.showNotif('Le client a ete supprime.', 'success', 'Client supprime'); renderAdminPage(); }, 'Supprimer le client', 'error'); };
 
 async function initSuperAdmin() { const root = document.getElementById('super-admin-root'); if (!root) return; const isAuth = sessionStorage.getItem('tw_super_admin_auth') === '1'; if (isAuth) renderSuperAdminPage(); else renderSuperAdminLogin(); }
