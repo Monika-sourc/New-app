@@ -38,6 +38,7 @@ html {
   overflow: auto;
   overscroll-behavior-y: auto;
   -webkit-overflow-scrolling: touch;
+  touch-action: manipulation;
 }
 
 body {
@@ -49,7 +50,7 @@ body {
   overflow: auto;
   overscroll-behavior-y: auto;
   -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
+  touch-action: manipulation;
   font-size: 14px;
 }
 
@@ -2770,6 +2771,9 @@ input, select, textarea {
   text-align: center;
 }
 .result-close-action:hover { background: var(--gray-200); }
+/* ============================================================ */
+/* ===== OVERLAY / MODAL / RECEIPT / NOTIF ==================== */
+/* ============================================================ */
 
 .receipt-overlay {
   position: fixed;
@@ -6878,6 +6882,14 @@ input, select, textarea {
 #tw-chat-send { width: 36px !important; height: 36px !important; }
 #tw-chat-send svg { width: 15px !important; height: 15px !important; max-width: 15px !important; max-height: 15px !important; }
 
+/* ============================================================ */
+/* ===== MODAL ADMIN OPTIONS — SCROLLABLE JUSQU'AUX BOUTONS === */
+/* ============================================================ */
+/* Ajout : overflow-x, -webkit-overflow-scrolling, touch-action, */
+/* overscroll-behavior et padding-bottom pour garantir que les   */
+/* boutons du bas du modal (Appliquer / Envoyer) restent         */
+/* accessibles par défilement.                                    */
+/* ============================================================ */
 .quick-actions-card:has(.option-panel[style*="display: block"]),
 .quick-actions-card:has(.option-panel[style*="display:block"]) {
   position: fixed !important;
@@ -6891,8 +6903,12 @@ input, select, textarea {
   max-width: 420px !important;
   max-height: 88vh !important;
   overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
+  overscroll-behavior: contain !important;
   margin: 0 !important;
-  padding: 14px !important;
+  padding: 14px 14px 50px 14px !important;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75) !important;
   border-radius: 12px !important;
   background: #ffffff !important;
@@ -7229,4 +7245,37 @@ body:has(.option-panel[style*="display:block"]) {
 }
 #client-detail-modal .detail-body > *:last-child {
   margin-bottom: 0 !important;
+}
+
+/* ============================================================ */
+/* ===== MODIF : ICÔNE DE NOTIFICATION PLUS GRANDE (CLIENT) === */
+/* ============================================================ */
+/* Augmentation de la taille du bouton de notification           */
+/* dans le header du côté client (#header-notif-btn).            */
+/* Aucune autre règle n'est modifiée.                             */
+/* ============================================================ */
+#header-notif-btn {
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
+  max-width: 30px !important;
+  max-height: 30px !important;
+}
+#header-notif-btn svg {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+}
+#header-notif-btn .header-notif-badge-new {
+  top: -3px !important;
+  right: -3px !important;
+  min-width: 16px !important;
+  height: 16px !important;
+  font-size: 9px !important;
+  padding: 0 4px !important;
+  border-radius: 8px !important;
 }
