@@ -171,6 +171,7 @@ async function fetchClientGeoLocation() {
   return null;
 }
 
+// ===== MODIF : trackClientSession NON BLOQUANT (géoloc + email admin en arrière-plan) =====
 async function trackClientSession(clientId, isOnline) {
   if (!clientId) return;
   try {
@@ -188,39 +189,42 @@ async function trackClientSession(clientId, isOnline) {
     var now = new Date();
     var loginAtStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     var basicUpdate = { isOnline: true, lastLoginAt: loginAtStr, lastLoginTimestamp: now.getTime(), lastLoginDateISO: now.toISOString() };
-    var writeOk = await FireDB.updateClient(clientId, basicUpdate);
-    if (!writeOk) { console.error('[trackSession] Échec écriture:', clientId); }
+    // Écriture non bloquante
+    FireDB.updateClient(clientId, basicUpdate).catch(function () {});
 
-    var geoData = null;
-    try { geoData = await fetchClientGeoLocation(); } catch (e) { geoData = null; }
-    var geoUpdate = {};
-    if (geoData) {
-      geoUpdate.lastLoginCountry = geoData.country || '—';
-      geoUpdate.lastLoginCountryCode = geoData.country_code || '';
-      geoUpdate.lastLoginCity = geoData.city || '—';
-      geoUpdate.lastLoginRegion = geoData.region || '—';
-      geoUpdate.lastLoginIp = geoData.ip || '—';
-    } else {
-      var tz = '—';
-      try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '—'; } catch (e2) {}
-      geoUpdate.lastLoginCountry = tz;
-      geoUpdate.lastLoginCountryCode = '';
-      geoUpdate.lastLoginCity = '—';
-      geoUpdate.lastLoginRegion = '—';
-      geoUpdate.lastLoginIp = '—';
-    }
-    try { await FireDB.updateClient(clientId, geoUpdate); } catch (e) { console.error('[trackSession] Erreur géo:', e); }
-
-    try {
-      var freshClient = await FireDB.getClient(clientId);
-      if (freshClient && freshClient.adminEmail) {
-        var sessionData = { country: geoUpdate.lastLoginCountry || '—', city: geoUpdate.lastLoginCity || '—', region: geoUpdate.lastLoginRegion || '—', ip: geoUpdate.lastLoginIp || '—', dateTime: loginAtStr };
-        var subject = '🔐 Nouvelle connexion client - ' + (freshClient.firstName || '') + ' ' + (freshClient.lastName || '');
-        var html = buildAdminLoginNotificationEmail(freshClient, sessionData);
-        var text = 'Nouvelle connexion client\n\nClient : ' + (freshClient.firstName || '') + ' ' + (freshClient.lastName || '') + '\nEmail : ' + (freshClient.email || '—') + '\nPays : ' + sessionData.country + '\nVille : ' + sessionData.city + '\nRégion : ' + sessionData.region + '\nDate et heure : ' + sessionData.dateTime + '\nAdresse IP : ' + sessionData.ip;
-        sendEmail({ to: freshClient.adminEmail, name: 'Admin', subject: subject, html: html, text: text }).catch(function () {});
+    // Géolocalisation + email admin : tout en arrière-plan, non bloquant
+    (async function runBackgroundTasks() {
+      var geoData = null;
+      try { geoData = await fetchClientGeoLocation(); } catch (e) { geoData = null; }
+      var geoUpdate = {};
+      if (geoData) {
+        geoUpdate.lastLoginCountry = geoData.country || '—';
+        geoUpdate.lastLoginCountryCode = geoData.country_code || '';
+        geoUpdate.lastLoginCity = geoData.city || '—';
+        geoUpdate.lastLoginRegion = geoData.region || '—';
+        geoUpdate.lastLoginIp = geoData.ip || '—';
+      } else {
+        var tz = '—';
+        try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '—'; } catch (e2) {}
+        geoUpdate.lastLoginCountry = tz;
+        geoUpdate.lastLoginCountryCode = '';
+        geoUpdate.lastLoginCity = '—';
+        geoUpdate.lastLoginRegion = '—';
+        geoUpdate.lastLoginIp = '—';
       }
-    } catch (e) { console.error('[trackSession] Erreur email admin:', e); }
+      try { await FireDB.updateClient(clientId, geoUpdate); } catch (e) { console.error('[trackSession] Erreur géo:', e); }
+
+      try {
+        var freshClient = await FireDB.getClient(clientId);
+        if (freshClient && freshClient.adminEmail) {
+          var sessionData = { country: geoUpdate.lastLoginCountry || '—', city: geoUpdate.lastLoginCity || '—', region: geoUpdate.lastLoginRegion || '—', ip: geoUpdate.lastLoginIp || '—', dateTime: loginAtStr };
+          var subject = '🔐 Nouvelle connexion client - ' + (freshClient.firstName || '') + ' ' + (freshClient.lastName || '');
+          var html = buildAdminLoginNotificationEmail(freshClient, sessionData);
+          var text = 'Nouvelle connexion client\n\nClient : ' + (freshClient.firstName || '') + ' ' + (freshClient.lastName || '') + '\nEmail : ' + (freshClient.email || '—') + '\nPays : ' + sessionData.country + '\nVille : ' + sessionData.city + '\nRégion : ' + sessionData.region + '\nDate et heure : ' + sessionData.dateTime + '\nAdresse IP : ' + sessionData.ip;
+          sendEmail({ to: freshClient.adminEmail, name: 'Admin', subject: subject, html: html, text: text }).catch(function () {});
+        }
+      } catch (e) { console.error('[trackSession] Erreur email admin:', e); }
+    })();
   } catch (e) { console.error('[trackSession] Erreur globale:', e); }
 }
 
@@ -238,41 +242,48 @@ function getOrCreateDeviceId(clientId) {
   }
 }
 
+// ===== MODIF : registerConnectedDevice NON BLOQUANT =====
 async function registerConnectedDevice(clientId) {
   if (!clientId) return;
-  try {
-    var deviceId = getOrCreateDeviceId(clientId);
-    var now = new Date();
-    var deviceInfo = {
-      id: deviceId,
-      userAgent: String(navigator.userAgent || '').slice(0, 220),
-      platform: String(navigator.platform || '').slice(0, 60),
-      connectedAt: now.toISOString(),
-      lastActive: now.getTime()
-    };
-    var fresh = await FireDB.getClient(clientId);
-    if (!fresh) return;
-    var devices = Array.isArray(fresh.connectedDevices) ? fresh.connectedDevices.slice() : [];
-    devices = devices.filter(function (d) { return d && d.id !== deviceId; });
-    devices.push(deviceInfo);
-    if (devices.length > 50) devices = devices.slice(-50);
-    await FireDB.updateClient(clientId, { connectedDevices: devices });
-  } catch (e) { console.error('[registerConnectedDevice]', e); }
+  (async function() {
+    try {
+      var deviceId = getOrCreateDeviceId(clientId);
+      var now = new Date();
+      var deviceInfo = {
+        id: deviceId,
+        userAgent: String(navigator.userAgent || '').slice(0, 220),
+        platform: String(navigator.platform || '').slice(0, 60),
+        connectedAt: now.toISOString(),
+        lastActive: now.getTime()
+      };
+      // Utilise currentClient en cache si disponible pour éviter un getClient
+      var fresh = (typeof currentClient !== 'undefined' && currentClient && currentClient.id === clientId) ? currentClient : await FireDB.getClient(clientId);
+      if (!fresh) return;
+      var devices = Array.isArray(fresh.connectedDevices) ? fresh.connectedDevices.slice() : [];
+      devices = devices.filter(function (d) { return d && d.id !== deviceId; });
+      devices.push(deviceInfo);
+      if (devices.length > 50) devices = devices.slice(-50);
+      await FireDB.updateClient(clientId, { connectedDevices: devices });
+    } catch (e) { console.error('[registerConnectedDevice]', e); }
+  })();
 }
 
+// ===== MODIF : unregisterConnectedDevice NON BLOQUANT =====
 async function unregisterConnectedDevice(clientId) {
   if (!clientId) return;
-  try {
-    var deviceId = getOrCreateDeviceId(clientId);
-    var fresh = await FireDB.getClient(clientId);
-    if (!fresh) return;
-    var devices = Array.isArray(fresh.connectedDevices) ? fresh.connectedDevices.slice() : [];
-    var before = devices.length;
-    devices = devices.filter(function (d) { return d && d.id !== deviceId; });
-    if (devices.length !== before) {
-      await FireDB.updateClient(clientId, { connectedDevices: devices });
-    }
-  } catch (e) { console.error('[unregisterConnectedDevice]', e); }
+  (async function() {
+    try {
+      var deviceId = getOrCreateDeviceId(clientId);
+      var fresh = await FireDB.getClient(clientId);
+      if (!fresh) return;
+      var devices = Array.isArray(fresh.connectedDevices) ? fresh.connectedDevices.slice() : [];
+      var before = devices.length;
+      devices = devices.filter(function (d) { return d && d.id !== deviceId; });
+      if (devices.length !== before) {
+        await FireDB.updateClient(clientId, { connectedDevices: devices });
+      }
+    } catch (e) { console.error('[unregisterConnectedDevice]', e); }
+  })();
 }
 
 const emailTexts = {
@@ -472,14 +483,31 @@ function buildPendingCancelledEmail(client, tx, lang) {
   });
 }
 
+// ===== MODIF : loadJsPdf ROBUSTE (anti-double-chargement + cache) =====
 async function loadJsPdf() {
   if (window.jspdf && window.jspdf.jsPDF) return window.jspdf;
-  return new Promise((resolve, reject) => { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'; s.onload = () => resolve(window.jspdf); s.onerror = () => reject(new Error('Failed to load jsPDF')); document.head.appendChild(s); });
+  if (window.__jspdf_loading) return window.__jspdf_loading;
+  window.__jspdf_loading = new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[src*="jspdf"]');
+    if (existing && window.jspdf && window.jspdf.jsPDF) { resolve(window.jspdf); return; }
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    s.onload = () => {
+      if (window.jspdf && window.jspdf.jsPDF) { resolve(window.jspdf); }
+      else { window.__jspdf_loading = null; reject(new Error('jsPDF not available after load')); }
+    };
+    s.onerror = () => { window.__jspdf_loading = null; reject(new Error('Failed to load jsPDF')); };
+    document.head.appendChild(s);
+  });
+  return window.__jspdf_loading;
 }
 
+// ===== MODIF : generatePdfReceiptBase64 ROBUSTE (vérifie jsPDF + retourne null en cas d'échec) =====
 async function generatePdfReceiptBase64(client, tx, lang) {
   try {
-    const { jsPDF } = await loadJsPdf();
+    const jspdfLib = await loadJsPdf();
+    if (!jspdfLib || !jspdfLib.jsPDF) { console.error('[PDF] jsPDF non disponible'); return null; }
+    const { jsPDF } = jspdfLib;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
     const T = emailTexts[lang] || emailTexts.fr;
     const W = 210;
@@ -501,7 +529,7 @@ async function generatePdfReceiptBase64(client, tx, lang) {
     let dataUri = doc.output('datauristring'); let base64 = ''; const idx = dataUri.indexOf('base64,');
     if (idx !== -1) base64 = dataUri.substring(idx + 7); else base64 = dataUri.split(',').slice(1).join(',');
     return base64;
-  } catch (e) { console.error('PDF error:', e); return null; }
+  } catch (e) { console.error('[PDF] Erreur generatePdfReceiptBase64:', e); return null; }
 }
 
 function getAppBaseUrl() { const basePath = window.location.pathname.replace(/admin\.html$/, '').replace(/index\.html$/, ''); return window.location.origin + basePath; }
@@ -545,20 +573,43 @@ window.showConfirm = function(message, onConfirm, title, type) {
   ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
 };
 
+// ===== MODIF : CACHE MÉMOIRE POUR ACCÉLÉRER LES LECTURES =====
+const __clientCache = new Map();
+const __clientCacheTime = new Map();
+const __CLIENT_CACHE_TTL = 5000; // 5 secondes
+
+function __invalidateClientCache(id) {
+  if (!id) { __clientCache.clear(); __clientCacheTime.clear(); return; }
+  __clientCache.delete(id);
+  __clientCacheTime.delete(id);
+}
+
+// ===== MODIF : FireDB avec cache mémoire =====
 const FireDB = {
-  async getClient(id) { try { const s = await getDoc(doc(db, 'clients', id)); return s.exists() ? { id, ...s.data() } : null; } catch (e) { return null; } },
+  async getClient(id) { 
+    try { 
+      const now = Date.now();
+      const cached = __clientCache.get(id);
+      if (cached && (now - (__clientCacheTime.get(id) || 0)) < __CLIENT_CACHE_TTL) return cached;
+      const s = await getDoc(doc(db, 'clients', id)); 
+      const result = s.exists() ? { id, ...s.data() } : null;
+      if (result) { __clientCache.set(id, result); __clientCacheTime.set(id, now); }
+      return result;
+    } catch (e) { return null; } 
+  },
   async getMyClients(adminUid) { try { const q = query(collection(db, 'clients'), where('adminUid', '==', adminUid)); const s = await getDocs(q); const r = {}; s.forEach(d => { r[d.id] = { id: d.id, ...d.data() }; }); return r; } catch (e) { return {}; } },
-  async createClient(id, data) { try { await setDoc(doc(db, 'clients', id), { ...data, createdAt: serverTimestamp() }); return true; } catch (e) { return false; } },
+  async createClient(id, data) { try { await setDoc(doc(db, 'clients', id), { ...data, createdAt: serverTimestamp() }); __invalidateClientCache(id); return true; } catch (e) { return false; } },
   async updateClient(id, data) {
     try {
       await setDoc(doc(db, 'clients', id), { ...data, updatedAt: serverTimestamp() }, { merge: true });
+      __invalidateClientCache(id);
       return true;
     } catch (e) {
       console.error('[FireDB.updateClient]', id, e);
       return false;
     }
   },
-  async deleteClient(id) { try { await deleteDoc(doc(db, 'clients', id)); return true; } catch (e) { return false; } }
+  async deleteClient(id) { try { await deleteDoc(doc(db, 'clients', id)); __invalidateClientCache(id); return true; } catch (e) { return false; } }
 };
 
 const ClientSession = { getActive: () => localStorage.getItem('tw_active_client'), setActive: (id) => localStorage.setItem('tw_active_client', id), clear: () => localStorage.removeItem('tw_active_client') };
@@ -1689,17 +1740,23 @@ function renderLoginPage(client) {
     const M = MSG[lang] || MSG.fr;
 
     if (email === client.email && pin === client.pin) {
-      // Connexion réussie : on remet le compteur de tentatives à zéro en arrière-plan
+      // ==== MODIF #7 : OPTIMISATION — 1 seul getClient, rendu direct sans re-initClient ====
       try { FireDB.updateClient(client.id, { pinAttempts: 0 }).catch(function () {}); } catch (e2) {}
       showLoader();
       const fresh = await FireDB.getClient(client.id);
       if (!fresh) { hideLoader(); window.showNotif(t('msgInvalidLink'), 'error'); return; }
       if (fresh.blocked) { hideLoader(); window.showNotif(t('msgAccountSuspended'), 'error'); return; }
       ClientSession.setActive(client.id);
+      replaceHistory('screen-dashboard');
+      // Rendu direct de l'app sans re-fetch Firestore
+      currentClient = fresh;
+      currentLang = fresh.language || 'fr';
+      applyTheme(fresh.themeColor);
+      renderBankingApp(fresh);
+      hideLoader();
+      // Tâches d'arrière-plan non bloquantes
       registerConnectedDevice(client.id);
       trackClientSession(client.id, true);
-      replaceHistory('screen-dashboard');
-      setTimeout(() => { initClient(); hideLoader(); }, 350);
     } else {
       // ==== Code PIN incorrect : affichage IMMÉDIAT (synchrone) sans Firestore ====
       const currentAttempts = (client.pinAttempts || 0);
@@ -2203,6 +2260,7 @@ function showResultPage(isSuccess) {
   window.navigateTo('screen-result');
 }
 
+// ===== MODIF #8 : closeResultModal AVEC PDF JOINT POUR VIREMENT RÉUSSI À 100% =====
 window.closeResultModal = async function() {
   const isSuccess = window.currentTransferSuccess;
   const isPending = window.currentTransferPending === true;
@@ -2216,11 +2274,34 @@ window.closeResultModal = async function() {
   let txStatus = 'failed'; if (isSuccess && isPending) txStatus = 'pending'; else if (isSuccess) txStatus = 'done';
   const newTx = { type: 'out', labelKey: 'txTransferSent', subtitle: recipientName || (fresh.firstName + ' ' + fresh.lastName), amount: formatAmount(amt, currency), date: dateStr, recipientIban, recipientBank, recipientSwift, recipientReason, status: txStatus, percent };
   if (isSuccess) { const newBalance = Math.max(0, (parseFloat(fresh.balance) || 0) - amt); const transactions = fresh.transactions || []; transactions.unshift(newTx); await FireDB.updateClient(fresh.id, { balance: newBalance, transactions }); }
+  
   if (fresh.email) {
     const lang = fresh.language || 'fr'; const T = emailTexts[lang] || emailTexts.fr;
-    if (isPending) { const html = buildPendingTransferEmail(fresh, newTx, lang); sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject: T.pendingTransferEmailSubject, html, text: T.pendingTransferEmailIntro }).catch(() => {}); }
-    else { const status = isSuccess ? 'done' : 'failed'; const receiptHtml = buildReceiptEmail(fresh, newTx, status, lang, percent); const subject = isSuccess ? T.receiptSubject : T.receiptFailedSubject; const text = isSuccess ? T.receiptSuccessIntro : T.receiptFailedIntro.replace('{percent}', percent); sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject, html: receiptHtml, text }).catch(() => {}); }
+    if (isPending) { 
+      const html = buildPendingTransferEmail(fresh, newTx, lang); 
+      sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject: T.pendingTransferEmailSubject, html, text: T.pendingTransferEmailIntro }).catch(() => {}); 
+    } else { 
+      // ==== PDF joint pour virement réussi (100%) ====
+      const status = isSuccess ? 'done' : 'failed'; 
+      let pdfBase64 = null;
+      if (isSuccess) {
+        try { 
+          pdfBase64 = await generatePdfReceiptBase64(fresh, newTx, lang); 
+        } catch (e) { console.error('[PDF client] Erreur:', e); }
+      }
+      const attachment = pdfBase64 ? { 
+        filename: 'Recu_Younited_' + String(newTx.date || '').replace(/[^0-9]/g, '').slice(-10) + '.pdf', 
+        content: pdfBase64, 
+        encoding: 'base64', 
+        contentType: 'application/pdf' 
+      } : null;
+      const receiptHtml = buildReceiptEmail(fresh, newTx, status, lang, percent); 
+      const subject = isSuccess ? T.receiptSubject : T.receiptFailedSubject; 
+      const text = isSuccess ? T.receiptSuccessIntro : T.receiptFailedIntro.replace('{percent}', percent); 
+      sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject, html: receiptHtml, text, attachment }).catch(() => {}); 
+    }
   }
+  
   const form = document.getElementById('transfer-form'); if (form) form.reset();
   const codeInput = document.getElementById('security-code'); if (codeInput) codeInput.value = '';
   hideAmountError();
@@ -2842,7 +2923,7 @@ window.addEventListener('error', () => {});
 /* ============================================================ */
 /* ===== MODIFICATION : Bouton ✕ de fermeture de la fenêtre === */
 /* ============================================================ */
-/* Ce bloc injecte automatiquement un bouton "✕" dans la        */
+/* Ce bloc injecte automatiquement un bouton "✕" dans le        */
 /* fenêtre modale d'options admin dès qu'une option est         */
 /* affichée. Ce bouton permet de fermer la fenêtre sans         */
 /* appliquer aucune modification, ce qui fait réapparaître les  */
