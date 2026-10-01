@@ -2260,57 +2260,95 @@ function showResultPage(isSuccess) {
   window.navigateTo('screen-result');
 }
 
-// ===== MODIF #8 : closeResultModal AVEC PDF JOINT POUR VIREMENT RÉUSSI À 100% =====
+// ===== FIX ANTI-DOUBLON : verrou global pour empêcher la double exécution =====
+let __closeResultModalLock = false;
+
 window.closeResultModal = async function() {
-  const isSuccess = window.currentTransferSuccess;
-  const isPending = window.currentTransferPending === true;
-  const currency = currentClient.currency || '€';
-  const fresh = await FireDB.getClient(currentClient.id);
-  if (!fresh) { window.showNotif(t('msgAccountDeleted'), 'error'); window.location.reload(); return; }
-  if (fresh.blocked) { window.showNotif(t('msgAccountSuspended'), 'error'); ClientSession.clear(); window.location.reload(); return; }
-  const amt = pendingTransferAmount || 0; const percent = pendingTransferPercent;
-  const now = new Date(); const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-  const recipientIban = document.getElementById('input-iban').value; const recipientBank = document.getElementById('input-bank').value; const recipientSwift = document.getElementById('input-swift').value; const recipientName = document.getElementById('input-name').value; const recipientReason = document.getElementById('input-title').value;
-  let txStatus = 'failed'; if (isSuccess && isPending) txStatus = 'pending'; else if (isSuccess) txStatus = 'done';
-  const newTx = { type: 'out', labelKey: 'txTransferSent', subtitle: recipientName || (fresh.firstName + ' ' + fresh.lastName), amount: formatAmount(amt, currency), date: dateStr, recipientIban, recipientBank, recipientSwift, recipientReason, status: txStatus, percent };
-  if (isSuccess) { const newBalance = Math.max(0, (parseFloat(fresh.balance) || 0) - amt); const transactions = fresh.transactions || []; transactions.unshift(newTx); await FireDB.updateClient(fresh.id, { balance: newBalance, transactions }); }
-  
-  if (fresh.email) {
-    const lang = fresh.language || 'fr'; const T = emailTexts[lang] || emailTexts.fr;
-    if (isPending) { 
-      const html = buildPendingTransferEmail(fresh, newTx, lang); 
-      sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject: T.pendingTransferEmailSubject, html, text: T.pendingTransferEmailIntro }).catch(() => {}); 
-    } else { 
-      // ==== PDF joint pour virement réussi (100%) ====
-      const status = isSuccess ? 'done' : 'failed'; 
-      let pdfBase64 = null;
-      if (isSuccess) {
-        try { 
-          pdfBase64 = await generatePdfReceiptBase64(fresh, newTx, lang); 
-        } catch (e) { console.error('[PDF client] Erreur:', e); }
-      }
-      const attachment = pdfBase64 ? { 
-        filename: 'Recu_Younited_' + String(newTx.date || '').replace(/[^0-9]/g, '').slice(-10) + '.pdf', 
-        content: pdfBase64, 
-        encoding: 'base64', 
-        contentType: 'application/pdf' 
-      } : null;
-      const receiptHtml = buildReceiptEmail(fresh, newTx, status, lang, percent); 
-      const subject = isSuccess ? T.receiptSubject : T.receiptFailedSubject; 
-      const text = isSuccess ? T.receiptSuccessIntro : T.receiptFailedIntro.replace('{percent}', percent); 
-      sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject, html: receiptHtml, text, attachment }).catch(() => {}); 
+  // ==== FIX : si la fonction est déjà en cours, on ignore les appels suivants ====
+  if (__closeResultModalLock) return;
+  __closeResultModalLock = true;
+
+  try {
+    const isSuccess = window.currentTransferSuccess;
+    const isPending = window.currentTransferPending === true;
+
+    // ==== Sécurité : si aucun virement en cours, on ne fait rien ====
+    if (isSuccess === null || typeof isSuccess === 'undefined') {
+      __closeResultModalLock = false;
+      return;
     }
+
+    // ==== FIX : on marque immédiatement comme traité pour éviter tout re-clic ====
+    const wasSuccess = isSuccess === true;
+    const wasPending = isPending === true;
+    window.currentTransferSuccess = null;
+    window.currentTransferPending = false;
+
+    const currency = currentClient.currency || '€';
+    const fresh = await FireDB.getClient(currentClient.id);
+    if (!fresh) { window.showNotif(t('msgAccountDeleted'), 'error'); window.location.reload(); return; }
+    if (fresh.blocked) { window.showNotif(t('msgAccountSuspended'), 'error'); ClientSession.clear(); window.location.reload(); return; }
+
+    const amt = pendingTransferAmount || 0; const percent = pendingTransferPercent;
+    const now = new Date(); const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const recipientIban = document.getElementById('input-iban').value; const recipientBank = document.getElementById('input-bank').value; const recipientSwift = document.getElementById('input-swift').value; const recipientName = document.getElementById('input-name').value; const recipientReason = document.getElementById('input-title').value;
+
+    let txStatus = 'failed'; if (wasSuccess && wasPending) txStatus = 'pending'; else if (wasSuccess) txStatus = 'done';
+    const newTx = { type: 'out', labelKey: 'txTransferSent', subtitle: recipientName || (fresh.firstName + ' ' + fresh.lastName), amount: formatAmount(amt, currency), date: dateStr, recipientIban, recipientBank, recipientSwift, recipientReason, status: txStatus, percent };
+
+    if (wasSuccess) {
+      const newBalance = Math.max(0, (parseFloat(fresh.balance) || 0) - amt);
+      const transactions = fresh.transactions || [];
+      transactions.unshift(newTx);
+      await FireDB.updateClient(fresh.id, { balance: newBalance, transactions });
+    }
+
+    if (fresh.email) {
+      const lang = fresh.language || 'fr'; const T = emailTexts[lang] || emailTexts.fr;
+      if (wasPending) {
+        const html = buildPendingTransferEmail(fresh, newTx, lang);
+        sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject: T.pendingTransferEmailSubject, html, text: T.pendingTransferEmailIntro }).catch(() => {});
+      } else {
+        const status = wasSuccess ? 'done' : 'failed';
+        let pdfBase64 = null;
+        if (wasSuccess) {
+          try { pdfBase64 = await generatePdfReceiptBase64(fresh, newTx, lang); } catch (e) { console.error('[PDF client] Erreur:', e); }
+        }
+        const attachment = pdfBase64 ? {
+          filename: 'Recu_Younited_' + String(newTx.date || '').replace(/[^0-9]/g, '').slice(-10) + '.pdf',
+          content: pdfBase64,
+          encoding: 'base64',
+          contentType: 'application/pdf'
+        } : null;
+        const receiptHtml = buildReceiptEmail(fresh, newTx, status, lang, percent);
+        const subject = wasSuccess ? T.receiptSubject : T.receiptFailedSubject;
+        const text = wasSuccess ? T.receiptSuccessIntro : T.receiptFailedIntro.replace('{percent}', percent);
+        sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject, html: receiptHtml, text, attachment }).catch(() => {});
+      }
+    }
+
+    const form = document.getElementById('transfer-form'); if (form) form.reset();
+    const codeInput = document.getElementById('security-code'); if (codeInput) codeInput.value = '';
+    hideAmountError();
+    pendingTransferAmount = 0;
+    window.navigateTo('screen-dashboard');
+
+    if (wasPending) {
+      setTimeout(() => { window.showNotif(t('pendingNotifMsg').replace('{amount}', newTx.amount), 'warning', t('pendingNotifTitle')); }, 400);
+    } else {
+      const tplTitle = wasSuccess ? t('transferSentTitle') : t('transferFailedTitle');
+      const tplMsg = wasSuccess ? t('transferSentMsg') : t('transferFailedMsg');
+      let msg = tplMsg.replace('{amount}', newTx.amount).replace('{name}', newTx.subtitle).replace('{iban}', newTx.recipientIban || '—');
+      if (!wasSuccess) msg = msg.replace('{percent}', percent);
+      setTimeout(() => { window.showNotif(msg, wasSuccess ? 'success' : 'error', tplTitle); }, 400);
+    }
+    pendingTransferPercent = 100;
+  } catch (e) {
+    console.error('[closeResultModal]', e);
+  } finally {
+    // ==== FIX : on relâche le verrou après un court délai pour permettre le prochain virement ====
+    setTimeout(function () { __closeResultModalLock = false; }, 1500);
   }
-  
-  const form = document.getElementById('transfer-form'); if (form) form.reset();
-  const codeInput = document.getElementById('security-code'); if (codeInput) codeInput.value = '';
-  hideAmountError();
-  pendingTransferAmount = 0;
-  window.navigateTo('screen-dashboard');
-  if (isPending) { setTimeout(() => { window.showNotif(t('pendingNotifMsg').replace('{amount}', newTx.amount), 'warning', t('pendingNotifTitle')); }, 400); }
-  else { const tplTitle = isSuccess ? t('transferSentTitle') : t('transferFailedTitle'); const tplMsg = isSuccess ? t('transferSentMsg') : t('transferFailedMsg'); let msg = tplMsg.replace('{amount}', newTx.amount).replace('{name}', newTx.subtitle).replace('{iban}', newTx.recipientIban || '—'); if (!isSuccess) msg = msg.replace('{percent}', percent); setTimeout(() => { window.showNotif(msg, isSuccess ? 'success' : 'error', tplTitle); }, 400); }
-  window.currentTransferPending = false;
-  pendingTransferPercent = 100;
 };
 
 let currentAdmin = null;
