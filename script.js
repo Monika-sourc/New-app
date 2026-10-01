@@ -2260,51 +2260,120 @@ function showResultPage(isSuccess) {
   window.navigateTo('screen-result');
 }
 
-// ===== FIX ANTI-DOUBLON : verrou global pour empêcher la double exécution =====
+// ============================================================
+// FIX ANTI-DOUBLON V2 : protection multi-niveaux ROBUSTE
+// ============================================================
+// Ce correctif résout définitivement les doublons en utilisant :
+// 1. Un verrou double (mémoire + flag "déjà exécuté")
+// 2. La désactivation IMMÉDIATE de tous les boutons de l'écran
+// 3. La navigation SYNCHRONE (le modal se ferme tout de suite)
+// 4. La capture des données du formulaire AVANT la navigation
+// 5. Une vérification anti-doublon côté Firestore avant écriture
+// ============================================================
 let __closeResultModalLock = false;
+let __closeResultModalDone = false;
 
 window.closeResultModal = async function() {
-  // ==== FIX : si la fonction est déjà en cours, on ignore les appels suivants ====
-  if (__closeResultModalLock) return;
-  __closeResultModalLock = true;
+  // ==== NIVEAU 1 : Si déjà traité, on ignore totalement ====
+  if (__closeResultModalDone) { console.log('[closeResultModal] Déjà traité, skip'); return; }
+  // ==== NIVEAU 2 : Si déjà en cours, on ignore ====
+  if (__closeResultModalLock) { console.log('[closeResultModal] En cours, skip'); return; }
 
+  // ==== NIVEAU 3 : Désactiver IMMÉDIATEMENT tous les boutons de l'écran résultat ====
   try {
-    const isSuccess = window.currentTransferSuccess;
-    const isPending = window.currentTransferPending === true;
-
-    // ==== Sécurité : si aucun virement en cours, on ne fait rien ====
-    if (isSuccess === null || typeof isSuccess === 'undefined') {
-      __closeResultModalLock = false;
-      return;
+    var allBtns = document.querySelectorAll('#screen-result button, .result-close-btn, .result-close-action');
+    for (var i = 0; i < allBtns.length; i++) {
+      try { allBtns[i].disabled = true; allBtns[i].style.pointerEvents = 'none'; allBtns[i].style.opacity = '0.4'; } catch(e) {}
     }
+  } catch(e) {}
 
-    // ==== FIX : on marque immédiatement comme traité pour éviter tout re-clic ====
-    const wasSuccess = isSuccess === true;
-    const wasPending = isPending === true;
-    window.currentTransferSuccess = null;
-    window.currentTransferPending = false;
+  __closeResultModalLock = true;
+  __closeResultModalDone = true;
 
-    const currency = currentClient.currency || '€';
-    const fresh = await FireDB.getClient(currentClient.id);
+  // ==== Capturer TOUTES les données AVANT toute opération async ====
+  const isSuccess = window.currentTransferSuccess;
+  const isPending = window.currentTransferPending === true;
+
+  if (isSuccess === null || typeof isSuccess === 'undefined') {
+    __closeResultModalLock = false;
+    return;
+  }
+
+  const wasSuccess = isSuccess === true;
+  const wasPending = isPending === true;
+  window.currentTransferSuccess = null;
+  window.currentTransferPending = false;
+
+  // Capture formulaire
+  const _getVal = function(id) { try { var el = document.getElementById(id); return el ? el.value : ''; } catch(e) { return ''; } };
+  const recipientIban = _getVal('input-iban');
+  const recipientBank = _getVal('input-bank');
+  const recipientSwift = _getVal('input-swift');
+  const recipientName = _getVal('input-name');
+  const recipientReason = _getVal('input-title');
+
+  const amt = pendingTransferAmount || 0;
+  const percent = pendingTransferPercent;
+  const clientId = (currentClient && currentClient.id) || '';
+  const currency = (currentClient && currentClient.currency) || '€';
+
+  // ==== NIVEAU 4 : Navigation SYNCHRONE immédiate (ferme le modal tout de suite) ====
+  try {
+    var allScreens = document.querySelectorAll('.screen');
+    for (var s = 0; s < allScreens.length; s++) allScreens[s].classList.remove('active');
+    var dashEl = document.getElementById('screen-dashboard');
+    if (dashEl) dashEl.classList.add('active');
+    var allNavs = document.querySelectorAll('.nav-item-new');
+    for (var n = 0; n < allNavs.length; n++) allNavs[n].classList.remove('active');
+    var navDashEl = document.getElementById('nav-dashboard');
+    if (navDashEl) navDashEl.classList.add('active');
+    var containerEl = document.querySelector('.screens-container');
+    if (containerEl) containerEl.scrollTop = 0;
+    try { history.replaceState({ tw: true, screen: 'screen-dashboard' }, '', '#screen-dashboard'); } catch(e) {}
+  } catch(e) {}
+
+  pendingTransferAmount = 0;
+  pendingTransferPercent = 100;
+
+  // ==== TRAVAIL EN ARRIÈRE-PLAN (invisible pour l'utilisateur) ====
+  try {
+    const fresh = await FireDB.getClient(clientId);
     if (!fresh) { window.showNotif(t('msgAccountDeleted'), 'error'); window.location.reload(); return; }
     if (fresh.blocked) { window.showNotif(t('msgAccountSuspended'), 'error'); ClientSession.clear(); window.location.reload(); return; }
 
-    const amt = pendingTransferAmount || 0; const percent = pendingTransferPercent;
-    const now = new Date(); const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    const recipientIban = document.getElementById('input-iban').value; const recipientBank = document.getElementById('input-bank').value; const recipientSwift = document.getElementById('input-swift').value; const recipientName = document.getElementById('input-name').value; const recipientReason = document.getElementById('input-title').value;
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
-    let txStatus = 'failed'; if (wasSuccess && wasPending) txStatus = 'pending'; else if (wasSuccess) txStatus = 'done';
+    let txStatus = 'failed';
+    if (wasSuccess && wasPending) txStatus = 'pending';
+    else if (wasSuccess) txStatus = 'done';
+
     const newTx = { type: 'out', labelKey: 'txTransferSent', subtitle: recipientName || (fresh.firstName + ' ' + fresh.lastName), amount: formatAmount(amt, currency), date: dateStr, recipientIban, recipientBank, recipientSwift, recipientReason, status: txStatus, percent };
+
+    // ==== NIVEAU 5 : Vérification anti-doublon côté Firestore ====
+    if (wasSuccess && !wasPending) {
+      const alreadyExists = (fresh.transactions || []).some(function(tx) {
+        return tx && tx.type === 'out' && 
+               tx.amount === newTx.amount && 
+               tx.recipientIban === newTx.recipientIban &&
+               tx.subtitle === newTx.subtitle;
+      });
+      if (alreadyExists) {
+        console.warn('[closeResultModal] Transaction déjà présente dans Firestore, ignorée');
+        return;
+      }
+    }
 
     if (wasSuccess) {
       const newBalance = Math.max(0, (parseFloat(fresh.balance) || 0) - amt);
       const transactions = fresh.transactions || [];
       transactions.unshift(newTx);
-      await FireDB.updateClient(fresh.id, { balance: newBalance, transactions });
+      await FireDB.updateClient(clientId, { balance: newBalance, transactions });
     }
 
     if (fresh.email) {
-      const lang = fresh.language || 'fr'; const T = emailTexts[lang] || emailTexts.fr;
+      const lang = fresh.language || 'fr';
+      const T = emailTexts[lang] || emailTexts.fr;
       if (wasPending) {
         const html = buildPendingTransferEmail(fresh, newTx, lang);
         sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject: T.pendingTransferEmailSubject, html, text: T.pendingTransferEmailIntro }).catch(() => {});
@@ -2327,27 +2396,30 @@ window.closeResultModal = async function() {
       }
     }
 
-    const form = document.getElementById('transfer-form'); if (form) form.reset();
-    const codeInput = document.getElementById('security-code'); if (codeInput) codeInput.value = '';
+    try {
+      const form = document.getElementById('transfer-form'); if (form) form.reset();
+      const codeInput = document.getElementById('security-code'); if (codeInput) codeInput.value = '';
+    } catch(e) {}
     hideAmountError();
-    pendingTransferAmount = 0;
-    window.navigateTo('screen-dashboard');
 
     if (wasPending) {
-      setTimeout(() => { window.showNotif(t('pendingNotifMsg').replace('{amount}', newTx.amount), 'warning', t('pendingNotifTitle')); }, 400);
+      setTimeout(function() { window.showNotif(t('pendingNotifMsg').replace('{amount}', newTx.amount), 'warning', t('pendingNotifTitle')); }, 400);
     } else {
       const tplTitle = wasSuccess ? t('transferSentTitle') : t('transferFailedTitle');
       const tplMsg = wasSuccess ? t('transferSentMsg') : t('transferFailedMsg');
       let msg = tplMsg.replace('{amount}', newTx.amount).replace('{name}', newTx.subtitle).replace('{iban}', newTx.recipientIban || '—');
       if (!wasSuccess) msg = msg.replace('{percent}', percent);
-      setTimeout(() => { window.showNotif(msg, wasSuccess ? 'success' : 'error', tplTitle); }, 400);
+      setTimeout(function() { window.showNotif(msg, wasSuccess ? 'success' : 'error', tplTitle); }, 400);
     }
-    pendingTransferPercent = 100;
   } catch (e) {
     console.error('[closeResultModal]', e);
   } finally {
-    // ==== FIX : on relâche le verrou après un court délai pour permettre le prochain virement ====
-    setTimeout(function () { __closeResultModalLock = false; }, 1500);
+    // Relâcher les locks après un délai pour permettre le PROCHAIN virement
+    setTimeout(function() { 
+      __closeResultModalLock = false;
+      __closeResultModalDone = false;
+      console.log('[closeResultModal] Locks relâchés, prêt pour le prochain virement');
+    }, 2500);
   }
 };
 
