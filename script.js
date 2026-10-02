@@ -1925,7 +1925,7 @@ function renderBankingApp(client) {
       '<div id="screen-transfer" class="screen"><div class="page-title-bar"><div class="page-title-icon"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div><span>' + t('sendOutgoingTransfer') + '</span></div><div class="transfer-amount">' + balanceFormatted + '</div><div class="transfer-card"><div class="details-header"><div class="details-icon">i</div><span>' + t('transferDetails') + '</span></div><form id="transfer-form" autocomplete="off"><div class="form-group"><label class="form-label">' + t('amountToDebit') + '</label><input type="text" inputmode="numeric" pattern="[0-9]*" class="form-input amount-input" id="input-amount" required autocomplete="off"><div class="amount-error-msg" id="amount-error-msg" style="display:none;"></div></div><div class="form-group"><label class="form-label">' + t('labelIban') + '</label><input type="text" class="form-input" id="input-iban" required autocomplete="off"></div><div class="form-group"><label class="form-label">' + t('labelSwift') + '</label><input type="text" class="form-input" id="input-swift" required autocomplete="off"></div><div class="form-group"><label class="form-label">' + t('labelBank') + '</label><input type="text" class="form-input" id="input-bank" required autocomplete="off"></div><div class="form-group"><label class="form-label">' + t('labelBeneficiary') + '</label><input type="text" class="form-input" id="input-name" required autocomplete="off"></div><div class="form-group"><label class="form-label">' + t('labelReason') + '</label><input type="text" class="form-input" id="input-title" required autocomplete="off"></div></form><div class="warning-box"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><div class="warning-text">' + t('processingWarning') + '</div></div></div><button class="submit-btn" onclick="window.submitTransferForm()">' + t('nextBtn') + '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
       '<div id="screen-verification" class="screen"><div class="verify-card"><div class="verify-header"><div class="verify-header-icon"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg></div><div class="verify-header-title">' + t('pendingTitle') + '</div><div class="verify-header-illustration"><svg viewBox="0 0 60 40"><g><rect x="10" y="6" width="42" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="7" y="9" width="42" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="4" y="12" width="42" height="26" rx="2" fill="#fff" stroke="currentColor" stroke-width="1.8"/><circle cx="25" cy="25" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><text x="25" y="29" font-size="8" font-weight="700" text-anchor="middle" fill="currentColor">$</text><path d="M48 30 L56 30 M53 27 L56 30 L53 33" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></svg></div></div><div class="verify-data-block"><div class="verify-list"><div class="verify-row"><div class="verify-row-label">' + t('transferAmountLabel') + '</div><div class="verify-row-value" id="summary-amount">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('beneficiaryLabel') + '</div><div class="verify-row-value" id="summary-name">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('ibanLabel') + ' ' + t('ibanLabelLine2') + '</div><div class="verify-row-value" id="summary-iban">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('swiftLabel') + '</div><div class="verify-row-value" id="summary-swift">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('bankLabel') + '</div><div class="verify-row-value" id="summary-bank">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('reasonLabel') + '</div><div class="verify-row-value" id="summary-title">-</div></div></div><button type="button" class="verify-cancel-btn" onclick="window.cancelTransfer()">' + t('cancelTransferBtn') + ' <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div><div class="verify-separator"></div><div class="verify-lock-row"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><span>' + t('lockText') + '</span></div><label class="verify-code-label">' + t('codeLabel') + '</label><input type="text" class="verify-code-input" id="security-code" placeholder="*******" required></div><button class="submit-btn verify-submit-btn" onclick="window.startProcessing()">' + t('validateTransferBtn') + ' <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
       '<div id="screen-processing" class="screen"><div class="processing-page-title">' + t('processingPageTitle') + '</div><div class="verify-card"><div class="processing-status-row"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>' + t('processingStatus') + '</span></div><div class="processing-desc-text">' + t('processingDescLong') + '</div><div class="processing-circle-wrapper"><div class="processing-circle"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="9"/><circle cx="60" cy="60" r="50" fill="none" stroke="#f59e0b" stroke-width="9" stroke-dasharray="314.159" stroke-dashoffset="314.159" stroke-linecap="round" transform="rotate(-90 60 60)" id="progress-ring"/></svg><div class="processing-circle-label" id="progress-text">0%</div></div></div><div class="processing-details-header"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg><span>' + t('processingDetailsTitle') + '</span></div><div class="verify-data-block"><div class="verify-list"><div class="verify-row"><div class="verify-row-label">' + t('processingAmountLabel') + '</div><div class="verify-row-value" id="processing-amount">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('processingBeneficiaryLabel') + '</div><div class="verify-row-value" id="processing-beneficiary">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('processingIbanLabel') + '</div><div class="verify-row-value" id="processing-iban">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('processingBankLabel') + '</div><div class="verify-row-value" id="processing-bank">-</div></div></div></div></div></div>' +
-      '<div id="screen-result" class="screen"><div class="result-page-wrapper"><div class="result-header-block success" id="result-header-block"><button class="result-close-btn" onclick="window.closeResultModal()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button><div class="result-check-circle success" id="result-check-circle"><svg viewBox="0 0 24 24" id="result-check-svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div></div><div class="result-body-block"><div class="result-title-text success" id="result-title-text"></div><div class="result-details-list" id="result-details-list"></div><div class="result-info-box"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span id="result-info-text"></span></div><div class="result-footer-block"><button class="result-close-action" id="result-close-action" onclick="window.closeResultModal()"></button></div></div></div></div>' +
+      '<div id="screen-result" class="screen"><div class="receipt-v3-wrapper"><div class="receipt-v3-header success" id="r3-header"><div class="receipt-v3-header-circle"><svg id="r3-header-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="receipt-v3-header-title" id="r3-title"></div><div class="receipt-v3-header-sub" id="r3-sub"></div></div><div class="receipt-v3-body"><div class="receipt-v3-amount-card"><div class="receipt-v3-amount-icon" id="r3-amount-icon"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></div><div class="receipt-v3-amount-label" id="r3-amount-label"></div><div class="receipt-v3-amount-value" id="r3-amount-value"></div></div><div class="receipt-v3-parties"><div class="receipt-v3-party"><div class="receipt-v3-party-label" id="r3-sender-label"></div><div class="receipt-v3-party-content"><div class="receipt-v3-party-logo" id="r3-sender-logo"></div><div class="receipt-v3-party-info"><div class="receipt-v3-party-name" id="r3-sender-name"></div><div class="receipt-v3-party-sub" id="r3-sender-sub"></div><div class="receipt-v3-party-iban" id="r3-sender-iban"></div></div></div></div><div class="receipt-v3-arrow"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div><div class="receipt-v3-party"><div class="receipt-v3-party-label" id="r3-receiver-label"></div><div class="receipt-v3-party-content"><div class="receipt-v3-party-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div><div class="receipt-v3-party-info"><div class="receipt-v3-party-name" id="r3-receiver-name"></div><div class="receipt-v3-party-sub" id="r3-receiver-sub"></div><div class="receipt-v3-party-iban" id="r3-receiver-iban"></div></div></div></div></div><div class="receipt-v3-details" id="r3-details"></div><div class="receipt-v3-info"><div class="receipt-v3-info-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div><div class="receipt-v3-info-text" id="r3-info-text"></div><button type="button" class="receipt-v3-share" onclick="window.shareReceipt()" aria-label="Share"><svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button></div></div><button class="receipt-v3-home-btn" onclick="window.closeResultModal()"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span id="r3-home-label"></span></button></div></div>' +
       '<div id="screen-card" class="screen"><div class="info-banner info-banner-blue" id="card-banner"><div class="banner-text">' + t('cardWelcome') + '</div><div class="banner-close" onclick="document.getElementById(\'card-banner\').style.display=\'none\'"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div></div><div class="credit-card"><div><div class="card-brand">YOUNITED</div><div class="card-number">4987 **** **** 3327</div><div class="card-holder">' + getCardHolderName(client) + '</div></div><div class="card-footer"><div><div class="card-expiry">' + t('validUntil') + ' 05/2029</div><div class="card-cvv">CVV : 843</div></div><div class="visa-logo">VISA</div></div></div><div class="card-actions"><button class="btn btn-green" onclick="window.showNotif(\'' + t('activateCardBtn') + '\', \'info\')">' + t('activateCardBtn') + '</button><button class="btn btn-red" onclick="window.showNotif(\'' + t('blockCardBtn') + '\', \'info\')">' + t('blockCardBtn') + '</button></div><div class="card-transactions-title">' + t('cardTransactions') + '</div><div class="spinner-container"><div class="spinner"></div></div></div>' +
       '<div id="screen-profile" class="screen">' + renderProfileScreen(client, initials, balanceFormatted) + '</div>' +
     '</div>' +
@@ -2229,36 +2229,144 @@ window.startProcessing = function() {
   }, 150);
 };
 
+// ===== MODIF : showResultPage avec NOUVEAU REÇU V3 (design rectangulaire propre) =====
 function showResultPage(isSuccess) {
   const now = new Date();
   const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
   const currency = currentClient.currency || '€';
   const amountFormatted = formatAmount(pendingTransferAmount || 0, currency);
-  const iban = document.getElementById('input-iban').value; const swift = document.getElementById('input-swift').value; const bank = document.getElementById('input-bank').value; const name = document.getElementById('input-name').value; const reason = document.getElementById('input-title').value;
-  const headerBlock = document.getElementById('result-header-block'); const checkCircle = document.getElementById('result-check-circle'); const checkSvg = document.getElementById('result-check-svg'); const titleText = document.getElementById('result-title-text'); const detailsList = document.getElementById('result-details-list'); const infoText = document.getElementById('result-info-text'); const closeBtn = document.getElementById('result-close-action');
+  const iban = document.getElementById('input-iban').value;
+  const swift = document.getElementById('input-swift').value;
+  const bank = document.getElementById('input-bank').value;
+  const name = document.getElementById('input-name').value;
+  const reason = document.getElementById('input-title').value;
   const isPending = isSuccess && currentClient && currentClient.pendingTransferEnabled === true;
-  if (isPending) {
-    headerBlock.className = 'result-header-block pending'; checkCircle.className = 'result-check-circle pending';
-    checkSvg.innerHTML = '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>';
-    titleText.className = 'result-title-text pending'; titleText.innerText = t('pendingResultTitle') || 'Virement en attente de validation';
-    infoText.innerText = t('pendingResultMsg') || currentClient.message || '...';
-  } else if (isSuccess) {
-    headerBlock.className = 'result-header-block success'; checkCircle.className = 'result-check-circle success';
-    checkSvg.innerHTML = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
-    titleText.className = 'result-title-text success'; titleText.innerText = t('modalSuccess').replace('{amount}', amountFormatted);
-    infoText.innerText = currentClient.message || '...';
-  } else {
-    headerBlock.className = 'result-header-block failure'; checkCircle.className = 'result-check-circle failure';
-    checkSvg.innerHTML = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
-    titleText.className = 'result-title-text failure'; titleText.innerText = (t('modalFailedAt') || 'Virement {amount} echoue a {percent}%').replace('{amount}', amountFormatted).replace('{percent}', pendingTransferPercent);
-    infoText.innerText = currentClient.message || '...';
+
+  // État : success | failed | pending
+  let state = 'success';
+  if (isPending) state = 'pending';
+  else if (!isSuccess) state = 'failed';
+
+  // Traductions intégrées (5 langues)
+  const L = {
+    fr: { titleSuccess: 'Virement effectué avec succès !', subSuccess: 'Votre virement a bien été pris en compte.', titleFailed: 'Virement échoué', subFailed: 'Votre virement n\'a pas pu être traité.', titlePending: 'Virement en attente', subPending: 'Votre virement est en cours de vérification.', amountLabel: 'Montant transféré', sender: 'Expéditeur', senderSub: 'Compte débité', receiver: 'Bénéficiaire', receiverSub: 'Compte crédité', rowAmount: 'Montant', rowName: 'Nom du bénéficiaire', rowBank: 'Banque bénéficiaire', rowIban: 'IBAN / numéro', rowSwift: 'Code banque', rowReason: 'Motif', rowDate: 'Date et heure', info: 'Ce reçu est une preuve de votre opération.', homeBtn: 'Retour à l\'accueil', senderName: 'YOUNITED' },
+    pl: { titleSuccess: 'Przelew zrealizowany pomyślnie!', subSuccess: 'Twój przelew został przyjęty.', titleFailed: 'Przelew nieudany', subFailed: 'Twój przelew nie mógł zostać przetworzony.', titlePending: 'Przelew oczekujący', subPending: 'Twój przelew jest w trakcie weryfikacji.', amountLabel: 'Przelana kwota', sender: 'Nadawca', senderSub: 'Konto obciążone', receiver: 'Odbiorca', receiverSub: 'Konto uznane', rowAmount: 'Kwota', rowName: 'Nazwa odbiorcy', rowBank: 'Bank odbiorcy', rowIban: 'IBAN / numer', rowSwift: 'Kod banku', rowReason: 'Tytuł', rowDate: 'Data i godzina', info: 'To potwierdzenie jest dowodem Twojej operacji.', homeBtn: 'Powrót do strony głównej', senderName: 'YOUNITED' },
+    es: { titleSuccess: '¡Transferencia realizada con éxito!', subSuccess: 'Su transferencia ha sido recibida.', titleFailed: 'Transferencia fallida', subFailed: 'Su transferencia no ha podido ser procesada.', titlePending: 'Transferencia pendiente', subPending: 'Su transferencia está siendo verificada.', amountLabel: 'Importe transferido', sender: 'Remitente', senderSub: 'Cuenta debitada', receiver: 'Beneficiario', receiverSub: 'Cuenta acreditada', rowAmount: 'Importe', rowName: 'Nombre del beneficiario', rowBank: 'Banco beneficiario', rowIban: 'IBAN / número', rowSwift: 'Código del banco', rowReason: 'Motivo', rowDate: 'Fecha y hora', info: 'Este recibo es prueba de su operación.', homeBtn: 'Volver al inicio', senderName: 'YOUNITED' },
+    it: { titleSuccess: 'Bonifico eseguito con successo!', subSuccess: 'Il tuo bonifico è stato ricevuto.', titleFailed: 'Bonifico fallito', subFailed: 'Il tuo bonifico non è stato elaborato.', titlePending: 'Bonifico in attesa', subPending: 'Il tuo bonifico è in fase di verifica.', amountLabel: 'Importo trasferito', sender: 'Mittente', senderSub: 'Conto addebitato', receiver: 'Beneficiario', receiverSub: 'Conto accreditato', rowAmount: 'Importo', rowName: 'Nome beneficiario', rowBank: 'Banca beneficiario', rowIban: 'IBAN / numero', rowSwift: 'Codice banca', rowReason: 'Causale', rowDate: 'Data e ora', info: 'Questa ricevuta è prova della tua operazione.', homeBtn: 'Torna alla home', senderName: 'YOUNITED' },
+    de: { titleSuccess: 'Überweisung erfolgreich ausgeführt!', subSuccess: 'Ihre Überweisung wurde angenommen.', titleFailed: 'Überweisung fehlgeschlagen', subFailed: 'Ihre Überweisung konnte nicht verarbeitet werden.', titlePending: 'Ausstehende Überweisung', subPending: 'Ihre Überweisung wird überprüft.', amountLabel: 'Überweisungsbetrag', sender: 'Absender', senderSub: 'Belastetes Konto', receiver: 'Begünstigter', receiverSub: 'Gutgeschriebenes Konto', rowAmount: 'Betrag', rowName: 'Name des Begünstigten', rowBank: 'Bank des Begünstigten', rowIban: 'IBAN / Nummer', rowSwift: 'Bankleitzahl', rowReason: 'Verwendungszweck', rowDate: 'Datum und Uhrzeit', info: 'Dieser Beleg ist ein Nachweis Ihrer Transaktion.', homeBtn: 'Zurück zur Startseite', senderName: 'YOUNITED' }
+  };
+  const T = L[currentLang] || L.fr;
+
+  // ===== En-tête =====
+  const headerEl = document.getElementById('r3-header');
+  if (headerEl) headerEl.className = 'receipt-v3-header ' + state;
+
+  const headerIconEl = document.getElementById('r3-header-icon');
+  if (headerIconEl) {
+    if (state === 'success') headerIconEl.innerHTML = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
+    else if (state === 'failed') headerIconEl.innerHTML = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
+    else headerIconEl.innerHTML = '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>';
   }
-  detailsList.innerHTML = '<div class="result-detail-row"><span class="result-detail-label">' + t('receiptAmount') + ' :</span><span class="result-detail-value">' + amountFormatted + '</span></div><div class="result-detail-row"><span class="result-detail-label">' + t('beneficiaryLabel') + '</span><span class="result-detail-value">' + name + '</span></div><div class="result-detail-row"><span class="result-detail-label">' + t('bankLabel') + '</span><span class="result-detail-value">' + bank + '</span></div><div class="result-detail-row"><span class="result-detail-label">' + t('ibanLabel') + '</span><span class="result-detail-value">' + iban + '</span></div><div class="result-detail-row"><span class="result-detail-label">' + t('swiftLabel') + '</span><span class="result-detail-value">' + swift + '</span></div><div class="result-detail-row"><span class="result-detail-label">' + t('reasonLabel') + '</span><span class="result-detail-value">' + reason + '</span></div><div class="result-detail-row"><span class="result-detail-label">' + t('sendTime') + '</span><span class="result-detail-value">' + dateStr + '</span></div>';
-  closeBtn.innerText = t('closeBtn');
+  const titleEl = document.getElementById('r3-title');
+  if (titleEl) titleEl.innerText = state === 'success' ? T.titleSuccess : (state === 'failed' ? T.titleFailed : T.titlePending);
+  const subEl = document.getElementById('r3-sub');
+  if (subEl) subEl.innerText = state === 'success' ? T.subSuccess : (state === 'failed' ? T.subFailed : T.subPending);
+
+  // ===== Montant =====
+  const amountLabelEl = document.getElementById('r3-amount-label');
+  if (amountLabelEl) amountLabelEl.innerText = T.amountLabel;
+  const amountValueEl = document.getElementById('r3-amount-value');
+  if (amountValueEl) amountValueEl.innerText = amountFormatted;
+  const amountIconEl = document.getElementById('r3-amount-icon');
+  if (amountIconEl) {
+    if (state === 'failed') amountIconEl.style.background = '#dc2626';
+    else if (state === 'pending') amountIconEl.style.background = '#d97706';
+    else amountIconEl.style.background = '#10b981';
+  }
+  if (amountValueEl) {
+    if (state === 'failed') amountValueEl.style.color = '#dc2626';
+    else if (state === 'pending') amountValueEl.style.color = '#d97706';
+    else amountValueEl.style.color = '#10b981';
+  }
+
+  // ===== Expéditeur / Bénéficiaire =====
+  const senderLabelEl = document.getElementById('r3-sender-label');
+  if (senderLabelEl) senderLabelEl.innerText = T.sender;
+  const senderNameEl = document.getElementById('r3-sender-name');
+  if (senderNameEl) senderNameEl.innerText = T.senderName;
+  const senderSubEl = document.getElementById('r3-sender-sub');
+  if (senderSubEl) senderSubEl.innerText = T.senderSub;
+  const senderIbanEl = document.getElementById('r3-sender-iban');
+  if (senderIbanEl) {
+    let senderIban = currentClient.iban || '—';
+    if (currentClient.ibanMasked === true) senderIban = maskIban(senderIban);
+    senderIbanEl.innerText = senderIban;
+  }
+  const senderLogoEl = document.getElementById('r3-sender-logo');
+  if (senderLogoEl) {
+    senderLogoEl.innerHTML = '<svg viewBox="0 0 40 40"><rect x="0" y="0" width="40" height="40" rx="8" fill="#1e40af"/><path d="M10 12h16v4H14v4h10v4H14v6h-4V12z" fill="#fff"/><path d="M24 22l6-4v8l-6-4z" fill="#60a5fa"/></svg>';
+  }
+  const receiverLabelEl = document.getElementById('r3-receiver-label');
+  if (receiverLabelEl) receiverLabelEl.innerText = T.receiver;
+  const receiverNameEl = document.getElementById('r3-receiver-name');
+  if (receiverNameEl) receiverNameEl.innerText = name || '—';
+  const receiverSubEl = document.getElementById('r3-receiver-sub');
+  if (receiverSubEl) receiverSubEl.innerText = T.receiverSub;
+  const receiverIbanEl = document.getElementById('r3-receiver-iban');
+  if (receiverIbanEl) receiverIbanEl.innerText = formatIban(iban) || '—';
+
+  // ===== Détails =====
+  const detailsEl = document.getElementById('r3-details');
+  if (detailsEl) {
+    let html = '';
+    html += '<div class="receipt-v3-row"><div class="receipt-v3-row-label">' + T.rowAmount + '</div><div class="receipt-v3-row-value">' + amountFormatted + '</div></div>';
+    html += '<div class="receipt-v3-row"><div class="receipt-v3-row-label">' + T.rowName + '</div><div class="receipt-v3-row-value">' + (name || '—') + '</div></div>';
+    html += '<div class="receipt-v3-row"><div class="receipt-v3-row-label">' + T.rowBank + '</div><div class="receipt-v3-row-value">' + (bank || '—') + '</div></div>';
+    html += '<div class="receipt-v3-row"><div class="receipt-v3-row-label">' + T.rowIban + '</div><div class="receipt-v3-row-value mono">' + (formatIban(iban) || '—') + '</div></div>';
+    html += '<div class="receipt-v3-row"><div class="receipt-v3-row-label">' + T.rowSwift + '</div><div class="receipt-v3-row-value mono">' + (swift || '—') + '</div></div>';
+    html += '<div class="receipt-v3-row"><div class="receipt-v3-row-label">' + T.rowReason + '</div><div class="receipt-v3-row-value">' + (reason || '—') + '</div></div>';
+    html += '<div class="receipt-v3-row"><div class="receipt-v3-row-label">' + T.rowDate + '</div><div class="receipt-v3-row-value">' + dateStr + '</div></div>';
+    detailsEl.innerHTML = html;
+  }
+
+  // ===== Info =====
+  const infoTextEl = document.getElementById('r3-info-text');
+  if (infoTextEl) infoTextEl.innerText = T.info;
+
+  // ===== Bouton retour =====
+  const homeLabelEl = document.getElementById('r3-home-label');
+  if (homeLabelEl) homeLabelEl.innerText = T.homeBtn;
+
+  // Sauvegarde pour closeResultModal
   window.currentTransferSuccess = isSuccess;
   window.currentTransferPending = isPending;
+  window.__receiptSnapshot = { amount: amountFormatted, name: name, bank: bank, iban: iban, swift: swift, reason: reason, date: dateStr, state: state };
+
   window.navigateTo('screen-result');
 }
+
+// ===== MODIF : shareReceipt — partage/copie du reçu =====
+window.shareReceipt = async function() {
+  try {
+    const snap = window.__receiptSnapshot;
+    if (!snap) return;
+    const shareText = 'YOUNITED\n' +
+      'Montant : ' + snap.amount + '\n' +
+      'Bénéficiaire : ' + (snap.name || '—') + '\n' +
+      'Banque : ' + (snap.bank || '—') + '\n' +
+      'IBAN : ' + (snap.iban || '—') + '\n' +
+      'Motif : ' + (snap.reason || '—') + '\n' +
+      'Date : ' + snap.date;
+    if (navigator.share) {
+      try { await navigator.share({ title: 'Reçu YOUNITED', text: shareText }); return; } catch (e) {}
+    }
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareText).then(function() {
+        window.showNotif('Reçu copié dans le presse-papiers.', 'success');
+      }).catch(function() {});
+    }
+  } catch (e) { console.error('[shareReceipt]', e); }
+};
 
 // ============================================================
 // FIX ANTI-DOUBLON V2 : protection multi-niveaux ROBUSTE
@@ -2281,7 +2389,7 @@ window.closeResultModal = async function() {
 
   // ==== NIVEAU 3 : Désactiver IMMÉDIATEMENT tous les boutons de l'écran résultat ====
   try {
-    var allBtns = document.querySelectorAll('#screen-result button, .result-close-btn, .result-close-action');
+    var allBtns = document.querySelectorAll('#screen-result button, .receipt-v3-home-btn, .receipt-v3-share');
     for (var i = 0; i < allBtns.length; i++) {
       try { allBtns[i].disabled = true; allBtns[i].style.pointerEvents = 'none'; allBtns[i].style.opacity = '0.4'; } catch(e) {}
     }
