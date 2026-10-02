@@ -1895,7 +1895,10 @@ function renderProfileScreen(client, initials, balanceFormatted) {
 }
 
 /* ============================================================ */
-/* ===== NOUVEAU : Styles du reçu V4 (1 seule carte) ========== */
+/* ===== Styles du reçu V4 — Version 2 (affinée) ============== */
+/* ===== MODIF : hauteur en-tête réduite, carte bien visible = */
+/* ===== au-dessus du header, coins plus rectangulaires, et === */
+/* ===== trait vertical de séparation entre les 2 parties ===== */
 /* ============================================================ */
 function ensureReceiptV4Styles() {
   if (document.getElementById('receipt-v4-styles')) return;
@@ -1903,23 +1906,23 @@ function ensureReceiptV4Styles() {
   style.id = 'receipt-v4-styles';
   style.textContent = `
     .receipt-v4-wrapper { display: flex; flex-direction: column; min-height: 100%; background: #f1f5f9; padding-bottom: 16px; }
-    .receipt-v4-header { padding: 16px 18px 34px; display: flex; flex-direction: column; align-items: center; gap: 5px; text-align: center; color: #ffffff; flex-shrink: 0; position: relative; }
+    .receipt-v4-header { padding: 12px 18px 26px; display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center; color: #ffffff; flex-shrink: 0; position: relative; }
     .receipt-v4-header.success { background: linear-gradient(135deg, #10b981 0%, #0d9488 100%); }
     .receipt-v4-header.failed { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
     .receipt-v4-header.pending { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-    .receipt-v4-header-circle { width: 44px; height: 44px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.14); margin-bottom: 4px; }
-    .receipt-v4-header-circle svg { width: 22px; height: 22px; fill: #0d9488; }
+    .receipt-v4-header-circle { width: 40px; height: 40px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.14); margin-bottom: 2px; }
+    .receipt-v4-header-circle svg { width: 20px; height: 20px; fill: #0d9488; }
     .receipt-v4-header.failed .receipt-v4-header-circle svg { fill: #dc2626; }
     .receipt-v4-header.pending .receipt-v4-header-circle svg { fill: #d97706; }
-    .receipt-v4-header-title { font-size: 14.5px; font-weight: 800; color: #ffffff; line-height: 1.22; letter-spacing: -0.2px; }
-    .receipt-v4-header-sub { font-size: 10.5px; font-weight: 500; color: rgba(255,255,255,0.92); line-height: 1.3; max-width: 270px; }
-    .receipt-v4-card { background: #ffffff; border-radius: 12px; margin: -20px 10px 10px; padding: 10px 12px 0; box-shadow: 0 3px 12px rgba(15,23,42,0.08); display: flex; flex-direction: column; }
-    .receipt-v4-amount-strip { display: flex; align-items: center; gap: 8px; background: #d1fae5; border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; }
+    .receipt-v4-header-title { font-size: 14px; font-weight: 800; color: #ffffff; line-height: 1.2; letter-spacing: -0.2px; }
+    .receipt-v4-header-sub { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.92); line-height: 1.28; max-width: 270px; }
+    .receipt-v4-card { background: #ffffff; border-radius: 10px; margin: -14px 10px 10px; padding: 18px 12px 0; box-shadow: 0 4px 14px rgba(15,23,42,0.10); display: flex; flex-direction: column; position: relative; z-index: 2; }
+    .receipt-v4-amount-strip { display: flex; align-items: center; gap: 8px; background: #d1fae5; border-radius: 6px; padding: 8px 10px; margin-bottom: 12px; }
     .receipt-v4-amount-icon { width: 22px; height: 22px; border-radius: 50%; background: #0d9488; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .receipt-v4-amount-icon svg { width: 10px; height: 10px; fill: #ffffff; }
     .receipt-v4-amount-label { font-size: 11px; font-weight: 700; color: #065f46; flex: 1; min-width: 0; }
     .receipt-v4-amount-value { font-size: 17px; font-weight: 800; color: #0d9488; letter-spacing: -0.2px; white-space: nowrap; }
-    .receipt-v4-parties { display: grid; grid-template-columns: 1fr auto 1fr; gap: 5px; align-items: start; padding-bottom: 9px; border-bottom: 1px solid #f1f5f9; margin-bottom: 2px; }
+    .receipt-v4-parties { display: grid; grid-template-columns: 1fr auto 1fr; gap: 4px; align-items: start; padding-bottom: 9px; border-bottom: 1px solid #f1f5f9; margin-bottom: 2px; }
     .receipt-v4-party { min-width: 0; }
     .receipt-v4-party-label { font-size: 8.5px; font-weight: 600; color: #94a3b8; margin-bottom: 5px; }
     .receipt-v4-party-content { display: flex; gap: 6px; align-items: flex-start; }
@@ -1931,8 +1934,10 @@ function ensureReceiptV4Styles() {
     .receipt-v4-party-name { font-size: 9.5px; font-weight: 800; color: #0f172a; line-height: 1.18; word-break: break-word; margin-bottom: 1px; }
     .receipt-v4-party-sub { font-size: 7.5px; font-weight: 500; color: #94a3b8; margin-bottom: 1px; }
     .receipt-v4-party-iban { font-size: 7px; font-weight: 600; color: #475569; word-break: break-all; line-height: 1.2; font-family: inherit; }
-    .receipt-v4-arrow { width: 20px; display: flex; align-items: center; justify-content: center; margin-top: 20px; flex-shrink: 0; }
-    .receipt-v4-arrow svg { width: 14px; height: 14px; fill: #0d9488; }
+    .receipt-v4-arrow { width: 20px; display: flex; align-items: center; justify-content: center; margin-top: 20px; flex-shrink: 0; position: relative; }
+    .receipt-v4-arrow svg { width: 14px; height: 14px; fill: #0d9488; position: relative; z-index: 1; }
+    /* MODIF : trait vertical de séparation entre Expéditeur et Bénéficiaire (petit, discret) */
+    .receipt-v4-arrow::before { content: ''; position: absolute; left: -6px; top: 50%; transform: translateY(-50%); height: 42px; width: 1px; background: #cbd5e1; }
     .receipt-v4-details { display: flex; flex-direction: column; }
     .receipt-v4-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid #f1f5f9; }
     .receipt-v4-row:last-child { border-bottom: none; }
