@@ -1895,10 +1895,9 @@ function renderProfileScreen(client, initials, balanceFormatted) {
 }
 
 /* ============================================================ */
-/* ===== Styles du reçu V4 — Version 2 (affinée) ============== */
-/* ===== MODIF : hauteur en-tête réduite, carte bien visible = */
-/* ===== au-dessus du header, coins plus rectangulaires, et === */
-/* ===== trait vertical de séparation entre les 2 parties ===== */
+/* ===== Styles du reçu V4 — Version finale =================== */
+/* ===== MODIF : carte rectangulaire, alignement bénéficiaire = */
+/* ===== au milieu + texte vers la droite, traits de séparation */
 /* ============================================================ */
 function ensureReceiptV4Styles() {
   if (document.getElementById('receipt-v4-styles')) return;
@@ -1916,16 +1915,19 @@ function ensureReceiptV4Styles() {
     .receipt-v4-header.pending .receipt-v4-header-circle svg { fill: #d97706; }
     .receipt-v4-header-title { font-size: 14px; font-weight: 800; color: #ffffff; line-height: 1.2; letter-spacing: -0.2px; }
     .receipt-v4-header-sub { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.92); line-height: 1.28; max-width: 270px; }
-    .receipt-v4-card { background: #ffffff; border-radius: 10px; margin: -14px 10px 10px; padding: 18px 12px 0; box-shadow: 0 4px 14px rgba(15,23,42,0.10); display: flex; flex-direction: column; position: relative; z-index: 2; }
-    .receipt-v4-amount-strip { display: flex; align-items: center; gap: 8px; background: #d1fae5; border-radius: 6px; padding: 8px 10px; margin-bottom: 12px; }
+    /* MODIF : carte plus rectangulaire (border-radius 4px) */
+    .receipt-v4-card { background: #ffffff; border-radius: 4px; margin: -14px 10px 10px; padding: 18px 12px 0; box-shadow: 0 4px 14px rgba(15,23,42,0.10); display: flex; flex-direction: column; position: relative; z-index: 2; }
+    /* MODIF : montant plus rectangulaire (border-radius 3px) */
+    .receipt-v4-amount-strip { display: flex; align-items: center; gap: 8px; background: #d1fae5; border-radius: 3px; padding: 8px 10px; margin-bottom: 12px; }
     .receipt-v4-amount-icon { width: 22px; height: 22px; border-radius: 50%; background: #0d9488; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .receipt-v4-amount-icon svg { width: 10px; height: 10px; fill: #ffffff; }
     .receipt-v4-amount-label { font-size: 11px; font-weight: 700; color: #065f46; flex: 1; min-width: 0; }
     .receipt-v4-amount-value { font-size: 17px; font-weight: 800; color: #0d9488; letter-spacing: -0.2px; white-space: nowrap; }
-    .receipt-v4-parties { display: grid; grid-template-columns: 1fr auto 1fr; gap: 4px; align-items: start; padding-bottom: 9px; border-bottom: 1px solid #f1f5f9; margin-bottom: 2px; }
+    /* MODIF : alignement vertical au centre pour les 2 parties */
+    .receipt-v4-parties { display: grid; grid-template-columns: 1fr auto 1fr; gap: 4px; align-items: center; padding-bottom: 9px; border-bottom: 1px solid #f1f5f9; margin-bottom: 2px; }
     .receipt-v4-party { min-width: 0; }
     .receipt-v4-party-label { font-size: 8.5px; font-weight: 600; color: #94a3b8; margin-bottom: 5px; }
-    .receipt-v4-party-content { display: flex; gap: 6px; align-items: flex-start; }
+    .receipt-v4-party-content { display: flex; gap: 6px; align-items: center; }
     .receipt-v4-party-logo { width: 26px; height: 26px; border-radius: 5px; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
     .receipt-v4-party-logo img, .receipt-v4-party-logo svg { width: 100%; height: 100%; object-fit: contain; display: block; }
     .receipt-v4-party-avatar { width: 26px; height: 26px; border-radius: 50%; background: #ede9fe; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -1934,9 +1936,12 @@ function ensureReceiptV4Styles() {
     .receipt-v4-party-name { font-size: 9.5px; font-weight: 800; color: #0f172a; line-height: 1.18; word-break: break-word; margin-bottom: 1px; }
     .receipt-v4-party-sub { font-size: 7.5px; font-weight: 500; color: #94a3b8; margin-bottom: 1px; }
     .receipt-v4-party-iban { font-size: 7px; font-weight: 600; color: #475569; word-break: break-all; line-height: 1.2; font-family: inherit; }
-    .receipt-v4-arrow { width: 20px; display: flex; align-items: center; justify-content: center; margin-top: 20px; flex-shrink: 0; position: relative; }
+    /* MODIF : partie bénéficiaire (dernière colonne) — contenu aligné à droite */
+    .receipt-v4-parties > .receipt-v4-party:last-child .receipt-v4-party-label { text-align: right; }
+    .receipt-v4-parties > .receipt-v4-party:last-child .receipt-v4-party-info { text-align: right; }
+    .receipt-v4-arrow { width: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; align-self: center; }
     .receipt-v4-arrow svg { width: 14px; height: 14px; fill: #0d9488; position: relative; z-index: 1; }
-    /* MODIF : trait vertical de séparation entre Expéditeur et Bénéficiaire (petit, discret) */
+    /* Trait vertical de séparation entre Expéditeur et Bénéficiaire (petit, discret) */
     .receipt-v4-arrow::before { content: ''; position: absolute; left: -6px; top: 50%; transform: translateY(-50%); height: 42px; width: 1px; background: #cbd5e1; }
     .receipt-v4-details { display: flex; flex-direction: column; }
     .receipt-v4-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid #f1f5f9; }
@@ -2294,7 +2299,7 @@ window.startProcessing = function() {
   }, 150);
 };
 
-// ===== MODIF : showResultPage avec NOUVEAU REÇU V4 (1 seule carte, comme sur l'image) =====
+// ===== MODIF : showResultPage — Reçu V4 + message d'erreur complet (nom + IBAN) =====
 function showResultPage(isSuccess) {
   const now = new Date();
   const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
@@ -2399,25 +2404,36 @@ function showResultPage(isSuccess) {
   window.currentTransferPending = isPending;
   window.__receiptSnapshot = { amount: amountFormatted, name: name, bank: bank, iban: iban, swift: swift, reason: reason, date: dateStr, state: state };
 
-  // ==== Enregistrement IMMÉDIAT de la transaction à 100% (pas au clic du bouton) ====
-  if (isSuccess && !window.__currentTransferSaved) {
+  // ==== MODIF : Enregistrement + envoi d'email POUR TOUS LES CAS (succès, pending, échec) ====
+  // Le doublon est empêché par le flag __currentTransferSaved (fenêtre de 3s).
+  if (!window.__currentTransferSaved) {
     window.__currentTransferSaved = true;
-    saveTransferOnComplete(true, isPending).catch(function (e) { console.error('[saveTransferOnComplete]', e); });
+    saveTransferOnComplete(isSuccess, isPending).catch(function (e) { console.error('[saveTransferOnComplete]', e); });
     setTimeout(function () { window.__currentTransferSaved = false; }, 3000);
-  } else if (!isSuccess) {
+  }
+
+  // ==== MODIF : message d'erreur pour échec AVEC nom + IBAN + montant + pourcentage ====
+  if (!isSuccess) {
     const percent = pendingTransferPercent;
     const tplTitle = t('transferFailedTitle');
     const tplMsg = t('transferFailedMsg');
     const amt = formatAmount(pendingTransferAmount || 0, currency);
-    let msg = tplMsg.replace('{amount}', amt).replace('{percent}', percent);
+    let msg = tplMsg
+      .replace('{amount}', amt)
+      .replace('{name}', name || '—')
+      .replace('{iban}', iban || '—')
+      .replace('{percent}', percent);
     setTimeout(function () { window.showNotif(msg, 'error', tplTitle); }, 400);
   }
 
   window.navigateTo('screen-result');
 }
 
-// ===== NOUVELLE FONCTION : Enregistrement de la transaction à 100% =====
-// Appelée AUTOMATIQUEMENT par showResultPage quand le virement atteint 100%
+// ===== Fonction : Enregistrement de la transaction + envoi de l'email =====
+// Appelée AUTOMATIQUEMENT par showResultPage pour TOUS LES CAS :
+//  - Succès (100%) : enregistre dans Firestore + email de confirmation + PDF
+//  - Pending : enregistre + email "en attente"
+//  - Échec (< 100%) : n'enregistre PAS dans Firestore + email "échec"
 // Anti-doublon multi-niveaux : txId unique + vérification par signature complète
 async function saveTransferOnComplete(isSuccess, isPending) {
   const clientId = (currentClient && currentClient.id) || '';
@@ -2483,7 +2499,8 @@ async function saveTransferOnComplete(isSuccess, isPending) {
     return null;
   }
 
-  // Enregistrement dans Firestore
+  // Enregistrement dans Firestore UNIQUEMENT en cas de succès
+  // (pour pending c'est déjà enregistré via le flux ci-dessus — on n'a rien à faire ici car le pending est différent)
   if (isSuccess) {
     const newBalance = Math.max(0, (parseFloat(fresh.balance) || 0) - amt);
     const transactions = existingTxs.slice();
@@ -2491,7 +2508,7 @@ async function saveTransferOnComplete(isSuccess, isPending) {
     await FireDB.updateClient(clientId, { balance: newBalance, transactions: transactions });
   }
 
-  // Envoi de l'email
+  // Envoi de l'email pour TOUS les cas (succès, pending, échec)
   if (fresh.email) {
     const lang = fresh.language || 'fr';
     const T2 = emailTexts[lang] || emailTexts.fr;
@@ -2556,7 +2573,7 @@ window.shareReceipt = async function() {
 // ============================================================
 // MODIF : closeResultModal — Navigation simple uniquement.
 // La transaction est désormais enregistrée automatiquement
-// à 100% via saveTransferOnComplete (appelée par showResultPage).
+// via saveTransferOnComplete (appelée par showResultPage).
 // ============================================================
 window.closeResultModal = function () {
   // Navigation SYNCHRONE (aucune opération asynchrone ici)
