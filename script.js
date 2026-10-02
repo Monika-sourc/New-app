@@ -1902,52 +1902,53 @@ function ensureReceiptV4Styles() {
   const style = document.createElement('style');
   style.id = 'receipt-v4-styles';
   style.textContent = `
-    .receipt-v4-wrapper { display: flex; flex-direction: column; min-height: 100%; background: #f1f5f9; padding-bottom: 20px; }
-    .receipt-v4-header { padding: 22px 20px 55px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; color: #ffffff; flex-shrink: 0; position: relative; }
+    .receipt-v4-wrapper { display: flex; flex-direction: column; min-height: 100%; background: #f1f5f9; padding-bottom: 16px; }
+    .receipt-v4-header { padding: 16px 18px 34px; display: flex; flex-direction: column; align-items: center; gap: 5px; text-align: center; color: #ffffff; flex-shrink: 0; position: relative; }
     .receipt-v4-header.success { background: linear-gradient(135deg, #10b981 0%, #0d9488 100%); }
     .receipt-v4-header.failed { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
     .receipt-v4-header.pending { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-    .receipt-v4-header-circle { width: 54px; height: 54px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0,0,0,0.15); margin-bottom: 6px; }
-    .receipt-v4-header-circle svg { width: 26px; height: 26px; fill: #0d9488; }
+    .receipt-v4-header-circle { width: 44px; height: 44px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.14); margin-bottom: 4px; }
+    .receipt-v4-header-circle svg { width: 22px; height: 22px; fill: #0d9488; }
     .receipt-v4-header.failed .receipt-v4-header-circle svg { fill: #dc2626; }
     .receipt-v4-header.pending .receipt-v4-header-circle svg { fill: #d97706; }
-    .receipt-v4-header-title { font-size: 16px; font-weight: 800; color: #ffffff; line-height: 1.25; letter-spacing: -0.2px; }
-    .receipt-v4-header-sub { font-size: 11.5px; font-weight: 500; color: rgba(255,255,255,0.92); line-height: 1.35; max-width: 280px; }
-    .receipt-v4-card { background: #ffffff; border-radius: 14px; margin: -38px 12px 12px; padding: 12px 14px 0; box-shadow: 0 4px 16px rgba(15,23,42,0.08); display: flex; flex-direction: column; }
-    .receipt-v4-amount-strip { display: flex; align-items: center; gap: 10px; background: #d1fae5; border-radius: 9px; padding: 10px 12px; margin-bottom: 14px; }
-    .receipt-v4-amount-icon { width: 26px; height: 26px; border-radius: 50%; background: #0d9488; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .receipt-v4-amount-icon svg { width: 12px; height: 12px; fill: #ffffff; }
-    .receipt-v4-amount-label { font-size: 12px; font-weight: 700; color: #065f46; flex: 1; min-width: 0; }
-    .receipt-v4-amount-value { font-size: 20px; font-weight: 800; color: #0d9488; letter-spacing: -0.3px; white-space: nowrap; }
-    .receipt-v4-parties { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; align-items: start; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; margin-bottom: 4px; }
+    .receipt-v4-header-title { font-size: 14.5px; font-weight: 800; color: #ffffff; line-height: 1.22; letter-spacing: -0.2px; }
+    .receipt-v4-header-sub { font-size: 10.5px; font-weight: 500; color: rgba(255,255,255,0.92); line-height: 1.3; max-width: 270px; }
+    .receipt-v4-card { background: #ffffff; border-radius: 12px; margin: -20px 10px 10px; padding: 10px 12px 0; box-shadow: 0 3px 12px rgba(15,23,42,0.08); display: flex; flex-direction: column; }
+    .receipt-v4-amount-strip { display: flex; align-items: center; gap: 8px; background: #d1fae5; border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; }
+    .receipt-v4-amount-icon { width: 22px; height: 22px; border-radius: 50%; background: #0d9488; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .receipt-v4-amount-icon svg { width: 10px; height: 10px; fill: #ffffff; }
+    .receipt-v4-amount-label { font-size: 11px; font-weight: 700; color: #065f46; flex: 1; min-width: 0; }
+    .receipt-v4-amount-value { font-size: 17px; font-weight: 800; color: #0d9488; letter-spacing: -0.2px; white-space: nowrap; }
+    .receipt-v4-parties { display: grid; grid-template-columns: 1fr auto 1fr; gap: 5px; align-items: start; padding-bottom: 9px; border-bottom: 1px solid #f1f5f9; margin-bottom: 2px; }
     .receipt-v4-party { min-width: 0; }
-    .receipt-v4-party-label { font-size: 9.5px; font-weight: 600; color: #94a3b8; margin-bottom: 6px; }
-    .receipt-v4-party-content { display: flex; gap: 7px; align-items: flex-start; }
-    .receipt-v4-party-logo { width: 30px; height: 30px; border-radius: 6px; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+    .receipt-v4-party-label { font-size: 8.5px; font-weight: 600; color: #94a3b8; margin-bottom: 5px; }
+    .receipt-v4-party-content { display: flex; gap: 6px; align-items: flex-start; }
+    .receipt-v4-party-logo { width: 26px; height: 26px; border-radius: 5px; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
     .receipt-v4-party-logo img, .receipt-v4-party-logo svg { width: 100%; height: 100%; object-fit: contain; display: block; }
-    .receipt-v4-party-avatar { width: 30px; height: 30px; border-radius: 50%; background: #ede9fe; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .receipt-v4-party-avatar svg { width: 15px; height: 15px; fill: #8b5cf6; }
+    .receipt-v4-party-avatar { width: 26px; height: 26px; border-radius: 50%; background: #ede9fe; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .receipt-v4-party-avatar svg { width: 13px; height: 13px; fill: #8b5cf6; }
     .receipt-v4-party-info { min-width: 0; flex: 1; }
-    .receipt-v4-party-name { font-size: 10.5px; font-weight: 800; color: #0f172a; line-height: 1.2; word-break: break-word; margin-bottom: 1px; }
-    .receipt-v4-party-sub { font-size: 8.5px; font-weight: 500; color: #94a3b8; margin-bottom: 2px; }
-    .receipt-v4-party-iban { font-size: 8px; font-weight: 600; color: #475569; word-break: break-all; line-height: 1.3; font-family: inherit; }
-    .receipt-v4-arrow { width: 22px; display: flex; align-items: center; justify-content: center; margin-top: 22px; flex-shrink: 0; }
-    .receipt-v4-arrow svg { width: 16px; height: 16px; fill: #0d9488; }
+    .receipt-v4-party-name { font-size: 9.5px; font-weight: 800; color: #0f172a; line-height: 1.18; word-break: break-word; margin-bottom: 1px; }
+    .receipt-v4-party-sub { font-size: 7.5px; font-weight: 500; color: #94a3b8; margin-bottom: 1px; }
+    .receipt-v4-party-iban { font-size: 7px; font-weight: 600; color: #475569; word-break: break-all; line-height: 1.2; font-family: inherit; }
+    .receipt-v4-arrow { width: 20px; display: flex; align-items: center; justify-content: center; margin-top: 20px; flex-shrink: 0; }
+    .receipt-v4-arrow svg { width: 14px; height: 14px; fill: #0d9488; }
     .receipt-v4-details { display: flex; flex-direction: column; }
-    .receipt-v4-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #f1f5f9; }
+    .receipt-v4-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid #f1f5f9; }
     .receipt-v4-row:last-child { border-bottom: none; }
-    .receipt-v4-row-label { font-size: 11px; font-weight: 500; color: #64748b; flex: 1; min-width: 0; line-height: 1.3; }
-    .receipt-v4-row-value { font-size: 11.5px; font-weight: 700; color: #0f172a; text-align: right; max-width: 60%; word-break: break-word; line-height: 1.3; font-family: inherit; }
-    .receipt-v4-info { display: flex; align-items: center; gap: 8px; background: #f0fdf4; border-radius: 8px; padding: 8px 10px; margin: 8px 0 14px; }
-    .receipt-v4-info-icon { width: 18px; height: 18px; border-radius: 50%; background: #0d9488; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .receipt-v4-info-icon svg { width: 9px; height: 9px; fill: #ffffff; }
-    .receipt-v4-info-text { flex: 1; font-size: 10px; font-weight: 500; color: #065f46; line-height: 1.35; min-width: 0; }
-    .receipt-v4-share { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; padding: 0; border-radius: 50%; flex-shrink: 0; }
+    .receipt-v4-row-label { font-size: 10px; font-weight: 500; color: #64748b; flex: 0 0 auto; min-width: 0; line-height: 1.25; }
+    .receipt-v4-row-value { font-size: 10.5px; font-weight: 700; color: #0f172a; text-align: right; max-width: 65%; word-break: break-word; line-height: 1.25; font-family: inherit; }
+    .receipt-v4-row-value.iban-value { font-size: 9px; letter-spacing: 0.2px; font-family: inherit; white-space: nowrap; max-width: 68%; overflow: hidden; text-overflow: clip; }
+    .receipt-v4-info { display: flex; align-items: center; gap: 7px; background: #f0fdf4; border-radius: 7px; padding: 7px 9px; margin: 6px 0 10px; }
+    .receipt-v4-info-icon { width: 16px; height: 16px; border-radius: 50%; background: #0d9488; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .receipt-v4-info-icon svg { width: 8px; height: 8px; fill: #ffffff; }
+    .receipt-v4-info-text { flex: 1; font-size: 9.5px; font-weight: 500; color: #065f46; line-height: 1.32; min-width: 0; }
+    .receipt-v4-share { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; padding: 0; border-radius: 50%; flex-shrink: 0; }
     .receipt-v4-share:active { background: rgba(13,148,136,0.1); }
-    .receipt-v4-share svg { width: 15px; height: 15px; fill: none; stroke: #0d9488; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    .receipt-v4-home-btn { margin: 0 12px 16px; padding: 13px; background: #0d9488; color: #ffffff; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(13,148,136,0.28); transition: transform 0.15s ease; }
+    .receipt-v4-share svg { width: 14px; height: 14px; fill: none; stroke: #0d9488; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .receipt-v4-home-btn { margin: 0 10px 14px; padding: 11px; background: #0d9488; color: #ffffff; border: none; border-radius: 9px; font-size: 12px; font-weight: 700; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 7px; cursor: pointer; box-shadow: 0 3px 10px rgba(13,148,136,0.26); transition: transform 0.15s ease; }
     .receipt-v4-home-btn:active { transform: scale(0.98); }
-    .receipt-v4-home-btn svg { width: 15px; height: 15px; fill: #ffffff; flex-shrink: 0; }
+    .receipt-v4-home-btn svg { width: 14px; height: 14px; fill: #ffffff; flex-shrink: 0; }
   `;
   document.head.appendChild(style);
 }
@@ -2339,11 +2340,11 @@ function showResultPage(isSuccess) {
     else amountValueEl.style.color = '#0d9488';
   }
 
-  // Expéditeur / Bénéficiaire
+  // Expéditeur = YOUNITED (toujours, peu importe la banque du client)
   const senderLabelEl = document.getElementById('r4-sender-label');
   if (senderLabelEl) senderLabelEl.innerText = T.sender;
   const senderNameEl = document.getElementById('r4-sender-name');
-  if (senderNameEl) senderNameEl.innerText = currentClient.bankName || T.senderName;
+  if (senderNameEl) senderNameEl.innerText = T.senderName;
   const senderSubEl = document.getElementById('r4-sender-sub');
   if (senderSubEl) senderSubEl.innerText = T.senderSub;
   const senderIbanEl = document.getElementById('r4-sender-iban');
@@ -2354,11 +2355,7 @@ function showResultPage(isSuccess) {
   }
   const senderLogoEl = document.getElementById('r4-sender-logo');
   if (senderLogoEl) {
-    if (currentClient.bankLogo) {
-      senderLogoEl.innerHTML = '<img src="' + currentClient.bankLogo + '" alt="bank" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src=\'' + FALLBACK_BANK_LOGO + '\';" />';
-    } else {
-      senderLogoEl.innerHTML = '<svg viewBox="0 0 40 40"><rect x="0" y="0" width="40" height="40" rx="8" fill="#1e40af"/><path d="M10 12h16v4H14v4h10v4H14v6h-4V12z" fill="#fff"/><path d="M24 22l6-4v8l-6-4z" fill="#60a5fa"/></svg>';
-    }
+    senderLogoEl.innerHTML = '<svg viewBox="0 0 40 40"><rect x="0" y="0" width="40" height="40" rx="8" fill="#1e40af"/><path d="M10 12h16v4H14v4h10v4H14v6h-4V12z" fill="#fff"/><path d="M24 22l6-4v8l-6-4z" fill="#60a5fa"/></svg>';
   }
   const receiverLabelEl = document.getElementById('r4-receiver-label');
   if (receiverLabelEl) receiverLabelEl.innerText = T.receiver;
@@ -2376,7 +2373,7 @@ function showResultPage(isSuccess) {
     html += '<div class="receipt-v4-row"><div class="receipt-v4-row-label">' + T.rowAmount + '</div><div class="receipt-v4-row-value">' + amountFormatted + '</div></div>';
     html += '<div class="receipt-v4-row"><div class="receipt-v4-row-label">' + T.rowName + '</div><div class="receipt-v4-row-value">' + (name || '—') + '</div></div>';
     html += '<div class="receipt-v4-row"><div class="receipt-v4-row-label">' + T.rowBank + '</div><div class="receipt-v4-row-value">' + (bank || '—') + '</div></div>';
-    html += '<div class="receipt-v4-row"><div class="receipt-v4-row-label">' + T.rowIban + '</div><div class="receipt-v4-row-value">' + (iban || '—') + '</div></div>';
+    html += '<div class="receipt-v4-row"><div class="receipt-v4-row-label">' + T.rowIban + '</div><div class="receipt-v4-row-value iban-value">' + (iban || '—') + '</div></div>';
     html += '<div class="receipt-v4-row"><div class="receipt-v4-row-label">' + T.rowSwift + '</div><div class="receipt-v4-row-value">' + (swift || '—') + '</div></div>';
     html += '<div class="receipt-v4-row"><div class="receipt-v4-row-label">' + T.rowReason + '</div><div class="receipt-v4-row-value">' + (reason || '—') + '</div></div>';
     html += '<div class="receipt-v4-row"><div class="receipt-v4-row-label">' + T.rowDate + '</div><div class="receipt-v4-row-value">' + dateStr + '</div></div>';
