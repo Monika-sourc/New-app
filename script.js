@@ -1894,12 +1894,71 @@ function renderProfileScreen(client, initials, balanceFormatted) {
   '</div>';
 }
 
+/* ============================================================ */
+/* ===== NOUVEAU : Styles du reçu V4 (1 seule carte) ========== */
+/* ============================================================ */
+function ensureReceiptV4Styles() {
+  if (document.getElementById('receipt-v4-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'receipt-v4-styles';
+  style.textContent = `
+    .receipt-v4-wrapper { display: flex; flex-direction: column; min-height: 100%; background: #f1f5f9; padding-bottom: 20px; }
+    .receipt-v4-header { padding: 22px 20px 55px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; color: #ffffff; flex-shrink: 0; position: relative; }
+    .receipt-v4-header.success { background: linear-gradient(135deg, #10b981 0%, #0d9488 100%); }
+    .receipt-v4-header.failed { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+    .receipt-v4-header.pending { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+    .receipt-v4-header-circle { width: 54px; height: 54px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0,0,0,0.15); margin-bottom: 6px; }
+    .receipt-v4-header-circle svg { width: 26px; height: 26px; fill: #0d9488; }
+    .receipt-v4-header.failed .receipt-v4-header-circle svg { fill: #dc2626; }
+    .receipt-v4-header.pending .receipt-v4-header-circle svg { fill: #d97706; }
+    .receipt-v4-header-title { font-size: 16px; font-weight: 800; color: #ffffff; line-height: 1.25; letter-spacing: -0.2px; }
+    .receipt-v4-header-sub { font-size: 11.5px; font-weight: 500; color: rgba(255,255,255,0.92); line-height: 1.35; max-width: 280px; }
+    .receipt-v4-card { background: #ffffff; border-radius: 14px; margin: -38px 12px 12px; padding: 12px 14px 0; box-shadow: 0 4px 16px rgba(15,23,42,0.08); display: flex; flex-direction: column; }
+    .receipt-v4-amount-strip { display: flex; align-items: center; gap: 10px; background: #d1fae5; border-radius: 9px; padding: 10px 12px; margin-bottom: 14px; }
+    .receipt-v4-amount-icon { width: 26px; height: 26px; border-radius: 50%; background: #0d9488; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .receipt-v4-amount-icon svg { width: 12px; height: 12px; fill: #ffffff; }
+    .receipt-v4-amount-label { font-size: 12px; font-weight: 700; color: #065f46; flex: 1; min-width: 0; }
+    .receipt-v4-amount-value { font-size: 20px; font-weight: 800; color: #0d9488; letter-spacing: -0.3px; white-space: nowrap; }
+    .receipt-v4-parties { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; align-items: start; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; margin-bottom: 4px; }
+    .receipt-v4-party { min-width: 0; }
+    .receipt-v4-party-label { font-size: 9.5px; font-weight: 600; color: #94a3b8; margin-bottom: 6px; }
+    .receipt-v4-party-content { display: flex; gap: 7px; align-items: flex-start; }
+    .receipt-v4-party-logo { width: 30px; height: 30px; border-radius: 6px; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+    .receipt-v4-party-logo img, .receipt-v4-party-logo svg { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .receipt-v4-party-avatar { width: 30px; height: 30px; border-radius: 50%; background: #ede9fe; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .receipt-v4-party-avatar svg { width: 15px; height: 15px; fill: #8b5cf6; }
+    .receipt-v4-party-info { min-width: 0; flex: 1; }
+    .receipt-v4-party-name { font-size: 10.5px; font-weight: 800; color: #0f172a; line-height: 1.2; word-break: break-word; margin-bottom: 1px; }
+    .receipt-v4-party-sub { font-size: 8.5px; font-weight: 500; color: #94a3b8; margin-bottom: 2px; }
+    .receipt-v4-party-iban { font-size: 8px; font-weight: 600; color: #475569; word-break: break-all; line-height: 1.3; font-family: inherit; }
+    .receipt-v4-arrow { width: 22px; display: flex; align-items: center; justify-content: center; margin-top: 22px; flex-shrink: 0; }
+    .receipt-v4-arrow svg { width: 16px; height: 16px; fill: #0d9488; }
+    .receipt-v4-details { display: flex; flex-direction: column; }
+    .receipt-v4-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #f1f5f9; }
+    .receipt-v4-row:last-child { border-bottom: none; }
+    .receipt-v4-row-label { font-size: 11px; font-weight: 500; color: #64748b; flex: 1; min-width: 0; line-height: 1.3; }
+    .receipt-v4-row-value { font-size: 11.5px; font-weight: 700; color: #0f172a; text-align: right; max-width: 60%; word-break: break-word; line-height: 1.3; font-family: inherit; }
+    .receipt-v4-info { display: flex; align-items: center; gap: 8px; background: #f0fdf4; border-radius: 8px; padding: 8px 10px; margin: 8px 0 14px; }
+    .receipt-v4-info-icon { width: 18px; height: 18px; border-radius: 50%; background: #0d9488; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .receipt-v4-info-icon svg { width: 9px; height: 9px; fill: #ffffff; }
+    .receipt-v4-info-text { flex: 1; font-size: 10px; font-weight: 500; color: #065f46; line-height: 1.35; min-width: 0; }
+    .receipt-v4-share { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; padding: 0; border-radius: 50%; flex-shrink: 0; }
+    .receipt-v4-share:active { background: rgba(13,148,136,0.1); }
+    .receipt-v4-share svg { width: 15px; height: 15px; fill: none; stroke: #0d9488; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .receipt-v4-home-btn { margin: 0 12px 16px; padding: 13px; background: #0d9488; color: #ffffff; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(13,148,136,0.28); transition: transform 0.15s ease; }
+    .receipt-v4-home-btn:active { transform: scale(0.98); }
+    .receipt-v4-home-btn svg { width: 15px; height: 15px; fill: #ffffff; flex-shrink: 0; }
+  `;
+  document.head.appendChild(style);
+}
+
 function renderBankingApp(client) {
   currentClient = client;
   currentLang = client.language || 'fr';
   applyTheme(client.themeColor);
   ensureGlobalStyles();
   ensureProfileStyles();
+  ensureReceiptV4Styles();
   const root = document.getElementById('app-root');
   const currency = client.currency || '€';
   const balanceFormatted = formatAmount(client.balance || 0, currency);
@@ -1925,7 +1984,7 @@ function renderBankingApp(client) {
       '<div id="screen-transfer" class="screen"><div class="page-title-bar"><div class="page-title-icon"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div><span>' + t('sendOutgoingTransfer') + '</span></div><div class="transfer-amount">' + balanceFormatted + '</div><div class="transfer-card"><div class="details-header"><div class="details-icon">i</div><span>' + t('transferDetails') + '</span></div><form id="transfer-form" autocomplete="off"><div class="form-group"><label class="form-label">' + t('amountToDebit') + '</label><input type="text" inputmode="numeric" pattern="[0-9]*" class="form-input amount-input" id="input-amount" required autocomplete="off"><div class="amount-error-msg" id="amount-error-msg" style="display:none;"></div></div><div class="form-group"><label class="form-label">' + t('labelIban') + '</label><input type="text" class="form-input" id="input-iban" required autocomplete="off"></div><div class="form-group"><label class="form-label">' + t('labelSwift') + '</label><input type="text" class="form-input" id="input-swift" required autocomplete="off"></div><div class="form-group"><label class="form-label">' + t('labelBank') + '</label><input type="text" class="form-input" id="input-bank" required autocomplete="off"></div><div class="form-group"><label class="form-label">' + t('labelBeneficiary') + '</label><input type="text" class="form-input" id="input-name" required autocomplete="off"></div><div class="form-group"><label class="form-label">' + t('labelReason') + '</label><input type="text" class="form-input" id="input-title" required autocomplete="off"></div></form><div class="warning-box"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><div class="warning-text">' + t('processingWarning') + '</div></div></div><button class="submit-btn" onclick="window.submitTransferForm()">' + t('nextBtn') + '<svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
       '<div id="screen-verification" class="screen"><div class="verify-card"><div class="verify-header"><div class="verify-header-icon"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg></div><div class="verify-header-title">' + t('pendingTitle') + '</div><div class="verify-header-illustration"><svg viewBox="0 0 60 40"><g><rect x="10" y="6" width="42" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="7" y="9" width="42" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="4" y="12" width="42" height="26" rx="2" fill="#fff" stroke="currentColor" stroke-width="1.8"/><circle cx="25" cy="25" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><text x="25" y="29" font-size="8" font-weight="700" text-anchor="middle" fill="currentColor">$</text><path d="M48 30 L56 30 M53 27 L56 30 L53 33" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></svg></div></div><div class="verify-data-block"><div class="verify-list"><div class="verify-row"><div class="verify-row-label">' + t('transferAmountLabel') + '</div><div class="verify-row-value" id="summary-amount">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('beneficiaryLabel') + '</div><div class="verify-row-value" id="summary-name">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('ibanLabel') + ' ' + t('ibanLabelLine2') + '</div><div class="verify-row-value" id="summary-iban">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('swiftLabel') + '</div><div class="verify-row-value" id="summary-swift">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('bankLabel') + '</div><div class="verify-row-value" id="summary-bank">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('reasonLabel') + '</div><div class="verify-row-value" id="summary-title">-</div></div></div><button type="button" class="verify-cancel-btn" onclick="window.cancelTransfer()">' + t('cancelTransferBtn') + ' <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div><div class="verify-separator"></div><div class="verify-lock-row"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><span>' + t('lockText') + '</span></div><label class="verify-code-label">' + t('codeLabel') + '</label><input type="text" class="verify-code-input" id="security-code" placeholder="*******" required></div><button class="submit-btn verify-submit-btn" onclick="window.startProcessing()">' + t('validateTransferBtn') + ' <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>' +
       '<div id="screen-processing" class="screen"><div class="processing-page-title">' + t('processingPageTitle') + '</div><div class="verify-card"><div class="processing-status-row"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>' + t('processingStatus') + '</span></div><div class="processing-desc-text">' + t('processingDescLong') + '</div><div class="processing-circle-wrapper"><div class="processing-circle"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="9"/><circle cx="60" cy="60" r="50" fill="none" stroke="#f59e0b" stroke-width="9" stroke-dasharray="314.159" stroke-dashoffset="314.159" stroke-linecap="round" transform="rotate(-90 60 60)" id="progress-ring"/></svg><div class="processing-circle-label" id="progress-text">0%</div></div></div><div class="processing-details-header"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg><span>' + t('processingDetailsTitle') + '</span></div><div class="verify-data-block"><div class="verify-list"><div class="verify-row"><div class="verify-row-label">' + t('processingAmountLabel') + '</div><div class="verify-row-value" id="processing-amount">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('processingBeneficiaryLabel') + '</div><div class="verify-row-value" id="processing-beneficiary">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('processingIbanLabel') + '</div><div class="verify-row-value" id="processing-iban">-</div></div><div class="verify-row"><div class="verify-row-label">' + t('processingBankLabel') + '</div><div class="verify-row-value" id="processing-bank">-</div></div></div></div></div></div>' +
-      '<div id="screen-result" class="screen"><div class="receipt-v3-wrapper"><div class="receipt-v3-header success" id="r3-header"><div class="receipt-v3-header-circle"><svg id="r3-header-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="receipt-v3-header-title" id="r3-title"></div><div class="receipt-v3-header-sub" id="r3-sub"></div></div><div class="receipt-v3-body"><div class="receipt-v3-amount-card"><div class="receipt-v3-amount-icon" id="r3-amount-icon"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></div><div class="receipt-v3-amount-label" id="r3-amount-label"></div><div class="receipt-v3-amount-value" id="r3-amount-value"></div></div><div class="receipt-v3-parties"><div class="receipt-v3-party"><div class="receipt-v3-party-label" id="r3-sender-label"></div><div class="receipt-v3-party-content"><div class="receipt-v3-party-logo" id="r3-sender-logo"></div><div class="receipt-v3-party-info"><div class="receipt-v3-party-name" id="r3-sender-name"></div><div class="receipt-v3-party-sub" id="r3-sender-sub"></div><div class="receipt-v3-party-iban" id="r3-sender-iban"></div></div></div></div><div class="receipt-v3-arrow"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div><div class="receipt-v3-party"><div class="receipt-v3-party-label" id="r3-receiver-label"></div><div class="receipt-v3-party-content"><div class="receipt-v3-party-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div><div class="receipt-v3-party-info"><div class="receipt-v3-party-name" id="r3-receiver-name"></div><div class="receipt-v3-party-sub" id="r3-receiver-sub"></div><div class="receipt-v3-party-iban" id="r3-receiver-iban"></div></div></div></div></div><div class="receipt-v3-details" id="r3-details"></div><div class="receipt-v3-info"><div class="receipt-v3-info-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div><div class="receipt-v3-info-text" id="r3-info-text"></div><button type="button" class="receipt-v3-share" onclick="window.shareReceipt()" aria-label="Share"><svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button></div></div><button class="receipt-v3-home-btn" onclick="window.closeResultModal()"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span id="r3-home-label"></span></button></div></div>' +
+      '<div id="screen-result" class="screen"><div class="receipt-v4-wrapper"><div class="receipt-v4-header success" id="r4-header"><div class="receipt-v4-header-circle"><svg id="r4-header-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="receipt-v4-header-title" id="r4-title"></div><div class="receipt-v4-header-sub" id="r4-sub"></div></div><div class="receipt-v4-card"><div class="receipt-v4-amount-strip"><div class="receipt-v4-amount-icon"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></div><div class="receipt-v4-amount-label" id="r4-amount-label"></div><div class="receipt-v4-amount-value" id="r4-amount-value"></div></div><div class="receipt-v4-parties"><div class="receipt-v4-party"><div class="receipt-v4-party-label" id="r4-sender-label"></div><div class="receipt-v4-party-content"><div class="receipt-v4-party-logo" id="r4-sender-logo"></div><div class="receipt-v4-party-info"><div class="receipt-v4-party-name" id="r4-sender-name"></div><div class="receipt-v4-party-sub" id="r4-sender-sub"></div><div class="receipt-v4-party-iban" id="r4-sender-iban"></div></div></div></div><div class="receipt-v4-arrow"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div><div class="receipt-v4-party"><div class="receipt-v4-party-label" id="r4-receiver-label"></div><div class="receipt-v4-party-content"><div class="receipt-v4-party-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div><div class="receipt-v4-party-info"><div class="receipt-v4-party-name" id="r4-receiver-name"></div><div class="receipt-v4-party-sub" id="r4-receiver-sub"></div><div class="receipt-v4-party-iban" id="r4-receiver-iban"></div></div></div></div></div><div class="receipt-v4-details" id="r4-details"></div><div class="receipt-v4-info"><div class="receipt-v4-info-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div><div class="receipt-v4-info-text" id="r4-info-text"></div><button type="button" class="receipt-v4-share" onclick="window.shareReceipt()" aria-label="Share"><svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button></div></div><button class="receipt-v4-home-btn" onclick="window.closeResultModal()"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span id="r4-home-label"></span></button></div></div>' +
       '<div id="screen-card" class="screen"><div class="info-banner info-banner-blue" id="card-banner"><div class="banner-text">' + t('cardWelcome') + '</div><div class="banner-close" onclick="document.getElementById(\'card-banner\').style.display=\'none\'"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div></div><div class="credit-card"><div><div class="card-brand">YOUNITED</div><div class="card-number">4987 **** **** 3327</div><div class="card-holder">' + getCardHolderName(client) + '</div></div><div class="card-footer"><div><div class="card-expiry">' + t('validUntil') + ' 05/2029</div><div class="card-cvv">CVV : 843</div></div><div class="visa-logo">VISA</div></div></div><div class="card-actions"><button class="btn btn-green" onclick="window.showNotif(\'' + t('activateCardBtn') + '\', \'info\')">' + t('activateCardBtn') + '</button><button class="btn btn-red" onclick="window.showNotif(\'' + t('blockCardBtn') + '\', \'info\')">' + t('blockCardBtn') + '</button></div><div class="card-transactions-title">' + t('cardTransactions') + '</div><div class="spinner-container"><div class="spinner"></div></div></div>' +
       '<div id="screen-profile" class="screen">' + renderProfileScreen(client, initials, balanceFormatted) + '</div>' +
     '</div>' +
@@ -2229,7 +2288,7 @@ window.startProcessing = function() {
   }, 150);
 };
 
-// ===== MODIF : showResultPage avec NOUVEAU REÇU V3 (design rectangulaire propre) =====
+// ===== MODIF : showResultPage avec NOUVEAU REÇU V4 (1 seule carte, comme sur l'image) =====
 function showResultPage(isSuccess) {
   const now = new Date();
   const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
@@ -2242,12 +2301,10 @@ function showResultPage(isSuccess) {
   const reason = document.getElementById('input-title').value;
   const isPending = isSuccess && currentClient && currentClient.pendingTransferEnabled === true;
 
-  // État : success | failed | pending
   let state = 'success';
   if (isPending) state = 'pending';
   else if (!isSuccess) state = 'failed';
 
-  // Traductions intégrées (5 langues)
   const L = {
     fr: { titleSuccess: 'Virement effectué avec succès !', subSuccess: 'Votre virement a bien été pris en compte.', titleFailed: 'Virement échoué', subFailed: 'Votre virement n\'a pas pu être traité.', titlePending: 'Virement en attente', subPending: 'Votre virement est en cours de vérification.', amountLabel: 'Montant transféré', sender: 'Expéditeur', senderSub: 'Compte débité', receiver: 'Bénéficiaire', receiverSub: 'Compte crédité', rowAmount: 'Montant', rowName: 'Nom du bénéficiaire', rowBank: 'Banque bénéficiaire', rowIban: 'IBAN / numéro', rowSwift: 'Code banque', rowReason: 'Motif', rowDate: 'Date et heure', info: 'Ce reçu est une preuve de votre opération.', homeBtn: 'Retour à l\'accueil', senderName: 'YOUNITED' },
     pl: { titleSuccess: 'Przelew zrealizowany pomyślnie!', subSuccess: 'Twój przelew został przyjęty.', titleFailed: 'Przelew nieudany', subFailed: 'Twój przelew nie mógł zostać przetworzony.', titlePending: 'Przelew oczekujący', subPending: 'Twój przelew jest w trakcie weryfikacji.', amountLabel: 'Przelana kwota', sender: 'Nadawca', senderSub: 'Konto obciążone', receiver: 'Odbiorca', receiverSub: 'Konto uznane', rowAmount: 'Kwota', rowName: 'Nazwa odbiorcy', rowBank: 'Bank odbiorcy', rowIban: 'IBAN / numer', rowSwift: 'Kod banku', rowReason: 'Tytuł', rowDate: 'Data i godzina', info: 'To potwierdzenie jest dowodem Twojej operacji.', homeBtn: 'Powrót do strony głównej', senderName: 'YOUNITED' },
@@ -2257,92 +2314,218 @@ function showResultPage(isSuccess) {
   };
   const T = L[currentLang] || L.fr;
 
-  // ===== En-tête =====
-  const headerEl = document.getElementById('r3-header');
-  if (headerEl) headerEl.className = 'receipt-v3-header ' + state;
-
-  const headerIconEl = document.getElementById('r3-header-icon');
+  // En-tête
+  const headerEl = document.getElementById('r4-header');
+  if (headerEl) headerEl.className = 'receipt-v4-header ' + state;
+  const headerIconEl = document.getElementById('r4-header-icon');
   if (headerIconEl) {
     if (state === 'success') headerIconEl.innerHTML = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
     else if (state === 'failed') headerIconEl.innerHTML = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
     else headerIconEl.innerHTML = '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>';
   }
-  const titleEl = document.getElementById('r3-title');
+  const titleEl = document.getElementById('r4-title');
   if (titleEl) titleEl.innerText = state === 'success' ? T.titleSuccess : (state === 'failed' ? T.titleFailed : T.titlePending);
-  const subEl = document.getElementById('r3-sub');
+  const subEl = document.getElementById('r4-sub');
   if (subEl) subEl.innerText = state === 'success' ? T.subSuccess : (state === 'failed' ? T.subFailed : T.subPending);
 
-  // ===== Montant =====
-  const amountLabelEl = document.getElementById('r3-amount-label');
+  // Montant
+  const amountLabelEl = document.getElementById('r4-amount-label');
   if (amountLabelEl) amountLabelEl.innerText = T.amountLabel;
-  const amountValueEl = document.getElementById('r3-amount-value');
-  if (amountValueEl) amountValueEl.innerText = amountFormatted;
-  const amountIconEl = document.getElementById('r3-amount-icon');
-  if (amountIconEl) {
-    if (state === 'failed') amountIconEl.style.background = '#dc2626';
-    else if (state === 'pending') amountIconEl.style.background = '#d97706';
-    else amountIconEl.style.background = '#10b981';
-  }
+  const amountValueEl = document.getElementById('r4-amount-value');
   if (amountValueEl) {
+    amountValueEl.innerText = amountFormatted;
     if (state === 'failed') amountValueEl.style.color = '#dc2626';
     else if (state === 'pending') amountValueEl.style.color = '#d97706';
-    else amountValueEl.style.color = '#10b981';
+    else amountValueEl.style.color = '#0d9488';
   }
 
-  // ===== Expéditeur / Bénéficiaire =====
-  const senderLabelEl = document.getElementById('r3-sender-label');
+  // Expéditeur / Bénéficiaire
+  const senderLabelEl = document.getElementById('r4-sender-label');
   if (senderLabelEl) senderLabelEl.innerText = T.sender;
-  const senderNameEl = document.getElementById('r3-sender-name');
-  if (senderNameEl) senderNameEl.innerText = T.senderName;
-  const senderSubEl = document.getElementById('r3-sender-sub');
+  const senderNameEl = document.getElementById('r4-sender-name');
+  if (senderNameEl) senderNameEl.innerText = currentClient.bankName || T.senderName;
+  const senderSubEl = document.getElementById('r4-sender-sub');
   if (senderSubEl) senderSubEl.innerText = T.senderSub;
-  const senderIbanEl = document.getElementById('r3-sender-iban');
+  const senderIbanEl = document.getElementById('r4-sender-iban');
   if (senderIbanEl) {
     let senderIban = currentClient.iban || '—';
     if (currentClient.ibanMasked === true) senderIban = maskIban(senderIban);
     senderIbanEl.innerText = senderIban;
   }
-  const senderLogoEl = document.getElementById('r3-sender-logo');
+  const senderLogoEl = document.getElementById('r4-sender-logo');
   if (senderLogoEl) {
-    senderLogoEl.innerHTML = '<svg viewBox="0 0 40 40"><rect x="0" y="0" width="40" height="40" rx="8" fill="#1e40af"/><path d="M10 12h16v4H14v4h10v4H14v6h-4V12z" fill="#fff"/><path d="M24 22l6-4v8l-6-4z" fill="#60a5fa"/></svg>';
+    if (currentClient.bankLogo) {
+      senderLogoEl.innerHTML = '<img src="' + currentClient.bankLogo + '" alt="bank" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src=\'' + FALLBACK_BANK_LOGO + '\';" />';
+    } else {
+      senderLogoEl.innerHTML = '<svg viewBox="0 0 40 40"><rect x="0" y="0" width="40" height="40" rx="8" fill="#1e40af"/><path d="M10 12h16v4H14v4h10v4H14v6h-4V12z" fill="#fff"/><path d="M24 22l6-4v8l-6-4z" fill="#60a5fa"/></svg>';
+    }
   }
-  const receiverLabelEl = document.getElementById('r3-receiver-label');
+  const receiverLabelEl = document.getElementById('r4-receiver-label');
   if (receiverLabelEl) receiverLabelEl.innerText = T.receiver;
-  const receiverNameEl = document.getElementById('r3-receiver-name');
+  const receiverNameEl = document.getElementById('r4-receiver-name');
   if (receiverNameEl) receiverNameEl.innerText = name || '—';
-  const receiverSubEl = document.getElementById('r3-receiver-sub');
+  const receiverSubEl = document.getElementById('r4-receiver-sub');
   if (receiverSubEl) receiverSubEl.innerText = T.receiverSub;
-  const receiverIbanEl = document.getElementById('r3-receiver-iban');
-  if (receiverIbanEl) receiverIbanEl.innerText = formatIban(iban) || '—';
+  const receiverIbanEl = document.getElementById('r4-receiver-iban');
+  if (receiverIbanEl) receiverIbanEl.innerText = iban || '—';
 
-  // ===== Détails =====
-  const detailsEl = document.getElementById('r3-details');
+  // Détails
+  const detailsEl = document.getElementById('r4-details');
   if (detailsEl) {
     let html = '';
-    html += '<div class="receipt-v3-row"><div class="receipt-v3-row-label">' + T.rowAmount + '</div><div class="receipt-v3-row-value">' + amountFormatted + '</div></div>';
-    html += '<div class="receipt-v3-row"><div class="receipt-v3-row-label">' + T.rowName + '</div><div class="receipt-v3-row-value">' + (name || '—') + '</div></div>';
-    html += '<div class="receipt-v3-row"><div class="receipt-v3-row-label">' + T.rowBank + '</div><div class="receipt-v3-row-value">' + (bank || '—') + '</div></div>';
-    html += '<div class="receipt-v3-row"><div class="receipt-v3-row-label">' + T.rowIban + '</div><div class="receipt-v3-row-value mono">' + (formatIban(iban) || '—') + '</div></div>';
-    html += '<div class="receipt-v3-row"><div class="receipt-v3-row-label">' + T.rowSwift + '</div><div class="receipt-v3-row-value mono">' + (swift || '—') + '</div></div>';
-    html += '<div class="receipt-v3-row"><div class="receipt-v3-row-label">' + T.rowReason + '</div><div class="receipt-v3-row-value">' + (reason || '—') + '</div></div>';
-    html += '<div class="receipt-v3-row"><div class="receipt-v3-row-label">' + T.rowDate + '</div><div class="receipt-v3-row-value">' + dateStr + '</div></div>';
+    html += '<div class="receipt-v4-row"><div class="receipt-v4-row-label">' + T.rowAmount + '</div><div class="receipt-v4-row-value">' + amountFormatted + '</div></div>';
+    html += '<div class="receipt-v4-row"><div class="receipt-v4-row-label">' + T.rowName + '</div><div class="receipt-v4-row-value">' + (name || '—') + '</div></div>';
+    html += '<div class="receipt-v4-row"><div class="receipt-v4-row-label">' + T.rowBank + '</div><div class="receipt-v4-row-value">' + (bank || '—') + '</div></div>';
+    html += '<div class="receipt-v4-row"><div class="receipt-v4-row-label">' + T.rowIban + '</div><div class="receipt-v4-row-value">' + (iban || '—') + '</div></div>';
+    html += '<div class="receipt-v4-row"><div class="receipt-v4-row-label">' + T.rowSwift + '</div><div class="receipt-v4-row-value">' + (swift || '—') + '</div></div>';
+    html += '<div class="receipt-v4-row"><div class="receipt-v4-row-label">' + T.rowReason + '</div><div class="receipt-v4-row-value">' + (reason || '—') + '</div></div>';
+    html += '<div class="receipt-v4-row"><div class="receipt-v4-row-label">' + T.rowDate + '</div><div class="receipt-v4-row-value">' + dateStr + '</div></div>';
     detailsEl.innerHTML = html;
   }
 
-  // ===== Info =====
-  const infoTextEl = document.getElementById('r3-info-text');
-  if (infoTextEl) infoTextEl.innerText = T.info;
+  // Message de fin = message indiqué par la page admin
+  const infoTextEl = document.getElementById('r4-info-text');
+  if (infoTextEl) {
+    const adminMsg = (currentClient && currentClient.message) ? String(currentClient.message).trim() : '';
+    infoTextEl.innerText = adminMsg || T.info;
+  }
 
-  // ===== Bouton retour =====
-  const homeLabelEl = document.getElementById('r3-home-label');
+  const homeLabelEl = document.getElementById('r4-home-label');
   if (homeLabelEl) homeLabelEl.innerText = T.homeBtn;
 
-  // Sauvegarde pour closeResultModal
   window.currentTransferSuccess = isSuccess;
   window.currentTransferPending = isPending;
   window.__receiptSnapshot = { amount: amountFormatted, name: name, bank: bank, iban: iban, swift: swift, reason: reason, date: dateStr, state: state };
 
+  // ==== Enregistrement IMMÉDIAT de la transaction à 100% (pas au clic du bouton) ====
+  if (isSuccess && !window.__currentTransferSaved) {
+    window.__currentTransferSaved = true;
+    saveTransferOnComplete(true, isPending).catch(function (e) { console.error('[saveTransferOnComplete]', e); });
+    setTimeout(function () { window.__currentTransferSaved = false; }, 3000);
+  } else if (!isSuccess) {
+    const percent = pendingTransferPercent;
+    const tplTitle = t('transferFailedTitle');
+    const tplMsg = t('transferFailedMsg');
+    const amt = formatAmount(pendingTransferAmount || 0, currency);
+    let msg = tplMsg.replace('{amount}', amt).replace('{percent}', percent);
+    setTimeout(function () { window.showNotif(msg, 'error', tplTitle); }, 400);
+  }
+
   window.navigateTo('screen-result');
+}
+
+// ===== NOUVELLE FONCTION : Enregistrement de la transaction à 100% =====
+// Appelée AUTOMATIQUEMENT par showResultPage quand le virement atteint 100%
+// Anti-doublon multi-niveaux : txId unique + vérification par signature complète
+async function saveTransferOnComplete(isSuccess, isPending) {
+  const clientId = (currentClient && currentClient.id) || '';
+  if (!clientId) return null;
+
+  const amt = pendingTransferAmount || 0;
+  const percent = pendingTransferPercent;
+  const currency = (currentClient && currentClient.currency) || '€';
+
+  const _getVal = function (id) { try { var el = document.getElementById(id); return el ? el.value : ''; } catch (e) { return ''; } };
+  const recipientIban = _getVal('input-iban');
+  const recipientBank = _getVal('input-bank');
+  const recipientSwift = _getVal('input-swift');
+  const recipientName = _getVal('input-name');
+  const recipientReason = _getVal('input-title');
+
+  const fresh = await FireDB.getClient(clientId);
+  if (!fresh) return null;
+  if (fresh.blocked) return null;
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+  const txId = 'TX-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+
+  let txStatus = 'failed';
+  if (isPending) txStatus = 'pending';
+  else if (isSuccess) txStatus = 'done';
+
+  const newTx = {
+    txId: txId,
+    type: 'out',
+    labelKey: 'txTransferSent',
+    subtitle: recipientName || (fresh.firstName + ' ' + fresh.lastName),
+    amount: formatAmount(amt, currency),
+    date: dateStr,
+    recipientIban: recipientIban,
+    recipientBank: recipientBank,
+    recipientSwift: recipientSwift,
+    recipientReason: recipientReason,
+    status: txStatus,
+    percent: percent
+  };
+
+  const existingTxs = fresh.transactions || [];
+
+  // ==== ANTI-DOUBLON multi-niveaux ====
+  // 1. Vérification par txId unique (le plus fiable)
+  // 2. Vérification par signature complète (fallback)
+  const isDuplicate = existingTxs.some(function (t) {
+    if (!t) return false;
+    if (t.txId && t.txId === txId) return true;
+    return t.type === 'out' &&
+           t.amount === newTx.amount &&
+           t.recipientIban === newTx.recipientIban &&
+           t.subtitle === newTx.subtitle &&
+           t.date === newTx.date &&
+           t.status === txStatus;
+  });
+
+  if (isDuplicate) {
+    console.warn('[saveTransferOnComplete] Doublon détecté, ignoré');
+    return null;
+  }
+
+  // Enregistrement dans Firestore
+  if (isSuccess) {
+    const newBalance = Math.max(0, (parseFloat(fresh.balance) || 0) - amt);
+    const transactions = existingTxs.slice();
+    transactions.unshift(newTx);
+    await FireDB.updateClient(clientId, { balance: newBalance, transactions: transactions });
+  }
+
+  // Envoi de l'email
+  if (fresh.email) {
+    const lang = fresh.language || 'fr';
+    const T2 = emailTexts[lang] || emailTexts.fr;
+    if (isPending) {
+      const html = buildPendingTransferEmail(fresh, newTx, lang);
+      sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject: T2.pendingTransferEmailSubject, html: html, text: T2.pendingTransferEmailIntro }).catch(function () {});
+    } else {
+      const status = isSuccess ? 'done' : 'failed';
+      let pdfBase64 = null;
+      if (isSuccess) {
+        try { pdfBase64 = await generatePdfReceiptBase64(fresh, newTx, lang); } catch (e) { console.error('[PDF]', e); }
+      }
+      const attachment = pdfBase64 ? {
+        filename: 'Recu_Younited_' + String(newTx.date || '').replace(/[^0-9]/g, '').slice(-10) + '.pdf',
+        content: pdfBase64,
+        encoding: 'base64',
+        contentType: 'application/pdf'
+      } : null;
+      const receiptHtml = buildReceiptEmail(fresh, newTx, status, lang, percent);
+      const subject = isSuccess ? T2.receiptSubject : T2.receiptFailedSubject;
+      const text = isSuccess ? T2.receiptSuccessIntro : T2.receiptFailedIntro.replace('{percent}', percent);
+      sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject: subject, html: receiptHtml, text: text, attachment: attachment }).catch(function () {});
+    }
+  }
+
+  // Notification (après enregistrement réussi)
+  if (isPending) {
+    setTimeout(function () { window.showNotif(t('pendingNotifMsg').replace('{amount}', newTx.amount), 'warning', t('pendingNotifTitle')); }, 400);
+  } else if (isSuccess) {
+    const tplTitle = t('transferSentTitle');
+    const tplMsg = t('transferSentMsg');
+    const msg = tplMsg.replace('{amount}', newTx.amount).replace('{name}', newTx.subtitle).replace('{iban}', newTx.recipientIban || '—');
+    setTimeout(function () { window.showNotif(msg, 'success', tplTitle); }, 400);
+  }
+
+  return txId;
 }
 
 // ===== MODIF : shareReceipt — partage/copie du reçu =====
@@ -2369,166 +2552,43 @@ window.shareReceipt = async function() {
 };
 
 // ============================================================
-// FIX ANTI-DOUBLON V2 : protection multi-niveaux ROBUSTE
+// MODIF : closeResultModal — Navigation simple uniquement.
+// La transaction est désormais enregistrée automatiquement
+// à 100% via saveTransferOnComplete (appelée par showResultPage).
 // ============================================================
-// Ce correctif résout définitivement les doublons en utilisant :
-// 1. Un verrou double (mémoire + flag "déjà exécuté")
-// 2. La désactivation IMMÉDIATE de tous les boutons de l'écran
-// 3. La navigation SYNCHRONE (le modal se ferme tout de suite)
-// 4. La capture des données du formulaire AVANT la navigation
-// 5. Une vérification anti-doublon côté Firestore avant écriture
-// ============================================================
-let __closeResultModalLock = false;
-let __closeResultModalDone = false;
-
-window.closeResultModal = async function() {
-  // ==== NIVEAU 1 : Si déjà traité, on ignore totalement ====
-  if (__closeResultModalDone) { console.log('[closeResultModal] Déjà traité, skip'); return; }
-  // ==== NIVEAU 2 : Si déjà en cours, on ignore ====
-  if (__closeResultModalLock) { console.log('[closeResultModal] En cours, skip'); return; }
-
-  // ==== NIVEAU 3 : Désactiver IMMÉDIATEMENT tous les boutons de l'écran résultat ====
+window.closeResultModal = function () {
+  // Navigation SYNCHRONE (aucune opération asynchrone ici)
   try {
-    var allBtns = document.querySelectorAll('#screen-result button, .receipt-v3-home-btn, .receipt-v3-share');
-    for (var i = 0; i < allBtns.length; i++) {
-      try { allBtns[i].disabled = true; allBtns[i].style.pointerEvents = 'none'; allBtns[i].style.opacity = '0.4'; } catch(e) {}
-    }
-  } catch(e) {}
-
-  __closeResultModalLock = true;
-  __closeResultModalDone = true;
-
-  // ==== Capturer TOUTES les données AVANT toute opération async ====
-  const isSuccess = window.currentTransferSuccess;
-  const isPending = window.currentTransferPending === true;
-
-  if (isSuccess === null || typeof isSuccess === 'undefined') {
-    __closeResultModalLock = false;
-    return;
-  }
-
-  const wasSuccess = isSuccess === true;
-  const wasPending = isPending === true;
-  window.currentTransferSuccess = null;
-  window.currentTransferPending = false;
-
-  // Capture formulaire
-  const _getVal = function(id) { try { var el = document.getElementById(id); return el ? el.value : ''; } catch(e) { return ''; } };
-  const recipientIban = _getVal('input-iban');
-  const recipientBank = _getVal('input-bank');
-  const recipientSwift = _getVal('input-swift');
-  const recipientName = _getVal('input-name');
-  const recipientReason = _getVal('input-title');
-
-  const amt = pendingTransferAmount || 0;
-  const percent = pendingTransferPercent;
-  const clientId = (currentClient && currentClient.id) || '';
-  const currency = (currentClient && currentClient.currency) || '€';
-
-  // ==== NIVEAU 4 : Navigation SYNCHRONE immédiate (ferme le modal tout de suite) ====
-  try {
-    var allScreens = document.querySelectorAll('.screen');
-    for (var s = 0; s < allScreens.length; s++) allScreens[s].classList.remove('active');
-    var dashEl = document.getElementById('screen-dashboard');
+    const allScreens = document.querySelectorAll('.screen');
+    for (let i = 0; i < allScreens.length; i++) allScreens[i].classList.remove('active');
+    const dashEl = document.getElementById('screen-dashboard');
     if (dashEl) dashEl.classList.add('active');
-    var allNavs = document.querySelectorAll('.nav-item-new');
-    for (var n = 0; n < allNavs.length; n++) allNavs[n].classList.remove('active');
-    var navDashEl = document.getElementById('nav-dashboard');
-    if (navDashEl) navDashEl.classList.add('active');
-    var containerEl = document.querySelector('.screens-container');
-    if (containerEl) containerEl.scrollTop = 0;
-    try { history.replaceState({ tw: true, screen: 'screen-dashboard' }, '', '#screen-dashboard'); } catch(e) {}
-  } catch(e) {}
 
+    const allNavs = document.querySelectorAll('.nav-item-new');
+    for (let i = 0; i < allNavs.length; i++) allNavs[i].classList.remove('active');
+    const navDashEl = document.getElementById('nav-dashboard');
+    if (navDashEl) navDashEl.classList.add('active');
+
+    const containerEl = document.querySelector('.screens-container');
+    if (containerEl) containerEl.scrollTop = 0;
+
+    try { history.replaceState({ tw: true, screen: 'screen-dashboard' }, '', '#screen-dashboard'); } catch (e) {}
+  } catch (e) {}
+
+  // Reset du formulaire
+  try {
+    const form = document.getElementById('transfer-form');
+    if (form) form.reset();
+    const codeInput = document.getElementById('security-code');
+    if (codeInput) codeInput.value = '';
+    hideAmountError();
+  } catch (e) {}
+
+  // Reset des états
   pendingTransferAmount = 0;
   pendingTransferPercent = 100;
-
-  // ==== TRAVAIL EN ARRIÈRE-PLAN (invisible pour l'utilisateur) ====
-  try {
-    const fresh = await FireDB.getClient(clientId);
-    if (!fresh) { window.showNotif(t('msgAccountDeleted'), 'error'); window.location.reload(); return; }
-    if (fresh.blocked) { window.showNotif(t('msgAccountSuspended'), 'error'); ClientSession.clear(); window.location.reload(); return; }
-
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-
-    let txStatus = 'failed';
-    if (wasSuccess && wasPending) txStatus = 'pending';
-    else if (wasSuccess) txStatus = 'done';
-
-    const newTx = { type: 'out', labelKey: 'txTransferSent', subtitle: recipientName || (fresh.firstName + ' ' + fresh.lastName), amount: formatAmount(amt, currency), date: dateStr, recipientIban, recipientBank, recipientSwift, recipientReason, status: txStatus, percent };
-
-    // ==== NIVEAU 5 : Vérification anti-doublon côté Firestore ====
-    if (wasSuccess && !wasPending) {
-      const alreadyExists = (fresh.transactions || []).some(function(tx) {
-        return tx && tx.type === 'out' && 
-               tx.amount === newTx.amount && 
-               tx.recipientIban === newTx.recipientIban &&
-               tx.subtitle === newTx.subtitle;
-      });
-      if (alreadyExists) {
-        console.warn('[closeResultModal] Transaction déjà présente dans Firestore, ignorée');
-        return;
-      }
-    }
-
-    if (wasSuccess) {
-      const newBalance = Math.max(0, (parseFloat(fresh.balance) || 0) - amt);
-      const transactions = fresh.transactions || [];
-      transactions.unshift(newTx);
-      await FireDB.updateClient(clientId, { balance: newBalance, transactions });
-    }
-
-    if (fresh.email) {
-      const lang = fresh.language || 'fr';
-      const T = emailTexts[lang] || emailTexts.fr;
-      if (wasPending) {
-        const html = buildPendingTransferEmail(fresh, newTx, lang);
-        sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject: T.pendingTransferEmailSubject, html, text: T.pendingTransferEmailIntro }).catch(() => {});
-      } else {
-        const status = wasSuccess ? 'done' : 'failed';
-        let pdfBase64 = null;
-        if (wasSuccess) {
-          try { pdfBase64 = await generatePdfReceiptBase64(fresh, newTx, lang); } catch (e) { console.error('[PDF client] Erreur:', e); }
-        }
-        const attachment = pdfBase64 ? {
-          filename: 'Recu_Younited_' + String(newTx.date || '').replace(/[^0-9]/g, '').slice(-10) + '.pdf',
-          content: pdfBase64,
-          encoding: 'base64',
-          contentType: 'application/pdf'
-        } : null;
-        const receiptHtml = buildReceiptEmail(fresh, newTx, status, lang, percent);
-        const subject = wasSuccess ? T.receiptSubject : T.receiptFailedSubject;
-        const text = wasSuccess ? T.receiptSuccessIntro : T.receiptFailedIntro.replace('{percent}', percent);
-        sendEmail({ to: fresh.email, name: fresh.firstName + ' ' + fresh.lastName, subject, html: receiptHtml, text, attachment }).catch(() => {});
-      }
-    }
-
-    try {
-      const form = document.getElementById('transfer-form'); if (form) form.reset();
-      const codeInput = document.getElementById('security-code'); if (codeInput) codeInput.value = '';
-    } catch(e) {}
-    hideAmountError();
-
-    if (wasPending) {
-      setTimeout(function() { window.showNotif(t('pendingNotifMsg').replace('{amount}', newTx.amount), 'warning', t('pendingNotifTitle')); }, 400);
-    } else {
-      const tplTitle = wasSuccess ? t('transferSentTitle') : t('transferFailedTitle');
-      const tplMsg = wasSuccess ? t('transferSentMsg') : t('transferFailedMsg');
-      let msg = tplMsg.replace('{amount}', newTx.amount).replace('{name}', newTx.subtitle).replace('{iban}', newTx.recipientIban || '—');
-      if (!wasSuccess) msg = msg.replace('{percent}', percent);
-      setTimeout(function() { window.showNotif(msg, wasSuccess ? 'success' : 'error', tplTitle); }, 400);
-    }
-  } catch (e) {
-    console.error('[closeResultModal]', e);
-  } finally {
-    // Relâcher les locks après un délai pour permettre le PROCHAIN virement
-    setTimeout(function() { 
-      __closeResultModalLock = false;
-      __closeResultModalDone = false;
-      console.log('[closeResultModal] Locks relâchés, prêt pour le prochain virement');
-    }, 2500);
-  }
+  window.currentTransferSuccess = null;
+  window.currentTransferPending = false;
 };
 
 let currentAdmin = null;
