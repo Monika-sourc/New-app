@@ -1703,7 +1703,6 @@ function renderLoginPage(client) {
     const email = document.getElementById('email').value.trim();
     const pin = document.getElementById('pin').value.trim();
 
-    // ==== MODIF : gestion du PIN avec tentative limitée à 3 (affichage IMMÉDIAT) ====
     const lang = client.language || 'fr';
     const MSG = {
       fr: {
@@ -1740,7 +1739,6 @@ function renderLoginPage(client) {
     const M = MSG[lang] || MSG.fr;
 
     if (email === client.email && pin === client.pin) {
-      // ==== MODIF #7 : OPTIMISATION — 1 seul getClient, rendu direct sans re-initClient ====
       try { FireDB.updateClient(client.id, { pinAttempts: 0 }).catch(function () {}); } catch (e2) {}
       showLoader();
       const fresh = await FireDB.getClient(client.id);
@@ -1748,55 +1746,42 @@ function renderLoginPage(client) {
       if (fresh.blocked) { hideLoader(); window.showNotif(t('msgAccountSuspended'), 'error'); return; }
       ClientSession.setActive(client.id);
       replaceHistory('screen-dashboard');
-      // Rendu direct de l'app sans re-fetch Firestore
       currentClient = fresh;
       currentLang = fresh.language || 'fr';
       applyTheme(fresh.themeColor);
       renderBankingApp(fresh);
       hideLoader();
-      // Tâches d'arrière-plan non bloquantes
       registerConnectedDevice(client.id);
       trackClientSession(client.id, true);
     } else {
-      // ==== Code PIN incorrect : affichage IMMÉDIAT (synchrone) sans Firestore ====
       const currentAttempts = (client.pinAttempts || 0);
       const attempts = currentAttempts + 1;
       const remaining = Math.max(0, 3 - attempts);
       const errEl = document.getElementById('error-msg');
 
       if (attempts >= 3) {
-        // Blocage : affichage IMMÉDIAT + sauvegarde Firestore en arrière-plan
         client.pinAttempts = attempts;
         client.blocked = true;
-
         errEl.innerHTML = M.blocked;
         errEl.style.display = 'block';
         errEl.classList.remove('show');
         void errEl.offsetWidth;
         errEl.classList.add('show');
-
-        // Sauvegarde en arrière-plan (ne bloque pas l'UI)
         FireDB.updateClient(client.id, {
           blocked: true,
           pinAttempts: attempts,
           blockedReason: 'pin_attempts_exceeded',
           blockedAt: new Date().toISOString()
         }).catch(function () {});
-
-        // Rediriger vers l'écran bloqué après un court délai
         setTimeout(function () { initClient(); }, 3000);
         return;
       }
-
-      // Afficher IMMÉDIATEMENT le message d'avertissement dans le formulaire
       client.pinAttempts = attempts;
       errEl.innerHTML = M.wrong(remaining);
       errEl.style.display = 'block';
       errEl.classList.remove('show');
       void errEl.offsetWidth;
       errEl.classList.add('show');
-
-      // Sauvegarde en arrière-plan (ne bloque pas l'UI)
       FireDB.updateClient(client.id, { pinAttempts: attempts }).catch(function () {});
     }
   });
@@ -1896,8 +1881,9 @@ function renderProfileScreen(client, initials, balanceFormatted) {
 
 /* ============================================================ */
 /* ===== Styles du reçu V4 — Version finale =================== */
-/* ===== MODIF : carte rectangulaire, alignement bénéficiaire = */
-/* ===== au milieu + texte vers la droite, traits de séparation */
+/* ===== MODIF : valeurs du détail alignées du milieu vers la  */
+/* ===== droite (comme sur l'image de référence). Le contenu   */
+/* ===== à côté du logo reste inchangé (revert).               */
 /* ============================================================ */
 function ensureReceiptV4Styles() {
   if (document.getElementById('receipt-v4-styles')) return;
@@ -1915,19 +1901,17 @@ function ensureReceiptV4Styles() {
     .receipt-v4-header.pending .receipt-v4-header-circle svg { fill: #d97706; }
     .receipt-v4-header-title { font-size: 14px; font-weight: 800; color: #ffffff; line-height: 1.2; letter-spacing: -0.2px; }
     .receipt-v4-header-sub { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.92); line-height: 1.28; max-width: 270px; }
-    /* MODIF : carte plus rectangulaire (border-radius 4px) */
     .receipt-v4-card { background: #ffffff; border-radius: 4px; margin: -14px 10px 10px; padding: 18px 12px 0; box-shadow: 0 4px 14px rgba(15,23,42,0.10); display: flex; flex-direction: column; position: relative; z-index: 2; }
-    /* MODIF : montant plus rectangulaire (border-radius 3px) */
     .receipt-v4-amount-strip { display: flex; align-items: center; gap: 8px; background: #d1fae5; border-radius: 3px; padding: 8px 10px; margin-bottom: 12px; }
     .receipt-v4-amount-icon { width: 22px; height: 22px; border-radius: 50%; background: #0d9488; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .receipt-v4-amount-icon svg { width: 10px; height: 10px; fill: #ffffff; }
     .receipt-v4-amount-label { font-size: 11px; font-weight: 700; color: #065f46; flex: 1; min-width: 0; }
     .receipt-v4-amount-value { font-size: 17px; font-weight: 800; color: #0d9488; letter-spacing: -0.2px; white-space: nowrap; }
-    /* MODIF : alignement vertical au centre pour les 2 parties */
-    .receipt-v4-parties { display: grid; grid-template-columns: 1fr auto 1fr; gap: 4px; align-items: center; padding-bottom: 9px; border-bottom: 1px solid #f1f5f9; margin-bottom: 2px; }
+    /* Partie Expéditeur/Bénéficiaire — reverte à l'état initial */
+    .receipt-v4-parties { display: grid; grid-template-columns: 1fr auto 1fr; gap: 4px; align-items: start; padding-bottom: 9px; border-bottom: 1px solid #f1f5f9; margin-bottom: 2px; }
     .receipt-v4-party { min-width: 0; }
     .receipt-v4-party-label { font-size: 8.5px; font-weight: 600; color: #94a3b8; margin-bottom: 5px; }
-    .receipt-v4-party-content { display: flex; gap: 6px; align-items: center; }
+    .receipt-v4-party-content { display: flex; gap: 6px; align-items: flex-start; }
     .receipt-v4-party-logo { width: 26px; height: 26px; border-radius: 5px; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
     .receipt-v4-party-logo img, .receipt-v4-party-logo svg { width: 100%; height: 100%; object-fit: contain; display: block; }
     .receipt-v4-party-avatar { width: 26px; height: 26px; border-radius: 50%; background: #ede9fe; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -1936,19 +1920,16 @@ function ensureReceiptV4Styles() {
     .receipt-v4-party-name { font-size: 9.5px; font-weight: 800; color: #0f172a; line-height: 1.18; word-break: break-word; margin-bottom: 1px; }
     .receipt-v4-party-sub { font-size: 7.5px; font-weight: 500; color: #94a3b8; margin-bottom: 1px; }
     .receipt-v4-party-iban { font-size: 7px; font-weight: 600; color: #475569; word-break: break-all; line-height: 1.2; font-family: inherit; }
-    /* MODIF : partie bénéficiaire (dernière colonne) — contenu aligné à droite */
-    .receipt-v4-parties > .receipt-v4-party:last-child .receipt-v4-party-label { text-align: right; }
-    .receipt-v4-parties > .receipt-v4-party:last-child .receipt-v4-party-info { text-align: right; }
-    .receipt-v4-arrow { width: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; align-self: center; }
+    .receipt-v4-arrow { width: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; align-self: center; margin-top: 20px; }
     .receipt-v4-arrow svg { width: 14px; height: 14px; fill: #0d9488; position: relative; z-index: 1; }
-    /* Trait vertical de séparation entre Expéditeur et Bénéficiaire (petit, discret) */
     .receipt-v4-arrow::before { content: ''; position: absolute; left: -6px; top: 50%; transform: translateY(-50%); height: 42px; width: 1px; background: #cbd5e1; }
     .receipt-v4-details { display: flex; flex-direction: column; }
-    .receipt-v4-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid #f1f5f9; }
+    /* MODIF : valeurs du détail alignées du milieu vers la droite (label 48% / valeur 52% left-align) */
+    .receipt-v4-row { display: flex; justify-content: flex-start; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid #f1f5f9; }
     .receipt-v4-row:last-child { border-bottom: none; }
-    .receipt-v4-row-label { font-size: 10px; font-weight: 500; color: #64748b; flex: 0 0 auto; min-width: 0; line-height: 1.25; }
-    .receipt-v4-row-value { font-size: 10.5px; font-weight: 700; color: #0f172a; text-align: right; max-width: 65%; word-break: break-word; line-height: 1.25; font-family: inherit; }
-    .receipt-v4-row-value.iban-value { font-size: 9px; letter-spacing: 0.2px; font-family: inherit; white-space: nowrap; max-width: 68%; overflow: hidden; text-overflow: clip; }
+    .receipt-v4-row-label { font-size: 10px; font-weight: 500; color: #64748b; flex: 0 0 48%; min-width: 0; line-height: 1.25; }
+    .receipt-v4-row-value { font-size: 10.5px; font-weight: 700; color: #0f172a; text-align: left; flex: 1 1 52%; min-width: 0; word-break: break-word; line-height: 1.25; font-family: inherit; }
+    .receipt-v4-row-value.iban-value { font-size: 9px; letter-spacing: 0.2px; font-family: inherit; white-space: nowrap; overflow: hidden; text-overflow: clip; }
     .receipt-v4-info { display: flex; align-items: center; gap: 7px; background: #f0fdf4; border-radius: 7px; padding: 7px 9px; margin: 6px 0 10px; }
     .receipt-v4-info-icon { width: 16px; height: 16px; border-radius: 50%; background: #0d9488; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .receipt-v4-info-icon svg { width: 8px; height: 8px; fill: #ffffff; }
@@ -2231,39 +2212,28 @@ window.startProcessing = function() {
   const M = MSG[lang] || MSG.fr;
 
   if (code !== currentClient.activationCode) {
-    // ==== Code incorrect : affichage IMMÉDIAT (synchrone) sans Firestore ====
     const currentAttempts = (currentClient.activationAttempts || 0);
     const attempts = currentAttempts + 1;
     const remaining = Math.max(0, 3 - attempts);
 
     if (attempts >= 3) {
-      // Blocage : affichage IMMÉDIAT + sauvegarde Firestore en arrière-plan
       currentClient.activationAttempts = attempts;
       currentClient.blocked = true;
-
       window.showNotif(M.blocked, 'error', M.titleBlocked);
-
       FireDB.updateClient(currentClient.id, {
         blocked: true,
         activationAttempts: attempts,
         blockedReason: 'activation_attempts_exceeded',
         blockedAt: new Date().toISOString()
       }).catch(function () {});
-
-      // Le listener onSnapshot détecte blocked:true → l'écran bloqué s'affichera automatiquement
       return;
     }
-
-    // Affichage IMMÉDIAT du message d'avertissement
     currentClient.activationAttempts = attempts;
     window.showNotif(M.wrong(remaining), 'warning', M.titleWrong);
-
-    // Sauvegarde en arrière-plan (ne bloque pas l'UI)
     FireDB.updateClient(currentClient.id, { activationAttempts: attempts }).catch(function () {});
     return;
   }
 
-  // Code correct : on remet le compteur à zéro en arrière-plan
   if (currentClient.activationAttempts && currentClient.activationAttempts > 0) {
     currentClient.activationAttempts = 0;
     try { FireDB.updateClient(currentClient.id, { activationAttempts: 0 }).catch(function () {}); } catch (e2) {}
@@ -2299,7 +2269,7 @@ window.startProcessing = function() {
   }, 150);
 };
 
-// ===== MODIF : showResultPage — Reçu V4 + message d'erreur complet (nom + IBAN) =====
+// ===== showResultPage — Reçu V4 + message d'erreur complet (nom + IBAN) =====
 function showResultPage(isSuccess) {
   const now = new Date();
   const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
@@ -2325,7 +2295,6 @@ function showResultPage(isSuccess) {
   };
   const T = L[currentLang] || L.fr;
 
-  // En-tête
   const headerEl = document.getElementById('r4-header');
   if (headerEl) headerEl.className = 'receipt-v4-header ' + state;
   const headerIconEl = document.getElementById('r4-header-icon');
@@ -2339,7 +2308,6 @@ function showResultPage(isSuccess) {
   const subEl = document.getElementById('r4-sub');
   if (subEl) subEl.innerText = state === 'success' ? T.subSuccess : (state === 'failed' ? T.subFailed : T.subPending);
 
-  // Montant
   const amountLabelEl = document.getElementById('r4-amount-label');
   if (amountLabelEl) amountLabelEl.innerText = T.amountLabel;
   const amountValueEl = document.getElementById('r4-amount-value');
@@ -2350,7 +2318,6 @@ function showResultPage(isSuccess) {
     else amountValueEl.style.color = '#0d9488';
   }
 
-  // Expéditeur = YOUNITED (toujours, peu importe la banque du client)
   const senderLabelEl = document.getElementById('r4-sender-label');
   if (senderLabelEl) senderLabelEl.innerText = T.sender;
   const senderNameEl = document.getElementById('r4-sender-name');
@@ -2376,7 +2343,6 @@ function showResultPage(isSuccess) {
   const receiverIbanEl = document.getElementById('r4-receiver-iban');
   if (receiverIbanEl) receiverIbanEl.innerText = iban || '—';
 
-  // Détails
   const detailsEl = document.getElementById('r4-details');
   if (detailsEl) {
     let html = '';
@@ -2390,7 +2356,6 @@ function showResultPage(isSuccess) {
     detailsEl.innerHTML = html;
   }
 
-  // Message de fin = message indiqué par la page admin
   const infoTextEl = document.getElementById('r4-info-text');
   if (infoTextEl) {
     const adminMsg = (currentClient && currentClient.message) ? String(currentClient.message).trim() : '';
@@ -2404,15 +2369,12 @@ function showResultPage(isSuccess) {
   window.currentTransferPending = isPending;
   window.__receiptSnapshot = { amount: amountFormatted, name: name, bank: bank, iban: iban, swift: swift, reason: reason, date: dateStr, state: state };
 
-  // ==== MODIF : Enregistrement + envoi d'email POUR TOUS LES CAS (succès, pending, échec) ====
-  // Le doublon est empêché par le flag __currentTransferSaved (fenêtre de 3s).
   if (!window.__currentTransferSaved) {
     window.__currentTransferSaved = true;
     saveTransferOnComplete(isSuccess, isPending).catch(function (e) { console.error('[saveTransferOnComplete]', e); });
     setTimeout(function () { window.__currentTransferSaved = false; }, 3000);
   }
 
-  // ==== MODIF : message d'erreur pour échec AVEC nom + IBAN + montant + pourcentage ====
   if (!isSuccess) {
     const percent = pendingTransferPercent;
     const tplTitle = t('transferFailedTitle');
@@ -2429,12 +2391,6 @@ function showResultPage(isSuccess) {
   window.navigateTo('screen-result');
 }
 
-// ===== Fonction : Enregistrement de la transaction + envoi de l'email =====
-// Appelée AUTOMATIQUEMENT par showResultPage pour TOUS LES CAS :
-//  - Succès (100%) : enregistre dans Firestore + email de confirmation + PDF
-//  - Pending : enregistre + email "en attente"
-//  - Échec (< 100%) : n'enregistre PAS dans Firestore + email "échec"
-// Anti-doublon multi-niveaux : txId unique + vérification par signature complète
 async function saveTransferOnComplete(isSuccess, isPending) {
   const clientId = (currentClient && currentClient.id) || '';
   if (!clientId) return null;
@@ -2480,9 +2436,6 @@ async function saveTransferOnComplete(isSuccess, isPending) {
 
   const existingTxs = fresh.transactions || [];
 
-  // ==== ANTI-DOUBLON multi-niveaux ====
-  // 1. Vérification par txId unique (le plus fiable)
-  // 2. Vérification par signature complète (fallback)
   const isDuplicate = existingTxs.some(function (t) {
     if (!t) return false;
     if (t.txId && t.txId === txId) return true;
@@ -2499,8 +2452,6 @@ async function saveTransferOnComplete(isSuccess, isPending) {
     return null;
   }
 
-  // Enregistrement dans Firestore UNIQUEMENT en cas de succès
-  // (pour pending c'est déjà enregistré via le flux ci-dessus — on n'a rien à faire ici car le pending est différent)
   if (isSuccess) {
     const newBalance = Math.max(0, (parseFloat(fresh.balance) || 0) - amt);
     const transactions = existingTxs.slice();
@@ -2508,7 +2459,6 @@ async function saveTransferOnComplete(isSuccess, isPending) {
     await FireDB.updateClient(clientId, { balance: newBalance, transactions: transactions });
   }
 
-  // Envoi de l'email pour TOUS les cas (succès, pending, échec)
   if (fresh.email) {
     const lang = fresh.language || 'fr';
     const T2 = emailTexts[lang] || emailTexts.fr;
@@ -2534,7 +2484,6 @@ async function saveTransferOnComplete(isSuccess, isPending) {
     }
   }
 
-  // Notification (après enregistrement réussi)
   if (isPending) {
     setTimeout(function () { window.showNotif(t('pendingNotifMsg').replace('{amount}', newTx.amount), 'warning', t('pendingNotifTitle')); }, 400);
   } else if (isSuccess) {
@@ -2547,7 +2496,6 @@ async function saveTransferOnComplete(isSuccess, isPending) {
   return txId;
 }
 
-// ===== MODIF : shareReceipt — partage/copie du reçu =====
 window.shareReceipt = async function() {
   try {
     const snap = window.__receiptSnapshot;
@@ -2570,13 +2518,7 @@ window.shareReceipt = async function() {
   } catch (e) { console.error('[shareReceipt]', e); }
 };
 
-// ============================================================
-// MODIF : closeResultModal — Navigation simple uniquement.
-// La transaction est désormais enregistrée automatiquement
-// via saveTransferOnComplete (appelée par showResultPage).
-// ============================================================
 window.closeResultModal = function () {
-  // Navigation SYNCHRONE (aucune opération asynchrone ici)
   try {
     const allScreens = document.querySelectorAll('.screen');
     for (let i = 0; i < allScreens.length; i++) allScreens[i].classList.remove('active');
@@ -2594,7 +2536,6 @@ window.closeResultModal = function () {
     try { history.replaceState({ tw: true, screen: 'screen-dashboard' }, '', '#screen-dashboard'); } catch (e) {}
   } catch (e) {}
 
-  // Reset du formulaire
   try {
     const form = document.getElementById('transfer-form');
     if (form) form.reset();
@@ -2603,7 +2544,6 @@ window.closeResultModal = function () {
     hideAmountError();
   } catch (e) {}
 
-  // Reset des états
   pendingTransferAmount = 0;
   pendingTransferPercent = 100;
   window.currentTransferSuccess = null;
@@ -2900,7 +2840,6 @@ window.openClientDetail = async function(id) {
   ov.id = 'client-detail-modal';
   ov.style.cssText = 'position:fixed!important;inset:0!important;background:rgba(15,23,42,0.75)!important;display:block!important;z-index:2147483647!important;overflow-y:auto!important;padding:16px 10px 30px 10px!important;box-sizing:border-box!important;';
 
-  /* ROWS dans cartes */
   const row = (label, value, mono) => '<div class="detail-row"><div class="detail-row-label">' + label + '</div><div class="detail-row-value' + (mono ? ' mono' : '') + '">' + (value || '-') + '</div></div>';
   const sectionCard = (title, contentHtml) => '<div class="detail-section-card"><div class="detail-section-title">' + title + '</div>' + contentHtml + '</div>';
 
@@ -2922,7 +2861,6 @@ window.openClientDetail = async function(id) {
   const onlineLabel = isOnline ? '● En ligne' : '● Hors ligne';
   const connectionBlock = '<div class="connection-status-card"><div class="connection-status-header" style="background:' + onlineBg + ';color:' + onlineColor + ';"><span class="connection-status-dot" style="background:' + onlineColor + ';"></span><span class="connection-status-text">' + onlineLabel + '</span></div><div class="connection-status-body">' + row('Derniere connexion', c.lastLoginAt || 'Jamais') + row('Pays de connexion', c.lastLoginCountry || '—') + (c.lastLoginCity && c.lastLoginCity !== '—' ? row('Ville', c.lastLoginCity) : '') + (c.lastLoginRegion && c.lastLoginRegion !== '—' ? row('Region', c.lastLoginRegion) : '') + (c.lastLoginIp && c.lastLoginIp !== '—' ? row('Adresse IP', c.lastLoginIp, true) : '') + '</div></div>';
 
-  /* === CONSTRUCTION : chaque sous-titre = carte === */
   var statusGridHtml = '<div class="detail-status-grid">' +
       '<div class="detail-status-box ' + (c.blocked ? 'blocked' : 'active') + '"><div class="detail-status-label">Statut</div><div class="detail-status-value">' + (c.blocked ? 'Suspendu' : 'Actif') + '</div></div>' +
       '<div class="detail-status-box balance"><div class="detail-status-label">Solde</div><div class="detail-status-value">' + balance + '</div></div>' +
@@ -3061,7 +2999,6 @@ window.applyQuickAction = async function() {
   if (!action) { window.showNotif('Veuillez selectionner une action.', 'warning'); return; }
   if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; }
 
-  // ==== OPTIMISATION : utiliser le cache local pour éviter un aller-retour Firestore ====
   const cachedClients = window.__adminClients || {};
   let client = cachedClients[clientId];
   if (!client) {
@@ -3071,9 +3008,7 @@ window.applyQuickAction = async function() {
 
   if (client.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
 
-  // ==== FONCTION INTERNE : ferme IMMÉDIATEMENT le modal et rafraîchit la liste locale ====
   const closeModalAndRefreshList = () => {
-    // 1. Fermer immédiatement le modal (cacher tous les panneaux d'options)
     const card = document.querySelector('#admin-root .quick-actions-card');
     if (card) {
       const panels = card.querySelectorAll('.option-panel');
@@ -3081,17 +3016,13 @@ window.applyQuickAction = async function() {
       const closeBtn = card.querySelector('.qa-modal-close');
       if (closeBtn) closeBtn.remove();
     }
-    // 2. Réinitialiser le sélecteur d'action
     const sel = document.getElementById('qa-action-select');
     if (sel) sel.value = '';
-    // 3. Réinitialiser le sélecteur de client
     const clientSel = document.getElementById('qa-client-select');
     if (clientSel) clientSel.value = '';
-    // 4. Rafraîchir UNIQUEMENT la liste des clients (sans recharger depuis Firestore)
     refreshClientListLocally();
   };
 
-  // ==== FONCTION INTERNE : reconstruit la liste des clients depuis le cache local ====
   const refreshClientListLocally = () => {
     const cached = window.__adminClients || {};
     const list = Object.keys(cached);
@@ -3115,14 +3046,12 @@ window.applyQuickAction = async function() {
       rowsHtml = '<div class="client-list-card">' + rowsHtml + '</div>';
     }
 
-    // Mettre à jour le compteur et la liste
     const listContainer = document.querySelector('#admin-root .client-list');
     if (listContainer) listContainer.innerHTML = rowsHtml;
 
     const countEl = document.querySelector('#admin-root .client-list-title .count');
     if (countEl) countEl.textContent = sortedByCreation.length;
 
-    // Mettre à jour les stats
     const activeCount = list.filter(id => !cached[id].blocked).length;
     const statVals = document.querySelectorAll('#admin-root .stats-grid .stat-card .val');
     if (statVals && statVals.length >= 2) {
@@ -3131,7 +3060,6 @@ window.applyQuickAction = async function() {
     }
   };
 
-  // ==== FONCTION INTERNE : met à jour le cache local après une modification ====
   const updateCacheLocal = (updates) => {
     if (!window.__adminClients) window.__adminClients = {};
     if (!window.__adminClients[clientId]) window.__adminClients[clientId] = {};
@@ -3140,12 +3068,9 @@ window.applyQuickAction = async function() {
 
   if (action === 'reset') {
     window.showConfirm('Voulez-vous vraiment reinitialiser l\'historique et le solde de ce client ?', async () => {
-      // Fermer le modal IMMÉDIATEMENT (visuel instantané)
       closeModalAndRefreshList();
-      // Mettre à jour le cache local immédiatement
       updateCacheLocal({ balance: 0, transactions: [] });
       refreshClientListLocally();
-      // Écriture Firestore en arrière-plan
       await FireDB.updateClient(clientId, { balance: 0, transactions: [] });
       window.showNotif('Le compte a ete reinitialise.', 'success', 'Reinitialisation');
     }, 'Reinitialiser le compte', 'warning');
@@ -3163,13 +3088,9 @@ window.applyQuickAction = async function() {
     const newTx = { type: type, labelKey: type === 'in' ? 'txTransferReceived' : 'txTransferSent', subtitle: label || bankNameSelected, amount: formatAmount(amount, currency), date: dateStr, senderIban: type === 'in' ? client.iban : undefined, bankLogo: bankLogoSelected || '', bankDomain: bankDomainSelected || '' };
     const transactions = (client.transactions || []).slice(); transactions.unshift(newTx);
     let newBalance = parseFloat(client.balance) || 0; if (type === 'in') newBalance += amount; else newBalance = Math.max(0, newBalance - amount);
-
-    // Mise à jour du cache + fermeture + rafraîchissement IMMÉDIAT
     updateCacheLocal({ balance: newBalance, transactions: transactions });
     closeModalAndRefreshList();
     window.showNotif('Le virement a ete ajoute avec succes.', 'success', 'Virement ajoute');
-
-    // Écriture Firestore en arrière-plan
     FireDB.updateClient(clientId, { balance: newBalance, transactions }).catch(() => {});
   }
   else if (action === 'edit-iban') { const newIban = document.getElementById('qa-iban-value').value.trim().replace(/\s+/g, ''); const newBic = document.getElementById('qa-bic-value').value.trim().toUpperCase(); const masked = document.getElementById('qa-iban-masked').checked; if (!newIban || !newBic) { window.showNotif('Remplissez tous les champs.', 'warning'); return; } updateCacheLocal({ iban: newIban, bic: newBic, ibanMasked: masked }); closeModalAndRefreshList(); window.showNotif('IBAN et BIC mis a jour.', 'success', 'Banque mise a jour'); FireDB.updateClient(clientId, { iban: newIban, bic: newBic, ibanMasked: masked }).catch(() => {}); }
@@ -3217,23 +3138,12 @@ window.saDeleteAdmin = function (uid, email) { window.showConfirm('Voulez-vous v
 
 window.addEventListener('error', () => {});
 
-/* ============================================================ */
-/* ===== MODIFICATION : Bouton ✕ de fermeture de la fenêtre === */
-/* ============================================================ */
-/* Ce bloc injecte automatiquement un bouton "✕" dans le        */
-/* fenêtre modale d'options admin dès qu'une option est         */
-/* affichée. Ce bouton permet de fermer la fenêtre sans         */
-/* appliquer aucune modification, ce qui fait réapparaître les  */
-/* autres parties de la page admin normalement.                 */
-/* ============================================================ */
 (function () {
   'use strict';
 
   function ensureCloseButton() {
     var card = document.querySelector('#admin-root .quick-actions-card');
     if (!card) return;
-
-    // Y a-t-il un panneau d'options visible ?
     var panels = card.querySelectorAll('.option-panel');
     var anyVisible = false;
     for (var i = 0; i < panels.length; i++) {
@@ -3242,39 +3152,30 @@ window.addEventListener('error', () => {});
         break;
       }
     }
-
     var existingBtn = card.querySelector('.qa-modal-close');
-
     if (anyVisible && !existingBtn) {
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'qa-modal-close';
       btn.setAttribute('aria-label', 'Fermer');
       btn.innerHTML = '✕';
-
       btn.addEventListener('click', function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
-        // Cacher tous les panneaux d'options
         var ps = card.querySelectorAll('.option-panel');
         for (var j = 0; j < ps.length; j++) {
           ps[j].style.display = 'none';
         }
-        // Réinitialiser le sélecteur d'action
         var sel = document.getElementById('qa-action-select');
         if (sel) sel.value = '';
-        // Retirer le bouton
         btn.remove();
       });
-
       card.appendChild(btn);
     } else if (!anyVisible && existingBtn) {
       existingBtn.remove();
     }
   }
 
-  // Observer les changements sur la page admin (déclenché quand
-  // le style d'un .option-panel change de 'none' à 'block')
   var observer = new MutationObserver(function () {
     ensureCloseButton();
   });
@@ -3285,7 +3186,6 @@ window.addEventListener('error', () => {});
     attributeFilter: ['style']
   });
 
-  // Tentative immédiate au cas où le DOM est déjà prêt
   setTimeout(ensureCloseButton, 400);
 })();
 
