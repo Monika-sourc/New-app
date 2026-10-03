@@ -189,10 +189,8 @@ async function trackClientSession(clientId, isOnline) {
     var now = new Date();
     var loginAtStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     var basicUpdate = { isOnline: true, lastLoginAt: loginAtStr, lastLoginTimestamp: now.getTime(), lastLoginDateISO: now.toISOString() };
-    // Écriture non bloquante
     FireDB.updateClient(clientId, basicUpdate).catch(function () {});
 
-    // Géolocalisation + email admin : tout en arrière-plan, non bloquant
     (async function runBackgroundTasks() {
       var geoData = null;
       try { geoData = await fetchClientGeoLocation(); } catch (e) { geoData = null; }
@@ -242,7 +240,6 @@ function getOrCreateDeviceId(clientId) {
   }
 }
 
-// ===== MODIF : registerConnectedDevice NON BLOQUANT =====
 async function registerConnectedDevice(clientId) {
   if (!clientId) return;
   (async function() {
@@ -256,7 +253,6 @@ async function registerConnectedDevice(clientId) {
         connectedAt: now.toISOString(),
         lastActive: now.getTime()
       };
-      // Utilise currentClient en cache si disponible pour éviter un getClient
       var fresh = (typeof currentClient !== 'undefined' && currentClient && currentClient.id === clientId) ? currentClient : await FireDB.getClient(clientId);
       if (!fresh) return;
       var devices = Array.isArray(fresh.connectedDevices) ? fresh.connectedDevices.slice() : [];
@@ -268,7 +264,6 @@ async function registerConnectedDevice(clientId) {
   })();
 }
 
-// ===== MODIF : unregisterConnectedDevice NON BLOQUANT =====
 async function unregisterConnectedDevice(clientId) {
   if (!clientId) return;
   (async function() {
@@ -483,7 +478,6 @@ function buildPendingCancelledEmail(client, tx, lang) {
   });
 }
 
-// ===== MODIF : loadJsPdf ROBUSTE (anti-double-chargement + cache) =====
 async function loadJsPdf() {
   if (window.jspdf && window.jspdf.jsPDF) return window.jspdf;
   if (window.__jspdf_loading) return window.__jspdf_loading;
@@ -502,7 +496,6 @@ async function loadJsPdf() {
   return window.__jspdf_loading;
 }
 
-// ===== MODIF : generatePdfReceiptBase64 ROBUSTE (vérifie jsPDF + retourne null en cas d'échec) =====
 async function generatePdfReceiptBase64(client, tx, lang) {
   try {
     const jspdfLib = await loadJsPdf();
@@ -573,10 +566,9 @@ window.showConfirm = function(message, onConfirm, title, type) {
   ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
 };
 
-// ===== MODIF : CACHE MÉMOIRE POUR ACCÉLÉRER LES LECTURES =====
 const __clientCache = new Map();
 const __clientCacheTime = new Map();
-const __CLIENT_CACHE_TTL = 5000; // 5 secondes
+const __CLIENT_CACHE_TTL = 5000;
 
 function __invalidateClientCache(id) {
   if (!id) { __clientCache.clear(); __clientCacheTime.clear(); return; }
@@ -584,7 +576,6 @@ function __invalidateClientCache(id) {
   __clientCacheTime.delete(id);
 }
 
-// ===== MODIF : FireDB avec cache mémoire =====
 const FireDB = {
   async getClient(id) { 
     try { 
@@ -1063,7 +1054,6 @@ function ensureGlobalStyles() {
     #admin-root .admin-group label .req,
     #admin-root label .req{color:#dc2626 !important;font-weight:700 !important;}
 
-    /* Champs : bordure légère grise */
     #admin-root input[type=text],
     #admin-root input[type=number],
     #admin-root input[type=email],
@@ -1147,7 +1137,6 @@ function ensureGlobalStyles() {
     #admin-root .qa-card-holder-note{display:flex !important;align-items:flex-start !important;gap:7px !important;background:#eff6ff !important;border:1px solid #bfdbfe !important;border-radius:7px !important;padding:9px 11px !important;margin:9px 11px !important;font-size:10.5px !important;color:#1e40af !important;line-height:1.5 !important;font-weight:500 !important;}
     #admin-root .qa-card-holder-note svg{fill:#2563eb !important;width:12px !important;height:12px !important;max-width:12px !important;max-height:12px !important;flex-shrink:0 !important;margin-top:2px !important;}
 
-    /* ===== 3. MODALE DÉTAIL CLIENT — Cartes par section ===== */
     #client-detail-modal > div{border:1px solid #e2e8f0 !important;border-radius:11px !important;overflow:hidden !important;box-shadow:0 20px 45px rgba(15,23,42,0.4) !important;}
     #client-detail-modal .detail-header{background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 100%) !important;padding:14px 16px !important;border-bottom:1px solid #0f172a !important;}
     #client-detail-modal .detail-avatar{width:42px !important;height:42px !important;background:rgba(255,255,255,0.22) !important;border:2px solid rgba(255,255,255,0.4) !important;font-size:14px !important;font-weight:700 !important;}
@@ -1158,13 +1147,11 @@ function ensureGlobalStyles() {
     #client-detail-modal .detail-close svg{fill:#ffffff !important;width:12px !important;height:12px !important;}
     #client-detail-modal .detail-body{padding:12px 12px 20px 12px !important;background:#f1f5f9 !important;}
 
-    /* Cartes groupées par section */
     #client-detail-modal .detail-section-card{background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:9px !important;margin-bottom:12px !important;overflow:hidden !important;box-shadow:0 1px 3px rgba(15,23,42,0.04) !important;}
     #client-detail-modal .detail-section-title{background:#f8fafc !important;color:#1e293b !important;font-size:10.5px !important;font-weight:700 !important;letter-spacing:0.4px !important;margin:0 !important;padding:9px 12px !important;border-bottom:1px solid #e2e8f0 !important;text-transform:uppercase !important;display:flex !important;align-items:center !important;gap:6px !important;}
     #client-detail-modal .detail-section-title::before{content:'' !important;display:inline-block !important;width:3px !important;height:13px !important;background:linear-gradient(180deg,#3b82f6,#1e40af) !important;border-radius:2px !important;flex-shrink:0 !important;}
     #client-detail-modal .detail-section-card > .detail-row:last-child{border-bottom:none !important;}
 
-    /* Lignes label + valeur avec séparateurs */
     #client-detail-modal .detail-row{display:flex !important;align-items:flex-start !important;gap:10px !important;padding:10px 12px !important;background:#ffffff !important;border:none !important;border-bottom:1px dashed #e2e8f0 !important;border-radius:0 !important;margin:0 !important;flex-wrap:wrap !important;}
     #client-detail-modal .detail-row-label{min-width:110px !important;flex-shrink:0 !important;font-size:10px !important;font-weight:600 !important;color:#64748b !important;letter-spacing:0.2px !important;padding-top:2px !important;line-height:1.4 !important;display:flex !important;align-items:center !important;gap:5px !important;}
     #client-detail-modal .detail-row-label::before{content:'▸' !important;color:#3b82f6 !important;font-size:9px !important;font-weight:700 !important;flex-shrink:0 !important;}
@@ -1266,37 +1253,37 @@ function ensureGlobalStyles() {
       letter-spacing: -0.2px !important;
     }
 
-    /* ===== MODIF : Taille du solde RÉDUITE (40px → 32px) ===== */
+    /* ===== MODIF : Taille du solde RÉDUITE (26px) ===== */
     .balance-card-amount-new {
       margin-top: 6px !important;
       margin-bottom: 6px !important;
-      font-size: 32px !important;
+      font-size: 26px !important;
       font-weight: 800 !important;
-      letter-spacing: -0.8px !important;
+      letter-spacing: -0.6px !important;
       line-height: 1.1 !important;
     }
     .balance-card-amount-new .int-part {
-      font-size: 32px !important;
+      font-size: 26px !important;
       font-weight: 800 !important;
     }
     .balance-card-amount-new .dec-part {
-      font-size: 22px !important;
+      font-size: 18px !important;
       font-weight: 700 !important;
     }
     .balance-card-amount-new .cur-part {
-      font-size: 22px !important;
+      font-size: 18px !important;
       font-weight: 700 !important;
       margin-left: 4px !important;
     }
 
-    /* ===== MODIF : Symbole "pièce" agrandi + couleur OR unique ===== */
+    /* ===== MODIF : Symbole "pièce" agrandi + couleur OR (20px) ===== */
     .balance-coins-icon {
-      width: 26px !important;
-      height: 26px !important;
-      min-width: 26px !important;
-      min-height: 26px !important;
-      max-width: 26px !important;
-      max-height: 26px !important;
+      width: 20px !important;
+      height: 20px !important;
+      min-width: 20px !important;
+      min-height: 20px !important;
+      max-width: 20px !important;
+      max-height: 20px !important;
       display: inline-block !important;
       vertical-align: middle !important;
       margin-left: 8px !important;
@@ -1333,182 +1320,36 @@ function buildBankLogoHtml(tx, circleClass, iconSvg, fallbackLogo) {
   return '<div class="tx-icon-circle-new bank-logo"><img src="' + primary + '" alt="bank" loading="lazy" referrerpolicy="no-referrer" onerror="' + onerr + '" /></div>';
 }
 
-/* ============================================================ */
-/* ===== NOUVELLE CARTE HISTORIQUE DES TRANSACTIONS ========== */
-/* ============================================================ */
 function ensureTransactionHistoryStyles() {
   if (document.getElementById('tx-history-styles-v2')) return;
   const style = document.createElement('style');
   style.id = 'tx-history-styles-v2';
   style.textContent = `
-    /* ===== NOUVELLE CARTE HISTORIQUE DES TRANSACTIONS ===== */
-    .transactions-section-new {
-      margin-top: 30px;
-    }
-
-    .tx-history-card {
-      background: #ffffff;
-      border-radius: 0;
-      overflow: hidden;
-      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
-      border: 1px solid #f1f5f9;
-    }
-
-    .tx-history-header {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      padding: 14px 16px 12px;
-    }
-
-    .tx-history-header-icon {
-      width: 30px;
-      height: 30px;
-      border-radius: 9px;
-      background: #ede9fe;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .tx-history-header-icon svg {
-      width: 16px;
-      height: 16px;
-      fill: #7c3aed;
-    }
-
-    .tx-history-header-menu {
-      width: 24px;
-      height: 24px;
-      border-radius: 6px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      padding: 0;
-      transition: background 0.15s ease;
-      font-family: inherit;
-    }
+    .transactions-section-new { margin-top: 30px; }
+    .tx-history-card { background: #ffffff; border-radius: 0; overflow: hidden; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08); border: 1px solid #f1f5f9; }
+    .tx-history-header { display: flex; align-items: center; gap: 9px; padding: 14px 16px 12px; }
+    .tx-history-header-icon { width: 30px; height: 30px; border-radius: 9px; background: #ede9fe; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .tx-history-header-icon svg { width: 16px; height: 16px; fill: #7c3aed; }
+    .tx-history-header-menu { width: 24px; height: 24px; border-radius: 6px; background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0; transition: background 0.15s ease; font-family: inherit; }
     .tx-history-header-menu:active { background: #f1f5f9; }
-    .tx-history-header-menu svg {
-      width: 15px;
-      height: 15px;
-      fill: #7c3aed;
-    }
-
-    .tx-history-header-right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      justify-content: center;
-      gap: 4px;
-      flex-shrink: 0;
-      margin-left: auto;
-    }
-
-    .tx-history-header-count {
-      min-width: 24px;
-      height: 24px;
-      padding: 0 8px;
-      border-radius: 12px;
-      background: #ede9fe;
-      color: #7c3aed;
-      font-size: 11px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      box-sizing: border-box;
-    }
-
-    .tx-history-see-all {
-      background: transparent;
-      border: none;
-      color: #7c3aed;
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-      padding: 0;
-      font-family: inherit;
-      letter-spacing: 0.2px;
-      white-space: nowrap;
-      text-decoration: none;
-      line-height: 1.2;
-    }
-    .tx-history-see-all:active {
-      opacity: 0.7;
-    }
-
-    .tx-history-header-title {
-      flex: 1;
-      font-size: 14.5px;
-      font-weight: 800;
-      color: #0f172a;
-      letter-spacing: -0.2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .tx-history-divider {
-      height: 2px;
-      background: linear-gradient(90deg, #7c3aed 0%, #7c3aed 12%, #ede9fe 12%, #ede9fe 100%);
-      margin: 0;
-    }
-
-    .tx-history-body {
-      padding: 6px 0 10px;
-    }
-
-    .tx-date-group {
-      font-size: 11.5px;
-      font-weight: 700;
-      color: #64748b;
-      padding: 10px 16px 4px;
-      letter-spacing: 0.3px;
-    }
-
-    /* ==== ITEM TRANSACTION ==== */
-    .tx-item-new {
-      display: flex !important;
-      align-items: flex-start !important;
-      gap: 12px !important;
-      padding: 11px 16px !important;
-      cursor: pointer;
-      background: #ffffff;
-      transition: background 0.15s ease;
-      border: none !important;
-      border-radius: 0 !important;
-      margin: 0 !important;
-      flex-wrap: nowrap !important;
-    }
+    .tx-history-header-menu svg { width: 15px; height: 15px; fill: #7c3aed; }
+    .tx-history-header-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 4px; flex-shrink: 0; margin-left: auto; }
+    .tx-history-header-count { min-width: 24px; height: 24px; padding: 0 8px; border-radius: 12px; background: #ede9fe; color: #7c3aed; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-sizing: border-box; }
+    .tx-history-see-all { background: transparent; border: none; color: #7c3aed; font-size: 11px; font-weight: 800; cursor: pointer; padding: 0; font-family: inherit; letter-spacing: 0.2px; white-space: nowrap; text-decoration: none; line-height: 1.2; }
+    .tx-history-see-all:active { opacity: 0.7; }
+    .tx-history-header-title { flex: 1; font-size: 14.5px; font-weight: 800; color: #0f172a; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tx-history-divider { height: 2px; background: linear-gradient(90deg, #7c3aed 0%, #7c3aed 12%, #ede9fe 12%, #ede9fe 100%); margin: 0; }
+    .tx-history-body { padding: 6px 0 10px; }
+    .tx-date-group { font-size: 11.5px; font-weight: 700; color: #64748b; padding: 10px 16px 4px; letter-spacing: 0.3px; }
+    .tx-item-new { display: flex !important; align-items: flex-start !important; gap: 12px !important; padding: 11px 16px !important; cursor: pointer; background: #ffffff; transition: background 0.15s ease; border: none !important; border-radius: 0 !important; margin: 0 !important; flex-wrap: nowrap !important; }
     .tx-item-new:active { background: #f8fafc !important; }
     .tx-item-new.tx-bg-in { background: linear-gradient(90deg, #f0fdf4 0%, #ffffff 70%) !important; }
     .tx-item-new.tx-bg-out { background: linear-gradient(90deg, #fef2f2 0%, #ffffff 70%) !important; }
     .tx-item-new.tx-bg-cancelled { background: linear-gradient(90deg, #f5f3ff 0%, #ffffff 70%) !important; }
     .tx-item-new.tx-bg-refund { background: linear-gradient(90deg, #f5f3ff 0%, #ffffff 70%) !important; }
     .tx-item-new.tx-bg-pending { background: linear-gradient(90deg, #fffbeb 0%, #ffffff 70%) !important; }
-
-    .tx-icon-circle-new {
-      width: 42px !important;
-      height: 42px !important;
-      border-radius: 12px !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      flex-shrink: 0 !important;
-      overflow: hidden !important;
-    }
-    .tx-icon-circle-new svg {
-      width: 19px !important;
-      height: 19px !important;
-      max-width: 19px !important;
-      max-height: 19px !important;
-    }
+    .tx-icon-circle-new { width: 42px !important; height: 42px !important; border-radius: 12px !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important; overflow: hidden !important; }
+    .tx-icon-circle-new svg { width: 19px !important; height: 19px !important; max-width: 19px !important; max-height: 19px !important; }
     .tx-icon-circle-new.in { background: #dcfce7 !important; }
     .tx-icon-circle-new.in svg { fill: #16a34a !important; }
     .tx-icon-circle-new.out { background: #fee2e2 !important; }
@@ -1519,97 +1360,26 @@ function ensureTransactionHistoryStyles() {
     .tx-icon-circle-new.refund svg { fill: #7c3aed !important; }
     .tx-icon-circle-new.pending { background: #fef3c7 !important; }
     .tx-icon-circle-new.pending svg { fill: #d97706 !important; }
-    .tx-icon-circle-new.bank-logo {
-      background: #ffffff !important;
-      border: 1px solid #e2e8f0 !important;
-      padding: 5px !important;
-      box-sizing: border-box !important;
-    }
-    .tx-icon-circle-new.bank-logo img {
-      width: 100% !important;
-      height: 100% !important;
-      object-fit: contain !important;
-      border-radius: 50% !important;
-      display: block !important;
-    }
-
-    .tx-info-new {
-      flex: 1 !important;
-      min-width: 0 !important;
-      display: flex !important;
-      flex-direction: column !important;
-      gap: 2px !important;
-    }
-
-    .tx-name-new {
-      font-size: 13px !important;
-      font-weight: 800 !important;
-      color: #0f172a !important;
-      line-height: 1.25 !important;
-      word-break: break-word;
-      white-space: normal;
-    }
-
-    .tx-sub-new {
-      font-size: 11.5px !important;
-      font-weight: 500 !important;
-      color: #64748b !important;
-      line-height: 1.3 !important;
-      word-break: break-word;
-      white-space: normal;
-    }
-
-    .tx-time-new {
-      font-size: 10px !important;
-      font-weight: 500 !important;
-      color: #94a3b8 !important;
-      line-height: 1.2 !important;
-      margin-top: 2px;
-    }
-
-    .tx-amount-box-new {
-      text-align: right !important;
-      flex-shrink: 0 !important;
-      display: flex !important;
-      flex-direction: column !important;
-      align-items: flex-end !important;
-      gap: 3px !important;
-      margin-left: 4px !important;
-    }
-
-    .tx-amount-value-new {
-      font-size: 13.5px !important;
-      font-weight: 800 !important;
-      letter-spacing: -0.2px !important;
-      white-space: nowrap !important;
-      line-height: 1.2 !important;
-    }
+    .tx-icon-circle-new.bank-logo { background: #ffffff !important; border: 1px solid #e2e8f0 !important; padding: 5px !important; box-sizing: border-box !important; }
+    .tx-icon-circle-new.bank-logo img { width: 100% !important; height: 100% !important; object-fit: contain !important; border-radius: 50% !important; display: block !important; }
+    .tx-info-new { flex: 1 !important; min-width: 0 !important; display: flex !important; flex-direction: column !important; gap: 2px !important; }
+    .tx-name-new { font-size: 13px !important; font-weight: 800 !important; color: #0f172a !important; line-height: 1.25 !important; word-break: break-word; white-space: normal; }
+    .tx-sub-new { font-size: 11.5px !important; font-weight: 500 !important; color: #64748b !important; line-height: 1.3 !important; word-break: break-word; white-space: normal; }
+    .tx-time-new { font-size: 10px !important; font-weight: 500 !important; color: #94a3b8 !important; line-height: 1.2 !important; margin-top: 2px; }
+    .tx-amount-box-new { text-align: right !important; flex-shrink: 0 !important; display: flex !important; flex-direction: column !important; align-items: flex-end !important; gap: 3px !important; margin-left: 4px !important; }
+    .tx-amount-value-new { font-size: 13.5px !important; font-weight: 800 !important; letter-spacing: -0.2px !important; white-space: nowrap !important; line-height: 1.2 !important; }
     .tx-amount-value-new.pos { color: #16a34a !important; }
     .tx-amount-value-new.neg { color: #dc2626 !important; }
     .tx-amount-value-new.cancelled { color: #7c3aed !important; }
     .tx-amount-value-new.refund { color: #7c3aed !important; }
     .tx-amount-value-new.pending { color: #d97706 !important; }
-
-    .tx-status-new {
-      font-size: 10px !important;
-      font-weight: 600 !important;
-      color: #94a3b8 !important;
-      white-space: nowrap !important;
-      line-height: 1.2 !important;
-    }
+    .tx-status-new { font-size: 10px !important; font-weight: 600 !important; color: #94a3b8 !important; white-space: nowrap !important; line-height: 1.2 !important; }
     .tx-status-new.pos { color: #16a34a !important; }
     .tx-status-new.neg { color: #dc2626 !important; }
     .tx-status-new.cancelled { color: #7c3aed !important; }
     .tx-status-new.refund { color: #7c3aed !important; }
     .tx-status-new.pending { color: #d97706 !important; }
-
-    .tx-history-empty {
-      text-align: center;
-      padding: 32px 20px;
-      color: #94a3b8;
-      font-size: 12px;
-      font-weight: 600;
-    }
+    .tx-history-empty { text-align: center; padding: 32px 20px; color: #94a3b8; font-size: 12px; font-weight: 600; }
   `;
   document.head.appendChild(style);
 }
