@@ -1265,7 +1265,10 @@ function buildBankLogoHtml(tx, circleClass, iconSvg, fallbackLogo) {
 
 /* ============================================================ */
 /* ===== NOUVELLE CARTE HISTORIQUE DES TRANSACTIONS ========== */
-/* ===== MODIF : border-radius: 0 (carte bien rectangulaire) == */
+/* ===== MODIF : Ajout d'un margin-top pour espace avec les === */
+/* ===== 3 cartes quick actions =============================== */
+/* ===== MODIF : Ajout des styles pour le "Voir tout" placé === */
+/* ===== sous le compteur (2) ================================= */
 /* ============================================================ */
 function ensureTransactionHistoryStyles() {
   if (document.getElementById('tx-history-styles-v2')) return;
@@ -1273,6 +1276,10 @@ function ensureTransactionHistoryStyles() {
   style.id = 'tx-history-styles-v2';
   style.textContent = `
     /* ===== NOUVELLE CARTE HISTORIQUE DES TRANSACTIONS ===== */
+    .transactions-section-new {
+      margin-top: 16px;
+    }
+
     .tx-history-card {
       background: #ffffff;
       border-radius: 0;
@@ -1326,15 +1333,15 @@ function ensureTransactionHistoryStyles() {
       fill: #7c3aed;
     }
 
-    .tx-history-header-title {
-      flex: 1;
-      font-size: 14.5px;
-      font-weight: 800;
-      color: #0f172a;
-      letter-spacing: -0.2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    /* ===== NOUVEAU : Colonne droite (compteur + "Voir tout") ===== */
+    .tx-history-header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 4px;
+      flex-shrink: 0;
+      margin-left: auto;
     }
 
     .tx-history-header-count {
@@ -1351,6 +1358,36 @@ function ensureTransactionHistoryStyles() {
       justify-content: center;
       flex-shrink: 0;
       box-sizing: border-box;
+    }
+
+    /* ===== NOUVEAU : Bouton "Voir tout" texte ===== */
+    .tx-history-see-all {
+      background: transparent;
+      border: none;
+      color: #7c3aed;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      padding: 0;
+      font-family: inherit;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+      text-decoration: none;
+      line-height: 1.2;
+    }
+    .tx-history-see-all:active {
+      opacity: 0.7;
+    }
+
+    .tx-history-header-title {
+      flex: 1;
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .tx-history-divider {
@@ -2347,8 +2384,8 @@ function renderBankingApp(client) {
           '<div class="balance-card-sub-new">' + t('availableBalance') + ' <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="balance-coins-icon"><ellipse cx="15.5" cy="7" rx="5.5" ry="2" fill="#8b5cf6"/><path d="M10 7v5.5c0 1.1 2.46 2 5.5 2s5.5-.9 5.5-2V7z" fill="#8b5cf6"/><ellipse cx="15.5" cy="10" rx="5.5" ry="2" fill="none" stroke="#ffffff" stroke-width="0.9"/><ellipse cx="15.5" cy="12.5" rx="5.5" ry="2" fill="none" stroke="#ffffff" stroke-width="0.9"/><ellipse cx="8.5" cy="14" rx="6.5" ry="2.5" fill="#8b5cf6"/><path d="M2 14v6c0 1.38 2.91 2.5 6.5 2.5s6.5-1.12 6.5-2.5v-6z" fill="#8b5cf6"/><ellipse cx="8.5" cy="17" rx="6.5" ry="2.5" fill="none" stroke="#ffffff" stroke-width="0.9"/><ellipse cx="8.5" cy="20" rx="6.5" ry="2.5" fill="none" stroke="#ffffff" stroke-width="0.9"/></svg></div>' +
           '<div class="balance-card-bottom-new"><button class="balance-card-details-btn-new" onclick="window.navigateTo(\'screen-profile\')">' + t('detailsBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button></div></div></div>' +
         renderQuickActions() +
-        /* ===== MODIF : Bouton "voir tout" déplacé à côté du compteur de transactions ===== */
-        '<div class="transactions-section-new"><div class="tx-history-card"><div class="tx-history-header"><div class="tx-history-header-icon"><svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg></div><div class="tx-history-header-title">' + t('transactionHistory') + '</div><div class="tx-history-header-count">' + ((client.transactions && client.transactions.length) || 0) + '</div><button class="tx-history-header-menu" onclick="window.showFullHistory()" aria-label="' + t('seeAllBtn') + '"><svg viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button></div><div class="tx-history-divider"></div><div class="tx-history-body" id="transaction-list">' + renderTransactions(client.transactions) + '</div></div></div>' +
+        /* ===== MODIF : "Voir tout" placé sous le compteur (2) ===== */
+        '<div class="transactions-section-new"><div class="tx-history-card"><div class="tx-history-header"><div class="tx-history-header-icon"><svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg></div><div class="tx-history-header-title">' + t('transactionHistory') + '</div><div class="tx-history-header-right"><div class="tx-history-header-count">' + ((client.transactions && client.transactions.length) || 0) + '</div><button class="tx-history-see-all" onclick="window.showFullHistory()" aria-label="' + t('seeAllBtn') + '">' + t('seeAllBtn') + '</button></div></div><div class="tx-history-divider"></div><div class="tx-history-body" id="transaction-list">' + renderTransactions(client.transactions) + '</div></div></div>' +
         '<div class="security-banner-new"><svg class="security-shield-new" viewBox="0 0 120 120"><defs><linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#1e40af"/></linearGradient></defs><path d="M60 12 L100 26 V60 c0 26-18 44-40 50 C38 104 20 86 20 60 V26 Z" fill="url(#shieldGrad)" stroke="#93c5fd" stroke-width="2"/><rect x="42" y="52" width="36" height="30" rx="4" fill="#0a2540" stroke="#93c5fd" stroke-width="1.5"/><path d="M48 52 V44 a12 12 0 0 1 24 0 V52" fill="none" stroke="#93c5fd" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="66" r="3.5" fill="#93c5fd"/></svg><div class="security-content-new"><div class="security-header-new"><span class="security-header-icon-new"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></span><div class="security-title-new">' + t('securityTitle') + '</div></div><div class="security-desc-new">' + t('securityDesc') + '</div><button class="security-btn-new" onclick="window.showNotif(\'' + t('securityDesc') + '\', \'info\', \'' + t('securityTitle') + '\')">' + t('learnMoreBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button></div></div>' +
       '</div>' +
       '<div id="screen-transfer" class="screen"><div class="page-title-bar"><div class="page-title-icon"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div><span>' + t('sendOutgoingTransfer') + '</span></div><div class="transfer-amount">' + balanceFormatted + '</div><div class="transfer-card"><svg class="transfer-card-watermark" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="20" y="8" width="58" height="34" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/><rect x="17" y="12" width="58" height="34" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/><rect x="14" y="16" width="58" height="34" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="43" cy="33" r="7" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="43" cy="33" r="1.8" fill="currentColor"/><rect x="16" y="58" width="6" height="8" rx="1.2" fill="currentColor"/><rect x="26" y="58" width="6" height="8" rx="1.2" fill="currentColor"/><rect x="36" y="58" width="6" height="8" rx="1.2" fill="currentColor"/><path d="M48 62 H72" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/><path d="M66 55 L74 62 L66 69" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg><div class="details-header"><div class="details-icon"><svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="12" y="6" width="30" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="17" cy="11" r="1.5" fill="currentColor"/><circle cx="37" cy="11" r="1.5" fill="currentColor"/><circle cx="27" cy="16" r="1.5" fill="currentColor"/><circle cx="17" cy="21" r="1.5" fill="currentColor"/><circle cx="37" cy="21" r="1.5" fill="currentColor"/><path d="M5 16 L5 40 L32 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2.5 2.5"/><path d="M28 34 L36 40 L28 46" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>' + t('transferDetails') + '</span></div>' +
