@@ -1241,6 +1241,36 @@ function ensureGlobalStyles() {
     #client-detail-modal .admin-transfer-cancel-btn{flex-shrink:0 !important;border:1px solid #0f172a !important;border-radius:6px !important;padding:5px 10px !important;font-size:10px !important;font-weight:600 !important;background:#fee2e2 !important;color:#b91c1c !important;cursor:pointer !important;}
 
     #admin-root .err{color:#b91c1c !important;background:#fee2e2 !important;border:1px solid #fca5a5 !important;border-radius:7px !important;padding:8px 11px !important;font-size:10.5px !important;font-weight:600 !important;line-height:1.5 !important;text-align:center !important;margin-top:7px !important;}
+
+    /* ===== MODIF : Taille du texte "Osobiste · PLN" + espacement ===== */
+    .balance-card-type-label-new {
+      font-size: 14.5px !important;
+      margin-bottom: 10px !important;
+      letter-spacing: 0.2px !important;
+      line-height: 1.3 !important;
+    }
+    .balance-card-type-label-new .curr-symbol {
+      font-size: 14.5px !important;
+      font-weight: 700 !important;
+    }
+    .balance-card-type-label-new .chev {
+      width: 16px !important;
+      height: 16px !important;
+    }
+
+    /* ===== MODIF : Taille du texte "Witaj, Nom Prénom" ===== */
+    .greeting-title-new {
+      font-size: 18px !important;
+      font-weight: 800 !important;
+      line-height: 1.3 !important;
+      letter-spacing: -0.2px !important;
+    }
+
+    /* ===== MODIF : Espace entre le solde et le texte "Osobiste · PLN" ===== */
+    .balance-card-amount-new {
+      margin-top: 6px !important;
+      margin-bottom: 6px !important;
+    }
   `;
   document.head.appendChild(style);
 }
@@ -1265,8 +1295,6 @@ function buildBankLogoHtml(tx, circleClass, iconSvg, fallbackLogo) {
 
 /* ============================================================ */
 /* ===== NOUVELLE CARTE HISTORIQUE DES TRANSACTIONS ========== */
-/* ===== MODIF : margin-top augmenté à 30px pour espace ==== */
-/* ===== avec les 3 cartes quick actions ===================== */
 /* ============================================================ */
 function ensureTransactionHistoryStyles() {
   if (document.getElementById('tx-history-styles-v2')) return;
@@ -1331,7 +1359,6 @@ function ensureTransactionHistoryStyles() {
       fill: #7c3aed;
     }
 
-    /* ===== Colonne droite (compteur + "Voir tout") ===== */
     .tx-history-header-right {
       display: flex;
       flex-direction: column;
@@ -1358,7 +1385,6 @@ function ensureTransactionHistoryStyles() {
       box-sizing: border-box;
     }
 
-    /* ===== Bouton "Voir tout" texte ===== */
     .tx-history-see-all {
       background: transparent;
       border: none;
@@ -1548,7 +1574,6 @@ function ensureTransactionHistoryStyles() {
   document.head.appendChild(style);
 }
 
-/* ===== MODIF : getDateGroupLabel traduit selon la langue du client ===== */
 function getDateGroupLabel(dateStr) {
   if (!dateStr) return '';
   const str = String(dateStr).trim();
@@ -1580,7 +1605,6 @@ function getTimeFromDateStr(dateStr) {
   return '';
 }
 
-/* ===== MODIF : getTxStatusWord traduit selon la langue du client ===== */
 function getTxStatusWord(tx) {
   if (!tx) return '';
   const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
@@ -2292,9 +2316,6 @@ function renderProfileScreen(client, initials, balanceFormatted) {
   '</div>';
 }
 
-/* ============================================================ */
-/* ===== Styles du reçu V4 — Version finale =================== */
-/* ============================================================ */
 function ensureReceiptV4Styles() {
   if (document.getElementById('receipt-v4-styles')) return;
   const style = document.createElement('style');
