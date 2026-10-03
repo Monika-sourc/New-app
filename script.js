@@ -1263,41 +1263,412 @@ function buildBankLogoHtml(tx, circleClass, iconSvg, fallbackLogo) {
   return '<div class="tx-icon-circle-new bank-logo"><img src="' + primary + '" alt="bank" loading="lazy" referrerpolicy="no-referrer" onerror="' + onerr + '" /></div>';
 }
 
+/* ============================================================ */
+/* ===== NOUVELLE CARTE HISTORIQUE DES TRANSACTIONS ========== */
+/* ============================================================ */
+function ensureTransactionHistoryStyles() {
+  if (document.getElementById('tx-history-styles-v2')) return;
+  const style = document.createElement('style');
+  style.id = 'tx-history-styles-v2';
+  style.textContent = `
+    /* ===== NOUVELLE CARTE HISTORIQUE DES TRANSACTIONS ===== */
+    .tx-history-card {
+      background: #ffffff;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+      border: 1px solid #f1f5f9;
+    }
+
+    .tx-history-header {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 14px 16px 12px;
+    }
+
+    .tx-history-header-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      background: #ede9fe;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .tx-history-header-icon svg {
+      width: 16px;
+      height: 16px;
+      fill: #7c3aed;
+    }
+
+    .tx-history-header-menu {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: 0;
+      transition: background 0.15s ease;
+      font-family: inherit;
+    }
+    .tx-history-header-menu:active { background: #f1f5f9; }
+    .tx-history-header-menu svg {
+      width: 15px;
+      height: 15px;
+      fill: #7c3aed;
+    }
+
+    .tx-history-header-title {
+      flex: 1;
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tx-history-header-count {
+      min-width: 24px;
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 12px;
+      background: #ede9fe;
+      color: #7c3aed;
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+
+    .tx-history-divider {
+      height: 2px;
+      background: linear-gradient(90deg, #7c3aed 0%, #7c3aed 12%, #ede9fe 12%, #ede9fe 100%);
+      margin: 0;
+    }
+
+    .tx-history-body {
+      padding: 6px 0 10px;
+    }
+
+    .tx-date-group {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #64748b;
+      padding: 10px 16px 4px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ==== ITEM TRANSACTION ==== */
+    .tx-item-new {
+      display: flex !important;
+      align-items: flex-start !important;
+      gap: 12px !important;
+      padding: 11px 16px !important;
+      cursor: pointer;
+      background: #ffffff;
+      transition: background 0.15s ease;
+      border: none !important;
+      border-radius: 0 !important;
+      margin: 0 !important;
+      flex-wrap: nowrap !important;
+    }
+    .tx-item-new:active { background: #f8fafc !important; }
+    .tx-item-new.tx-bg-in { background: linear-gradient(90deg, #f0fdf4 0%, #ffffff 70%) !important; }
+    .tx-item-new.tx-bg-out { background: linear-gradient(90deg, #fef2f2 0%, #ffffff 70%) !important; }
+    .tx-item-new.tx-bg-cancelled { background: linear-gradient(90deg, #f5f3ff 0%, #ffffff 70%) !important; }
+    .tx-item-new.tx-bg-refund { background: linear-gradient(90deg, #f5f3ff 0%, #ffffff 70%) !important; }
+    .tx-item-new.tx-bg-pending { background: linear-gradient(90deg, #fffbeb 0%, #ffffff 70%) !important; }
+
+    .tx-icon-circle-new {
+      width: 42px !important;
+      height: 42px !important;
+      border-radius: 12px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex-shrink: 0 !important;
+      overflow: hidden !important;
+    }
+    .tx-icon-circle-new svg {
+      width: 19px !important;
+      height: 19px !important;
+      max-width: 19px !important;
+      max-height: 19px !important;
+    }
+    .tx-icon-circle-new.in { background: #dcfce7 !important; }
+    .tx-icon-circle-new.in svg { fill: #16a34a !important; }
+    .tx-icon-circle-new.out { background: #fee2e2 !important; }
+    .tx-icon-circle-new.out svg { fill: #dc2626 !important; }
+    .tx-icon-circle-new.cancelled { background: #ede9fe !important; }
+    .tx-icon-circle-new.cancelled svg { fill: #7c3aed !important; }
+    .tx-icon-circle-new.refund { background: #ede9fe !important; }
+    .tx-icon-circle-new.refund svg { fill: #7c3aed !important; }
+    .tx-icon-circle-new.pending { background: #fef3c7 !important; }
+    .tx-icon-circle-new.pending svg { fill: #d97706 !important; }
+    .tx-icon-circle-new.bank-logo {
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      padding: 5px !important;
+      box-sizing: border-box !important;
+    }
+    .tx-icon-circle-new.bank-logo img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain !important;
+      border-radius: 50% !important;
+      display: block !important;
+    }
+
+    .tx-info-new {
+      flex: 1 !important;
+      min-width: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 2px !important;
+    }
+
+    .tx-name-new {
+      font-size: 13px !important;
+      font-weight: 800 !important;
+      color: #0f172a !important;
+      line-height: 1.25 !important;
+      word-break: break-word;
+      white-space: normal;
+    }
+
+    .tx-sub-new {
+      font-size: 11.5px !important;
+      font-weight: 500 !important;
+      color: #64748b !important;
+      line-height: 1.3 !important;
+      word-break: break-word;
+      white-space: normal;
+    }
+
+    .tx-time-new {
+      font-size: 10px !important;
+      font-weight: 500 !important;
+      color: #94a3b8 !important;
+      line-height: 1.2 !important;
+      margin-top: 2px;
+    }
+
+    .tx-amount-box-new {
+      text-align: right !important;
+      flex-shrink: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-end !important;
+      gap: 3px !important;
+      margin-left: 4px !important;
+    }
+
+    .tx-amount-value-new {
+      font-size: 13.5px !important;
+      font-weight: 800 !important;
+      letter-spacing: -0.2px !important;
+      white-space: nowrap !important;
+      line-height: 1.2 !important;
+    }
+    .tx-amount-value-new.pos { color: #16a34a !important; }
+    .tx-amount-value-new.neg { color: #dc2626 !important; }
+    .tx-amount-value-new.cancelled { color: #7c3aed !important; }
+    .tx-amount-value-new.refund { color: #7c3aed !important; }
+    .tx-amount-value-new.pending { color: #d97706 !important; }
+
+    .tx-status-new {
+      font-size: 10px !important;
+      font-weight: 600 !important;
+      color: #94a3b8 !important;
+      white-space: nowrap !important;
+      line-height: 1.2 !important;
+    }
+    .tx-status-new.pos { color: #16a34a !important; }
+    .tx-status-new.neg { color: #dc2626 !important; }
+    .tx-status-new.cancelled { color: #7c3aed !important; }
+    .tx-status-new.refund { color: #7c3aed !important; }
+    .tx-status-new.pending { color: #d97706 !important; }
+
+    .tx-history-empty {
+      text-align: center;
+      padding: 32px 20px;
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+function getDateGroupLabel(dateStr) {
+  if (!dateStr) return '';
+  const str = String(dateStr).trim();
+  const parts = str.split(' ');
+  if (parts.length < 1) return str;
+  const dparts = parts[0].split('/');
+  if (dparts.length !== 3) return str;
+  const day = parseInt(dparts[0], 10);
+  const month = parseInt(dparts[1], 10) - 1;
+  const year = parseInt(dparts[2], 10);
+  if (isNaN(day) || isNaN(month) || isNaN(year)) return str;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const dNorm = new Date(year, month, day);
+  dNorm.setHours(0, 0, 0, 0);
+  const diffDays = Math.round((today - dNorm) / 86400000);
+  if (diffDays === 0) return 'Aujourd\'hui';
+  if (diffDays === 1) return 'Hier';
+  if (diffDays === -1) return 'Demain';
+  if (diffDays === 2) return 'Avant-hier';
+  if (diffDays > 2 && diffDays < 7) return 'Il y a ' + diffDays + ' jours';
+  return dparts[0] + '/' + dparts[1] + '/' + dparts[2];
+}
+
+function getTimeFromDateStr(dateStr) {
+  if (!dateStr) return '';
+  const parts = String(dateStr).trim().split(' ');
+  if (parts.length >= 2) return parts[1];
+  return '';
+}
+
+function getTxStatusWord(tx) {
+  if (!tx) return '';
+  const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
+  const isPending = tx.status === 'pending';
+  const isRefund = tx.status === 'cancelledPending';
+  const isFailed = tx.status === 'failed';
+  if (isPending) return 'En attente';
+  if (isRefund) return 'Remboursement';
+  if (isCancelled) return 'Annulé';
+  if (isFailed) return 'Échoué';
+  return 'Réalisé';
+}
+
+function getTxStatusClass(tx) {
+  if (!tx) return 'pos';
+  const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
+  const isPending = tx.status === 'pending';
+  const isRefund = tx.status === 'cancelledPending';
+  const isFailed = tx.status === 'failed';
+  const isIn = tx.type === 'in';
+  if (isPending) return 'pending';
+  if (isRefund) return 'refund';
+  if (isCancelled) return 'cancelled';
+  if (isFailed) return 'neg';
+  return isIn ? 'pos' : 'neg';
+}
+
 function renderTransactions(txs) {
+  ensureTransactionHistoryStyles();
   currentTransactions = txs || [];
-  if (!txs || txs.length === 0) { return '<p style="color:#64748b;font-size:11.5px;text-align:center;padding:22px 0;font-weight:600;">' + t('noTransactions') + '</p>'; }
-  let h = '<div class="tx-list-new">';
+  if (!txs || txs.length === 0) {
+    return '<div class="tx-history-empty">' + (t('noTransactions') || 'Aucune transaction') + '</div>';
+  }
+
+  const groups = [];
+  const groupIndex = {};
   txs.forEach((tx, idx) => {
-    const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
-    const isIn = tx.type === 'in';
-    const isPending = tx.status === 'pending';
-    const isRefund = tx.status === 'cancelledPending';
-    let circleClass, iconSvg, amountClass, amountSign;
-    if (isRefund) { circleClass = 'refund'; iconSvg = '<path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>'; amountClass = 'refund'; amountSign = '+'; }
-    else if (isPending) { circleClass = 'pending'; iconSvg = '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>'; amountClass = 'pending'; amountSign = '−'; }
-    else if (isCancelled) { circleClass = 'cancelled'; iconSvg = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>'; amountClass = 'cancelled'; amountSign = '+'; }
-    else if (isIn) { circleClass = 'in'; iconSvg = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>'; amountClass = 'pos'; amountSign = '+'; }
-    else { circleClass = 'out'; iconSvg = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>'; amountClass = 'neg'; amountSign = '−'; }
-    let iconHtml;
-    if (tx.bankLogo && !isCancelled && !isPending && !isRefund) { iconHtml = buildBankLogoHtml(tx, circleClass, iconSvg, FALLBACK_BANK_LOGO); }
-    else { iconHtml = '<div class="tx-icon-circle-new ' + circleClass + '"><svg viewBox="0 0 24 24">' + iconSvg + '</svg></div>'; }
-    let title;
-    if (isRefund) { title = t('txRefund') || 'Remboursement'; }
-    else if (isPending) { title = t('pendingResultTitle') || 'Virement en attente'; }
-    else if (isCancelled) { title = t('txTransferCancelled'); }
-    else if (tx.labelKey) { title = t(tx.labelKey); }
-    else if (isIn) { title = t('txTransferReceived'); }
-    else { title = t('txTransferSent'); }
-    const subtitle = translateSubtitle(tx.subtitle);
-    let bgClass = '';
-    if (isRefund) bgClass = 'tx-bg-refund';
-    else if (isPending) bgClass = 'tx-bg-pending';
-    else if (isCancelled) bgClass = 'tx-bg-cancelled';
-    else if (isIn) bgClass = 'tx-bg-in';
-    else bgClass = 'tx-bg-out';
-    h += '<div class="tx-item-new ' + bgClass + '" onclick="window.openReceipt(' + idx + ')">' + iconHtml + '<div class="tx-info-new"><div class="tx-name-new">' + title + '</div><div class="tx-sub-new">' + subtitle + '</div></div><div class="tx-amount-box-new"><div class="tx-amount-value-new ' + amountClass + '">' + amountSign + ' ' + tx.amount + '</div><div class="tx-date-new">' + tx.date + '</div></div><svg class="tx-chevron-new" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+    const label = getDateGroupLabel(tx.date);
+    if (groupIndex[label] === undefined) {
+      groupIndex[label] = groups.length;
+      groups.push({ label: label, items: [] });
+    }
+    groups[groupIndex[label]].items.push({ tx: tx, idx: idx });
   });
-  h += '</div>';
+
+  let h = '';
+  groups.forEach(function (group) {
+    h += '<div class="tx-date-group">' + group.label + '</div>';
+    group.items.forEach(function (item) {
+      const tx = item.tx;
+      const idx = item.idx;
+      const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
+      const isIn = tx.type === 'in';
+      const isPending = tx.status === 'pending';
+      const isRefund = tx.status === 'cancelledPending';
+
+      let circleClass, iconSvg, amountClass, amountSign;
+      if (isRefund) {
+        circleClass = 'refund';
+        iconSvg = '<path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>';
+        amountClass = 'refund';
+        amountSign = '+';
+      } else if (isPending) {
+        circleClass = 'pending';
+        iconSvg = '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>';
+        amountClass = 'pending';
+        amountSign = '−';
+      } else if (isCancelled) {
+        circleClass = 'cancelled';
+        iconSvg = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
+        amountClass = 'cancelled';
+        amountSign = '+';
+      } else if (isIn) {
+        circleClass = 'in';
+        iconSvg = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>';
+        amountClass = 'pos';
+        amountSign = '+';
+      } else {
+        circleClass = 'out';
+        iconSvg = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>';
+        amountClass = 'neg';
+        amountSign = '−';
+      }
+
+      let iconHtml;
+      if (tx.bankLogo && !isCancelled && !isPending && !isRefund) {
+        iconHtml = buildBankLogoHtml(tx, circleClass, iconSvg, FALLBACK_BANK_LOGO);
+      } else {
+        iconHtml = '<div class="tx-icon-circle-new ' + circleClass + '"><svg viewBox="0 0 24 24">' + iconSvg + '</svg></div>';
+      }
+
+      let title;
+      if (isRefund) { title = t('txRefund') || 'Remboursement'; }
+      else if (isPending) { title = t('pendingResultTitle') || 'Virement en attente'; }
+      else if (isCancelled) { title = t('txTransferCancelled'); }
+      else if (tx.labelKey) { title = t(tx.labelKey); }
+      else if (isIn) { title = t('txTransferReceived'); }
+      else { title = t('txTransferSent'); }
+
+      const subtitle = translateSubtitle(tx.subtitle);
+      const timeStr = getTimeFromDateStr(tx.date);
+      const statusWord = getTxStatusWord(tx);
+      const statusClass = getTxStatusClass(tx);
+
+      let bgClass = '';
+      if (isRefund) bgClass = 'tx-bg-refund';
+      else if (isPending) bgClass = 'tx-bg-pending';
+      else if (isCancelled) bgClass = 'tx-bg-cancelled';
+      else if (isIn) bgClass = 'tx-bg-in';
+      else bgClass = 'tx-bg-out';
+
+      h += '<div class="tx-item-new ' + bgClass + '" onclick="window.openReceipt(' + idx + ')">' +
+        iconHtml +
+        '<div class="tx-info-new">' +
+          '<div class="tx-name-new">' + title + '</div>' +
+          '<div class="tx-sub-new">' + subtitle + '</div>' +
+          '<div class="tx-time-new">' + timeStr + '</div>' +
+        '</div>' +
+        '<div class="tx-amount-box-new">' +
+          '<div class="tx-amount-value-new ' + amountClass + '">' + amountSign + tx.amount + '</div>' +
+          '<div class="tx-status-new ' + statusClass + '">' + statusWord + '</div>' +
+        '</div>' +
+      '</div>';
+    });
+  });
+
   return h;
 }
 
@@ -1419,7 +1790,11 @@ function syncClientUI(fresh) {
   const currSymbolEl = document.querySelector('.balance-card-type-label-new .curr-symbol');
   if (currSymbolEl) currSymbolEl.textContent = getCurrencyCode(currency);
   const txList = document.getElementById('transaction-list');
-  if (txList) txList.innerHTML = renderTransactions(fresh.transactions);
+  if (txList) {
+    txList.innerHTML = renderTransactions(fresh.transactions);
+    const historyCountEl = document.querySelector('.tx-history-header-count');
+    if (historyCountEl) historyCountEl.textContent = (fresh.transactions && fresh.transactions.length) || 0;
+  }
   const greetingTitleEl = document.querySelector('.greeting-title-new');
   if (greetingTitleEl) greetingTitleEl.textContent = t('greeting') + ', ' + fresh.firstName + ' ' + fresh.lastName;
   const transferAmountEl = document.querySelector('#screen-transfer .transfer-amount');
@@ -1951,6 +2326,7 @@ function renderBankingApp(client) {
   ensureGlobalStyles();
   ensureProfileStyles();
   ensureReceiptV4Styles();
+  ensureTransactionHistoryStyles();
   const root = document.getElementById('app-root');
   const currency = client.currency || '€';
   const balanceFormatted = formatAmount(client.balance || 0, currency);
@@ -1970,7 +2346,7 @@ function renderBankingApp(client) {
           '<div class="balance-card-sub-new">' + t('availableBalance') + ' <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="balance-coins-icon"><ellipse cx="15.5" cy="7" rx="5.5" ry="2" fill="#8b5cf6"/><path d="M10 7v5.5c0 1.1 2.46 2 5.5 2s5.5-.9 5.5-2V7z" fill="#8b5cf6"/><ellipse cx="15.5" cy="10" rx="5.5" ry="2" fill="none" stroke="#ffffff" stroke-width="0.9"/><ellipse cx="15.5" cy="12.5" rx="5.5" ry="2" fill="none" stroke="#ffffff" stroke-width="0.9"/><ellipse cx="8.5" cy="14" rx="6.5" ry="2.5" fill="#8b5cf6"/><path d="M2 14v6c0 1.38 2.91 2.5 6.5 2.5s6.5-1.12 6.5-2.5v-6z" fill="#8b5cf6"/><ellipse cx="8.5" cy="17" rx="6.5" ry="2.5" fill="none" stroke="#ffffff" stroke-width="0.9"/><ellipse cx="8.5" cy="20" rx="6.5" ry="2.5" fill="none" stroke="#ffffff" stroke-width="0.9"/></svg></div>' +
           '<div class="balance-card-bottom-new"><button class="balance-card-details-btn-new" onclick="window.navigateTo(\'screen-profile\')">' + t('detailsBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button></div></div></div>' +
         renderQuickActions() +
-        '<div class="transactions-section-new"><div class="tx-section-header-new"><div class="tx-section-title-new"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z"/></svg>' + t('transactionHistory') + '</div><button class="see-all-link-new" onclick="window.showFullHistory()">' + t('seeAllBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button></div><div id="transaction-list">' + renderTransactions(client.transactions) + '</div></div>' +
+        '<div class="transactions-section-new"><div class="tx-history-card"><div class="tx-history-header"><div class="tx-history-header-icon"><svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg></div><button class="tx-history-header-menu" onclick="window.showFullHistory()" aria-label="' + t('seeAllBtn') + '"><svg viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button><div class="tx-history-header-title">' + t('transactionHistory') + '</div><div class="tx-history-header-count">' + ((client.transactions && client.transactions.length) || 0) + '</div></div><div class="tx-history-divider"></div><div class="tx-history-body" id="transaction-list">' + renderTransactions(client.transactions) + '</div></div></div>' +
         '<div class="security-banner-new"><svg class="security-shield-new" viewBox="0 0 120 120"><defs><linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#1e40af"/></linearGradient></defs><path d="M60 12 L100 26 V60 c0 26-18 44-40 50 C38 104 20 86 20 60 V26 Z" fill="url(#shieldGrad)" stroke="#93c5fd" stroke-width="2"/><rect x="42" y="52" width="36" height="30" rx="4" fill="#0a2540" stroke="#93c5fd" stroke-width="1.5"/><path d="M48 52 V44 a12 12 0 0 1 24 0 V52" fill="none" stroke="#93c5fd" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="66" r="3.5" fill="#93c5fd"/></svg><div class="security-content-new"><div class="security-header-new"><span class="security-header-icon-new"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></span><div class="security-title-new">' + t('securityTitle') + '</div></div><div class="security-desc-new">' + t('securityDesc') + '</div><button class="security-btn-new" onclick="window.showNotif(\'' + t('securityDesc') + '\', \'info\', \'' + t('securityTitle') + '\')">' + t('learnMoreBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button></div></div>' +
       '</div>' +
       '<div id="screen-transfer" class="screen"><div class="page-title-bar"><div class="page-title-icon"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div><span>' + t('sendOutgoingTransfer') + '</span></div><div class="transfer-amount">' + balanceFormatted + '</div><div class="transfer-card"><svg class="transfer-card-watermark" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="20" y="8" width="58" height="34" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/><rect x="17" y="12" width="58" height="34" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/><rect x="14" y="16" width="58" height="34" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="43" cy="33" r="7" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="43" cy="33" r="1.8" fill="currentColor"/><rect x="16" y="58" width="6" height="8" rx="1.2" fill="currentColor"/><rect x="26" y="58" width="6" height="8" rx="1.2" fill="currentColor"/><rect x="36" y="58" width="6" height="8" rx="1.2" fill="currentColor"/><path d="M48 62 H72" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/><path d="M66 55 L74 62 L66 69" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg><div class="details-header"><div class="details-icon"><svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="12" y="6" width="30" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="17" cy="11" r="1.5" fill="currentColor"/><circle cx="37" cy="11" r="1.5" fill="currentColor"/><circle cx="27" cy="16" r="1.5" fill="currentColor"/><circle cx="17" cy="21" r="1.5" fill="currentColor"/><circle cx="37" cy="21" r="1.5" fill="currentColor"/><path d="M5 16 L5 40 L32 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2.5 2.5"/><path d="M28 34 L36 40 L28 46" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>' + t('transferDetails') + '</span></div>' +
