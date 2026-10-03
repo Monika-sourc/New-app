@@ -2213,6 +2213,24 @@ input, select, textarea {
   padding: 16px 14px 14px 14px;
   margin: 0 12px 14px 12px;
   box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+  position: relative;
+}
+.transfer-card-watermark {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 68px;
+  height: 54px;
+  color: #cbd5e1;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+.transfer-card .details-header,
+.transfer-card form,
+.transfer-card .warning-box {
+  position: relative;
+  z-index: 1;
 }
 .transfer-card .details-header {
   display: flex;
@@ -2226,17 +2244,22 @@ input, select, textarea {
   word-break: break-word;
 }
 .details-icon {
-  background: var(--primary);
-  color: #fff;
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 9px;
   flex-shrink: 0;
+  color: #000000;
+  background: transparent;
+  border: none;
+}
+.details-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  stroke: #000000;
+  fill: none;
 }
 
 .form-group { padding: 0 0 10px 0; }
