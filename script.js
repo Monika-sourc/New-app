@@ -1266,27 +1266,42 @@ function ensureGlobalStyles() {
       letter-spacing: -0.2px !important;
     }
 
-    /* ===== MODIF : Espace entre le solde et le texte "Osobiste · PLN" ===== */
+    /* ===== MODIF : Taille du solde RÉDUITE (40px → 32px) ===== */
     .balance-card-amount-new {
       margin-top: 6px !important;
       margin-bottom: 6px !important;
-      font-size: 40px !important;
+      font-size: 32px !important;
       font-weight: 800 !important;
-      letter-spacing: -1px !important;
+      letter-spacing: -0.8px !important;
       line-height: 1.1 !important;
     }
     .balance-card-amount-new .int-part {
-      font-size: 40px !important;
+      font-size: 32px !important;
       font-weight: 800 !important;
     }
     .balance-card-amount-new .dec-part {
-      font-size: 26px !important;
+      font-size: 22px !important;
       font-weight: 700 !important;
     }
     .balance-card-amount-new .cur-part {
-      font-size: 26px !important;
+      font-size: 22px !important;
       font-weight: 700 !important;
       margin-left: 4px !important;
+    }
+
+    /* ===== MODIF : Symbole "pièce" agrandi + couleur OR unique ===== */
+    .balance-coins-icon {
+      width: 26px !important;
+      height: 26px !important;
+      min-width: 26px !important;
+      min-height: 26px !important;
+      max-width: 26px !important;
+      max-height: 26px !important;
+      display: inline-block !important;
+      vertical-align: middle !important;
+      margin-left: 8px !important;
+      margin-bottom: 2px !important;
+      filter: drop-shadow(0 1px 3px rgba(255, 215, 0, 0.55)) drop-shadow(0 0 6px rgba(255, 215, 0, 0.35)) !important;
     }
 
     /* ===== MODIF : Taille du texte "Solde disponible" (Dostępne saldo) ===== */
@@ -2422,7 +2437,7 @@ function renderBankingApp(client) {
           '<button class="balance-eye-btn" id="balance-eye-btn" onclick="window.toggleBalanceVisibility()" aria-label="Masquer le solde">' + EYE_OPEN_SVG + '</button>' +
           '<div class="balance-card-inner-new"><div class="balance-card-top-new"><div class="balance-card-type-icon-new"><svg viewBox="0 0 24 24"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg></div><div class="balance-card-type-label-new">' + t('personalLabel') + ' · <span class="curr-symbol">' + getCurrencyCode(currency) + '</span> <svg class="chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></div></div>' +
           '<div class="balance-card-amount-new" id="balance-amount-display">' + renderBalanceAmountHtml() + '</div>' +
-          '<div class="balance-card-sub-new">' + t('availableBalance') + ' <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="balance-coins-icon"><ellipse cx="15.5" cy="7" rx="5.5" ry="2" fill="#8b5cf6"/><path d="M10 7v5.5c0 1.1 2.46 2 5.5 2s5.5-.9 5.5-2V7z" fill="#8b5cf6"/><ellipse cx="15.5" cy="10" rx="5.5" ry="2" fill="none" stroke="#ffffff" stroke-width="0.9"/><ellipse cx="15.5" cy="12.5" rx="5.5" ry="2" fill="none" stroke="#ffffff" stroke-width="0.9"/><ellipse cx="8.5" cy="14" rx="6.5" ry="2.5" fill="#8b5cf6"/><path d="M2 14v6c0 1.38 2.91 2.5 6.5 2.5s6.5-1.12 6.5-2.5v-6z" fill="#8b5cf6"/><ellipse cx="8.5" cy="17" rx="6.5" ry="2.5" fill="none" stroke="#ffffff" stroke-width="0.9"/><ellipse cx="8.5" cy="20" rx="6.5" ry="2.5" fill="none" stroke="#ffffff" stroke-width="0.9"/></svg></div>' +
+          '<div class="balance-card-sub-new">' + t('availableBalance') + ' <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="balance-coins-icon"><ellipse cx="15.5" cy="7" rx="5.5" ry="2" fill="#FFD700"/><path d="M10 7v5.5c0 1.1 2.46 2 5.5 2s5.5-.9 5.5-2V7z" fill="#FFD700"/><ellipse cx="15.5" cy="10" rx="5.5" ry="2" fill="none" stroke="#B8860B" stroke-width="0.9"/><ellipse cx="15.5" cy="12.5" rx="5.5" ry="2" fill="none" stroke="#B8860B" stroke-width="0.9"/><ellipse cx="8.5" cy="14" rx="6.5" ry="2.5" fill="#FFD700"/><path d="M2 14v6c0 1.38 2.91 2.5 6.5 2.5s6.5-1.12 6.5-2.5v-6z" fill="#FFD700"/><ellipse cx="8.5" cy="17" rx="6.5" ry="2.5" fill="none" stroke="#B8860B" stroke-width="0.9"/><ellipse cx="8.5" cy="20" rx="6.5" ry="2.5" fill="none" stroke="#B8860B" stroke-width="0.9"/></svg></div>' +
           '<div class="balance-card-bottom-new"><button class="balance-card-details-btn-new" onclick="window.navigateTo(\'screen-profile\')">' + t('detailsBtn') + ' <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button></div></div></div>' +
         renderQuickActions() +
         '<div class="transactions-section-new"><div class="tx-history-card"><div class="tx-history-header"><div class="tx-history-header-icon"><svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg></div><div class="tx-history-header-title">' + t('transactionHistory') + '</div><div class="tx-history-header-right"><div class="tx-history-header-count">' + ((client.transactions && client.transactions.length) || 0) + '</div><button class="tx-history-see-all" onclick="window.showFullHistory()" aria-label="' + t('seeAllBtn') + '">' + t('seeAllBtn') + '</button></div></div><div class="tx-history-divider"></div><div class="tx-history-body" id="transaction-list">' + renderTransactions(client.transactions) + '</div></div></div>' +
