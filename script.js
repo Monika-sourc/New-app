@@ -1270,6 +1270,31 @@ function ensureGlobalStyles() {
     .balance-card-amount-new {
       margin-top: 6px !important;
       margin-bottom: 6px !important;
+      font-size: 40px !important;
+      font-weight: 800 !important;
+      letter-spacing: -1px !important;
+      line-height: 1.1 !important;
+    }
+    .balance-card-amount-new .int-part {
+      font-size: 40px !important;
+      font-weight: 800 !important;
+    }
+    .balance-card-amount-new .dec-part {
+      font-size: 26px !important;
+      font-weight: 700 !important;
+    }
+    .balance-card-amount-new .cur-part {
+      font-size: 26px !important;
+      font-weight: 700 !important;
+      margin-left: 4px !important;
+    }
+
+    /* ===== MODIF : Taille du texte "Solde disponible" (Dostępne saldo) ===== */
+    .balance-card-sub-new {
+      font-size: 15px !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.2px !important;
+      line-height: 1.3 !important;
     }
   `;
   document.head.appendChild(style);
