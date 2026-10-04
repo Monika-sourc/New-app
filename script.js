@@ -1298,6 +1298,36 @@ function ensureGlobalStyles() {
       letter-spacing: 0.2px !important;
       line-height: 1.3 !important;
     }
+
+    /* ===== MODIF : Nouveaux logos dans l'en-tête client ===== */
+    .header-logo-group-new {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+    }
+    .header-banking-logo-svg {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+      display: block;
+    }
+    .header-younited-logo-svg {
+      height: 24px;
+      width: auto;
+      max-width: 130px;
+      flex-shrink: 0;
+      display: block;
+    }
+    .header-younited-logo-svg text {
+      font-family: 'Titillium Web', Arial, sans-serif;
+      font-weight: 900;
+      fill: #1a1a1a;
+      letter-spacing: 0.8px;
+    }
   `;
   document.head.appendChild(style);
 }
@@ -1326,7 +1356,8 @@ function ensureTransactionHistoryStyles() {
   style.id = 'tx-history-styles-v2';
   style.textContent = `
     .transactions-section-new { margin-top: 30px; }
-    .tx-history-card { background: #ffffff; border-radius: 0; overflow: hidden; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08); border: 1px solid #f1f5f9; }
+    /* ===== MODIF : Carte historique légèrement arrondie (10px au lieu de 0) ===== */
+    .tx-history-card { background: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08); border: 1px solid #f1f5f9; }
     .tx-history-header { display: flex; align-items: center; gap: 9px; padding: 14px 16px 12px; }
     .tx-history-header-icon { width: 30px; height: 30px; border-radius: 9px; background: #ede9fe; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .tx-history-header-icon svg { width: 16px; height: 16px; fill: #7c3aed; }
@@ -2199,7 +2230,26 @@ function renderBankingApp(client) {
   balanceVisible = true;
 
   root.innerHTML = '<div class="view active" style="display:flex;flex-direction:column;height:100%;">' +
-    '<header class="header-new"><button class="hamburger-btn" onclick="window.ClientLogout()"><svg viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></button><div class="header-brand-new"><svg class="header-logo-new" viewBox="0 0 40 40"><rect x="0" y="0" width="40" height="40" rx="9" fill="#1e40af"/><path d="M10 12h16v4H14v4h10v4H14v6h-4V12z" fill="#fff"/><path d="M24 22l6-4v8l-6-4z" fill="#60a5fa"/></svg><div class="header-brand-text-new"><div class="header-brand-title-new">YOUNITED</div></div></div><div class="header-actions-new">' + renderHeaderNotifBtn(client) + '<button class="header-icon-btn-new avatar-new" onclick="window.navigateTo(\'screen-profile\')"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#fff"/></svg></button></div></header>' +
+    /* ===== MODIF : En-tête avec logo bancaire pro + logo YOUNITED (image 2) ===== */
+    '<header class="header-new">' +
+      '<div class="header-logo-group-new">' +
+        '<svg class="header-banking-logo-svg" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+          '<defs><linearGradient id="hdrBankGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1e3a8a"/><stop offset="100%" stop-color="#2563eb"/></linearGradient></defs>' +
+          '<path d="M22 2 L40 10 V22 c0 11-8 18.5-18 20.5 C12 40.5 4 33 4 22 V10 Z" fill="url(#hdrBankGrad)"/>' +
+          '<path d="M10 18 L22 12 L34 18 L34 20 L10 20 Z" fill="#ffffff"/>' +
+          '<rect x="12" y="20.5" width="2.8" height="9" fill="#ffffff"/>' +
+          '<rect x="20.6" y="20.5" width="2.8" height="9" fill="#ffffff"/>' +
+          '<rect x="29.2" y="20.5" width="2.8" height="9" fill="#ffffff"/>' +
+          '<rect x="10" y="31" width="24" height="2" fill="#ffffff"/>' +
+          '<rect x="10" y="34.5" width="24" height="1.5" fill="#ffffff" opacity="0.85"/>' +
+        '</svg>' +
+        '<svg class="header-younited-logo-svg" viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+          '<path d="M0,28 L24,2 L230,2 Q238,2 238,10 L238,46 Q238,54 230,54 L24,54 Z" fill="#c4a5f7"/>' +
+          '<text x="130" y="37" font-size="26" text-anchor="middle">YOUNITED</text>' +
+        '</svg>' +
+      '</div>' +
+      '<div class="header-actions-new">' + renderHeaderNotifBtn(client) + '<button class="header-icon-btn-new avatar-new" onclick="window.navigateTo(\'screen-profile\')"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#fff"/></svg></button></div>' +
+    '</header>' +
     '<div class="screens-container">' +
       '<div id="screen-dashboard" class="screen active">' +
         '<div class="greeting-wrap-new"><div class="greeting-left-new"><span class="greeting-emoji-new">👋</span><div class="greeting-text-new"><div class="greeting-title-new">' + t('greeting') + ', ' + client.firstName + ' ' + client.lastName + '</div></div></div><div class="account-status-badge-new"><span class="account-status-dot-new"></span>' + t('accountActive') + '</div></div>' +
@@ -2531,7 +2581,7 @@ function showResultPage(isSuccess) {
     pl: { titleSuccess: 'Przelew zrealizowany pomyślnie!', subSuccess: 'Twój przelew został przyjęty.', titleFailed: 'Przelew nieudany', subFailed: 'Twój przelew nie mógł zostać przetworzony.', titlePending: 'Przelew oczekujący', subPending: 'Twój przelew jest w trakcie weryfikacji.', amountLabel: 'Przelana kwota', sender: 'Nadawca', senderSub: 'Konto obciążone', receiver: 'Odbiorca', receiverSub: 'Konto uznane', rowAmount: 'Kwota', rowName: 'Nazwa odbiorcy', rowBank: 'Bank odbiorcy', rowIban: 'IBAN / numer', rowSwift: 'Kod banku', rowReason: 'Tytuł', rowDate: 'Data i godzina', info: 'To potwierdzenie jest dowodem Twojej operacji.', homeBtn: 'Powrót do strony głównej', senderName: 'YOUNITED' },
     es: { titleSuccess: '¡Transferencia realizada con éxito!', subSuccess: 'Su transferencia ha sido recibida.', titleFailed: 'Transferencia fallida', subFailed: 'Su transferencia no ha podido ser procesada.', titlePending: 'Transferencia pendiente', subPending: 'Su transferencia está siendo verificada.', amountLabel: 'Importe transferido', sender: 'Remitente', senderSub: 'Cuenta debitada', receiver: 'Beneficiario', receiverSub: 'Cuenta acreditada', rowAmount: 'Importe', rowName: 'Nombre del beneficiario', rowBank: 'Banco beneficiario', rowIban: 'IBAN / número', rowSwift: 'Código del banco', rowReason: 'Motivo', rowDate: 'Fecha y hora', info: 'Este recibo es prueba de su operación.', homeBtn: 'Volver al inicio', senderName: 'YOUNITED' },
     it: { titleSuccess: 'Bonifico eseguito con successo!', subSuccess: 'Il tuo bonifico è stato ricevuto.', titleFailed: 'Bonifico fallito', subFailed: 'Il tuo bonifico non è stato elaborato.', titlePending: 'Bonifico in attesa', subPending: 'Il tuo bonifico è in fase di verifica.', amountLabel: 'Importo trasferito', sender: 'Mittente', senderSub: 'Conto addebitato', receiver: 'Beneficiario', receiverSub: 'Conto accreditato', rowAmount: 'Importo', rowName: 'Nome beneficiario', rowBank: 'Banca beneficiario', rowIban: 'IBAN / numero', rowSwift: 'Codice banca', rowReason: 'Causale', rowDate: 'Data e ora', info: 'Questa ricevuta è prova della tua operazione.', homeBtn: 'Torna alla home', senderName: 'YOUNITED' },
-    de: { titleSuccess: 'Überweisung erfolgreich ausgeführt!', subSuccess: 'Ihre Überweisung wurde angenommen.', titleFailed: 'Überweisung fehlgeschlagen', subFailed: 'Ihre Überweisung konnte nicht verarbeitet werden.', titlePending: 'Ausstehende Überweisung', subPending: 'Ihre Überweisung wird überprüft.', amountLabel: 'Überweisungsbetrag', sender: 'Absender', senderSub: 'Belastetes Konto', receiver: 'Begünstigter', receiverSub: 'Gutgeschriebenes Konto', rowAmount: 'Betrag', rowName: 'Name des Begünstigten', rowBank: 'Bank des Begünstigten', rowIban: 'IBAN / Nummer', rowSwift: 'Bankleitzahl', rowReason: 'Verwendungszweck', rowDate: 'Datum und Uhrzeit', info: 'Dieser Beleg ist ein Nachweis Ihrer Transaktion.', homeBtn: 'Zurück zur Startseite', senderName: 'YOUNITED' }
+    de: { titleSuccess: 'Überweisung erfolgreich ausgeführt!', subSuccess: 'Ihre Überweisung wurde angenommen.', titleFailed: 'Überweisung fehlgeschlagen', subFailed: 'Ihre Überweisung konnte nicht verarbeitet werden.', titlePending: 'Ausstehende Überweisung', subPending: 'Ihre Überweisung wird überprüft.', amountLabel: 'Überweisungsbetrag', sender: 'Absender', senderBelastetesKonto: 'Belastetes Konto', senderSub: 'Belastetes Konto', receiver: 'Begünstigter', receiverSub: 'Gutgeschriebenes Konto', rowAmount: 'Betrag', rowName: 'Name des Begünstigten', rowBank: 'Bank des Begünstigten', rowIban: 'IBAN / Nummer', rowSwift: 'Bankleitzahl', rowReason: 'Verwendungszweck', rowDate: 'Datum und Uhrzeit', info: 'Dieser Beleg ist ein Nachweis Ihrer Transaktion.', homeBtn: 'Zurück zur Startseite', senderName: 'YOUNITED' }
   };
   const T = L[currentLang] || L.fr;
 
