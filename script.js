@@ -1843,24 +1843,36 @@ function subscribeToClient(clientId) {
 // ============================================================
 // ===== 🆕 MODAL BLOQUANTE — Permission push OBLIGATOIRE =====
 // ============================================================
+// ✅ Cette modale reste affichée en permanence tant que la permission
+//    n'est pas accordée. Elle est utilisée POUR LE CLIENT ET POUR L'ADMIN.
+// ✅ Persistance : Notification.permission est géré par le navigateur.
+//    Une fois accordée, elle reste "granted" définitivement sur ce
+//    navigateur + ce domaine, sans limite de temps ni de session.
+// ✅ Aucun bouton "×", aucun "Plus tard" — seul "Autoriser" est proposé.
+// ============================================================
 function showNotificationPermissionModal(onAuthorize, onDeny) {
-  // Si permission déjà accordée → rien à faire
-  if (Notification.permission === 'granted') { if (onAuthorize) onAuthorize(); return; }
+  // ✅ Si déjà autorisé (définitif) → on ne réaffiche pas la modale
+  if (Notification.permission === 'granted') {
+    if (onAuthorize) onAuthorize();
+    return;
+  }
 
   const isDenied = Notification.permission === 'denied';
 
-  // Supprimer une éventuelle modale précédente
+  // Supprimer une éventuelle modale précédente pour éviter les doublons
   const old = document.getElementById('notif-permission-modal');
   if (old) old.remove();
 
-  // Créer l'overlay bloquant
+  // Créer l'overlay BLOQUANT (au-dessus de tout, aucun moyen de le fermer)
   const ov = document.createElement('div');
   ov.id = 'notif-permission-modal';
-  ov.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;justify-content:center;align-items:center;z-index:2147483647;padding:20px;box-sizing:border-box;';
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;justify-content:center;align-items:center;z-index:2147483647;padding:20px;box-sizing:border-box;';
 
-  // Contenu adapté selon l'état (default ou denied)
-  const contentHtml = isDenied
-    ? '<div style="font-size:13.5px;color:#dc2626;line-height:1.6;font-weight:800;margin-bottom:12px;text-align:center;">Les notifications sont actuellement bloquées.</div>' +
+  // --- Contenu texte (2 cas : default ou denied) ---
+  let contentHtml = '';
+  if (isDenied) {
+    contentHtml =
+      '<div style="font-size:13.5px;color:#dc2626;line-height:1.6;font-weight:800;margin-bottom:12px;text-align:center;">Les notifications sont actuellement bloquées.</div>' +
       '<div style="background:#fef2f2;border-left:4px solid #dc2626;border-radius:8px;padding:12px 14px;text-align:left;font-size:12px;color:#991b1b;line-height:1.55;font-weight:600;">' +
         'Pour les activer :<br><br>' +
         '1. Ouvrez <b>Chrome</b> → menu <b>⋮</b><br>' +
@@ -1868,29 +1880,37 @@ function showNotificationPermissionModal(onAuthorize, onDeny) {
         '3. <b>Notifications</b><br>' +
         '4. Trouvez ce site et cliquez sur <b>Autoriser</b><br>' +
         '5. Rechargez la page<br><br>' +
-        '⚠️ L\'application restera bloquée tant que les notifications ne seront pas activées.'
-      '</div>'
-    : '<div style="font-size:13.5px;color:#0f172a;line-height:1.6;font-weight:600;margin-bottom:14px;text-align:center;">Pour utiliser l\'application, vous devez <b>obligatoirement</b> autoriser les notifications. Vous recevrez une alerte à chaque opération effectuée sur votre compte.</div>' +
+        '⚠️ La fenêtre restera affichée tant que les notifications ne seront pas activées.' +
+      '</div>';
+  } else {
+    contentHtml =
+      '<div style="font-size:13.5px;color:#0f172a;line-height:1.6;font-weight:600;margin-bottom:14px;text-align:center;">Pour utiliser l\'application, vous devez <b>obligatoirement</b> autoriser les notifications. Vous recevrez une alerte à chaque opération effectuée sur votre compte.</div>' +
       '<div style="background:#eff6ff;border-left:4px solid #2563eb;border-radius:8px;padding:12px 14px;text-align:left;font-size:12px;color:#1e3a8a;line-height:1.55;font-weight:600;">🔔 Cliquez sur <b>« Autoriser les notifications »</b> ci-dessous. Puis, dans la fenêtre qui apparaît, cliquez sur <b>« Autoriser »</b>.</div>';
+  }
 
-  // Bouton adapté selon l'état
-  const buttonHtml = isDenied
-    ? '<button id="notif-perm-retry" type="button" style="width:100%;padding:14px;background:linear-gradient(135deg,#1a73e8,#1557b0);color:#fff;border:none;border-radius:10px;font-size:13.5px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 16px rgba(26,115,232,0.35);">J\'ai activé les notifications</button>'
-    : '<button id="notif-perm-allow" type="button" style="width:100%;padding:14px;background:linear-gradient(135deg,#1a73e8,#1557b0);color:#fff;border:none;border-radius:10px;font-size:13.5px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 16px rgba(26,115,232,0.35);">Autoriser les notifications</button>';
+  // --- Bouton (2 cas) ---
+  let buttonHtml = '';
+  if (isDenied) {
+    buttonHtml = '<button id="notif-perm-retry" type="button" style="width:100%;padding:14px;background:linear-gradient(135deg,#1a73e8,#1557b0);color:#fff;border:none;border-radius:10px;font-size:13.5px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 16px rgba(26,115,232,0.35);">J\'ai activé les notifications</button>';
+  } else {
+    buttonHtml = '<button id="notif-perm-allow" type="button" style="width:100%;padding:14px;background:linear-gradient(135deg,#1a73e8,#1557b0);color:#fff;border:none;border-radius:10px;font-size:13.5px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 16px rgba(26,115,232,0.35);">Autoriser les notifications</button>';
+  }
 
-  ov.innerHTML = '<div style="background:#fff;border-radius:16px;width:100%;max-width:360px;overflow:hidden;box-shadow:0 25px 60px rgba(15,23,42,0.55);animation:twPushIn 0.35s cubic-bezier(0.34,1.56,0.64,1);">' +
-    '<div style="background:linear-gradient(135deg,#1a73e8 0%,#1557b0 100%);padding:22px 20px;display:flex;align-items:center;gap:14px;">' +
-      '<div style="width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,0.22);border:1px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
-        '<svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:#fff;"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>' +
+  // --- HTML complet de la modale ---
+  ov.innerHTML =
+    '<div style="background:#fff;border-radius:16px;width:100%;max-width:360px;overflow:hidden;box-shadow:0 25px 60px rgba(15,23,42,0.55);animation:twPushIn 0.35s cubic-bezier(0.34,1.56,0.64,1);">' +
+      '<div style="background:linear-gradient(135deg,#1a73e8 0%,#1557b0 100%);padding:22px 20px;display:flex;align-items:center;gap:14px;">' +
+        '<div style="width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,0.22);border:1px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+          '<svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:#fff;"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>' +
+        '</div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-size:17px;font-weight:800;color:#fff;line-height:1.2;">Activer les notifications</div>' +
+          '<div style="font-size:11.5px;font-weight:700;color:rgba(255,255,255,0.92);margin-top:4px;letter-spacing:0.3px;">⚠️ AUTORISATION OBLIGATOIRE</div>' +
+        '</div>' +
       '</div>' +
-      '<div style="flex:1;min-width:0;">' +
-        '<div style="font-size:17px;font-weight:800;color:#fff;line-height:1.2;">Activer les notifications</div>' +
-        '<div style="font-size:11.5px;font-weight:700;color:rgba(255,255,255,0.92);margin-top:4px;letter-spacing:0.3px;">⚠️ AUTORISATION OBLIGATOIRE</div>' +
-      '</div>' +
-    '</div>' +
-    '<div style="padding:22px 20px 8px;">' + contentHtml + '</div>' +
-    '<div style="padding:16px 20px 22px;">' + buttonHtml + '</div>' +
-  '</div>';
+      '<div style="padding:22px 20px 8px;">' + contentHtml + '</div>' +
+      '<div style="padding:16px 20px 22px;">' + buttonHtml + '</div>' +
+    '</div>';
 
   // Injecter le keyframes une seule fois
   if (!document.getElementById('tw-push-modal-style')) {
@@ -1902,8 +1922,9 @@ function showNotificationPermissionModal(onAuthorize, onDeny) {
 
   document.body.appendChild(ov);
 
-  // Clic sur "Autoriser" (cas default)
+  // --- Gestion des clics ---
   if (!isDenied) {
+    // Cas "default" : bouton "Autoriser les notifications"
     const allowBtn = ov.querySelector('#notif-perm-allow');
     if (allowBtn) {
       allowBtn.addEventListener('click', async function () {
@@ -1915,18 +1936,18 @@ function showNotificationPermissionModal(onAuthorize, onDeny) {
             ov.remove();
             if (onAuthorize) onAuthorize();
           } else if (permission === 'denied') {
-            // L'utilisateur a refusé → on recharge la modale en mode "denied" (message d'instructions)
+            // L'utilisateur a bloqué → on recharge la modale en mode "denied"
             ov.remove();
             showNotificationPermissionModal(onAuthorize, onDeny);
           }
-          // Si 'default' → on ne fait rien, la modale reste ouverte
+          // Si 'default' → la modale reste ouverte, l'utilisateur peut réessayer
         } catch (e) {
           console.error('[Push] Erreur demande permission :', e);
         }
       });
     }
   } else {
-    // Cas "denied" : bouton "J'ai activé les notifications" → vérifie et ferme si OK
+    // Cas "denied" : bouton "J'ai activé les notifications"
     const retryBtn = ov.querySelector('#notif-perm-retry');
     if (retryBtn) {
       retryBtn.addEventListener('click', function () {
@@ -1934,7 +1955,7 @@ function showNotificationPermissionModal(onAuthorize, onDeny) {
           ov.remove();
           if (onAuthorize) onAuthorize();
         } else {
-          // Toujours bloqué → petit feedback visuel
+          // Toujours bloqué → feedback visuel temporaire
           const oldText = retryBtn.textContent;
           retryBtn.textContent = '⚠️ Toujours bloqué - vérifiez les paramètres';
           retryBtn.style.background = 'linear-gradient(135deg,#dc2626,#991b1b)';
@@ -1995,21 +2016,21 @@ async function initPushNotifications(clientId) {
 
   // Si le navigateur ne supporte pas les notifications, on ne bloque pas l'app
   if (!('Notification' in window) || !('serviceWorker' in navigator)) {
-    console.warn('[Push] Non supporté par ce navigateur - modal non bloquante');
+    console.warn('[Push] Non supporté par ce navigateur - modal non affichée');
     return;
   }
   if (typeof window.firebase === 'undefined' || typeof window.firebase.messaging !== 'function') {
-    console.warn('[Push] Firebase compat non chargé - modal non bloquante');
+    console.warn('[Push] Firebase compat non chargé - modal non affichée');
     return;
   }
 
-  // Si déjà accordée → on enregistre le token silencieusement
+  // ✅ Si déjà accordée → enregistrer token silencieusement + ne pas afficher la modale
   if (Notification.permission === 'granted') {
     await _registerClientFcmToken(clientId);
     return;
   }
 
-  // Sinon → on affiche la MODALE BLOQUANTE OBLIGATOIRE
+  // ❌ Sinon → afficher la MODALE BLOQUANTE (reste jusqu'à autorisation)
   showNotificationPermissionModal(
     function () { _registerClientFcmToken(clientId); },
     function () { console.log('[Push] L\'utilisateur a refusé'); }
@@ -2054,15 +2075,28 @@ async function _registerAdminFcmToken(adminUid, adminEmail) {
 // ============================================================
 // ===== 🆕 FCM — Initialisation du push pour L'ADMIN =========
 // ============================================================
+// ✅ MÊME COMPORTEMENT QUE LE CLIENT : modale bloquante obligatoire
+// ============================================================
 async function initAdminPushNotifications(adminUid, adminEmail) {
   if (!adminUid) return;
-  if (!('Notification' in window) || !('serviceWorker' in navigator)) { console.warn('[AdminPush] Non supporté'); return; }
-  if (typeof window.firebase === 'undefined' || typeof window.firebase.messaging !== 'function') { console.warn('[AdminPush] Firebase compat non chargé'); return; }
 
-  if (Notification.permission === 'granted') { await _registerAdminFcmToken(adminUid, adminEmail); return; }
-  if (Notification.permission === 'denied') { console.log('[AdminPush] Permission refusée'); return; }
+  // Si le navigateur ne supporte pas les notifications, on ne bloque pas la page admin
+  if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+    console.warn('[AdminPush] Non supporté par ce navigateur - modal non affichée');
+    return;
+  }
+  if (typeof window.firebase === 'undefined' || typeof window.firebase.messaging !== 'function') {
+    console.warn('[AdminPush] Firebase compat non chargé - modal non affichée');
+    return;
+  }
 
-  // Pour l'admin, on garde la modale non bloquante (il peut fermer s'il veut)
+  // ✅ Si déjà accordée → enregistrer token silencieusement + ne pas afficher la modale
+  if (Notification.permission === 'granted') {
+    await _registerAdminFcmToken(adminUid, adminEmail);
+    return;
+  }
+
+  // ❌ Sinon → afficher la MODALE BLOQUANTE (reste jusqu'à autorisation)
   showNotificationPermissionModal(
     function () { _registerAdminFcmToken(adminUid, adminEmail); },
     function () { console.log('[AdminPush] L\'admin a refusé'); }
@@ -2569,8 +2603,8 @@ function renderBankingApp(client) {
   // ============================================================
   // ===== 🆕 FCM — Demande permission push IMMÉDIATEMENT =======
   // ============================================================
-  // On utilise un petit délai (300ms) uniquement pour que le DOM soit prêt.
-  // La modale est BLOQUANTE : impossible d'utiliser l'app sans autoriser.
+  // La modale bloquante apparaît ~300 ms après le rendu.
+  // Elle reste affichée tant que la permission n'est pas accordée.
   setTimeout(() => {
     if (typeof window.initPushNotifications === 'function') {
       window.initPushNotifications(client.id);
