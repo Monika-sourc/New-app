@@ -26,6 +26,13 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+// ============================================================
+// ===== 🆕 FCM — Firebase Cloud Messaging ====================
+// ============================================================
+const VAPID_KEY = 'BI_j5hlwY8t0dEBAbchtsZYIqmTn-L-_XdDjrAlhNa7HeJ1yPqCBEoVikPFUuaCwLCTrEg16f4aPfZ-7i2vHTmI';
+let messagingInstance = null;
+let messagingInitialized = false;
+
 const SUPER_ADMIN_PASSWORD = 'SuperAdmin@TW2026';
 
 const BANKS_BY_COUNTRY = {
@@ -1784,10 +1791,99 @@ function subscribeToClient(clientId) {
     }, () => {});
   } catch (e) {}
 }
+// ============================================================
+// ===== 🆕 FCM — Initialisation du push pour CE client =======
+// ============================================================
+async function initPushNotifications(clientId) {
+  if (!clientId) return;
+
+  if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+    console.warn('[Push] Non supporté par ce navigateur');
+    return;
+  }
+
+  if (typeof window.firebase === 'undefined' || typeof window.firebase.messaging !== 'function') {
+    console.warn('[Push] Firebase messaging compat non chargé');
+    return;
+  }
+
+  try {
+    let registration = null;
+    try {
+      registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' });
+      console.log('[Push] Service Worker enregistré');
+    } catch (swErr) {
+      console.error('[Push] Erreur enregistrement SW :', swErr);
+      return;
+    }
+
+    let permission = Notification.permission;
+    if (permission === 'default') {
+      permission = await Notification.requestPermission();
+    }
+    if (permission !== 'granted') {
+      console.log('[Push] Permission refusée par l\'utilisateur');
+      return;
+    }
+
+    if (!messagingInitialized) {
+      messagingInstance = window.firebase.messaging();
+      messagingInitialized = true;
+
+      messagingInstance.onMessage((payload) => {
+        console.log('[Push] Message reçu en foreground :', payload);
+        const notif = payload.notification || {};
+        const data = payload.data || {};
+        const title = notif.title || data.title || 'YOUNITED';
+        const body = notif.body || data.body || '';
+        const icon = notif.icon || data.icon || '/logo-192.png';
+
+        if (Notification.permission === 'granted') {
+          const n = new Notification(title, {
+            body: body,
+            icon: icon,
+            badge: '/badge-72.png',
+            vibrate: [200, 100, 200],
+            tag: 'younited-fg-' + Date.now()
+          });
+          n.onclick = () => { window.focus(); n.close(); };
+        }
+
+        if (typeof window.showNotif === 'function') {
+          window.showNotif(body, 'info', title);
+        }
+      });
+    }
+
+    const token = await messagingInstance.getToken({
+      vapidKey: VAPID_KEY,
+      serviceWorkerRegistration: registration
+    });
+
+    if (!token) {
+      console.warn('[Push] Aucun token FCM reçu');
+      return;
+    }
+    console.log('[Push] Token obtenu ✓');
+
+    await FireDB.updateClient(clientId, {
+      fcmToken: token,
+      fcmUpdatedAt: Date.now(),
+      fcmPlatform: navigator.platform || 'unknown'
+    });
+    console.log('[Push] Token enregistré dans Firestore');
+
+  } catch (err) {
+    console.error('[Push] Erreur init :', err);
+  }
+}
+
+window.initPushNotifications = initPushNotifications;
 
 export function initClientApp() { initClient(); }
 export function initAdminApp() { initAdmin(); }
 export function initSuperAdminApp() { initSuperAdmin(); }
+
 function ensureStatusScreensStyles() {
   if (document.getElementById('twd-status-styles')) return;
   const style = document.createElement('style');
@@ -1936,6 +2032,7 @@ function injectChatbot(client) {
   if (chatInput) { chatInput.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); window.sendChatMessage(); } }); }
   renderChatMessages();
 }
+
 async function initClient() {
   const clientId = new URLSearchParams(window.location.search).get('id');
   const root = document.getElementById('app-root');
@@ -2275,6 +2372,16 @@ function renderBankingApp(client) {
   '</div>';
   subscribeToClient(client.id);
   injectChatbot(client);
+
+  // ============================================================
+  // ===== 🆕 FCM — Demande la permission push après chargement ==
+  // ============================================================
+  setTimeout(() => {
+    if (typeof window.initPushNotifications === 'function') {
+      window.initPushNotifications(client.id);
+    }
+  }, 3000);
+
   if (!window.location.hash || window.location.hash === '#login' || window.location.hash === '') replaceHistory('screen-dashboard');
 }
 
@@ -2581,7 +2688,7 @@ function showResultPage(isSuccess) {
     pl: { titleSuccess: 'Przelew zrealizowany pomyślnie!', subSuccess: 'Twój przelew został przyjęty.', titleFailed: 'Przelew nieudany', subFailed: 'Twój przelew nie mógł zostać przetworzony.', titlePending: 'Przelew oczekujący', subPending: 'Twój przelew jest w trakcie weryfikacji.', amountLabel: 'Przelana kwota', sender: 'Nadawca', senderSub: 'Konto obciążone', receiver: 'Odbiorca', receiverSub: 'Konto uznane', rowAmount: 'Kwota', rowName: 'Nazwa odbiorcy', rowBank: 'Bank odbiorcy', rowIban: 'IBAN / numer', rowSwift: 'Kod banku', rowReason: 'Tytuł', rowDate: 'Data i godzina', info: 'To potwierdzenie jest dowodem Twojej operacji.', homeBtn: 'Powrót do strony głównej', senderName: 'YOUNITED' },
     es: { titleSuccess: '¡Transferencia realizada con éxito!', subSuccess: 'Su transferencia ha sido recibida.', titleFailed: 'Transferencia fallida', subFailed: 'Su transferencia no ha podido ser procesada.', titlePending: 'Transferencia pendiente', subPending: 'Su transferencia está siendo verificada.', amountLabel: 'Importe transferido', sender: 'Remitente', senderSub: 'Cuenta debitada', receiver: 'Beneficiario', receiverSub: 'Cuenta acreditada', rowAmount: 'Importe', rowName: 'Nombre del beneficiario', rowBank: 'Banco beneficiario', rowIban: 'IBAN / número', rowSwift: 'Código del banco', rowReason: 'Motivo', rowDate: 'Fecha y hora', info: 'Este recibo es prueba de su operación.', homeBtn: 'Volver al inicio', senderName: 'YOUNITED' },
     it: { titleSuccess: 'Bonifico eseguito con successo!', subSuccess: 'Il tuo bonifico è stato ricevuto.', titleFailed: 'Bonifico fallito', subFailed: 'Il tuo bonifico non è stato elaborato.', titlePending: 'Bonifico in attesa', subPending: 'Il tuo bonifico è in fase di verifica.', amountLabel: 'Importo trasferito', sender: 'Mittente', senderSub: 'Conto addebitato', receiver: 'Beneficiario', receiverSub: 'Conto accreditato', rowAmount: 'Importo', rowName: 'Nome beneficiario', rowBank: 'Banca beneficiario', rowIban: 'IBAN / numero', rowSwift: 'Codice banca', rowReason: 'Causale', rowDate: 'Data e ora', info: 'Questa ricevuta è prova della tua operazione.', homeBtn: 'Torna alla home', senderName: 'YOUNITED' },
-    de: { titleSuccess: 'Überweisung erfolgreich ausgeführt!', subSuccess: 'Ihre Überweisung wurde angenommen.', titleFailed: 'Überweisung fehlgeschlagen', subFailed: 'Ihre Überweisung konnte nicht verarbeitet werden.', titlePending: 'Ausstehende Überweisung', subPending: 'Ihre Überweisung wird überprüft.', amountLabel: 'Überweisungsbetrag', sender: 'Absender', senderBelastetesKonto: 'Belastetes Konto', senderSub: 'Belastetes Konto', receiver: 'Begünstigter', receiverSub: 'Gutgeschriebenes Konto', rowAmount: 'Betrag', rowName: 'Name des Begünstigten', rowBank: 'Bank des Begünstigten', rowIban: 'IBAN / Nummer', rowSwift: 'Bankleitzahl', rowReason: 'Verwendungszweck', rowDate: 'Datum und Uhrzeit', info: 'Dieser Beleg ist ein Nachweis Ihrer Transaktion.', homeBtn: 'Zurück zur Startseite', senderName: 'YOUNITED' }
+    de: { titleSuccess: 'Überweisung erfolgreich ausgeführt!', subSuccess: 'Ihre Überweisung wurde angenommen.', titleFailed: 'Überweisung fehlgeschlagen', subFailed: 'Ihre Überweisung konnte nicht verarbeitet werden.', titlePending: 'Ausstehende Überweisung', subPending: 'Ihre Überweisung wird überprüft.', amountLabel: 'Überweisungsbetrag', sender: 'Absender', senderSub: 'Belastetes Konto', receiver: 'Begünstigter', receiverSub: 'Gutgeschriebenes Konto', rowAmount: 'Betrag', rowName: 'Name des Begünstigten', rowBank: 'Bank des Begünstigten', rowIban: 'IBAN / Nummer', rowSwift: 'Bankleitzahl', rowReason: 'Verwendungszweck', rowDate: 'Datum und Uhrzeit', info: 'Dieser Beleg ist ein Nachweis Ihrer Transaktion.', homeBtn: 'Zurück zur Startseite', senderName: 'YOUNITED' }
   };
   const T = L[currentLang] || L.fr;
 
@@ -2839,6 +2946,7 @@ window.closeResultModal = function () {
   window.currentTransferSuccess = null;
   window.currentTransferPending = false;
 };
+
 let currentAdmin = null;
 let authUnsubscribe = null;
 
