@@ -1844,15 +1844,21 @@ function subscribeToClient(clientId) {
 // ===== 🆕 MODALE — Permission push OBLIGATOIRE ==============
 // ============================================================
 // ✅ Arrière-plan ULTRA TRANSPARENT
-// ✅ La modale disparaît IMMÉDIATEMENT au clic sur le bouton
-// ✅ Chrome gère le popup natif ensuite
+// ✅ La modale disparaît IMMÉDIATEMENT au clic (avant même la réponse de Chrome)
+// ✅ Ne s'affiche plus du tout si permission = 'denied' (Chrome mémorise)
+// ✅ Chrome gère le popup natif, nous ne faisons que disparaître
 // ✅ Persistance définitive via Notification.permission
 // ✅ Fonctionne identiquement CLIENT + ADMIN
 // ============================================================
 function showNotificationPermissionModal(onAuthorize, onDeny) {
-  // Si déjà autorisée → ne rien afficher
+  // Si déjà accordée → ne rien afficher, enregistrer le token directement
   if (Notification.permission === 'granted') {
     if (onAuthorize) onAuthorize();
+    return;
+  }
+  // Si déjà refusée → ne JAMAIS réafficher (Chrome ne redemandera jamais)
+  if (Notification.permission === 'denied') {
+    console.log('[Push] Permission refusée définitivement par l\'utilisateur - modal non affichée');
     return;
   }
 
@@ -1887,23 +1893,26 @@ function showNotificationPermissionModal(onAuthorize, onDeny) {
 
   // ============================================================
   // ===== Clic sur "Autoriser les notifications" ===============
-  // ===== La modale DISPARAÎT IMMÉDIATEMENT ====================
+  // ===== 1. La modale DISPARAÎT IMMÉDIATEMENT =================
+  // ===== 2. On demande la permission au navigateur ============
   // ============================================================
   const allowBtn = ov.querySelector('#notif-perm-allow');
   if (allowBtn) {
     allowBtn.addEventListener('click', function () {
-      // ✅ ÉTAPE 1 : On fait disparaître NOTRE modale tout de suite
+      // ✅ ÉTAPE 1 : On fait disparaître NOTRE modale TOUT DE SUITE
       ov.remove();
 
-      // ✅ ÉTAPE 2 : On demande la permission au navigateur
-      // Le popup natif Chrome s'affichera (ou pas, si déjà bloqué)
+      // ✅ ÉTAPE 2 : On demande la permission au navigateur (popup natif)
       try {
+        console.log('[Push] Demande de permission (geste utilisateur)…');
         Notification.requestPermission().then(function (permission) {
           console.log('[Push] Permission retournée :', permission);
           if (permission === 'granted') {
+            // L'utilisateur a cliqué "Autoriser" dans le popup natif
             if (onAuthorize) onAuthorize();
           }
-          // Le reste est géré par le navigateur (popup natif Chrome)
+          // Si 'denied' → plus rien ne se passe (déjà géré, modale fermée)
+          // Si 'default' → plus rien (l'utilisateur a fermé le popup)
         }).catch(function (e) {
           console.error('[Push] Erreur demande permission :', e);
         });
@@ -1917,99 +1926,48 @@ function showNotificationPermissionModal(onAuthorize, onDeny) {
 // ============================================================
 // ===== FCM — Enregistrement du token CLIENT ==================
 // ============================================================
-// ✅ CORRECTION : attente de l'activation du SW + logs détaillés
-// ============================================================
 async function _registerClientFcmToken(clientId) {
   try {
-    console.log('[Push] Début enregistrement token FCM pour client :', clientId);
-
-    // ✅ Vérification Firebase Messaging disponible
-    if (typeof window.firebase === 'undefined' || typeof window.firebase.messaging !== 'function') {
-      console.error('[Push] Firebase Messaging compat n\'est pas chargé');
-      return;
-    }
-
-    // ✅ Vérification support navigateur
-    if (!('serviceWorker' in navigator) || !('Notification' in window)) {
-      console.error('[Push] ServiceWorker ou Notification non supporté');
-      return;
-    }
-
-    // ✅ Vérification permission
-    if (Notification.permission !== 'granted') {
-      console.error('[Push] Permission non accordée :', Notification.permission);
-      return;
-    }
-
-    // ✅ ÉTAPE 1 : Enregistrer + ATTENDRE l'activation du service worker
     let registration = null;
     try {
       registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' });
-      console.log('[Push] Service Worker enregistré, scope :', registration.scope);
-      await navigator.serviceWorker.ready;
-      console.log('[Push] Service Worker prêt ✓');
+      console.log('[Push] Service Worker enregistré');
     } catch (swErr) {
       console.error('[Push] Erreur SW :', swErr);
       return;
     }
 
-    // ✅ ÉTAPE 2 : Initialiser l'instance Messaging (une seule fois)
+    // ✅ AJOUT : Attendre que le Service Worker soit complètement activé
+    try {
+      await navigator.serviceWorker.ready;
+      console.log('[Push] Service Worker prêt');
+    } catch (e) {
+      console.warn('[Push] serviceWorker.ready a échoué :', e);
+    }
+
     if (!messagingInitialized) {
-      try {
-        messagingInstance = window.firebase.messaging();
-        messagingInitialized = true;
-        console.log('[Push] Instance Firebase Messaging créée ✓');
-
-        messagingInstance.onMessage((payload) => {
-          console.log('[Push] Message foreground :', payload);
-          const notif = payload.notification || {};
-          const data = payload.data || {};
-          const title = notif.title || data.title || 'YOUNITED';
-          const body = notif.body || data.body || '';
-          if (Notification.permission === 'granted') {
-            const n = new Notification(title, { body: body, icon: notif.icon || '/logo-192.png', badge: '/badge-72.png', vibrate: [200, 100, 200], tag: 'younited-fg-' + Date.now() });
-            n.onclick = () => { window.focus(); n.close(); };
-          }
-          if (typeof window.showNotif === 'function') window.showNotif(body, 'info', title);
-        });
-      } catch (msgErr) {
-        console.error('[Push] Erreur création instance Messaging :', msgErr);
-        return;
-      }
-    }
-
-    // ✅ ÉTAPE 3 : Obtenir le token FCM
-    let token = null;
-    try {
-      token = await messagingInstance.getToken({
-        vapidKey: VAPID_KEY,
-        serviceWorkerRegistration: registration
+      messagingInstance = window.firebase.messaging();
+      messagingInitialized = true;
+      messagingInstance.onMessage((payload) => {
+        console.log('[Push] Message foreground :', payload);
+        const notif = payload.notification || {};
+        const data = payload.data || {};
+        const title = notif.title || data.title || 'YOUNITED';
+        const body = notif.body || data.body || '';
+        if (Notification.permission === 'granted') {
+          const n = new Notification(title, { body: body, icon: notif.icon || '/logo-192.png', badge: '/badge-72.png', vibrate: [200, 100, 200], tag: 'younited-fg-' + Date.now() });
+          n.onclick = () => { window.focus(); n.close(); };
+        }
+        if (typeof window.showNotif === 'function') window.showNotif(body, 'info', title);
       });
-      console.log('[Push] Token FCM obtenu :', token ? (token.substring(0, 30) + '...') : 'AUCUN');
-    } catch (tokenErr) {
-      console.error('[Push] Erreur getToken :', tokenErr);
-      return;
     }
 
-    if (!token) {
-      console.warn('[Push] Token FCM vide (probablement VAPID key incorrecte ou SW mal configuré)');
-      return;
-    }
+    const token = await messagingInstance.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: registration });
+    if (!token) { console.warn('[Push] Pas de token FCM'); return; }
 
-    // ✅ ÉTAPE 4 : Sauvegarder le token dans Firestore
-    try {
-      await FireDB.updateClient(clientId, {
-        fcmToken: token,
-        fcmUpdatedAt: Date.now(),
-        fcmPlatform: navigator.platform || 'unknown'
-      });
-      console.log('[Push] Token client enregistré ✓ dans Firestore');
-    } catch (dbErr) {
-      console.error('[Push] Erreur sauvegarde Firestore :', dbErr);
-    }
-  } catch (err) {
-    console.error('[Push] Erreur globale enregistrement client :', err);
-  }
+    await FireDB.updateClient(clientId, { fcmToken: token, fcmUpdatedAt: Date.now(), fcmPlatform: navigator.platform || 'unknown' });
+    console.log('[Push] Token client enregistré ✓', token.slice(0, 25) + '...');
+  } catch (err) { console.error('[Push] Erreur enregistrement client :', err); }
 }
 
 // ============================================================
@@ -2027,11 +1985,19 @@ async function initPushNotifications(clientId) {
     return;
   }
 
+  // ✅ Si déjà accordée → enregistrer le token silencieusement (pas de modale)
   if (Notification.permission === 'granted') {
     await _registerClientFcmToken(clientId);
     return;
   }
 
+  // ❌ Si refusée → ne rien afficher (Chrome ne redemandera jamais)
+  if (Notification.permission === 'denied') {
+    console.log('[Push] Permission refusée définitivement - aucune modale');
+    return;
+  }
+
+  // Sinon (default) → afficher la modale bloquante
   showNotificationPermissionModal(
     function () { _registerClientFcmToken(clientId); },
     function () { console.log('[Push] L\'utilisateur a refusé'); }
@@ -2043,85 +2009,42 @@ async function initPushNotifications(clientId) {
 // ============================================================
 async function _registerAdminFcmToken(adminUid, adminEmail) {
   try {
-    console.log('[AdminPush] Début enregistrement token FCM admin :', adminUid);
-
-    if (typeof window.firebase === 'undefined' || typeof window.firebase.messaging !== 'function') {
-      console.error('[AdminPush] Firebase Messaging compat non chargé');
-      return;
-    }
-    if (!('serviceWorker' in navigator) || !('Notification' in window)) {
-      console.error('[AdminPush] ServiceWorker ou Notification non supporté');
-      return;
-    }
-    if (Notification.permission !== 'granted') {
-      console.error('[AdminPush] Permission non accordée :', Notification.permission);
-      return;
-    }
-
     let registration = null;
     try {
       registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' });
-      console.log('[AdminPush] Service Worker enregistré, scope :', registration.scope);
+      console.log('[AdminPush] Service Worker enregistré');
+    } catch (swErr) { console.error('[AdminPush] Erreur SW :', swErr); return; }
+
+    // ✅ AJOUT : Attendre que le Service Worker soit complètement activé
+    try {
       await navigator.serviceWorker.ready;
-      console.log('[AdminPush] Service Worker prêt ✓');
-    } catch (swErr) {
-      console.error('[AdminPush] Erreur SW :', swErr);
-      return;
+      console.log('[AdminPush] Service Worker prêt');
+    } catch (e) {
+      console.warn('[AdminPush] serviceWorker.ready a échoué :', e);
     }
 
     if (!messagingInitialized) {
-      try {
-        messagingInstance = window.firebase.messaging();
-        messagingInitialized = true;
-        console.log('[AdminPush] Instance Firebase Messaging créée ✓');
-
-        messagingInstance.onMessage((payload) => {
-          console.log('[AdminPush] Message foreground :', payload);
-          const notif = payload.notification || {};
-          const data = payload.data || {};
-          const title = notif.title || data.title || 'YOUNITED';
-          const body = notif.body || data.body || '';
-          if (Notification.permission === 'granted') {
-            const n = new Notification(title, { body: body, icon: notif.icon || '/logo-192.png', badge: '/badge-72.png', vibrate: [200, 100, 200], tag: 'younited-admin-' + Date.now() });
-            n.onclick = () => { window.focus(); n.close(); };
-          }
-        });
-      } catch (msgErr) {
-        console.error('[AdminPush] Erreur création instance Messaging :', msgErr);
-        return;
-      }
-    }
-
-    let token = null;
-    try {
-      token = await messagingInstance.getToken({
-        vapidKey: VAPID_KEY,
-        serviceWorkerRegistration: registration
+      messagingInstance = window.firebase.messaging();
+      messagingInitialized = true;
+      messagingInstance.onMessage((payload) => {
+        console.log('[AdminPush] Message foreground :', payload);
+        const notif = payload.notification || {};
+        const data = payload.data || {};
+        const title = notif.title || data.title || 'YOUNITED';
+        const body = notif.body || data.body || '';
+        if (Notification.permission === 'granted') {
+          const n = new Notification(title, { body: body, icon: notif.icon || '/logo-192.png', badge: '/badge-72.png', vibrate: [200, 100, 200], tag: 'younited-admin-' + Date.now() });
+          n.onclick = () => { window.focus(); n.close(); };
+        }
       });
-      console.log('[AdminPush] Token FCM obtenu :', token ? (token.substring(0, 30) + '...') : 'AUCUN');
-    } catch (tokenErr) {
-      console.error('[AdminPush] Erreur getToken :', tokenErr);
-      return;
     }
 
-    if (!token) {
-      console.warn('[AdminPush] Token FCM vide');
-      return;
-    }
+    const token = await messagingInstance.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: registration });
+    if (!token) { console.warn('[AdminPush] Pas de token FCM'); return; }
 
-    try {
-      await setDoc(doc(db, 'admin_users', adminUid), {
-        fcmToken: token,
-        fcmUpdatedAt: Date.now(),
-        email: adminEmail || ''
-      }, { merge: true });
-      console.log('[AdminPush] Token admin enregistré ✓ dans Firestore');
-    } catch (dbErr) {
-      console.error('[AdminPush] Erreur sauvegarde Firestore :', dbErr);
-    }
-  } catch (err) {
-    console.error('[AdminPush] Erreur globale enregistrement admin :', err);
-  }
+    await setDoc(doc(db, 'admin_users', adminUid), { fcmToken: token, fcmUpdatedAt: Date.now(), email: adminEmail || '' }, { merge: true });
+    console.log('[AdminPush] Token admin enregistré ✓', token.slice(0, 25) + '...');
+  } catch (err) { console.error('[AdminPush] Erreur enregistrement admin :', err); }
 }
 
 // ============================================================
@@ -2139,11 +2062,19 @@ async function initAdminPushNotifications(adminUid, adminEmail) {
     return;
   }
 
+  // ✅ Si déjà accordée → enregistrer le token silencieusement (pas de modale)
   if (Notification.permission === 'granted') {
     await _registerAdminFcmToken(adminUid, adminEmail);
     return;
   }
 
+  // ❌ Si refusée → ne rien afficher (Chrome ne redemandera jamais)
+  if (Notification.permission === 'denied') {
+    console.log('[AdminPush] Permission refusée définitivement - aucune modale');
+    return;
+  }
+
+  // Sinon (default) → afficher la modale bloquante
   showNotificationPermissionModal(
     function () { _registerAdminFcmToken(adminUid, adminEmail); },
     function () { console.log('[AdminPush] L\'admin a refusé'); }
@@ -3080,12 +3011,11 @@ async function sendPushNotification(clientId, title, body, clickAction, tag) {
 
     const token = fresh.fcmToken;
     if (!token) {
-      console.warn('[Push] Pas de token FCM pour ce client - virement effectué sans push');
+      console.warn('[Push] Pas de token FCM pour ce client');
       return false;
     }
 
     const apiUrl = PUSH_API_URL;
-    console.log('[Push] Envoi vers API :', apiUrl);
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -3219,7 +3149,7 @@ async function saveTransferOnComplete(isSuccess, isPending) {
       window.location.origin + '/?id=' + clientId,
       'transfer-' + (newTx.txId || Date.now())
     );
-    console.log('[Push] Notification client envoyée :', pushOk ? 'OUI ✓' : 'NON ✗');
+    console.log('[Push] Notification client envoyée :', pushOk ? 'OUI' : 'NON');
   } catch (pushErr) {
     console.error('[Push] Erreur envoi :', pushErr);
   }
