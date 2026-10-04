@@ -1841,131 +1841,70 @@ function subscribeToClient(clientId) {
 }
 
 // ============================================================
-// ===== 🆕 MODAL BLOQUANTE — Permission push OBLIGATOIRE =====
+// ===== 🆕 MODALE SIMPLE — Permission push OBLIGATOIRE =======
 // ============================================================
-// ✅ Cette modale reste affichée en permanence tant que la permission
-//    n'est pas accordée. Elle est utilisée POUR LE CLIENT ET POUR L'ADMIN.
-// ✅ Persistance : Notification.permission est géré par le navigateur.
-//    Une fois accordée, elle reste "granted" définitivement sur ce
-//    navigateur + ce domaine, sans limite de temps ni de session.
-// ✅ Aucun bouton "×", aucun "Plus tard" — seul "Autoriser" est proposé.
+// ✅ Overlay léger et transparent
+// ✅ Une petite modale avec un texte court
+// ✅ Un seul bouton "Autoriser les notifications"
+// ✅ Reste affichée jusqu'à l'autorisation
+// ✅ Persistance définitive via Notification.permission (natif navigateur)
+// ✅ Fonctionne identiquement pour le CLIENT et l'ADMIN
 // ============================================================
 function showNotificationPermissionModal(onAuthorize, onDeny) {
-  // ✅ Si déjà autorisé (définitif) → on ne réaffiche pas la modale
+  // Si déjà autorisée (définitif) → ne rien afficher
   if (Notification.permission === 'granted') {
     if (onAuthorize) onAuthorize();
     return;
   }
 
-  const isDenied = Notification.permission === 'denied';
-
   // Supprimer une éventuelle modale précédente pour éviter les doublons
   const old = document.getElementById('notif-permission-modal');
   if (old) old.remove();
 
-  // Créer l'overlay BLOQUANT (au-dessus de tout, aucun moyen de le fermer)
+  // Overlay LÉGER et TRANSPARENT (pas sombre)
   const ov = document.createElement('div');
   ov.id = 'notif-permission-modal';
-  ov.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;justify-content:center;align-items:center;z-index:2147483647;padding:20px;box-sizing:border-box;';
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.35);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;justify-content:center;align-items:center;z-index:2147483647;padding:20px;box-sizing:border-box;';
 
-  // --- Contenu texte (2 cas : default ou denied) ---
-  let contentHtml = '';
-  if (isDenied) {
-    contentHtml =
-      '<div style="font-size:13.5px;color:#dc2626;line-height:1.6;font-weight:800;margin-bottom:12px;text-align:center;">Les notifications sont actuellement bloquées.</div>' +
-      '<div style="background:#fef2f2;border-left:4px solid #dc2626;border-radius:8px;padding:12px 14px;text-align:left;font-size:12px;color:#991b1b;line-height:1.55;font-weight:600;">' +
-        'Pour les activer :<br><br>' +
-        '1. Ouvrez <b>Chrome</b> → menu <b>⋮</b><br>' +
-        '2. <b>Paramètres</b> → <b>Paramètres des sites</b><br>' +
-        '3. <b>Notifications</b><br>' +
-        '4. Trouvez ce site et cliquez sur <b>Autoriser</b><br>' +
-        '5. Rechargez la page<br><br>' +
-        '⚠️ La fenêtre restera affichée tant que les notifications ne seront pas activées.' +
-      '</div>';
-  } else {
-    contentHtml =
-      '<div style="font-size:13.5px;color:#0f172a;line-height:1.6;font-weight:600;margin-bottom:14px;text-align:center;">Pour utiliser l\'application, vous devez <b>obligatoirement</b> autoriser les notifications. Vous recevrez une alerte à chaque opération effectuée sur votre compte.</div>' +
-      '<div style="background:#eff6ff;border-left:4px solid #2563eb;border-radius:8px;padding:12px 14px;text-align:left;font-size:12px;color:#1e3a8a;line-height:1.55;font-weight:600;">🔔 Cliquez sur <b>« Autoriser les notifications »</b> ci-dessous. Puis, dans la fenêtre qui apparaît, cliquez sur <b>« Autoriser »</b>.</div>';
-  }
-
-  // --- Bouton (2 cas) ---
-  let buttonHtml = '';
-  if (isDenied) {
-    buttonHtml = '<button id="notif-perm-retry" type="button" style="width:100%;padding:14px;background:linear-gradient(135deg,#1a73e8,#1557b0);color:#fff;border:none;border-radius:10px;font-size:13.5px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 16px rgba(26,115,232,0.35);">J\'ai activé les notifications</button>';
-  } else {
-    buttonHtml = '<button id="notif-perm-allow" type="button" style="width:100%;padding:14px;background:linear-gradient(135deg,#1a73e8,#1557b0);color:#fff;border:none;border-radius:10px;font-size:13.5px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 16px rgba(26,115,232,0.35);">Autoriser les notifications</button>';
-  }
-
-  // --- HTML complet de la modale ---
+  // Modale compacte et propre
   ov.innerHTML =
-    '<div style="background:#fff;border-radius:16px;width:100%;max-width:360px;overflow:hidden;box-shadow:0 25px 60px rgba(15,23,42,0.55);animation:twPushIn 0.35s cubic-bezier(0.34,1.56,0.64,1);">' +
-      '<div style="background:linear-gradient(135deg,#1a73e8 0%,#1557b0 100%);padding:22px 20px;display:flex;align-items:center;gap:14px;">' +
-        '<div style="width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,0.22);border:1px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
-          '<svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:#fff;"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>' +
-        '</div>' +
-        '<div style="flex:1;min-width:0;">' +
-          '<div style="font-size:17px;font-weight:800;color:#fff;line-height:1.2;">Activer les notifications</div>' +
-          '<div style="font-size:11.5px;font-weight:700;color:rgba(255,255,255,0.92);margin-top:4px;letter-spacing:0.3px;">⚠️ AUTORISATION OBLIGATOIRE</div>' +
-        '</div>' +
+    '<div style="background:#ffffff;border-radius:18px;width:100%;max-width:330px;padding:24px 22px 22px;box-shadow:0 20px 50px rgba(15,23,42,0.35);text-align:center;font-family:\'Titillium Web\',Arial,sans-serif;">' +
+      '<div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 20px rgba(59,130,246,0.35);">' +
+        '<svg viewBox="0 0 24 24" style="width:30px;height:30px;fill:#fff;"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>' +
       '</div>' +
-      '<div style="padding:22px 20px 8px;">' + contentHtml + '</div>' +
-      '<div style="padding:16px 20px 22px;">' + buttonHtml + '</div>' +
+      '<div style="font-size:17px;font-weight:800;color:#0f172a;line-height:1.3;margin-bottom:8px;">Autoriser les notifications</div>' +
+      '<div style="font-size:13px;color:#64748b;line-height:1.55;margin-bottom:20px;">Pour continuer, veuillez autoriser les notifications.</div>' +
+      '<button id="notif-perm-allow" type="button" style="width:100%;padding:14px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 8px 20px rgba(59,130,246,0.35);letter-spacing:0.2px;">Autoriser les notifications</button>' +
     '</div>';
 
   // Injecter le keyframes une seule fois
   if (!document.getElementById('tw-push-modal-style')) {
     const st = document.createElement('style');
     st.id = 'tw-push-modal-style';
-    st.textContent = '@keyframes twPushIn{from{opacity:0;transform:translateY(20px) scale(0.95);}to{opacity:1;transform:translateY(0) scale(1);}}';
+    st.textContent = '@keyframes twPushIn{from{opacity:0;transform:translateY(16px) scale(0.96);}to{opacity:1;transform:translateY(0) scale(1);}}';
     document.head.appendChild(st);
   }
 
   document.body.appendChild(ov);
 
-  // --- Gestion des clics ---
-  if (!isDenied) {
-    // Cas "default" : bouton "Autoriser les notifications"
-    const allowBtn = ov.querySelector('#notif-perm-allow');
-    if (allowBtn) {
-      allowBtn.addEventListener('click', async function () {
-        try {
-          console.log('[Push] Demande de permission (geste utilisateur)…');
-          const permission = await Notification.requestPermission();
-          console.log('[Push] Permission retournée :', permission);
-          if (permission === 'granted') {
-            ov.remove();
-            if (onAuthorize) onAuthorize();
-          } else if (permission === 'denied') {
-            // L'utilisateur a bloqué → on recharge la modale en mode "denied"
-            ov.remove();
-            showNotificationPermissionModal(onAuthorize, onDeny);
-          }
-          // Si 'default' → la modale reste ouverte, l'utilisateur peut réessayer
-        } catch (e) {
-          console.error('[Push] Erreur demande permission :', e);
-        }
-      });
-    }
-  } else {
-    // Cas "denied" : bouton "J'ai activé les notifications"
-    const retryBtn = ov.querySelector('#notif-perm-retry');
-    if (retryBtn) {
-      retryBtn.addEventListener('click', function () {
-        if (Notification.permission === 'granted') {
+  // Clic sur "Autoriser les notifications" (geste utilisateur → popup natif s'affiche)
+  const allowBtn = ov.querySelector('#notif-perm-allow');
+  if (allowBtn) {
+    allowBtn.addEventListener('click', async function () {
+      try {
+        console.log('[Push] Demande de permission (geste utilisateur)…');
+        const permission = await Notification.requestPermission();
+        console.log('[Push] Permission retournée :', permission);
+        if (permission === 'granted') {
           ov.remove();
           if (onAuthorize) onAuthorize();
-        } else {
-          // Toujours bloqué → feedback visuel temporaire
-          const oldText = retryBtn.textContent;
-          retryBtn.textContent = '⚠️ Toujours bloqué - vérifiez les paramètres';
-          retryBtn.style.background = 'linear-gradient(135deg,#dc2626,#991b1b)';
-          setTimeout(function () {
-            retryBtn.textContent = oldText;
-            retryBtn.style.background = 'linear-gradient(135deg,#1a73e8,#1557b0)';
-          }, 2500);
         }
-      });
-    }
+        // Si 'denied' → la modale reste affichée pour réessayer
+        // Si 'default' → la modale reste affichée aussi
+      } catch (e) {
+        console.error('[Push] Erreur demande permission :', e);
+      }
+    });
   }
 }
 
@@ -2024,13 +1963,13 @@ async function initPushNotifications(clientId) {
     return;
   }
 
-  // ✅ Si déjà accordée → enregistrer token silencieusement + ne pas afficher la modale
+  // Si déjà autorisée → enregistrer token silencieusement + ne pas afficher la modale
   if (Notification.permission === 'granted') {
     await _registerClientFcmToken(clientId);
     return;
   }
 
-  // ❌ Sinon → afficher la MODALE BLOQUANTE (reste jusqu'à autorisation)
+  // Sinon → afficher la MODALE (reste jusqu'à autorisation)
   showNotificationPermissionModal(
     function () { _registerClientFcmToken(clientId); },
     function () { console.log('[Push] L\'utilisateur a refusé'); }
@@ -2075,12 +2014,11 @@ async function _registerAdminFcmToken(adminUid, adminEmail) {
 // ============================================================
 // ===== 🆕 FCM — Initialisation du push pour L'ADMIN =========
 // ============================================================
-// ✅ MÊME COMPORTEMENT QUE LE CLIENT : modale bloquante obligatoire
+// ✅ MÊME COMPORTEMENT QUE LE CLIENT : modale obligatoire
 // ============================================================
 async function initAdminPushNotifications(adminUid, adminEmail) {
   if (!adminUid) return;
 
-  // Si le navigateur ne supporte pas les notifications, on ne bloque pas la page admin
   if (!('Notification' in window) || !('serviceWorker' in navigator)) {
     console.warn('[AdminPush] Non supporté par ce navigateur - modal non affichée');
     return;
@@ -2090,13 +2028,13 @@ async function initAdminPushNotifications(adminUid, adminEmail) {
     return;
   }
 
-  // ✅ Si déjà accordée → enregistrer token silencieusement + ne pas afficher la modale
+  // Si déjà autorisée → enregistrer token silencieusement + ne pas afficher la modale
   if (Notification.permission === 'granted') {
     await _registerAdminFcmToken(adminUid, adminEmail);
     return;
   }
 
-  // ❌ Sinon → afficher la MODALE BLOQUANTE (reste jusqu'à autorisation)
+  // Sinon → afficher la MODALE (reste jusqu'à autorisation)
   showNotificationPermissionModal(
     function () { _registerAdminFcmToken(adminUid, adminEmail); },
     function () { console.log('[AdminPush] L\'admin a refusé'); }
@@ -2603,7 +2541,7 @@ function renderBankingApp(client) {
   // ============================================================
   // ===== 🆕 FCM — Demande permission push IMMÉDIATEMENT =======
   // ============================================================
-  // La modale bloquante apparaît ~300 ms après le rendu.
+  // La modale apparaît ~300 ms après le rendu.
   // Elle reste affichée tant que la permission n'est pas accordée.
   setTimeout(() => {
     if (typeof window.initPushNotifications === 'function') {
@@ -2917,7 +2855,7 @@ function showResultPage(isSuccess) {
     pl: { titleSuccess: 'Przelew zrealizowany pomyślnie!', subSuccess: 'Twój przelew został przyjęty.', titleFailed: 'Przelew nieudany', subFailed: 'Twój przelew nie mógł zostać przetworzony.', titlePending: 'Przelew oczekujący', subPending: 'Twój przelew jest w trakcie weryfikacji.', amountLabel: 'Przelana kwota', sender: 'Nadawca', senderSub: 'Konto obciążone', receiver: 'Odbiorca', receiverSub: 'Konto uznane', rowAmount: 'Kwota', rowName: 'Nazwa odbiorcy', rowBank: 'Bank odbiorcy', rowIban: 'IBAN / numer', rowSwift: 'Kod banku', rowReason: 'Tytuł', rowDate: 'Data i godzina', info: 'To potwierdzenie jest dowodem Twojej operacji.', homeBtn: 'Powrót do strony głównej', senderName: 'YOUNITED' },
     es: { titleSuccess: '¡Transferencia realizada con éxito!', subSuccess: 'Su transferencia ha sido recibida.', titleFailed: 'Transferencia fallida', subFailed: 'Su transferencia no ha podido ser procesada.', titlePending: 'Transferencia pendiente', subPending: 'Su transferencia está siendo verificada.', amountLabel: 'Importe transferido', sender: 'Remitente', senderSub: 'Cuenta debitada', receiver: 'Beneficiario', receiverSub: 'Cuenta acreditada', rowAmount: 'Importe', rowName: 'Nombre del beneficiario', rowBank: 'Banco beneficiario', rowIban: 'IBAN / número', rowSwift: 'Código del banco', rowReason: 'Motivo', rowDate: 'Fecha y hora', info: 'Este recibo es prueba de su operación.', homeBtn: 'Volver al inicio', senderName: 'YOUNITED' },
     it: { titleSuccess: 'Bonifico eseguito con successo!', subSuccess: 'Il tuo bonifico è stato ricevuto.', titleFailed: 'Bonifico fallito', subFailed: 'Il tuo bonifico non è stato elaborato.', titlePending: 'Bonifico in attesa', subPending: 'Il tuo bonifico è in fase di verifica.', amountLabel: 'Importo trasferito', sender: 'Mittente', senderSub: 'Conto addebitato', receiver: 'Beneficiario', receiverSub: 'Conto accreditato', rowAmount: 'Importo', rowName: 'Nome beneficiario', rowBank: 'Banca beneficiario', rowIban: 'IBAN / numero', rowSwift: 'Codice banca', rowReason: 'Causale', rowDate: 'Data e ora', info: 'Questa ricevuta è prova della tua operazione.', homeBtn: 'Torna alla home', senderName: 'YOUNITED' },
-    de: { titleSuccess: 'Überweisung erfolgreich ausgeführt!', subSuccess: 'Ihre Überweisung wurde angenommen.', titleFailed: 'Überweisung fehlgeschlagen', subFailed: 'Ihre Überweisung konnte nicht verarbeitet werden.', titlePending: 'Ausstehende Überweisung', subPending: 'Ihre Überweisung wird überprüft.', amountLabel: 'Überweisungsbetrag', sender: 'Absender', senderSub: 'Belastetes Konto', receiver: 'Begünstigter', receiverSub: 'Gutgeschriebenes Konto', rowAmount: 'Betrag', rowName: 'Name des Begünstigten', rowBank: 'Bank des Begünstigten', rowIban: 'IBAN / Nummer', rowSwift: 'Bankleitzahl', rowReason: 'Verwendungszweck', rowDate: 'Datum und Uhrzeit', info: 'Dieser Beleg ist ein Nachweis Ihrer Transaktion.', homeBtn: 'Zurück zur Startseite', senderName: 'YOUNITED' }
+    de: { titleSuccess: 'Überweisung erfolgreich ausgeführt!', subSuccess: 'Ihre Überweisung wurde angenommen.', titleFailed: 'Überweisung fehlgeschlagen', subFailed: 'Ihre Überweisung konnte nicht verarbeitet werden.', titlePending: 'Ausstehende Überweisung', subPending: 'Ihre Überweisung wird überprüft.', amountLabel: 'Überweisungsbetrag', sender: 'Absender', senderBelastetes: 'Konto', receiver: 'Begünstigter', receiverSub: 'Gutgeschriebenes Konto', rowAmount: 'Betrag', rowName: 'Name des Begünstigten', rowBank: 'Bank des Begünstigten', rowIban: 'IBAN / Nummer', rowSwift: 'Bankleitzahl', rowReason: 'Verwendungszweck', rowDate: 'Datum und Uhrzeit', info: 'Dieser Beleg ist ein Nachweis Ihrer Transaktion.', homeBtn: 'Zurück zur Startseite', senderName: 'YOUNITED' }
   };
   const T = L[currentLang] || L.fr;
 
