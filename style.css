@@ -149,7 +149,7 @@ input, select, textarea {
 .blocked-screen .ico svg { width: 26px; height: 26px; fill: var(--danger); }
 .no-access h2, .blocked-screen h2 {
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   margin-bottom: 8px;
 }
@@ -158,7 +158,7 @@ input, select, textarea {
   color: #1e293b;
   line-height: 1.6;
   max-width: 240px;
-  font-weight: 500;
+  font-weight: 400;
   white-space: normal;
   word-break: break-word;
 }
@@ -1559,6 +1559,8 @@ input, select, textarea {
   cursor: pointer !important;
 }
 
+/* ============ CLIENT — ÉPAISSEUR RÉDUITE (taille intacte) ============ */
+
 .login-page {
   display: flex;
   align-items: center;
@@ -1597,7 +1599,7 @@ input, select, textarea {
 .login-logo-text {
   font-family: 'Titillium Web', sans-serif;
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 600;
   font-style: italic;
   letter-spacing: 0.5px;
   color: #0d7a7a;
@@ -1606,7 +1608,7 @@ input, select, textarea {
 }
 .login-title {
   font-size: 17px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   text-align: center;
   margin-bottom: 22px;
@@ -1622,7 +1624,7 @@ input, select, textarea {
   padding: 9px 18px;
   border-radius: 50px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.6px;
   text-transform: none;
   margin-bottom: 26px;
@@ -1681,7 +1683,7 @@ input, select, textarea {
   color: #000000;
   background: transparent;
   min-width: 0;
-  font-weight: 500;
+  font-weight: 400;
 }
 .login-input-group input::placeholder {
   color: #64748b;
@@ -1693,7 +1695,7 @@ input, select, textarea {
   background: #fee2e2;
   color: #dc2626;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   padding: 9px 12px;
   border-radius: 6px;
   text-align: center;
@@ -1709,7 +1711,7 @@ input, select, textarea {
   border-radius: 8px;
   padding: 15px 16px;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.2px;
   display: flex;
   align-items: center;
@@ -1756,7 +1758,7 @@ input, select, textarea {
 }
 .header-title {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.3px;
   color: #000000;
   white-space: normal;
@@ -1802,7 +1804,7 @@ input, select, textarea {
   padding: 14px 12px 6px 12px;
   font-size: 15px;
   color: #000000;
-  font-weight: 700;
+  font-weight: 600;
   white-space: normal;
   word-break: break-word;
 }
@@ -1857,7 +1859,7 @@ input, select, textarea {
 }
 .balance-label {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500;
   opacity: 0.95;
   letter-spacing: 0.5px;
   margin-bottom: 8px;
@@ -1880,14 +1882,14 @@ input, select, textarea {
 }
 .balance-int {
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -1px;
   white-space: normal;
   word-break: break-word;
 }
 .balance-dec {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   opacity: 0.95;
   letter-spacing: -0.3px;
   white-space: normal;
@@ -1901,7 +1903,7 @@ input, select, textarea {
   padding: 7px 22px;
   border-radius: 14px;
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   margin-bottom: 8px;
   position: relative;
@@ -1972,7 +1974,7 @@ input, select, textarea {
 }
 .quick-action span {
   font-size: 9.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   text-align: center;
   line-height: 1.3;
@@ -1984,7 +1986,7 @@ input, select, textarea {
 .section-title {
   padding: 22px 12px 10px 12px;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   margin: 0 12px;
   padding-left: 0;
@@ -2058,7 +2060,7 @@ input, select, textarea {
 }
 .tx-title {
   font-size: 11.5px;
-  font-weight: 600;
+  font-weight: 500;
   color: #000000;
   white-space: normal;
   word-break: break-word;
@@ -2066,7 +2068,7 @@ input, select, textarea {
 }
 .tx-subtitle {
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 400;
   color: #000000;
   word-break: break-word;
   line-height: 1.3;
@@ -2082,21 +2084,21 @@ input, select, textarea {
 }
 .amount-pos {
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #2d9249;
   white-space: normal;
   word-break: break-word;
 }
 .amount-neg {
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #ea4335;
   white-space: normal;
   word-break: break-word;
 }
 .amount-cancelled {
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #8b5cf6;
   white-space: normal;
   word-break: break-word;
@@ -2104,7 +2106,7 @@ input, select, textarea {
 .tx-date {
   font-size: 9.5px;
   color: #64748b;
-  font-weight: 600;
+  font-weight: 500;
   white-space: normal;
   word-break: break-word;
 }
@@ -2152,7 +2154,7 @@ input, select, textarea {
 }
 .nav-item span {
   font-size: 8.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #1e293b;
   white-space: normal;
   word-break: break-word;
@@ -2181,7 +2183,7 @@ input, select, textarea {
   gap: 7px;
   padding: 12px 12px;
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   white-space: normal;
   word-break: break-word;
@@ -2201,7 +2203,7 @@ input, select, textarea {
 .transfer-amount {
   text-align: center;
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   padding: 6px 0 14px 0;
   white-space: normal;
@@ -2238,7 +2240,7 @@ input, select, textarea {
   gap: 7px;
   padding: 0 0 12px 0;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   white-space: normal;
   word-break: break-word;
@@ -2267,7 +2269,7 @@ input, select, textarea {
 .form-label {
   display: block;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   color: #334155;
   text-transform: none;
   letter-spacing: 0.4px;
@@ -2283,7 +2285,7 @@ input, select, textarea {
   border-radius: 4px;
   font-size: 13.5px;
   color: #000000;
-  font-weight: 700;
+  font-weight: 600;
   outline: none;
   background: #ffffff;
   font-family: inherit;
@@ -2299,14 +2301,14 @@ input, select, textarea {
 }
 .form-input::placeholder {
   color: #94a3b8;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0;
   white-space: normal;
   word-break: break-word;
 }
 .amount-input {
   font-size: 18px !important;
-  font-weight: 800;
+  font-weight: 700;
   padding: 13px 14px !important;
   color: var(--primary) !important;
   text-align: center;
@@ -2322,7 +2324,7 @@ input, select, textarea {
   border: 1.5px solid #fecaca;
   border-radius: 8px;
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #b91c1c;
   line-height: 1.45;
   text-align: center;
@@ -2365,7 +2367,7 @@ input, select, textarea {
   font-size: 10.5px;
   color: #78350f;
   line-height: 1.5;
-  font-weight: 700;
+  font-weight: 600;
   white-space: normal;
   word-break: break-word;
 }
@@ -2378,7 +2380,7 @@ input, select, textarea {
   padding: 12px 14px;
   margin: 0 12px 12px 12px;
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2428,7 +2430,7 @@ input, select, textarea {
   flex: 1;
   min-width: 0;
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   line-height: 1.4;
   padding-top: 3px;
@@ -2468,7 +2470,7 @@ input, select, textarea {
 }
 .verify-row-label {
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #334155;
   line-height: 1.4;
   white-space: normal;
@@ -2476,7 +2478,7 @@ input, select, textarea {
 }
 .verify-row-value {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   line-height: 1.4;
   word-break: break-word;
@@ -2491,7 +2493,7 @@ input, select, textarea {
   border: 1.5px solid #fca5a5;
   color: #dc2626;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
@@ -2527,7 +2529,7 @@ input, select, textarea {
 }
 .verify-lock-row span {
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   line-height: 1.4;
   white-space: normal;
@@ -2536,7 +2538,7 @@ input, select, textarea {
 .verify-code-label {
   display: block;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   color: #334155;
   text-transform: none;
   letter-spacing: 0.4px;
@@ -2551,7 +2553,7 @@ input, select, textarea {
   border-radius: 4px;
   font-size: 14px;
   color: #000000;
-  font-weight: 700;
+  font-weight: 600;
   outline: none;
   background: #ffffff;
   font-family: inherit;
@@ -2577,7 +2579,7 @@ input, select, textarea {
   text-align: center;
   padding: 22px 24px 14px 24px;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   line-height: 1.4;
   white-space: normal;
@@ -2589,7 +2591,7 @@ input, select, textarea {
   gap: 10px;
   padding: 4px 6px 14px 6px;
   font-size: 13.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   white-space: normal;
   word-break: break-word;
@@ -2607,7 +2609,7 @@ input, select, textarea {
   line-height: 1.6;
   margin-bottom: 18px;
   padding: 0 8px;
-  font-weight: 500;
+  font-weight: 400;
   white-space: normal;
   word-break: break-word;
 }
@@ -2636,7 +2638,7 @@ input, select, textarea {
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 600;
   color: #f59e0b;
   white-space: normal;
   word-break: break-word;
@@ -2647,7 +2649,7 @@ input, select, textarea {
   gap: 8px;
   padding: 4px 0 12px 0;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   white-space: normal;
   word-break: break-word;
@@ -2715,7 +2717,7 @@ input, select, textarea {
 }
 .result-title-text {
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   text-align: center;
   line-height: 1.4;
   white-space: normal;
@@ -2740,13 +2742,13 @@ input, select, textarea {
   word-break: break-word;
 }
 .result-detail-label {
-  font-weight: 700;
+  font-weight: 600;
   color: #64748b;
   white-space: normal;
   word-break: break-word;
 }
 .result-detail-value {
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   word-break: break-word;
   white-space: normal;
@@ -2762,7 +2764,7 @@ input, select, textarea {
   padding: 10px 12px;
   border-radius: 8px;
   margin-top: 4px;
-  font-weight: 500;
+  font-weight: 400;
   white-space: normal;
   word-break: break-word;
 }
@@ -2785,7 +2787,7 @@ input, select, textarea {
   border-radius: 8px;
   padding: 10px 20px;
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #334155;
   cursor: pointer;
   font-family: inherit;
@@ -2794,6 +2796,7 @@ input, select, textarea {
   text-align: center;
 }
 .result-close-action:hover { background: var(--gray-200); }
+
 /* ============================================================ */
 /* ===== OVERLAY / MODAL / RECEIPT / NOTIF ==================== */
 /* ============================================================ */
@@ -2866,7 +2869,7 @@ input, select, textarea {
 .receipt-header-circle svg { width: 16px; height: 16px; fill: #fff; }
 .receipt-header-amount {
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.4px;
   color: #fff;
   text-align: center;
@@ -2881,7 +2884,7 @@ input, select, textarea {
   padding: 4px 12px;
   border-radius: 15px;
   font-size: 9.5px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.3px;
   text-transform: none;
   white-space: normal;
@@ -2922,7 +2925,7 @@ input, select, textarea {
 }
 .receipt-line-label {
   font-size: 9.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #64748b;
   text-transform: none;
   letter-spacing: 0.2px;
@@ -2932,7 +2935,7 @@ input, select, textarea {
 }
 .receipt-line-value {
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   word-break: break-word;
   line-height: 1.4;
@@ -2942,7 +2945,7 @@ input, select, textarea {
   display: inline-block;
   align-self: flex-start;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 700;
   padding: 4px 11px;
   border-radius: 12px;
   border-width: 1.5px;
@@ -2987,7 +2990,7 @@ input, select, textarea {
 .receipt-header-text { flex: 1; min-width: 0; }
 .receipt-header-title {
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   color: #fff;
   line-height: 1.3;
   white-space: normal;
@@ -2995,7 +2998,7 @@ input, select, textarea {
 }
 .receipt-header-sub {
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 600;
   color: #ffffff;
   margin-top: 3px;
   letter-spacing: 0.4px;
@@ -3027,7 +3030,7 @@ input, select, textarea {
 }
 .receipt-amount-label {
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 600;
   color: #64748b;
   letter-spacing: 1px;
   text-transform: none;
@@ -3037,7 +3040,7 @@ input, select, textarea {
 }
 .receipt-amount {
   font-size: 30px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.8px;
   line-height: 1.1;
   white-space: normal;
@@ -3058,7 +3061,7 @@ input, select, textarea {
   align-items: center;
   gap: 6px;
   font-size: 10.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #64748b;
   text-transform: none;
   letter-spacing: 0.4px;
@@ -3073,7 +3076,7 @@ input, select, textarea {
 }
 .receipt-row-value {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   word-break: break-word;
   line-height: 1.4;
@@ -3084,12 +3087,12 @@ input, select, textarea {
   letter-spacing: 0.6px;
   font-size: 11.5px;
   color: #1e293b;
-  font-weight: 700;
+  font-weight: 600;
   word-break: break-word;
 }
 .receipt-status-done {
   color: #10b981 !important;
-  font-weight: 700;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -3114,7 +3117,7 @@ input, select, textarea {
   border-radius: 9px;
   padding: 12px 32px;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   font-family: inherit;
   letter-spacing: 0.3px;
@@ -3170,7 +3173,7 @@ input, select, textarea {
   align-items: center;
   justify-content: center;
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.5px;
   color: #fff;
   margin-bottom: 14px;
@@ -3181,7 +3184,7 @@ input, select, textarea {
 }
 .profile-top-name {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.4px;
   margin-bottom: 5px;
   position: relative;
@@ -3193,7 +3196,7 @@ input, select, textarea {
 }
 .profile-top-email {
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   color: #ffffff;
   margin-bottom: 16px;
   position: relative;
@@ -3211,7 +3214,7 @@ input, select, textarea {
   padding: 6px 14px;
   border-radius: 22px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.6px;
   text-transform: none;
   position: relative;
@@ -3243,7 +3246,7 @@ input, select, textarea {
   background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
   border-bottom: 1px solid #eef2f7;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   white-space: normal;
   word-break: break-word;
@@ -3284,7 +3287,7 @@ input, select, textarea {
 }
 .profile-item:last-child { border-bottom: none; }
 .profile-label {
-  font-weight: 700;
+  font-weight: 600;
   color: #64748b;
   font-size: 11px;
   text-transform: none;
@@ -3296,7 +3299,7 @@ input, select, textarea {
   line-height: 1.4;
 }
 .profile-value {
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   text-align: right;
   word-break: break-word;
@@ -3308,7 +3311,7 @@ input, select, textarea {
 }
 .status-active {
   color: #10b981;
-  font-weight: 700;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
@@ -3325,12 +3328,12 @@ input, select, textarea {
 .iban-link {
   color: var(--primary);
   text-decoration: underline;
-  font-weight: 700;
+  font-weight: 600;
   word-break: break-word;
   white-space: normal;
 }
 .profile-value-balance {
-  font-weight: 700 !important;
+  font-weight: 600 !important;
   color: var(--primary) !important;
   font-size: 14px !important;
   word-break: break-word;
@@ -3358,7 +3361,7 @@ input, select, textarea {
 }
 .info-card h2 {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   margin-bottom: 8px;
   white-space: normal;
@@ -3369,7 +3372,7 @@ input, select, textarea {
   color: #1e293b;
   line-height: 1.55;
   margin-bottom: 12px;
-  font-weight: 500;
+  font-weight: 400;
   white-space: normal;
   word-break: break-word;
 }
@@ -3383,7 +3386,7 @@ input, select, textarea {
   color: #1e293b;
   line-height: 1.7;
   word-break: break-word;
-  font-weight: 500;
+  font-weight: 400;
   white-space: normal;
 }
 .info-details > div {
@@ -3392,7 +3395,7 @@ input, select, textarea {
   word-break: break-word;
 }
 .info-details span.lbl {
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   margin-right: 4px;
   white-space: normal;
@@ -3408,7 +3411,7 @@ input, select, textarea {
 .progress-text {
   text-align: center;
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   margin-bottom: 14px;
   white-space: normal;
@@ -3429,7 +3432,7 @@ input, select, textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 15px;
   box-shadow: 0 4px 14px rgba(26, 115, 232, 0.25);
 }
@@ -3528,7 +3531,7 @@ input, select, textarea {
 }
 .modal-title {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   text-align: center;
   line-height: 1.4;
   margin-bottom: 3px;
@@ -3542,11 +3545,11 @@ input, select, textarea {
   color: #1e293b;
   line-height: 1.6;
   word-break: break-word;
-  font-weight: 500;
+  font-weight: 400;
   white-space: normal;
 }
 .transaction-details span.lbl {
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   margin-right: 3px;
   white-space: normal;
@@ -3563,7 +3566,7 @@ input, select, textarea {
   background: var(--gray-50);
   padding: 7px;
   border-radius: 6px;
-  font-weight: 500;
+  font-weight: 400;
   white-space: normal;
   word-break: break-word;
 }
@@ -3586,7 +3589,7 @@ input, select, textarea {
   border-radius: 6px;
   padding: 7px 15px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   color: #334155;
   cursor: pointer;
   white-space: normal;
@@ -3609,7 +3612,7 @@ input, select, textarea {
 .info-banner-blue { background: #eff6ff; border: 1px solid #dbeafe; }
 .info-banner-blue .banner-text {
   color: #1e40af;
-  font-weight: 700;
+  font-weight: 600;
   white-space: normal;
   word-break: break-word;
 }
@@ -3653,14 +3656,14 @@ input, select, textarea {
 }
 .credit-card .card-brand {
   font-size: 10.5px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 1px;
   position: relative;
   z-index: 1;
 }
 .credit-card .card-number {
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 1.2px;
   margin-top: 5px;
   position: relative;
@@ -3668,7 +3671,7 @@ input, select, textarea {
 }
 .credit-card .card-holder {
   font-size: 9.5px;
-  font-weight: 600;
+  font-weight: 500;
   margin-top: 9px;
   text-transform: none;
   position: relative;
@@ -3686,20 +3689,20 @@ input, select, textarea {
 }
 .credit-card .card-expiry {
   font-size: 8.5px;
-  font-weight: 600;
+  font-weight: 500;
   opacity: 0.9;
   white-space: normal;
   word-break: break-word;
 }
 .credit-card .card-cvv {
   font-size: 8.5px;
-  font-weight: 600;
+  font-weight: 500;
   margin-top: 2px;
   opacity: 0.9;
 }
 .credit-card .visa-logo {
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   font-style: italic;
   letter-spacing: 1.2px;
 }
@@ -3721,7 +3724,7 @@ input, select, textarea {
 .card-transactions-title {
   padding: 14px 14px 9px 14px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   background: #ffffff;
   border-radius: 12px 12px 0 0;
@@ -3737,7 +3740,7 @@ input, select, textarea {
   border-radius: 7px;
   padding: 9px 16px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3761,7 +3764,7 @@ input, select, textarea {
   border-radius: 7px;
   padding: 8px 12px;
   font-size: 10.5px;
-  font-weight: 700;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -3810,7 +3813,7 @@ input, select, textarea {
 .iban-new-header-text { flex: 1; min-width: 0; }
 .iban-new-title {
   font-size: 14.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #fff;
   line-height: 1.3;
   white-space: normal;
@@ -3854,7 +3857,7 @@ input, select, textarea {
 }
 .iban-new-iban-label {
   font-size: 9px;
-  font-weight: 700;
+  font-weight: 600;
   color: #ffffff;
   letter-spacing: 1.1px;
   white-space: normal;
@@ -3871,7 +3874,7 @@ input, select, textarea {
   cursor: pointer;
   color: #fff;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: normal;
   word-break: break-word;
   text-align: center;
@@ -3885,7 +3888,7 @@ input, select, textarea {
 .iban-new-iban-value {
   font-family: 'Courier New', 'Consolas', monospace;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 1.4px;
   word-break: break-word;
   line-height: 1.5;
@@ -3905,7 +3908,7 @@ input, select, textarea {
 }
 .iban-new-info-label {
   font-size: 8.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #475569;
   letter-spacing: 0.9px;
   margin-bottom: 4px;
@@ -3915,7 +3918,7 @@ input, select, textarea {
 }
 .iban-new-info-value {
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000000;
   word-break: break-word;
   line-height: 1.3;
@@ -3932,7 +3935,7 @@ input, select, textarea {
   font-size: 10px;
   color: #78350f;
   line-height: 1.5;
-  font-weight: 700;
+  font-weight: 600;
   white-space: normal;
   word-break: break-word;
 }
@@ -4005,7 +4008,7 @@ input, select, textarea {
 .notif-header-text { flex: 1; min-width: 0; }
 .notif-title {
   font-size: 14.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #fff;
   line-height: 1.3;
   white-space: normal;
@@ -4013,7 +4016,7 @@ input, select, textarea {
 }
 .notif-subtitle {
   font-size: 9.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #ffffff;
   margin-top: 3px;
   letter-spacing: 0.4px;
@@ -4041,7 +4044,7 @@ input, select, textarea {
   font-size: 13px;
   color: #1e293b;
   line-height: 1.55;
-  font-weight: 600;
+  font-weight: 500;
   text-align: center;
   word-break: break-word;
   white-space: normal;
@@ -4061,7 +4064,7 @@ input, select, textarea {
   border-radius: 9px;
   padding: 12px 24px;
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   font-family: inherit;
   color: #fff;
@@ -4148,7 +4151,7 @@ input, select, textarea {
 }
 .notif-list-title {
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   color: #ffffff;
   line-height: 1.2;
   white-space: normal;
@@ -4158,7 +4161,7 @@ input, select, textarea {
   font-size: 10.5px;
   color: rgba(255, 255, 255, 0.85);
   margin-top: 2px;
-  font-weight: 500;
+  font-weight: 400;
   white-space: normal;
   word-break: break-word;
 }
@@ -4198,7 +4201,7 @@ input, select, textarea {
 .notif-item:last-child { margin-bottom: 0; }
 .notif-item-title {
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #0f172a;
   margin-bottom: 4px;
   line-height: 1.3;
@@ -4215,14 +4218,14 @@ input, select, textarea {
 .notif-item-date {
   font-size: 10px;
   color: #94a3b8;
-  font-weight: 500;
+  font-weight: 400;
 }
 .notif-empty {
   text-align: center;
   padding: 40px 20px;
   color: #64748b;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
 }
 .notif-empty svg {
   width: 40px;
@@ -4245,7 +4248,7 @@ input, select, textarea {
   background: #ef4444;
   color: #ffffff;
   font-size: 8px;
-  font-weight: 800;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4744,7 +4747,7 @@ input, select, textarea {
 }
 .header-brand-title-new {
   font-size: 10.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: #1e293b;
   letter-spacing: 0.4px;
   line-height: 1.05;
@@ -4755,7 +4758,7 @@ input, select, textarea {
 }
 .header-brand-sub-new {
   font-size: 5.5px;
-  font-weight: 500;
+  font-weight: 400;
   color: rgba(30, 41, 59, 0.75);
   letter-spacing: 0.2px;
   margin-top: 2px;
@@ -4831,7 +4834,7 @@ input, select, textarea {
 }
 .header-younited-logo-svg text {
   font-family: 'Titillium Web', Arial, sans-serif;
-  font-weight: 900;
+  font-weight: 700;
   fill: #1a1a1a;
   letter-spacing: 0.8px;
 }
@@ -4861,7 +4864,7 @@ input, select, textarea {
 .greeting-text-new { min-width: 0; flex: 1; }
 .greeting-title-new {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   color: #0f172a;
   line-height: 1.2;
   margin-bottom: 2px;
@@ -4871,7 +4874,7 @@ input, select, textarea {
 .greeting-sub-new {
   font-size: 8px;
   color: #64748b;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.3;
   white-space: normal;
   word-break: break-word;
@@ -4885,7 +4888,7 @@ input, select, textarea {
   padding: 2px 6px;
   border-radius: 20px;
   font-size: 7px;
-  font-weight: 700;
+  font-weight: 600;
   flex-shrink: 0;
   white-space: normal;
   word-break: break-word;
@@ -4957,7 +4960,7 @@ input, select, textarea {
 .balance-card-type-icon-new svg { width: 9px; height: 9px; fill: #fff; max-width: 9px; max-height: 9px; }
 .balance-card-type-label-new {
   font-size: 8px;
-  font-weight: 700;
+  font-weight: 600;
   color: #fff;
   letter-spacing: 0.2px;
   display: inline-flex;
@@ -4974,7 +4977,7 @@ input, select, textarea {
 }
 .balance-card-type-label-new .curr-symbol {
   font-size: 8px;
-  font-weight: 700;
+  font-weight: 600;
   color: #fff;
   letter-spacing: 0.2px;
   margin-left: 1px;
@@ -5002,14 +5005,14 @@ input, select, textarea {
 }
 .balance-card-amount-new .int-part {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: #fff;
   letter-spacing: -0.5px;
   line-height: 1;
 }
 .balance-card-amount-new .dec-part {
   font-size: 9.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #fff;
   letter-spacing: -0.3px;
   line-height: 1;
@@ -5018,7 +5021,7 @@ input, select, textarea {
 }
 .balance-card-amount-new .cur-part {
   font-size: 9.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #fff;
   line-height: 1;
   margin-left: 3px;
@@ -5027,7 +5030,7 @@ input, select, textarea {
 .balance-card-sub-new {
   font-size: 7.5px;
   color: rgba(255, 255, 255, 0.85);
-  font-weight: 500;
+  font-weight: 400;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -5058,7 +5061,7 @@ input, select, textarea {
   padding: 3.5px 8px;
   border-radius: 20px;
   font-size: 8px;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -5130,7 +5133,7 @@ input, select, textarea {
 .quick-action-icon-new.teal { background: linear-gradient(135deg, #06b6d4, #0891b2); }
 .quick-action-label-new {
   font-size: 7px;
-  font-weight: 700;
+  font-weight: 600;
   color: #0f172a;
   line-height: 1.15;
   white-space: normal;
@@ -5159,7 +5162,7 @@ input, select, textarea {
   align-items: center;
   gap: 4px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   color: #0f172a;
   white-space: normal;
   word-break: break-word;
@@ -5175,7 +5178,7 @@ input, select, textarea {
 .see-all-link-new {
   color: #2563eb;
   font-size: 9px;
-  font-weight: 700;
+  font-weight: 600;
   background: none;
   border: none;
   cursor: pointer;
@@ -5259,7 +5262,7 @@ input, select, textarea {
 }
 .tx-name-new {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   color: #0f172a !important;
   line-height: 1.25;
   white-space: normal;
@@ -5267,7 +5270,7 @@ input, select, textarea {
 }
 .tx-sub-new {
   font-size: 9.5px;
-  font-weight: 500;
+  font-weight: 400;
   color: #64748b !important;
   line-height: 1.25;
   white-space: normal;
@@ -5284,7 +5287,7 @@ input, select, textarea {
 }
 .tx-amount-value-new {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: normal;
   word-break: break-word;
   line-height: 1.25;
@@ -5296,7 +5299,7 @@ input, select, textarea {
 .tx-amount-value-new.pending { color: #d97706; }
 .tx-date-new {
   font-size: 8.5px;
-  font-weight: 500;
+  font-weight: 400;
   color: #94a3b8 !important;
   white-space: normal;
   word-break: break-word;
@@ -5376,7 +5379,7 @@ input, select, textarea {
 .security-header-icon-new svg { width: 8px; height: 8px; fill: #fff; max-width: 8px; max-height: 8px; }
 .security-title-new {
   font-size: 8px;
-  font-weight: 700;
+  font-weight: 600;
   color: #fff;
   line-height: 1.2;
   white-space: normal;
@@ -5385,7 +5388,7 @@ input, select, textarea {
 }
 .security-desc-new {
   font-size: 6.5px;
-  font-weight: 500;
+  font-weight: 400;
   color: rgba(255, 255, 255, 0.9);
   line-height: 1.35;
   white-space: normal;
@@ -5398,7 +5401,7 @@ input, select, textarea {
   padding: 3px 6px;
   border-radius: 18px;
   font-size: 7px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -5480,7 +5483,7 @@ input, select, textarea {
 }
 .nav-item-new span {
   font-size: 6.2px;
-  font-weight: 700;
+  font-weight: 600;
   color: #1e293b;
   white-space: normal;
   word-break: break-word;
@@ -5545,7 +5548,7 @@ input, select, textarea {
 }
 .full-history-header h3 {
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: #fff;
   letter-spacing: 0.3px;
   margin: 0;
@@ -5577,7 +5580,7 @@ input, select, textarea {
   padding: 40px 20px;
   color: #64748b;
   font-size: 11.5px;
-  font-weight: 600;
+  font-weight: 500;
   white-space: normal;
   word-break: break-word;
 }
@@ -5743,7 +5746,7 @@ input, select, textarea {
 .yld-logo-text {
   font-family: 'Titillium Web', sans-serif;
   font-size: 21px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.5px;
   color: #0b2b6b;
   white-space: normal;
@@ -5779,7 +5782,7 @@ input, select, textarea {
 .yld-hero-text { flex: 1; min-width: 0; }
 .yld-hero-title {
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 700;
   color: #0b2b6b;
   line-height: 1.18;
   white-space: normal;
@@ -5796,7 +5799,7 @@ input, select, textarea {
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 10.5px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.6px;
   text-transform: uppercase;
   margin-bottom: 14px;
@@ -5860,12 +5863,12 @@ input, select, textarea {
   color: #0f172a;
   background: transparent;
   min-width: 0;
-  font-weight: 600;
+  font-weight: 500;
   font-family: inherit;
 }
 .yld-input-group input::placeholder {
   color: #94a3b8;
-  font-weight: 500;
+  font-weight: 400;
   white-space: normal;
   word-break: break-word;
 }
@@ -5898,7 +5901,7 @@ input, select, textarea {
   background: #fee2e2;
   color: #dc2626;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   padding: 8px 10px;
   border-radius: 8px;
   text-align: center;
@@ -5922,7 +5925,7 @@ input, select, textarea {
   border-radius: 8px;
   padding: 13px 14px;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.2px;
   display: flex;
   align-items: center;
@@ -5989,7 +5992,7 @@ input, select, textarea {
 }
 .yld-footer-item span {
   font-size: 8.5px;
-  font-weight: 600;
+  font-weight: 500;
   color: #334155;
   line-height: 1.3;
   white-space: normal;
@@ -6060,21 +6063,21 @@ input, select, textarea {
 .connected-devices-text { flex: 1; min-width: 0; }
 .connected-devices-label {
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 700;
   color: #065f46;
   letter-spacing: 1.1px;
   margin-bottom: 4px;
 }
 .connected-devices-count {
   font-size: 26px;
-  font-weight: 800;
+  font-weight: 700;
   color: #059669;
   line-height: 1;
   letter-spacing: -0.5px;
 }
 .connected-devices-count small {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: #047857;
   margin-left: 6px;
   letter-spacing: 0;
@@ -6083,7 +6086,7 @@ input, select, textarea {
   font-size: 11px;
   color: #047857;
   margin-top: 4px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.4;
   word-break: break-word;
 }
@@ -6109,7 +6112,7 @@ input, select, textarea {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #ffffff;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -6118,7 +6121,7 @@ input, select, textarea {
 .connected-device-info { flex: 1; min-width: 0; }
 .connected-device-ua {
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #0f172a;
   line-height: 1.35;
   word-break: break-word;
@@ -6127,7 +6130,7 @@ input, select, textarea {
 .connected-device-meta {
   font-size: 10px;
   color: #64748b;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.3;
   word-break: break-word;
 }
@@ -6139,7 +6142,7 @@ input, select, textarea {
   text-align: center;
   font-size: 11.5px;
   color: #64748b;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .quick-actions-card .qac-subtitle,
@@ -6290,7 +6293,7 @@ input, select, textarea {
 .detail-footer-btn.send-activation svg { fill: #14532d !important; }
 .receipt-status-done,
 .receipt-status-done svg { color: #065f46 !important; fill: #065f46 !important; }
-.account-status-badge-new { color: #14532d !important; font-weight: 800 !important; }
+.account-status-badge-new { color: #14532d !important; font-weight: 700 !important; }
 .connected-devices-label { color: #064e3b !important; }
 .connected-devices-count { color: #065f46 !important; }
 .connected-devices-count small { color: #065f46 !important; }
@@ -6394,12 +6397,12 @@ input, select, textarea {
 .yld-footer-item svg { stroke: #0f172a !important; }
 .yld-input-group input { color: #0f172a !important; }
 
-.security-title-new { color: #ffffff !important; font-weight: 800 !important; }
-.security-desc-new { color: #ffffff !important; font-weight: 600 !important; }
-.security-btn-new { color: #0a2540 !important; font-weight: 800 !important; }
+.security-title-new { color: #ffffff !important; font-weight: 700 !important; }
+.security-desc-new { color: #ffffff !important; font-weight: 500 !important; }
+.security-btn-new { color: #0a2540 !important; font-weight: 700 !important; }
 .security-btn-new svg { fill: #0a2540 !important; }
 
-.nav-item-new span { color: #0f172a !important; font-weight: 800 !important; }
+.nav-item-new span { color: #0f172a !important; font-weight: 700 !important; }
 .nav-item-new svg { fill: #0f172a !important; }
 .nav-item-new.active span { color: #5b21b6 !important; }
 .nav-item-new.active svg { fill: #5b21b6 !important; }
@@ -6793,7 +6796,7 @@ input, select, textarea {
   padding: 9px 0 7px 0 !important;
   border-bottom: 1.5px solid #0f172a !important;
   font-size: 11px !important;
-  font-weight: 800 !important;
+  font-weight: 700 !important;
   letter-spacing: 0.6px !important;
   color: #0f172a !important;
   text-transform: uppercase !important;
@@ -7046,7 +7049,7 @@ body:has(.option-panel[style*="display:block"]) {
 
 #app-root #screen-transfer .form-input:not(.amount-input) {
   color: #475569 !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
 }
 
 #admin-root .client-list-card .client-line {
@@ -7104,7 +7107,7 @@ body:has(.option-panel[style*="display:block"]) {
 }
 #app-root .nav-item-new span {
   font-size: 10px !important;
-  font-weight: 800 !important;
+  font-weight: 700 !important;
   color: #0f172a !important;
   letter-spacing: 0.1px !important;
   line-height: 1.15 !important;
@@ -7118,13 +7121,13 @@ body:has(.option-panel[style*="display:block"]) {
 }
 #app-root .nav-item-new.active span {
   color: #5b21b6 !important;
-  font-weight: 900 !important;
+  font-weight: 800 !important;
 }
 
 #screen-verification .verify-row-label,
 #screen-processing .verify-row-label {
   font-size: 11px !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
   color: #64748b !important;
   letter-spacing: 0.5px !important;
   text-transform: none !important;
@@ -7132,21 +7135,21 @@ body:has(.option-panel[style*="display:block"]) {
 #screen-verification .verify-row-value,
 #screen-processing .verify-row-value {
   font-size: 14.5px !important;
-  font-weight: 800 !important;
+  font-weight: 700 !important;
   color: #000000 !important;
   letter-spacing: 0.2px !important;
   padding-left: 8px !important;
 }
 #screen-result .result-detail-label {
   font-size: 11px !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
   color: #64748b !important;
   letter-spacing: 0.5px !important;
   text-transform: none !important;
 }
 #screen-result .result-detail-value {
   font-size: 13.5px !important;
-  font-weight: 800 !important;
+  font-weight: 700 !important;
   color: #000000 !important;
   letter-spacing: 0.2px !important;
 }
@@ -7364,7 +7367,7 @@ body:has(.option-panel[style*="display:block"]) {
 .receipt-v3-header-circle svg { width: 32px; height: 32px; fill: #ffffff; }
 .receipt-v3-header-title {
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 700;
   color: #ffffff;
   line-height: 1.3;
   letter-spacing: -0.2px;
@@ -7372,7 +7375,7 @@ body:has(.option-panel[style*="display:block"]) {
 }
 .receipt-v3-header-sub {
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   color: rgba(255,255,255,0.94);
   line-height: 1.4;
   max-width: 280px;
@@ -7406,14 +7409,14 @@ body:has(.option-panel[style*="display:block"]) {
 .receipt-v3-amount-icon svg { width: 14px; height: 14px; fill: #ffffff; }
 .receipt-v3-amount-label {
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #64748b;
   flex: 1;
   min-width: 0;
 }
 .receipt-v3-amount-value {
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 700;
   color: #10b981;
   letter-spacing: -0.3px;
   text-align: right;
@@ -7434,7 +7437,7 @@ body:has(.option-panel[style*="display:block"]) {
 .receipt-v3-party { min-width: 0; }
 .receipt-v3-party-label {
   font-size: 9.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #94a3b8;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -7469,7 +7472,7 @@ body:has(.option-panel[style*="display:block"]) {
 .receipt-v3-party-info { min-width: 0; flex: 1; }
 .receipt-v3-party-name {
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   color: #0f172a;
   line-height: 1.25;
   word-break: break-word;
@@ -7477,14 +7480,14 @@ body:has(.option-panel[style*="display:block"]) {
 }
 .receipt-v3-party-sub {
   font-size: 8.5px;
-  font-weight: 500;
+  font-weight: 400;
   color: #64748b;
   margin-bottom: 3px;
 }
 .receipt-v3-party-iban {
   font-family: 'Courier New', Consolas, monospace;
   font-size: 8px;
-  font-weight: 600;
+  font-weight: 500;
   color: #475569;
   word-break: break-all;
   line-height: 1.3;
@@ -7517,7 +7520,7 @@ body:has(.option-panel[style*="display:block"]) {
 .receipt-v3-row:last-child { border-bottom: none; }
 .receipt-v3-row-label {
   font-size: 11.5px;
-  font-weight: 500;
+  font-weight: 400;
   color: #64748b;
   flex: 1;
   min-width: 0;
@@ -7525,7 +7528,7 @@ body:has(.option-panel[style*="display:block"]) {
 }
 .receipt-v3-row-value {
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: #0f172a;
   text-align: right;
   max-width: 58%;
@@ -7558,7 +7561,7 @@ body:has(.option-panel[style*="display:block"]) {
 .receipt-v3-info-text {
   flex: 1;
   font-size: 10.5px;
-  font-weight: 600;
+  font-weight: 500;
   color: #065f46;
   line-height: 1.4;
   min-width: 0;
@@ -7585,7 +7588,7 @@ body:has(.option-panel[style*="display:block"]) {
   border: none;
   border-radius: 12px;
   font-size: 13.5px;
-  font-weight: 700;
+  font-weight: 600;
   font-family: inherit;
   display: flex;
   align-items: center;
