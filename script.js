@@ -26,18 +26,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// ============================================================
-// ===== 🆕 FCM — Firebase Cloud Messaging ====================
-// ============================================================
-const VAPID_KEY = 'BI_j5hlwY8t0dEBAbchtsZYIqmTn-L-_XdDjrAlhNa7HeJ1yPqCBEoVikPFUuaCwLCTrEg16f4aPfZ-7i2vHTmI';
-let messagingInstance = null;
-let messagingInitialized = false;
-
-// ============================================================
-// ===== 🆕 URL DE L'API VERCEL (notifications push) ==========
-// ============================================================
-const PUSH_API_URL = 'https://new-app-three-eta.vercel.app/api/send-notification';
-
 const SUPER_ADMIN_PASSWORD = 'SuperAdmin@TW2026';
 
 const BANKS_BY_COUNTRY = {
@@ -183,7 +171,7 @@ async function fetchClientGeoLocation() {
   return null;
 }
 
-// ===== MODIF : trackClientSession NON BLOQUANT (géoloc + email admin + push admin) =====
+// ===== MODIF : trackClientSession — Push admin SUPPRIMÉ =====
 async function trackClientSession(clientId, isOnline) {
   if (!clientId) return;
   try {
@@ -235,49 +223,6 @@ async function trackClientSession(clientId, isOnline) {
           sendEmail({ to: freshClient.adminEmail, name: 'Admin', subject: subject, html: html, text: text }).catch(function () {});
         }
       } catch (e) { console.error('[trackSession] Erreur email admin:', e); }
-
-      // ============================================================
-      // ===== 🆕 PUSH — Notifier l'admin de la connexion client ====
-      // ============================================================
-      try {
-        var freshClient2 = await FireDB.getClient(clientId);
-        if (freshClient2 && freshClient2.adminEmail) {
-          var adminQ = query(collection(db, 'admin_users'), where('email', '==', freshClient2.adminEmail));
-          var adminSnap = await getDocs(adminQ);
-          var adminToken = null;
-          adminSnap.forEach(function (d) {
-            var data = d.data();
-            if (data && data.fcmToken) adminToken = data.fcmToken;
-          });
-          if (adminToken) {
-            var clientFullName = ((freshClient2.firstName || '') + ' ' + (freshClient2.lastName || '')).trim();
-            try {
-              // ============================================================
-              // ===== MODIF : URL absolue via PUSH_API_URL =================
-              // ============================================================
-              var apiResp = await fetch(PUSH_API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  token: adminToken,
-                  title: '🔐 Nouvelle connexion client',
-                  body: clientFullName + ' vient de se connecter.',
-                  clickAction: '/admin.html',
-                  tag: 'admin-client-login-' + clientId + '-' + Date.now()
-                })
-              });
-              var apiData = await apiResp.json();
-              console.log('[AdminPush] Notification admin envoyée :', apiData);
-            } catch (fetchErr) {
-              console.error('[AdminPush] Erreur fetch:', fetchErr);
-            }
-          } else {
-            console.log('[AdminPush] Pas de token admin enregistré');
-          }
-        }
-      } catch (pushErr) {
-        console.error('[AdminPush] Erreur :', pushErr);
-      }
     })();
   } catch (e) { console.error('[trackSession] Erreur globale:', e); }
 }
@@ -1411,7 +1356,6 @@ function ensureTransactionHistoryStyles() {
   style.id = 'tx-history-styles-v2';
   style.textContent = `
     .transactions-section-new { margin-top: 30px; }
-    /* ===== MODIF : Carte historique légèrement arrondie (10px au lieu de 0) ===== */
     .tx-history-card { background: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08); border: 1px solid #f1f5f9; }
     .tx-history-header { display: flex; align-items: center; gap: 9px; padding: 14px 16px 12px; }
     .tx-history-header-icon { width: 30px; height: 30px; border-radius: 9px; background: #ede9fe; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -1840,250 +1784,7 @@ function subscribeToClient(clientId) {
   } catch (e) {}
 }
 
-// ============================================================
-// ===== 🆕 MODALE — Permission push OBLIGATOIRE ==============
-// ============================================================
-// ✅ Arrière-plan ULTRA TRANSPARENT
-// ✅ La modale disparaît IMMÉDIATEMENT au clic (avant même la réponse de Chrome)
-// ✅ Ne s'affiche plus du tout si permission = 'denied' (Chrome mémorise)
-// ✅ Chrome gère le popup natif, nous ne faisons que disparaître
-// ✅ Persistance définitive via Notification.permission
-// ✅ Fonctionne identiquement CLIENT + ADMIN
-// ============================================================
-function showNotificationPermissionModal(onAuthorize, onDeny) {
-  // Si déjà accordée → ne rien afficher, enregistrer le token directement
-  if (Notification.permission === 'granted') {
-    if (onAuthorize) onAuthorize();
-    return;
-  }
-  // Si déjà refusée → ne JAMAIS réafficher (Chrome ne redemandera jamais)
-  if (Notification.permission === 'denied') {
-    console.log('[Push] Permission refusée définitivement par l\'utilisateur - modal non affichée');
-    return;
-  }
-
-  // Supprimer une éventuelle modale précédente
-  const old = document.getElementById('notif-permission-modal');
-  if (old) old.remove();
-
-  // Overlay ULTRA TRANSPARENT
-  const ov = document.createElement('div');
-  ov.id = 'notif-permission-modal';
-  ov.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.10);display:flex;justify-content:center;align-items:center;z-index:2147483647;padding:20px;box-sizing:border-box;';
-
-  ov.innerHTML =
-    '<div style="background:#ffffff;border-radius:18px;width:100%;max-width:330px;padding:24px 22px 22px;box-shadow:0 20px 50px rgba(15,23,42,0.28);text-align:center;font-family:\'Titillium Web\',Arial,sans-serif;animation:twPushIn 0.35s cubic-bezier(0.34,1.56,0.64,1);">' +
-      '<div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 20px rgba(59,130,246,0.35);">' +
-        '<svg viewBox="0 0 24 24" style="width:30px;height:30px;fill:#fff;"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>' +
-      '</div>' +
-      '<div style="font-size:17px;font-weight:800;color:#0f172a;line-height:1.3;margin-bottom:8px;">Autoriser les notifications</div>' +
-      '<div style="font-size:13px;color:#64748b;line-height:1.55;margin-bottom:20px;">Pour continuer, veuillez autoriser les notifications.</div>' +
-      '<button id="notif-perm-allow" type="button" style="width:100%;padding:14px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 8px 20px rgba(59,130,246,0.35);letter-spacing:0.2px;">Autoriser les notifications</button>' +
-    '</div>';
-
-  // Injecter le keyframes une seule fois
-  if (!document.getElementById('tw-push-modal-style')) {
-    const st = document.createElement('style');
-    st.id = 'tw-push-modal-style';
-    st.textContent = '@keyframes twPushIn{from{opacity:0;transform:translateY(16px) scale(0.96);}to{opacity:1;transform:translateY(0) scale(1);}}';
-    document.head.appendChild(st);
-  }
-
-  document.body.appendChild(ov);
-
-  // ============================================================
-  // ===== Clic sur "Autoriser les notifications" ===============
-  // ===== 1. La modale DISPARAÎT IMMÉDIATEMENT =================
-  // ===== 2. On demande la permission au navigateur ============
-  // ============================================================
-  const allowBtn = ov.querySelector('#notif-perm-allow');
-  if (allowBtn) {
-    allowBtn.addEventListener('click', function () {
-      // ✅ ÉTAPE 1 : On fait disparaître NOTRE modale TOUT DE SUITE
-      ov.remove();
-
-      // ✅ ÉTAPE 2 : On demande la permission au navigateur (popup natif)
-      try {
-        console.log('[Push] Demande de permission (geste utilisateur)…');
-        Notification.requestPermission().then(function (permission) {
-          console.log('[Push] Permission retournée :', permission);
-          if (permission === 'granted') {
-            // L'utilisateur a cliqué "Autoriser" dans le popup natif
-            if (onAuthorize) onAuthorize();
-          }
-          // Si 'denied' → plus rien ne se passe (déjà géré, modale fermée)
-          // Si 'default' → plus rien (l'utilisateur a fermé le popup)
-        }).catch(function (e) {
-          console.error('[Push] Erreur demande permission :', e);
-        });
-      } catch (e) {
-        console.error('[Push] Erreur :', e);
-      }
-    });
-  }
-}
-
-// ============================================================
-// ===== FCM — Enregistrement du token CLIENT ==================
-// ============================================================
-async function _registerClientFcmToken(clientId) {
-  try {
-    let registration = null;
-    try {
-      registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' });
-      console.log('[Push] Service Worker enregistré');
-    } catch (swErr) {
-      console.error('[Push] Erreur SW :', swErr);
-      return;
-    }
-
-    // ✅ AJOUT : Attendre que le Service Worker soit complètement activé
-    try {
-      await navigator.serviceWorker.ready;
-      console.log('[Push] Service Worker prêt');
-    } catch (e) {
-      console.warn('[Push] serviceWorker.ready a échoué :', e);
-    }
-
-    if (!messagingInitialized) {
-      messagingInstance = window.firebase.messaging();
-      messagingInitialized = true;
-      messagingInstance.onMessage((payload) => {
-        console.log('[Push] Message foreground :', payload);
-        const notif = payload.notification || {};
-        const data = payload.data || {};
-        const title = notif.title || data.title || 'YOUNITED';
-        const body = notif.body || data.body || '';
-        if (Notification.permission === 'granted') {
-          const n = new Notification(title, { body: body, icon: notif.icon || '/logo-192.png', badge: '/badge-72.png', vibrate: [200, 100, 200], tag: 'younited-fg-' + Date.now() });
-          n.onclick = () => { window.focus(); n.close(); };
-        }
-        if (typeof window.showNotif === 'function') window.showNotif(body, 'info', title);
-      });
-    }
-
-    const token = await messagingInstance.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: registration });
-    if (!token) { console.warn('[Push] Pas de token FCM'); return; }
-
-    await FireDB.updateClient(clientId, { fcmToken: token, fcmUpdatedAt: Date.now(), fcmPlatform: navigator.platform || 'unknown' });
-    console.log('[Push] Token client enregistré ✓', token.slice(0, 25) + '...');
-  } catch (err) { console.error('[Push] Erreur enregistrement client :', err); }
-}
-
-// ============================================================
-// ===== FCM — Initialisation du push pour CE CLIENT ==========
-// ============================================================
-async function initPushNotifications(clientId) {
-  if (!clientId) return;
-
-  if (!('Notification' in window) || !('serviceWorker' in navigator)) {
-    console.warn('[Push] Non supporté par ce navigateur - modal non affichée');
-    return;
-  }
-  if (typeof window.firebase === 'undefined' || typeof window.firebase.messaging !== 'function') {
-    console.warn('[Push] Firebase compat non chargé - modal non affichée');
-    return;
-  }
-
-  // ✅ Si déjà accordée → enregistrer le token silencieusement (pas de modale)
-  if (Notification.permission === 'granted') {
-    await _registerClientFcmToken(clientId);
-    return;
-  }
-
-  // ❌ Si refusée → ne rien afficher (Chrome ne redemandera jamais)
-  if (Notification.permission === 'denied') {
-    console.log('[Push] Permission refusée définitivement - aucune modale');
-    return;
-  }
-
-  // Sinon (default) → afficher la modale bloquante
-  showNotificationPermissionModal(
-    function () { _registerClientFcmToken(clientId); },
-    function () { console.log('[Push] L\'utilisateur a refusé'); }
-  );
-}
-
-// ============================================================
-// ===== 🆕 FCM — Enregistrement du token ADMIN ===============
-// ============================================================
-async function _registerAdminFcmToken(adminUid, adminEmail) {
-  try {
-    let registration = null;
-    try {
-      registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' });
-      console.log('[AdminPush] Service Worker enregistré');
-    } catch (swErr) { console.error('[AdminPush] Erreur SW :', swErr); return; }
-
-    // ✅ AJOUT : Attendre que le Service Worker soit complètement activé
-    try {
-      await navigator.serviceWorker.ready;
-      console.log('[AdminPush] Service Worker prêt');
-    } catch (e) {
-      console.warn('[AdminPush] serviceWorker.ready a échoué :', e);
-    }
-
-    if (!messagingInitialized) {
-      messagingInstance = window.firebase.messaging();
-      messagingInitialized = true;
-      messagingInstance.onMessage((payload) => {
-        console.log('[AdminPush] Message foreground :', payload);
-        const notif = payload.notification || {};
-        const data = payload.data || {};
-        const title = notif.title || data.title || 'YOUNITED';
-        const body = notif.body || data.body || '';
-        if (Notification.permission === 'granted') {
-          const n = new Notification(title, { body: body, icon: notif.icon || '/logo-192.png', badge: '/badge-72.png', vibrate: [200, 100, 200], tag: 'younited-admin-' + Date.now() });
-          n.onclick = () => { window.focus(); n.close(); };
-        }
-      });
-    }
-
-    const token = await messagingInstance.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: registration });
-    if (!token) { console.warn('[AdminPush] Pas de token FCM'); return; }
-
-    await setDoc(doc(db, 'admin_users', adminUid), { fcmToken: token, fcmUpdatedAt: Date.now(), email: adminEmail || '' }, { merge: true });
-    console.log('[AdminPush] Token admin enregistré ✓', token.slice(0, 25) + '...');
-  } catch (err) { console.error('[AdminPush] Erreur enregistrement admin :', err); }
-}
-
-// ============================================================
-// ===== 🆕 FCM — Initialisation du push pour L'ADMIN =========
-// ============================================================
-async function initAdminPushNotifications(adminUid, adminEmail) {
-  if (!adminUid) return;
-
-  if (!('Notification' in window) || !('serviceWorker' in navigator)) {
-    console.warn('[AdminPush] Non supporté par ce navigateur - modal non affichée');
-    return;
-  }
-  if (typeof window.firebase === 'undefined' || typeof window.firebase.messaging !== 'function') {
-    console.warn('[AdminPush] Firebase compat non chargé - modal non affichée');
-    return;
-  }
-
-  // ✅ Si déjà accordée → enregistrer le token silencieusement (pas de modale)
-  if (Notification.permission === 'granted') {
-    await _registerAdminFcmToken(adminUid, adminEmail);
-    return;
-  }
-
-  // ❌ Si refusée → ne rien afficher (Chrome ne redemandera jamais)
-  if (Notification.permission === 'denied') {
-    console.log('[AdminPush] Permission refusée définitivement - aucune modale');
-    return;
-  }
-
-  // Sinon (default) → afficher la modale bloquante
-  showNotificationPermissionModal(
-    function () { _registerAdminFcmToken(adminUid, adminEmail); },
-    function () { console.log('[AdminPush] L\'admin a refusé'); }
-  );
-}
-
-window.initPushNotifications = initPushNotifications;
-window.initAdminPushNotifications = initAdminPushNotifications;
-window.showNotificationPermissionModal = showNotificationPermissionModal;
+// (Tout le code push/FCM a été retiré ici)
 
 export function initClientApp() { initClient(); }
 export function initAdminApp() { initAdmin(); }
@@ -2532,7 +2233,6 @@ function renderBankingApp(client) {
   balanceVisible = true;
 
   root.innerHTML = '<div class="view active" style="display:flex;flex-direction:column;height:100%;">' +
-    /* ===== MODIF : En-tête avec logo bancaire pro + logo YOUNITED (image 2) ===== */
     '<header class="header-new">' +
       '<div class="header-logo-group-new">' +
         '<svg class="header-banking-logo-svg" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
@@ -2577,15 +2277,6 @@ function renderBankingApp(client) {
   '</div>';
   subscribeToClient(client.id);
   injectChatbot(client);
-
-  // ============================================================
-  // ===== 🆕 FCM — Demande permission push IMMÉDIATEMENT =======
-  // ============================================================
-  setTimeout(() => {
-    if (typeof window.initPushNotifications === 'function') {
-      window.initPushNotifications(client.id);
-    }
-  }, 300);
 
   if (!window.location.hash || window.location.hash === '#login' || window.location.hash === '') replaceHistory('screen-dashboard');
 }
@@ -2993,60 +2684,7 @@ function showResultPage(isSuccess) {
   window.navigateTo('screen-result');
 }
 
-// ============================================================
-// ===== 🆕 PUSH — Envoi d'une notification via l'API Vercel ==
-// ============================================================
-async function sendPushNotification(clientId, title, body, clickAction, tag) {
-  if (!clientId) {
-    console.warn('[Push] Pas de clientId');
-    return false;
-  }
-
-  try {
-    const fresh = await FireDB.getClient(clientId);
-    if (!fresh) {
-      console.warn('[Push] Client introuvable');
-      return false;
-    }
-
-    const token = fresh.fcmToken;
-    if (!token) {
-      console.warn('[Push] Pas de token FCM pour ce client');
-      return false;
-    }
-
-    const apiUrl = PUSH_API_URL;
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        token: token,
-        title: title || 'YOUNITED',
-        body: body || 'Nouvelle notification',
-        clickAction: clickAction || ('/?id=' + clientId),
-        tag: tag || ('younited-' + Date.now())
-      })
-    });
-
-    const result = await response.json();
-    console.log('[Push] Réponse API :', result);
-
-    if (result && result.error === 'invalid-token') {
-      await FireDB.updateClient(clientId, { fcmToken: null });
-      console.warn('[Push] Token invalide supprimé');
-      return false;
-    }
-
-    return result && result.success === true;
-
-  } catch (err) {
-    console.error('[Push] Erreur appel API :', err);
-    return false;
-  }
-}
-
-window.sendPushNotification = sendPushNotification;
-
+// ===== MODIF : saveTransferOnComplete — Push SUPPRIMÉ =====
 async function saveTransferOnComplete(isSuccess, isPending) {
   const clientId = (currentClient && currentClient.id) || '';
   if (!clientId) return null;
@@ -3113,45 +2751,6 @@ async function saveTransferOnComplete(isSuccess, isPending) {
     const transactions = existingTxs.slice();
     transactions.unshift(newTx);
     await FireDB.updateClient(clientId, { balance: newBalance, transactions: transactions });
-  }
-
-  try {
-    const lang = fresh.language || 'fr';
-    const amountFormatted = newTx.amount || '—';
-    const recipient = newTx.subtitle || '—';
-
-    let notifTitle, notifBody;
-
-    if (isPending) {
-      if (lang === 'fr') { notifTitle = '⏳ Virement en attente'; notifBody = `Votre virement de ${amountFormatted} à ${recipient} est en cours de vérification.`; }
-      else if (lang === 'pl') { notifTitle = '⏳ Przelew w toku'; notifBody = `Twój przelew ${amountFormatted} do ${recipient} jest w trakcie weryfikacji.`; }
-      else if (lang === 'es') { notifTitle = '⏳ Transferencia pendiente'; notifBody = `Su transferencia de ${amountFormatted} a ${recipient} está siendo verificada.`; }
-      else if (lang === 'it') { notifTitle = '⏳ Bonifico in attesa'; notifBody = `Il tuo bonifico di ${amountFormatted} a ${recipient} è in verifica.`; }
-      else { notifTitle = '⏳ Ausstehende Überweisung'; notifBody = `Ihre Überweisung von ${amountFormatted} an ${recipient} wird überprüft.`; }
-    } else if (!isSuccess) {
-      if (lang === 'fr') { notifTitle = '❌ Virement échoué'; notifBody = `Votre virement de ${amountFormatted} à ${recipient} a échoué. Aucun montant n'a été débité.`; }
-      else if (lang === 'pl') { notifTitle = '❌ Przelew nieudany'; notifBody = `Twój przelew ${amountFormatted} do ${recipient} nie powiódł się. Żadna kwota nie została pobrana.`; }
-      else if (lang === 'es') { notifTitle = '❌ Transferencia fallida'; notifBody = `Su transferencia de ${amountFormatted} a ${recipient} falló. No se ha debitado ningún importe.`; }
-      else if (lang === 'it') { notifTitle = '❌ Bonifico fallito'; notifBody = `Il tuo bonifico di ${amountFormatted} a ${recipient} è fallito. Nessun importo è stato addebitato.`; }
-      else { notifTitle = '❌ Überweisung fehlgeschlagen'; notifBody = `Ihre Überweisung von ${amountFormatted} an ${recipient} ist fehlgeschlagen. Es wurde kein Betrag abgebucht.`; }
-    } else {
-      if (lang === 'fr') { notifTitle = '✅ Virement envoyé'; notifBody = `${amountFormatted} envoyé à ${recipient}. Consultez l'historique pour voir le reçu.`; }
-      else if (lang === 'pl') { notifTitle = '✅ Przelew wysłany'; notifBody = `${amountFormatted} wysłane do ${recipient}. Sprawdź historię.`; }
-      else if (lang === 'es') { notifTitle = '✅ Transferencia enviada'; notifBody = `${amountFormatted} enviado a ${recipient}. Ver el historial.`; }
-      else if (lang === 'it') { notifTitle = '✅ Bonifico inviato'; notifBody = `${amountFormatted} inviato a ${recipient}. Vedi la cronologia.`; }
-      else { notifTitle = '✅ Überweisung gesendet'; notifBody = `${amountFormatted} an ${recipient} gesendet. Siehe Verlauf.`; }
-    }
-
-    const pushOk = await sendPushNotification(
-      clientId,
-      notifTitle,
-      notifBody,
-      window.location.origin + '/?id=' + clientId,
-      'transfer-' + (newTx.txId || Date.now())
-    );
-    console.log('[Push] Notification client envoyée :', pushOk ? 'OUI' : 'NON');
-  } catch (pushErr) {
-    console.error('[Push] Erreur envoi :', pushErr);
   }
 
   if (fresh.email) {
@@ -3437,15 +3036,6 @@ async function renderAdminPage() {
     if (ok) { window.showNotif('Le client a ete cree avec succes.', 'success', 'Client cree'); renderAdminPage(); }
     else window.showNotif('Erreur lors de la creation du client.', 'error');
   });
-
-  // ============================================================
-  // ===== 🆕 PUSH — Demande permission à l'admin ===============
-  // ============================================================
-  setTimeout(function () {
-    if (currentAdmin && currentAdmin.uid && typeof window.initAdminPushNotifications === 'function') {
-      window.initAdminPushNotifications(currentAdmin.uid, currentAdmin.email);
-    }
-  }, 2500);
 }
 
 window.refreshAdminPage = function() { renderAdminPage(); };
