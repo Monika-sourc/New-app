@@ -1,10 +1,17 @@
 // ============================================================
 // api/send-notification.js
 // API Serverless Vercel — Envoie un push FCM
+// ✅ Version corrigée — Toutes les URLs absolues + config FCM optimale
 // ============================================================
 
 import { initializeApp, cert, getApps } from 'firebase-admin/app';
 import { getMessaging } from 'firebase-admin/messaging';
+
+// ============================================================
+// 🌐 URL PUBLIQUE DE L'APPLICATION (source unique de vérité)
+// Utilisée pour : icônes, badges, liens de clic
+// ============================================================
+const APP_URL = 'https://new-app-three-eta.vercel.app';
 
 // ============================================================
 // 🔐 Initialisation Firebase Admin
@@ -13,12 +20,11 @@ import { getMessaging } from 'firebase-admin/messaging';
 function initFirebaseAdmin() {
   if (getApps().length > 0) return; // Déjà initialisé
 
-  // Récupère les credentials depuis les variables d'environnement
   const serviceAccount = {
     type: 'service_account',
     project_id: process.env.FIREBASE_PROJECT_ID,
     private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
-    private_key: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+    private_key: getPrivateKey(),
     client_email: process.env.FIREBASE_CLIENT_EMAIL,
     client_id: process.env.FIREBASE_CLIENT_ID,
     auth_uri: 'https://accounts.google.com/o/oauth2/auth',
@@ -33,10 +39,51 @@ function initFirebaseAdmin() {
 }
 
 // ============================================================
+// 🔑 Nettoie la clé privée FIREBASE_PRIVATE_KEY
+// Gère : guillemets, espaces, \n littéraux, retours chariot
+// ============================================================
+function getPrivateKey() {
+  let key = process.env.FIREBASE_PRIVATE_KEY || '';
+  key = key.trim();
+
+  // Supprime les guillemets englobants éventuels (copier-coller depuis un .env)
+  if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
+    key = key.slice(1, -1);
+  }
+
+  // Convertit les \n littéraux en vrais retours à la ligne
+  key = key.replace(/\\n/g, '\n');
+
+  // Nettoie les \r parasites (Windows)
+  key = key.replace(/\r/g, '');
+
+  return key;
+}
+
+// ============================================================
+// 🔗 Convertit un chemin relatif en URL ABSOLUE
+// Ex: "/admin.html"  → "https://new-app-three-eta.vercel.app/admin.html"
+// Ex: "https://..."  → inchangé
+// ============================================================
+function toAbsoluteUrl(path, fallback) {
+  if (!path || typeof path !== 'string') return fallback || (APP_URL + '/');
+
+  const trimmed = path.trim();
+  if (!trimmed) return fallback || (APP_URL + '/');
+
+  // Déjà absolue
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+
+  // Chemin relatif → préfixe avec APP_URL
+  if (trimmed.startsWith('/')) return APP_URL + trimmed;
+  return APP_URL + '/' + trimmed;
+}
+
+// ============================================================
 // 🚀 Handler principal
 // ============================================================
 export default async function handler(req, res) {
-  // CORS — autorise ton app à appeler cette API
+  // ---- CORS ----
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -52,40 +99,65 @@ export default async function handler(req, res) {
   try {
     const { token, title, body, clickAction, tag } = req.body || {};
 
-    if (!token) {
-      return res.status(400).json({ success: false, error: 'Token manquant' });
+    // ---- ✅ Vérification stricte du token ----
+    if (!token || typeof token !== 'string' || token.trim() === '') {
+      return res.status(400).json({ success: false, error: 'Token manquant ou invalide' });
     }
 
-    // Init Firebase Admin
+    // ---- Init Firebase Admin ----
     initFirebaseAdmin();
 
-    // Construit le message
-    const notifTag = tag || 'younited-' + Date.now();
+    // ---- ✅ Normalisation des valeurs ----
+    const notifTitle = (title && String(title).trim()) || 'YOUNITED';
+    const notifBody  = (body  && String(body).trim())  || 'Nouvelle notification';
+    const notifTag   = (tag   && String(tag).trim())   || ('younited-' + Date.now());
+
+    // ✅ clickAction TOUJOURS absolu (crucial pour webpush.fcmOptions.link)
+    const absoluteLink = toAbsoluteUrl(clickAction, APP_URL + '/');
+
+    // ---- ✅ Construction du message FCM optimisé ----
     const message = {
-      token: token,
+      token: token.trim(),
+
+      // Notification (fallback pour plateformes natives)
       notification: {
-        title: title || 'YOUNITED',
-        body: body || 'Nouvelle notification'
+        title: notifTitle,
+        body: notifBody
       },
+
+      // Données personnalisées lues par le Service Worker
       data: {
-        click_action: clickAction || '/',
-        title: title || 'YOUNITED',
-        body: body || '',
+        click_action: absoluteLink,
+        title: notifTitle,
+        body: notifBody,
         tag: notifTag
       },
+
+      // ---- Configuration Web Push (navigateurs) ----
       webpush: {
+        headers: {
+          Urgency: 'high',        // Priorité maximale
+          TTL: '2419200'          // 4 semaines
+        },
         notification: {
-          icon: 'https://ki.getzenpay.com/logo-192.png',
-          badge: 'https://ki.getzenpay.com/badge-72.png',
+          title: notifTitle,
+          body: notifBody,
+          icon: APP_URL + '/logo-192.png',    // ✅ Domaine réel
+          badge: APP_URL + '/badge-72.png',   // ✅ Domaine réel
           vibrate: [200, 100, 200],
           tag: notifTag,
           renotify: true,
-          requireInteraction: false
+          requireInteraction: false,
+          silent: false,
+          dir: 'auto',
+          lang: 'fr'
         },
         fcmOptions: {
-          link: clickAction || 'https://ki.getzenpay.com/'
+          link: absoluteLink                  // ✅ URL absolue garantie
         }
       },
+
+      // ---- Configuration Android natif ----
       android: {
         priority: 'high',
         notification: {
@@ -95,19 +167,22 @@ export default async function handler(req, res) {
       }
     };
 
-    // Envoie le push
+    // ---- ✅ Envoi du push ----
     const response = await getMessaging().send(message);
     console.log('[API] Push envoyé ✓ :', response);
 
     return res.status(200).json({ success: true, messageId: response });
 
   } catch (error) {
-    console.error('[API] Erreur :', error);
+    console.error('[API] Erreur :', (error && error.message) || error);
 
-    // Si le token est invalide
+    const code = error && error.code;
+
+    // ---- ✅ Token invalide ou expiré ----
     if (
-      error.code === 'messaging/registration-token-not-registered' ||
-      error.code === 'messaging/invalid-registration-token'
+      code === 'messaging/registration-token-not-registered' ||
+      code === 'messaging/invalid-registration-token' ||
+      code === 'messaging/invalid-argument'
     ) {
       return res.status(200).json({
         success: false,
@@ -116,9 +191,22 @@ export default async function handler(req, res) {
       });
     }
 
+    // ---- ✅ Credentials Firebase Admin invalides ----
+    if (
+      code === 'messaging/third-party-auth-error' ||
+      code === 'app/invalid-credential'
+    ) {
+      return res.status(200).json({
+        success: false,
+        error: 'invalid-credentials',
+        message: 'Les credentials Firebase Admin sont invalides'
+      });
+    }
+
+    // ---- ✅ Erreur générique ----
     return res.status(500).json({
       success: false,
-      error: error.message || 'Erreur inconnue'
+      error: (error && error.message) || 'Erreur inconnue'
     });
   }
 }
