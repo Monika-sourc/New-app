@@ -1,21 +1,46 @@
 // ============================================================
 // api/send-email.js
 // Proxy sécurisé pour l'envoi d'emails
-// La clé API email reste sur le serveur, jamais exposée
+// - Clé API conservée côté serveur (jamais exposée)
+// - CORS restreint au domaine officiel
+// - Vérification de l'origine des requêtes
 // ============================================================
 
 export default async function handler(req, res) {
-  // CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  // Domaines autorisés à appeler cette API
+  const ALLOWED_ORIGINS = [
+    'https://new-app-three-eta.vercel.app',
+    'https://www.new-app-three-eta.vercel.app'
+  ];
+
+  const origin = req.headers.origin || '';
+  const isAllowedOrigin = ALLOWED_ORIGINS.indexOf(origin) !== -1;
+
+  // Toujours indiquer que la réponse varie selon l'origine (cache)
+  res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
+  // CORS : n'autoriser que les origines whitelistées
+  if (isAllowedOrigin) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+
+  // Requête preflight (OPTIONS)
   if (req.method === 'OPTIONS') {
+    if (!isAllowedOrigin) return res.status(403).end();
     return res.status(200).end();
   }
 
+  // Seul le POST est accepté
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, error: 'Method not allowed' });
+  }
+
+  // Vérification de l'origine : bloquer les appels externes
+  if (!isAllowedOrigin) {
+    console.error('[send-email] Origin refusée :', origin || '(vide)');
+    return res.status(403).json({ success: false, error: 'Forbidden' });
   }
 
   try {
