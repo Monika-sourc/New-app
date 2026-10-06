@@ -1014,7 +1014,7 @@ window.toggleBalanceVisibility = function () {
 /* ============================================================ */
 /* ===== ensureGlobalStyles — Bordures légères + boules ======= */
 /* ===== MODIF : Épaisseur des textes réduite pour CLIENT ===== */
-/* ===== MODIF : Boutons rapides — design pro attractif ====== */
+/* ===== MODIF : Boutons rapides compacts + modales rectangulaires ===== */
 /* ============================================================ */
 function ensureGlobalStyles() {
   if (document.getElementById('tw-bubbles-styles')) return;
@@ -1291,29 +1291,48 @@ function ensureGlobalStyles() {
     .header-younited-logo-svg { height: 24px; width: auto; max-width: 130px; flex-shrink: 0; display: block; }
     .header-younited-logo-svg text { font-family: 'Titillium Web', Arial, sans-serif; font-weight: 800 !important; fill: #1a1a1a; letter-spacing: 0.8px; }
 
-    /* ===== MODIF : Boutons rapides (Quick Actions) — Design pro attractif ===== */
-    .quick-actions-row-new{display:flex !important;gap:10px !important;margin-top:18px !important;margin-bottom:18px !important;}
-    .quick-action-item-new{flex:1 !important;background:#ffffff !important;border-radius:14px !important;padding:16px 8px 14px !important;display:flex !important;flex-direction:column !important;align-items:center !important;gap:8px !important;cursor:pointer !important;box-shadow:0 2px 8px rgba(15,23,42,0.06) !important;transition:transform 0.15s ease,box-shadow 0.2s ease !important;border:1px solid #f1f5f9 !important;user-select:none !important;-webkit-tap-highlight-color:transparent !important;}
-    .quick-action-item-new:active{transform:translateY(-2px) !important;box-shadow:0 6px 16px rgba(15,23,42,0.12) !important;}
-    .quick-action-icon-new{width:48px !important;height:48px !important;min-width:48px !important;min-height:48px !important;border-radius:50% !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;transition:transform 0.15s ease !important;box-shadow:0 4px 10px rgba(15,23,42,0.10) !important;}
-    .quick-action-item-new:active .quick-action-icon-new{transform:scale(1.08) !important;}
-    .quick-action-icon-new.green{background:linear-gradient(135deg,#10b981 0%,#059669 100%) !important;box-shadow:0 4px 10px rgba(16,185,129,0.35) !important;}
-    .quick-action-icon-new.blue{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%) !important;box-shadow:0 4px 10px rgba(59,130,246,0.35) !important;}
-    .quick-action-icon-new.purple{background:linear-gradient(135deg,#8b5cf6 0%,#6d28d9 100%) !important;box-shadow:0 4px 10px rgba(139,92,246,0.35) !important;}
-    .quick-action-icon-new svg{width:22px !important;height:22px !important;max-width:22px !important;max-height:22px !important;display:block !important;fill:#ffffff !important;}
+    /* ===== MODIF : Boutons rapides (Quick Actions) — Design pro compact ===== */
+    .quick-actions-row-new{display:flex !important;gap:8px !important;margin-top:14px !important;margin-bottom:14px !important;}
+    .quick-action-item-new{flex:1 !important;background:#ffffff !important;border-radius:12px !important;padding:12px 6px 10px !important;display:flex !important;flex-direction:column !important;align-items:center !important;gap:6px !important;cursor:pointer !important;box-shadow:0 2px 6px rgba(15,23,42,0.06) !important;transition:transform 0.15s ease,box-shadow 0.2s ease !important;border:1px solid #f1f5f9 !important;user-select:none !important;-webkit-tap-highlight-color:transparent !important;}
+    .quick-action-item-new:active{transform:translateY(-1px) !important;box-shadow:0 4px 10px rgba(15,23,42,0.10) !important;}
+    .quick-action-icon-new{width:38px !important;height:38px !important;min-width:38px !important;min-height:38px !important;border-radius:50% !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;transition:transform 0.15s ease !important;box-shadow:0 3px 8px rgba(15,23,42,0.12) !important;}
+    .quick-action-item-new:active .quick-action-icon-new{transform:scale(1.06) !important;}
+    .quick-action-icon-new.green{background:linear-gradient(135deg,#10b981 0%,#059669 100%) !important;}
+    .quick-action-icon-new.blue{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%) !important;}
+    .quick-action-icon-new.purple{background:linear-gradient(135deg,#8b5cf6 0%,#6d28d9 100%) !important;}
+    .quick-action-icon-new svg{width:18px !important;height:18px !important;max-width:18px !important;max-height:18px !important;display:block !important;fill:#ffffff !important;}
     .quick-action-icon-new svg path{fill:#ffffff !important;}
-    .quick-action-label-new{font-size:10.5px !important;font-weight:600 !important;color:#334155 !important;text-align:center !important;line-height:1.25 !important;letter-spacing:0.1px !important;padding:0 2px !important;word-break:break-word !important;}
-
-    /* Bouton principal (Przelew) mis en valeur */
-    .quick-action-item-new.qa-primary{background:linear-gradient(135deg,#faf5ff 0%,#eef2ff 100%) !important;border-color:#ddd6fe !important;box-shadow:0 4px 14px rgba(139,92,246,0.15) !important;}
-    .quick-action-item-new.qa-primary:active{box-shadow:0 8px 22px rgba(139,92,246,0.25) !important;}
-    .quick-action-item-new.qa-primary .quick-action-icon-new{width:52px !important;height:52px !important;min-width:52px !important;min-height:52px !important;box-shadow:0 6px 16px rgba(139,92,246,0.45) !important;}
-    .quick-action-item-new.qa-primary .quick-action-icon-new svg{width:24px !important;height:24px !important;max-width:24px !important;max-height:24px !important;}
+    .quick-action-label-new{font-size:10px !important;font-weight:600 !important;color:#334155 !important;text-align:center !important;line-height:1.2 !important;letter-spacing:0.1px !important;padding:0 2px !important;word-break:break-word !important;}
+    .quick-action-item-new.qa-primary{background:linear-gradient(135deg,#faf5ff 0%,#eef2ff 100%) !important;border-color:#ddd6fe !important;}
+    .quick-action-item-new.qa-primary .quick-action-icon-new{width:40px !important;height:40px !important;min-width:40px !important;min-height:40px !important;box-shadow:0 4px 10px rgba(139,92,246,0.42) !important;}
+    .quick-action-item-new.qa-primary .quick-action-icon-new svg{width:19px !important;height:19px !important;max-width:19px !important;max-height:19px !important;}
     .quick-action-item-new.qa-primary .quick-action-label-new{color:#5b21b6 !important;font-weight:700 !important;}
+
+    /* ===== MODIF : Popup IBAN rectangulaire + design pro ===== */
+    .modal.iban-modal-new{border-radius:4px !important;max-width:360px !important;width:100% !important;box-shadow:0 24px 60px rgba(15,23,42,0.45) !important;overflow:hidden !important;}
+    .iban-new-header{background:linear-gradient(135deg,#1a73e8 0%,#1557b0 100%) !important;padding:14px 16px !important;display:flex !important;align-items:center !important;gap:10px !important;}
+    .iban-new-icon{width:36px !important;height:36px !important;border-radius:4px !important;background:rgba(255,255,255,0.22) !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;}
+    .iban-new-icon svg{width:18px !important;height:18px !important;fill:#ffffff !important;display:block !important;}
+    .iban-new-title{font-size:14px !important;font-weight:700 !important;color:#ffffff !important;letter-spacing:0.2px !important;}
+    .iban-new-close{width:28px !important;height:28px !important;border-radius:4px !important;background:rgba(255,255,255,0.18) !important;border:none !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;margin-left:auto !important;padding:0 !important;}
+    .iban-new-close svg{width:12px !important;height:12px !important;fill:#ffffff !important;}
+    .iban-new-body{padding:14px !important;background:#f8fafc !important;display:flex !important;flex-direction:column !important;gap:10px !important;}
+    .iban-new-iban-box{background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:4px !important;padding:12px !important;display:flex !important;flex-direction:column !important;gap:8px !important;}
+    .iban-new-iban-head{display:flex !important;align-items:center !important;justify-content:space-between !important;gap:8px !important;flex-wrap:wrap !important;}
+    .iban-new-iban-label{font-size:10px !important;font-weight:700 !important;color:#64748b !important;letter-spacing:0.4px !important;text-transform:uppercase !important;}
+    .iban-new-copy{background:#1a73e8 !important;border:none !important;border-radius:4px !important;padding:5px 10px !important;cursor:pointer !important;display:flex !important;align-items:center !important;gap:4px !important;font-family:inherit !important;}
+    .iban-new-copy svg{width:11px !important;height:11px !important;fill:#ffffff !important;display:block !important;}
+    .iban-new-copy span{font-size:10px !important;font-weight:600 !important;color:#ffffff !important;letter-spacing:0.2px !important;}
+    .iban-new-iban-value{font-family:'Courier New',monospace !important;font-size:13px !important;font-weight:700 !important;color:#0f172a !important;letter-spacing:0.5px !important;word-break:break-all !important;line-height:1.5 !important;background:#f1f5f9 !important;border-radius:4px !important;padding:8px 10px !important;}
+    .iban-new-row{display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important;}
+    .iban-new-info{background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:4px !important;padding:10px !important;display:flex !important;flex-direction:column !important;gap:4px !important;min-width:0 !important;}
+    .iban-new-info-label{font-size:9px !important;font-weight:700 !important;color:#94a3b8 !important;letter-spacing:0.4px !important;text-transform:uppercase !important;}
+    .iban-new-info-value{font-size:12px !important;font-weight:700 !important;color:#0f172a !important;word-break:break-word !important;line-height:1.3 !important;}
+    .iban-new-warning{display:flex !important;align-items:flex-start !important;gap:8px !important;background:#fef3c7 !important;border:1px solid #fde68a !important;border-radius:4px !important;padding:10px 12px !important;font-size:10.5px !important;color:#78350f !important;line-height:1.5 !important;font-weight:500 !important;}
+    .iban-new-warning svg{width:14px !important;height:14px !important;fill:#d97706 !important;flex-shrink:0 !important;margin-top:1px !important;display:block !important;}
   `;
   document.head.appendChild(style);
 }
-
 function renderQuickActions() {
   return '<div class="quick-actions-row-new">' +
     '<div class="quick-action-item-new qa-iban" onclick="window.showIban()">' +
