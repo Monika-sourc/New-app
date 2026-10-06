@@ -1011,1001 +1011,6 @@ window.toggleBalanceVisibility = function () {
     eyeBtn.setAttribute('aria-label', balanceVisible ? 'Masquer le solde' : 'Afficher le solde');
   }
 };
-/* ============================================================ */
-/* ===== ensureGlobalStyles — Bordures légères + boules ======= */
-/* ===== MODIF : Épaisseur des textes réduite pour CLIENT ===== */
-/* ============================================================ */
-function ensureGlobalStyles() {
-  if (document.getElementById('tw-bubbles-styles')) return;
-  const style = document.createElement('style');
-  style.id = 'tw-bubbles-styles';
-  style.textContent = `
-    /* ===== 1. BULLES — visibilité augmentée légèrement ===== */
-    .balance-card-new{position:relative;overflow:hidden;}
-    .balance-bubbles-new{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;border-radius:9px;}
-    .bbn{position:absolute;border-radius:50%;opacity:0.85;filter:blur(5px);animation-name:bbnFloat;animation-timing-function:ease-in-out;animation-iteration-count:infinite;pointer-events:none;box-shadow:0 0 32px 6px rgba(255,255,255,0.5),inset 0 0 18px rgba(255,255,255,0.55);}
-    .bbn.b1{width:140px;height:140px;left:-45px;bottom:-35px;background:radial-gradient(circle at 30% 30%,rgba(255,150,215,0.98) 0%,rgba(236,72,153,0.88) 45%,transparent 100%);animation-duration:8s;}
-    .bbn.b2{width:110px;height:110px;left:55%;bottom:-35px;background:radial-gradient(circle at 30% 30%,rgba(120,235,255,0.98) 0%,rgba(6,182,212,0.88) 45%,transparent 100%);animation-duration:10s;animation-delay:-2s;}
-    .bbn.b3{width:150px;height:150px;right:-55px;top:-45px;background:radial-gradient(circle at 30% 30%,rgba(255,235,120,0.98) 0%,rgba(245,158,11,0.88) 45%,transparent 100%);animation-duration:9s;animation-delay:-4s;}
-    .bbn.b4{width:100px;height:100px;left:35%;top:20%;background:radial-gradient(circle at 30% 30%,rgba(200,175,255,0.98) 0%,rgba(139,92,246,0.88) 45%,transparent 100%);animation-duration:11s;animation-delay:-6s;}
-    .bbn.b5{width:125px;height:125px;right:5%;bottom:5%;background:radial-gradient(circle at 30% 30%,rgba(150,255,180,0.98) 0%,rgba(34,197,94,0.88) 45%,transparent 100%);animation-duration:12s;animation-delay:-3s;}
-    @keyframes bbnFloat{0%,100%{transform:translate(0,0) rotate(0deg) scale(0.92);opacity:0.78;}50%{transform:translate(24px,-30px) rotate(14deg) scale(1.16);opacity:1;}}
-
-    .balance-eye-btn{position:absolute !important;top:8px !important;right:8px !important;width:28px !important;height:28px !important;min-width:28px !important;min-height:28px !important;max-width:28px !important;max-height:28px !important;border-radius:50% !important;background:linear-gradient(135deg,#ef4444 0%,#dc2626 50%,#b91c1c 100%) !important;border:2px solid #fca5a5 !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:center !important;padding:0 !important;z-index:5 !important;overflow:hidden !important;box-shadow:0 3px 10px rgba(220,38,38,0.55) !important;font-family:inherit !important;}
-    .balance-eye-btn svg{width:14px !important;height:14px !important;min-width:14px !important;min-height:14px !important;max-width:14px !important;max-height:14px !important;display:block !important;flex-shrink:0 !important;fill:#ffffff !important;}
-    .balance-eye-btn svg path{fill:#ffffff !important;}
-
-    /* ===== 2. PAGE ADMIN — Bordures légères (NON MODIFIÉ — poids conservés) ===== */
-    #admin-root{background:#f1f5f9 !important;}
-    #admin-root .admin-wrapper{background:#f1f5f9 !important;}
-    #admin-root .admin-body{background:#f1f5f9 !important;padding:10px 10px 30px 10px !important;}
-
-    #admin-root .admin-topbar{background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 100%) !important;box-shadow:0 2px 10px rgba(30,58,138,0.25) !important;padding:9px 12px !important;}
-    #admin-root .admin-topbar .brand{font-size:12px !important;font-weight:700 !important;letter-spacing:0.3px !important;gap:7px !important;}
-    #admin-root .admin-topbar .brand svg{width:15px !important;height:15px !important;max-width:15px !important;max-height:15px !important;}
-    #admin-root .admin-topbar .icon-btn{width:28px !important;height:28px !important;border-radius:7px !important;background:rgba(255,255,255,0.15) !important;border:1px solid #0f172a !important;transition:background 0.2s ease,transform 0.15s ease !important;}
-    #admin-root .admin-topbar .icon-btn:hover{background:rgba(255,255,255,0.28) !important;}
-    #admin-root .admin-topbar .icon-btn:active{transform:scale(0.94);}
-    #admin-root .admin-topbar .icon-btn svg{width:12px !important;height:12px !important;max-width:12px !important;max-height:12px !important;}
-
-    #admin-root .admin-identity-card{background:linear-gradient(135deg,#dbeafe 0%,#eff6ff 100%) !important;border:1px solid #cbd5e1 !important;border-left:3px solid #3b82f6 !important;border-radius:8px !important;padding:10px 12px !important;font-size:11px !important;color:#1e3a8a !important;font-weight:600 !important;margin-bottom:10px !important;box-shadow:0 1px 4px rgba(30,58,138,0.06) !important;}
-    #admin-root .admin-identity-card strong{color:#1d4ed8 !important;font-weight:700 !important;}
-
-    #admin-root .admin-section,
-    #admin-root .quick-actions-card,
-    #admin-root .pending-transfer-card,
-    #admin-root .option-panel,
-    #admin-root .stat-card,
-    #admin-root .client-list-card,
-    #admin-root .admin-transfers-card,
-    #admin-root .admin-pending-transfers-card,
-    #admin-root .connection-status-card{background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:9px !important;box-shadow:0 1px 4px rgba(15,23,42,0.04) !important;margin-bottom:10px !important;overflow:hidden !important;}
-    #admin-root .pending-transfer-card{border-color:#fcd34d !important;}
-
-    #admin-root .admin-section{padding:0 !important;}
-    #admin-root .admin-section-title{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%) !important;color:#ffffff !important;font-size:11px !important;font-weight:700 !important;letter-spacing:0.2px !important;padding:9px 12px !important;margin:0 !important;display:flex !important;align-items:center !important;gap:7px !important;border:none !important;border-bottom:1px solid #e2e8f0 !important;}
-    #admin-root .admin-section-title svg{fill:#ffffff !important;width:13px !important;height:13px !important;max-width:13px !important;max-height:13px !important;flex-shrink:0 !important;}
-    #admin-root .admin-grid{padding:10px 12px 12px 12px !important;gap:9px !important;}
-
-    #admin-root .quick-actions-card{padding:0 !important;}
-    #admin-root .quick-actions-card .qac-title{background:linear-gradient(135deg,#8b5cf6 0%,#6d28d9 100%) !important;color:#ffffff !important;font-size:11px !important;font-weight:700 !important;letter-spacing:0.2px !important;padding:9px 12px !important;margin:0 !important;display:flex !important;align-items:center !important;gap:7px !important;border:none !important;border-bottom:1px solid #e2e8f0 !important;border-radius:0 !important;width:100% !important;}
-    #admin-root .quick-actions-card .qac-title svg{fill:#ffffff !important;width:13px !important;height:13px !important;max-width:13px !important;max-height:13px !important;flex-shrink:0 !important;margin-right:0 !important;}
-    #admin-root .quick-actions-card .qac-subtitle{font-size:10.5px !important;color:#475569 !important;line-height:1.5 !important;margin:0 !important;padding:10px 12px 0 12px !important;font-weight:500 !important;}
-    #admin-root .quick-actions-card .admin-group{padding:0 12px !important;margin-top:10px !important;margin-bottom:0 !important;}
-    #admin-root .quick-actions-card .admin-group:first-of-type{margin-top:10px !important;}
-    #admin-root .quick-actions-card .btn-admin-submit{margin:12px !important;width:calc(100% - 24px) !important;}
-    #admin-root .quick-actions-card .option-panel{margin:0 12px 10px 12px !important;}
-
-    #admin-root .pending-transfer-card{padding:0 !important;background:#fffbeb !important;}
-    #admin-root .pending-transfer-card .pt-title{background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%) !important;color:#ffffff !important;font-size:11px !important;font-weight:700 !important;letter-spacing:0.2px !important;padding:9px 12px !important;margin:0 !important;display:flex !important;align-items:center !important;gap:7px !important;border:none !important;border-bottom:1px solid #e2e8f0 !important;}
-    #admin-root .pending-transfer-card .pt-title svg{fill:#ffffff !important;width:13px !important;height:13px !important;max-width:13px !important;max-height:13px !important;flex-shrink:0 !important;}
-    #admin-root .pending-transfer-card .pt-subtitle{font-size:10.5px !important;color:#78350f !important;line-height:1.5 !important;margin:0 !important;padding:10px 12px 0 12px !important;font-weight:500 !important;}
-    #admin-root .pending-transfer-card .admin-group{padding:0 12px !important;margin-top:10px !important;margin-bottom:10px !important;}
-    #admin-root .pending-transfer-card .btn-admin-submit{margin:0 12px 12px 12px !important;width:calc(100% - 24px) !important;}
-    #admin-root #pt-status-container{padding:0 12px !important;margin-bottom:10px !important;}
-
-    #admin-root .option-panel{background:#f8fafc !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;padding:0 !important;margin-top:10px !important;margin-bottom:10px !important;overflow:hidden !important;}
-    #admin-root .option-panel-title{background:linear-gradient(135deg,#0ea5e9 0%,#0284c7 100%) !important;color:#ffffff !important;font-size:10.5px !important;font-weight:700 !important;letter-spacing:0.2px !important;padding:8px 11px !important;margin:0 !important;display:flex !important;align-items:center !important;gap:7px !important;border:none !important;border-bottom:1px solid #e2e8f0 !important;}
-    #admin-root .option-panel-title svg{fill:#ffffff !important;width:12px !important;height:12px !important;max-width:12px !important;max-height:12px !important;flex-shrink:0 !important;}
-    #admin-root .option-panel-title span{color:#ffffff !important;flex:1 !important;}
-    #admin-root .option-panel-desc{font-size:10.5px !important;color:#475569 !important;line-height:1.5 !important;background:#ffffff !important;border-radius:7px !important;padding:9px 11px !important;border:1px solid #e2e8f0 !important;margin:9px 11px !important;font-weight:500 !important;}
-    #admin-root .option-panel .admin-grid{padding:9px 11px !important;gap:8px !important;}
-    #admin-root .option-panel-toggle{margin:9px 11px 11px 11px !important;padding-top:9px !important;border-top:1px dashed #cbd5e1 !important;}
-    #admin-root .option-panel-toggle-label{font-size:9.5px !important;color:#64748b !important;font-weight:600 !important;letter-spacing:0.2px !important;margin-bottom:8px !important;display:block !important;}
-
-    #admin-root .admin-group label,
-    #admin-root .quick-actions-card label,
-    #admin-root .option-panel label{font-size:9.5px !important;font-weight:600 !important;color:#475569 !important;letter-spacing:0.2px !important;margin-bottom:5px !important;display:block !important;}
-    #admin-root .admin-group label .req,
-    #admin-root label .req{color:#dc2626 !important;font-weight:700 !important;}
-
-    #admin-root input[type=text],
-    #admin-root input[type=number],
-    #admin-root input[type=email],
-    #admin-root input[type=tel],
-    #admin-root input[type=date],
-    #admin-root input[type=time],
-    #admin-root input[type=password],
-    #admin-root select,
-    #admin-root textarea{width:100% !important;padding:8px 10px !important;border:1px solid #cbd5e1 !important;border-radius:7px !important;font-size:11.5px !important;color:#0f172a !important;font-weight:500 !important;background:#ffffff !important;outline:none !important;font-family:inherit !important;transition:border-color 0.2s ease,box-shadow 0.2s ease,background 0.2s ease !important;box-shadow:0 1px 2px rgba(15,23,42,0.03) !important;}
-    #admin-root input:hover:not(:focus),
-    #admin-root select:hover:not(:focus),
-    #admin-root textarea:hover:not(:focus){border-color:#94a3b8 !important;}
-    #admin-root input:focus,
-    #admin-root select:focus,
-    #admin-root textarea:focus{border-color:#3b82f6 !important;background:#ffffff !important;box-shadow:0 0 0 3px rgba(59,130,246,0.15) !important;}
-    #admin-root input::placeholder,
-    #admin-root textarea::placeholder{color:#94a3b8 !important;font-weight:400 !important;font-style:italic !important;opacity:1 !important;}
-    #admin-root select{background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233b82f6'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important;background-repeat:no-repeat !important;background-position:right 8px center !important;background-size:20px !important;padding-right:32px !important;appearance:none !important;-webkit-appearance:none !important;-moz-appearance:none !important;cursor:pointer !important;border-color:#94a3b8 !important;background-color:#ffffff !important;}
-    #admin-root select:hover{border-color:#3b82f6 !important;background-color:#f8fafc !important;}
-    #admin-root select:focus{border-color:#3b82f6 !important;}
-
-    #admin-root .btn-admin-submit{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%) !important;color:#ffffff !important;border:1px solid #0f172a !important;border-radius:8px !important;padding:9px 12px !important;font-size:11.5px !important;font-weight:700 !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:center !important;gap:6px !important;box-shadow:0 2px 6px rgba(59,130,246,0.22) !important;transition:transform 0.12s ease,box-shadow 0.2s ease !important;letter-spacing:0.2px !important;}
-    #admin-root .btn-admin-submit:hover{box-shadow:0 4px 10px rgba(59,130,246,0.32) !important;}
-    #admin-root .btn-admin-submit:active{transform:scale(0.98);}
-    #admin-root .btn-admin-submit svg{fill:#ffffff !important;width:12px !important;height:12px !important;max-width:12px !important;max-height:12px !important;flex-shrink:0 !important;}
-
-    #admin-root .stats-grid{gap:8px !important;margin-bottom:10px !important;}
-    #admin-root .stat-card{padding:10px !important;}
-    #admin-root .stat-card .ico{width:26px !important;height:26px !important;border-radius:7px !important;margin-bottom:6px !important;}
-    #admin-root .stat-card .ico svg{width:13px !important;height:13px !important;max-width:13px !important;max-height:13px !important;}
-    #admin-root .stat-card .val{font-size:15px !important;font-weight:700 !important;color:#0f172a !important;margin-bottom:2px !important;line-height:1.1 !important;}
-    #admin-root .stat-card .lbl{font-size:9.5px !important;color:#64748b !important;font-weight:600 !important;letter-spacing:0.2px !important;}
-
-    #admin-root .client-list-title{font-size:11px !important;font-weight:700 !important;color:#1e293b !important;letter-spacing:0.3px !important;margin:14px 3px 8px 3px !important;padding:0 !important;display:flex !important;align-items:center !important;justify-content:space-between !important;}
-    #admin-root .client-list-title .count{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%) !important;color:#ffffff !important;padding:2px 8px !important;border-radius:10px !important;font-size:9.5px !important;font-weight:700 !important;border:1px solid #0f172a !important;}
-    #admin-root .client-list-card{padding:0 !important;}
-    #admin-root .client-line{display:flex !important;align-items:center !important;gap:8px !important;padding:10px 12px !important;border-bottom:1px solid #f1f5f9 !important;flex-wrap:wrap !important;transition:background 0.15s ease !important;}
-    #admin-root .client-line:last-child{border-bottom:none !important;}
-    #admin-root .client-line:hover{background:#f8fafc !important;}
-    #admin-root .client-line-name{flex:1 !important;min-width:100px !important;font-size:11.5px !important;font-weight:600 !important;color:#2563eb !important;text-decoration:none !important;cursor:pointer !important;line-height:1.3 !important;padding:2px 0 !important;}
-    #admin-root .client-line-name:hover{text-decoration:underline !important;}
-    #admin-root .client-line-balance{font-size:11.5px !important;font-weight:700 !important;color:#0f172a !important;flex-shrink:0 !important;padding:0 5px !important;}
-    #admin-root .client-line-btn{flex-shrink:0 !important;border:1px solid #0f172a !important;border-radius:6px !important;padding:5px 9px !important;font-size:10px !important;font-weight:600 !important;cursor:pointer !important;letter-spacing:0.2px !important;transition:transform 0.12s ease,opacity 0.2s ease !important;}
-    #admin-root .client-line-btn:active{transform:scale(0.96);}
-    #admin-root .client-line-btn.block{background:#fee2e2 !important;color:#b91c1c !important;}
-    #admin-root .client-line-btn.unblock{background:#dcfce7 !important;color:#15803d !important;}
-    #admin-root .client-line-btn.del{background:#f1f5f9 !important;color:#475569 !important;}
-    #admin-root .client-line-btn:hover{opacity:0.85;}
-
-    #admin-root .empty-state{text-align:center !important;padding:28px 16px !important;color:#64748b !important;background:#ffffff !important;border:1px dashed #cbd5e1 !important;border-radius:9px !important;}
-    #admin-root .empty-state svg{fill:#94a3b8 !important;width:34px !important;height:34px !important;max-width:34px !important;max-height:34px !important;margin-bottom:8px !important;display:block !important;margin-left:auto !important;margin-right:auto !important;}
-    #admin-root .empty-state p{font-size:11px !important;font-weight:500 !important;color:#64748b !important;}
-
-    #admin-root #qa-notif-list-container > div{background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;padding:10px 12px !important;margin-bottom:7px !important;box-shadow:0 1px 3px rgba(15,23,42,0.04) !important;transition:box-shadow 0.15s ease !important;}
-    #admin-root #qa-notif-list-container > div:hover{box-shadow:0 2px 6px rgba(15,23,42,0.08) !important;}
-    #admin-root .admin-pending-empty{font-size:10.5px !important;color:#64748b !important;text-align:center !important;padding:18px 11px !important;font-weight:500 !important;background:#f8fafc !important;border:1px dashed #cbd5e1 !important;border-radius:8px !important;}
-
-    #admin-root textarea{min-height:66px !important;resize:vertical !important;line-height:1.5 !important;}
-
-    #admin-root .qa-switch{padding:9px 11px !important;gap:9px !important;border:1px solid #cbd5e1 !important;border-radius:8px !important;background:#ffffff !important;transition:border-color 0.2s ease !important;}
-    #admin-root .qa-switch:hover{border-color:#3b82f6 !important;}
-    #admin-root .qa-switch-track{width:36px !important;height:20px !important;}
-    #admin-root .qa-switch-thumb{width:16px !important;height:16px !important;}
-    #admin-root .qa-switch input[type=checkbox]:checked ~ .qa-switch-track .qa-switch-thumb{transform:translateX(16px) !important;}
-    #admin-root .qa-switch-text{font-size:10.5px !important;color:#1e293b !important;font-weight:500 !important;line-height:1.4 !important;}
-
-    #admin-root .color-presets{gap:6px !important;margin-top:6px !important;flex-wrap:wrap !important;}
-    #admin-root .color-preset{width:26px !important;height:26px !important;border-radius:7px !important;border:1px solid #cbd5e1 !important;cursor:pointer !important;transition:transform 0.15s ease,border-color 0.15s ease !important;box-shadow:0 1px 2px rgba(15,23,42,0.1) !important;}
-    #admin-root .color-preset:hover{transform:scale(1.08);}
-    #admin-root .color-preset.selected{border-color:#0f172a !important;box-shadow:0 0 0 2px #ffffff inset,0 2px 5px rgba(15,23,42,0.2) !important;}
-    #admin-root .color-picker-row{gap:8px !important;margin-top:8px !important;}
-    #admin-root .color-picker-row input[type=color]{width:38px !important;height:32px !important;border:1px solid #cbd5e1 !important;border-radius:7px !important;cursor:pointer !important;background:#ffffff !important;padding:2px !important;}
-    #admin-root .color-picker-row input[type=text]{flex:1 !important;padding:7px 9px !important;font-size:11px !important;font-family:'Courier New',monospace !important;letter-spacing:0.8px !important;font-weight:600 !important;background:#f8fafc !important;border:1px solid #cbd5e1 !important;border-radius:7px !important;color:#0f172a !important;}
-
-    #admin-root .pending-transfer-status-badge{display:inline-block !important;padding:4px 11px !important;border-radius:12px !important;font-size:10px !important;font-weight:700 !important;letter-spacing:0.2px !important;border:1px solid #e2e8f0 !important;}
-    #admin-root .pending-transfer-status-badge.enabled{background:#dcfce7 !important;color:#15803d !important;}
-    #admin-root .pending-transfer-status-badge.disabled{background:#fee2e2 !important;color:#b91c1c !important;}
-    #admin-root .pt-status-line{display:flex !important;align-items:center !important;gap:8px !important;font-size:10.5px !important;}
-    #admin-root .pt-status-label{font-weight:600 !important;color:#475569 !important;}
-
-    #admin-root .qa-card-holder-note{display:flex !important;align-items:flex-start !important;gap:7px !important;background:#eff6ff !important;border:1px solid #bfdbfe !important;border-radius:7px !important;padding:9px 11px !important;margin:9px 11px !important;font-size:10.5px !important;color:#1e40af !important;line-height:1.5 !important;font-weight:500 !important;}
-    #admin-root .qa-card-holder-note svg{fill:#2563eb !important;width:12px !important;height:12px !important;max-width:12px !important;max-height:12px !important;flex-shrink:0 !important;margin-top:2px !important;}
-
-    #client-detail-modal > div{border:1px solid #e2e8f0 !important;border-radius:11px !important;overflow:hidden !important;box-shadow:0 20px 45px rgba(15,23,42,0.4) !important;}
-    #client-detail-modal .detail-header{background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 100%) !important;padding:14px 16px !important;border-bottom:1px solid #0f172a !important;}
-    #client-detail-modal .detail-avatar{width:42px !important;height:42px !important;background:rgba(255,255,255,0.22) !important;border:2px solid rgba(255,255,255,0.4) !important;font-size:14px !important;font-weight:700 !important;}
-    #client-detail-modal .detail-name{font-size:14px !important;font-weight:700 !important;color:#ffffff !important;}
-    #client-detail-modal .detail-email{font-size:10.5px !important;color:rgba(255,255,255,0.85) !important;margin-top:2px !important;}
-    #client-detail-modal .detail-close{width:28px !important;height:28px !important;background:rgba(255,255,255,0.15) !important;border:1px solid rgba(255,255,255,0.3) !important;}
-    #client-detail-modal .detail-close:hover{background:rgba(255,255,255,0.28) !important;}
-    #client-detail-modal .detail-close svg{fill:#ffffff !important;width:12px !important;height:12px !important;}
-    #client-detail-modal .detail-body{padding:12px 12px 20px 12px !important;background:#f1f5f9 !important;}
-
-    #client-detail-modal .detail-section-card{background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:9px !important;margin-bottom:12px !important;overflow:hidden !important;box-shadow:0 1px 3px rgba(15,23,42,0.04) !important;}
-    #client-detail-modal .detail-section-title{background:#f8fafc !important;color:#1e293b !important;font-size:10.5px !important;font-weight:700 !important;letter-spacing:0.4px !important;margin:0 !important;padding:9px 12px !important;border-bottom:1px solid #e2e8f0 !important;text-transform:uppercase !important;display:flex !important;align-items:center !important;gap:6px !important;}
-    #client-detail-modal .detail-section-title::before{content:'' !important;display:inline-block !important;width:3px !important;height:13px !important;background:linear-gradient(180deg,#3b82f6,#1e40af) !important;border-radius:2px !important;flex-shrink:0 !important;}
-    #client-detail-modal .detail-section-card > .detail-row:last-child{border-bottom:none !important;}
-
-    #client-detail-modal .detail-row{display:flex !important;align-items:flex-start !important;gap:10px !important;padding:10px 12px !important;background:#ffffff !important;border:none !important;border-bottom:1px dashed #e2e8f0 !important;border-radius:0 !important;margin:0 !important;flex-wrap:wrap !important;}
-    #client-detail-modal .detail-row-label{min-width:110px !important;flex-shrink:0 !important;font-size:10px !important;font-weight:600 !important;color:#64748b !important;letter-spacing:0.2px !important;padding-top:2px !important;line-height:1.4 !important;display:flex !important;align-items:center !important;gap:5px !important;}
-    #client-detail-modal .detail-row-label::before{content:'▸' !important;color:#3b82f6 !important;font-size:9px !important;font-weight:700 !important;flex-shrink:0 !important;}
-    #client-detail-modal .detail-row-value{flex:1 !important;min-width:80px !important;font-size:11.5px !important;font-weight:600 !important;color:#0f172a !important;line-height:1.4 !important;word-break:break-word !important;text-align:right !important;}
-    #client-detail-modal .detail-row-value.mono{font-family:'Courier New',monospace !important;letter-spacing:0.5px !important;color:#1e293b !important;font-size:11px !important;}
-
-    #client-detail-modal .detail-status-grid{display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important;padding:12px !important;background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:9px !important;margin-bottom:12px !important;box-shadow:0 1px 3px rgba(15,23,42,0.04) !important;}
-    #client-detail-modal .detail-status-box{border:none !important;border-radius:7px !important;padding:10px 12px !important;}
-    #client-detail-modal .detail-status-box.active{background:#dcfce7 !important;}
-    #client-detail-modal .detail-status-box.blocked{background:#fee2e2 !important;}
-    #client-detail-modal .detail-status-box.balance{background:#dbeafe !important;}
-    #client-detail-modal .detail-status-label{font-size:9px !important;font-weight:700 !important;letter-spacing:0.4px !important;margin-bottom:4px !important;text-transform:uppercase !important;}
-    #client-detail-modal .detail-status-box.active .detail-status-label{color:#166534 !important;}
-    #client-detail-modal .detail-status-box.blocked .detail-status-label{color:#991b1b !important;}
-    #client-detail-modal .detail-status-box.balance .detail-status-label{color:#1e40af !important;}
-    #client-detail-modal .detail-status-value{font-size:13px !important;font-weight:700 !important;line-height:1.3 !important;}
-    #client-detail-modal .detail-status-box.active .detail-status-value{color:#16a34a !important;}
-    #client-detail-modal .detail-status-box.blocked .detail-status-value{color:#dc2626 !important;}
-    #client-detail-modal .detail-status-box.balance .detail-status-value{color:#1d4ed8 !important;}
-
-    #client-detail-modal .detail-link-box{background:#f8fafc !important;border:1px dashed #cbd5e1 !important;border-radius:7px !important;padding:9px 11px !important;margin:10px 12px !important;font-family:'Courier New',monospace !important;font-size:10px !important;color:#1e40af !important;word-break:break-all !important;line-height:1.5 !important;font-weight:600 !important;}
-    #client-detail-modal .detail-footer{display:grid !important;grid-template-columns:1fr !important;gap:8px !important;margin-top:4px !important;padding:12px !important;background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:9px !important;}
-    #client-detail-modal .detail-footer-btn{display:flex !important;align-items:center !important;justify-content:center !important;gap:8px !important;border:1px solid #0f172a !important;border-radius:8px !important;padding:10px !important;font-size:11.5px !important;font-weight:600 !important;cursor:pointer !important;transition:transform 0.12s ease,opacity 0.2s ease !important;letter-spacing:0.2px !important;}
-    #client-detail-modal .detail-footer-btn:hover{opacity:0.9;}
-    #client-detail-modal .detail-footer-btn:active{transform:scale(0.98);}
-    #client-detail-modal .detail-footer-btn.copy{background:#dbeafe !important;color:#1e40af !important;}
-    #client-detail-modal .detail-footer-btn.copy svg{fill:#1e40af !important;}
-    #client-detail-modal .detail-footer-btn.send-credentials{background:#fef3c7 !important;color:#92400e !important;}
-    #client-detail-modal .detail-footer-btn.send-credentials svg{fill:#92400e !important;}
-    #client-detail-modal .detail-footer-btn.send-activation{background:#dcfce7 !important;color:#166534 !important;}
-    #client-detail-modal .detail-footer-btn.send-activation svg{fill:#166534 !important;}
-    #client-detail-modal .detail-footer-btn svg{width:13px !important;height:13px !important;max-width:13px !important;max-height:13px !important;flex-shrink:0 !important;}
-
-    #client-detail-modal .connected-devices-card{display:flex !important;align-items:center !important;gap:12px !important;background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%) !important;border:1px solid #a7f3d0 !important;border-radius:10px !important;padding:11px 13px !important;margin-bottom:12px !important;box-shadow:0 1px 3px rgba(15,23,42,0.04) !important;}
-    #client-detail-modal .connected-devices-icon{width:42px !important;height:42px !important;border-radius:50% !important;background:linear-gradient(135deg,#10b981 0%,#059669 100%) !important;box-shadow:0 3px 8px rgba(16,185,129,0.3) !important;}
-    #client-detail-modal .connected-devices-icon svg{fill:#ffffff !important;width:20px !important;height:20px !important;max-width:20px !important;max-height:20px !important;}
-    #client-detail-modal .connected-devices-label{font-size:9.5px !important;font-weight:700 !important;color:#065f46 !important;letter-spacing:0.5px !important;margin-bottom:3px !important;text-transform:uppercase !important;}
-    #client-detail-modal .connected-devices-count{font-size:20px !important;font-weight:700 !important;color:#047857 !important;line-height:1 !important;}
-    #client-detail-modal .connected-devices-count small{font-size:11px !important;font-weight:600 !important;color:#047857 !important;margin-left:4px !important;}
-    #client-detail-modal .connected-devices-sub{font-size:10px !important;color:#065f46 !important;margin-top:4px !important;line-height:1.4 !important;}
-    #client-detail-modal .connected-device-item{display:flex !important;align-items:center !important;gap:10px !important;padding:9px 11px !important;background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:7px !important;margin-bottom:6px !important;}
-    #client-detail-modal .connected-device-num{width:24px !important;height:24px !important;border-radius:50% !important;background:linear-gradient(135deg,#10b981 0%,#059669 100%) !important;color:#ffffff !important;font-size:11px !important;font-weight:700 !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;}
-    #client-detail-modal .connected-device-ua{font-size:11px !important;font-weight:600 !important;color:#0f172a !important;line-height:1.35 !important;margin-bottom:2px !important;}
-    #client-detail-modal .connected-device-meta{font-size:10px !important;color:#64748b !important;font-weight:500 !important;line-height:1.3 !important;}
-    #client-detail-modal .connected-devices-empty{padding:14px 11px !important;background:#f8fafc !important;border:1px dashed #cbd5e1 !important;border-radius:7px !important;text-align:center !important;font-size:10.5px !important;color:#64748b !important;font-weight:500 !important;}
-
-    #client-detail-modal .connection-status-card{border:1px solid #e2e8f0 !important;border-radius:9px !important;background:#ffffff !important;overflow:hidden !important;margin-bottom:12px !important;}
-    #client-detail-modal .connection-status-header{padding:10px 12px !important;font-size:11.5px !important;font-weight:700 !important;display:flex !important;align-items:center !important;gap:8px !important;border-bottom:1px solid #e2e8f0 !important;}
-
-    #client-detail-modal .admin-pending-item{background:#fffbeb !important;border:1px solid #fde68a !important;border-radius:8px !important;padding:10px 12px !important;margin:8px 12px !important;}
-    #client-detail-modal .admin-pending-name{font-size:11.5px !important;font-weight:700 !important;color:#78350f !important;margin-bottom:3px !important;}
-    #client-detail-modal .admin-pending-meta{font-size:10px !important;color:#a16207 !important;font-weight:500 !important;margin-bottom:5px !important;}
-    #client-detail-modal .admin-pending-amount{font-size:13px !important;font-weight:700 !important;color:#b45309 !important;margin-bottom:8px !important;}
-    #client-detail-modal .admin-pending-actions{display:grid !important;grid-template-columns:1fr 1fr !important;gap:7px !important;}
-    #client-detail-modal .admin-pending-btn{border:1px solid #0f172a !important;border-radius:7px !important;padding:8px !important;font-size:10.5px !important;font-weight:700 !important;cursor:pointer !important;display:flex !important;align-items:center !important;justify-content:center !important;gap:5px !important;letter-spacing:0.2px !important;}
-    #client-detail-modal .admin-pending-btn.validate{background:#16a34a !important;color:#ffffff !important;}
-    #client-detail-modal .admin-pending-btn.cancel{background:#dc2626 !important;color:#ffffff !important;}
-    #client-detail-modal .admin-pending-btn svg{fill:#ffffff !important;width:11px !important;height:11px !important;}
-    #client-detail-modal .admin-pending-transfers-title{background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%) !important;color:#ffffff !important;font-size:11px !important;font-weight:700 !important;padding:9px 12px !important;display:flex !important;align-items:center !important;gap:7px !important;border-bottom:1px solid #e2e8f0 !important;}
-    #client-detail-modal .admin-pending-transfers-title svg{fill:#ffffff !important;width:13px !important;height:13px !important;}
-    #client-detail-modal .admin-pending-transfers-card{border:1px solid #fde68a !important;border-radius:9px !important;background:#ffffff !important;overflow:hidden !important;margin-bottom:12px !important;}
-
-    #client-detail-modal .admin-transfers-card{border:1px solid #e2e8f0 !important;border-radius:9px !important;background:#ffffff !important;overflow:hidden !important;margin-bottom:12px !important;}
-    #client-detail-modal .admin-transfers-title{background:linear-gradient(135deg,#8b5cf6 0%,#6d28d9 100%) !important;color:#ffffff !important;font-size:11px !important;font-weight:700 !important;padding:9px 12px !important;display:flex !important;align-items:center !important;gap:7px !important;border-bottom:1px solid #e2e8f0 !important;}
-    #client-detail-modal .admin-transfers-title svg{fill:#ffffff !important;width:13px !important;height:13px !important;}
-    #client-detail-modal .admin-transfers-empty{font-size:10.5px !important;color:#64748b !important;text-align:center !important;padding:16px 11px !important;font-weight:500 !important;}
-    #client-detail-modal .admin-transfer-item{display:flex !important;align-items:center !important;gap:8px !important;padding:9px 12px !important;border-bottom:1px solid #f1f5f9 !important;flex-wrap:wrap !important;}
-    #client-detail-modal .admin-transfer-item:last-child{border-bottom:none !important;}
-    #client-detail-modal .admin-transfer-item.cancelled{background:#f3e8ff !important;opacity:0.75 !important;}
-    #client-detail-modal .admin-transfer-name{font-size:11.5px !important;font-weight:600 !important;color:#2563eb !important;cursor:pointer !important;}
-    #client-detail-modal .admin-transfer-name:hover{text-decoration:underline !important;}
-    #client-detail-modal .admin-transfer-meta{font-size:10px !important;color:#64748b !important;margin-top:2px !important;font-weight:500 !important;}
-    #client-detail-modal .admin-transfer-amount{font-size:12px !important;font-weight:700 !important;color:#dc2626 !important;flex-shrink:0 !important;}
-    #client-detail-modal .admin-transfer-cancel-btn{flex-shrink:0 !important;border:1px solid #0f172a !important;border-radius:6px !important;padding:5px 10px !important;font-size:10px !important;font-weight:600 !important;background:#fee2e2 !important;color:#b91c1c !important;cursor:pointer !important;}
-
-    #admin-root .err{color:#b91c1c !important;background:#fee2e2 !important;border:1px solid #fca5a5 !important;border-radius:7px !important;padding:8px 11px !important;font-size:10.5px !important;font-weight:600 !important;line-height:1.5 !important;text-align:center !important;margin-top:7px !important;}
-
-    /* ===== MODIF CLIENT : Épaisseurs réduites (tailles inchangées) ===== */
-    .balance-card-type-label-new {
-      font-size: 14.5px !important;
-      margin-bottom: 10px !important;
-      letter-spacing: 0.2px !important;
-      line-height: 1.3 !important;
-    }
-    .balance-card-type-label-new .curr-symbol {
-      font-size: 14.5px !important;
-      font-weight: 600 !important;
-    }
-    .balance-card-type-label-new .chev {
-      width: 16px !important;
-      height: 16px !important;
-    }
-
-    .greeting-title-new {
-      font-size: 18px !important;
-      font-weight: 700 !important;
-      line-height: 1.3 !important;
-      letter-spacing: -0.2px !important;
-    }
-
-    .balance-card-amount-new {
-      margin-top: 6px !important;
-      margin-bottom: 6px !important;
-      font-size: 26px !important;
-      font-weight: 700 !important;
-      letter-spacing: -0.6px !important;
-      line-height: 1.1 !important;
-    }
-    .balance-card-amount-new .int-part {
-      font-size: 26px !important;
-      font-weight: 700 !important;
-    }
-    .balance-card-amount-new .dec-part {
-      font-size: 18px !important;
-      font-weight: 600 !important;
-    }
-    .balance-card-amount-new .cur-part {
-      font-size: 18px !important;
-      font-weight: 600 !important;
-      margin-left: 4px !important;
-    }
-
-    .balance-coins-icon {
-      width: 20px !important;
-      height: 20px !important;
-      min-width: 20px !important;
-      min-height: 20px !important;
-      max-width: 20px !important;
-      max-height: 20px !important;
-      display: inline-block !important;
-      vertical-align: middle !important;
-      margin-left: 8px !important;
-      margin-bottom: 2px !important;
-      filter: drop-shadow(0 1px 3px rgba(255, 215, 0, 0.55)) drop-shadow(0 0 6px rgba(255, 215, 0, 0.35)) !important;
-    }
-
-    .balance-card-sub-new {
-      font-size: 15px !important;
-      font-weight: 500 !important;
-      letter-spacing: 0.2px !important;
-      line-height: 1.3 !important;
-    }
-
-    .header-logo-group-new {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-      min-width: 0;
-      position: relative;
-      z-index: 2;
-    }
-    .header-banking-logo-svg {
-      width: 28px;
-      height: 28px;
-      flex-shrink: 0;
-      display: block;
-    }
-    .header-younited-logo-svg {
-      height: 24px;
-      width: auto;
-      max-width: 130px;
-      flex-shrink: 0;
-      display: block;
-    }
-    .header-younited-logo-svg text {
-      font-family: 'Titillium Web', Arial, sans-serif;
-      font-weight: 800 !important;
-      fill: #1a1a1a;
-      letter-spacing: 0.8px;
-    }
-  `;
-  document.head.appendChild(style);
-}
-
-function renderQuickActions() {
-  return '<div class="quick-actions-row-new">' +
-    '<div class="quick-action-item-new" onclick="window.showIban()"><div class="quick-action-icon-new green"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></div><div class="quick-action-label-new">' + t('quickIbanLabel') + '</div></div>' +
-    '<div class="quick-action-item-new" onclick="window.showVirtualCard()"><div class="quick-action-icon-new blue"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div><div class="quick-action-label-new">' + t('quickCardLabel') + '</div></div>' +
-    '<div class="quick-action-item-new" onclick="window.navigateTo(\'screen-transfer\')"><div class="quick-action-icon-new purple"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></div><div class="quick-action-label-new">' + t('quickTransferLabel') + '</div></div>' +
-  '</div>';
-}
-
-function buildBankLogoHtml(tx, circleClass, iconSvg, fallbackLogo) {
-  if (!tx.bankLogo) return '<div class="tx-icon-circle-new ' + circleClass + '"><svg viewBox="0 0 24 24">' + iconSvg + '</svg></div>';
-  const domain = tx.bankDomain || '';
-  const primary = tx.bankLogo;
-  const duck = domain ? 'https://icons.duckduckgo.com/ip3/' + domain + '.ico' : '';
-  const fallbackEscaped = fallbackLogo.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-  const onerr = "this.onerror=null;" + (duck ? "this.src='" + duck + "';this.onerror=function(){this.onerror=null;this.src='" + fallbackEscaped + "';};" : "this.src='" + fallbackEscaped + "';");
-  return '<div class="tx-icon-circle-new bank-logo"><img src="' + primary + '" alt="bank" loading="lazy" referrerpolicy="no-referrer" onerror="' + onerr + '" /></div>';
-}
-
-/* ===== MODIF CLIENT : Réduction épaisseur des textes dans l'historique ===== */
-function ensureTransactionHistoryStyles() {
-  if (document.getElementById('tx-history-styles-v2')) return;
-  const style = document.createElement('style');
-  style.id = 'tx-history-styles-v2';
-  style.textContent = `
-    .transactions-section-new { margin-top: 30px; }
-    .tx-history-card { background: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08); border: 1px solid #f1f5f9; }
-    .tx-history-header { display: flex; align-items: center; gap: 9px; padding: 14px 16px 12px; }
-    .tx-history-header-icon { width: 30px; height: 30px; border-radius: 9px; background: #ede9fe; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .tx-history-header-icon svg { width: 16px; height: 16px; fill: #7c3aed; }
-    .tx-history-header-menu { width: 24px; height: 24px; border-radius: 6px; background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0; transition: background 0.15s ease; font-family: inherit; }
-    .tx-history-header-menu:active { background: #f1f5f9; }
-    .tx-history-header-menu svg { width: 15px; height: 15px; fill: #7c3aed; }
-    .tx-history-header-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 4px; flex-shrink: 0; margin-left: auto; }
-    .tx-history-header-count { min-width: 24px; height: 24px; padding: 0 8px; border-radius: 12px; background: #ede9fe; color: #7c3aed; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-sizing: border-box; }
-    .tx-history-see-all { background: transparent; border: none; color: #7c3aed; font-size: 11px; font-weight: 700; cursor: pointer; padding: 0; font-family: inherit; letter-spacing: 0.2px; white-space: nowrap; text-decoration: none; line-height: 1.2; }
-    .tx-history-see-all:active { opacity: 0.7; }
-    .tx-history-header-title { flex: 1; font-size: 14.5px; font-weight: 700; color: #0f172a; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .tx-history-divider { height: 2px; background: linear-gradient(90deg, #7c3aed 0%, #7c3aed 12%, #ede9fe 12%, #ede9fe 100%); margin: 0; }
-    .tx-history-body { padding: 6px 0 10px; }
-    .tx-date-group { font-size: 11.5px; font-weight: 600; color: #64748b; padding: 10px 16px 4px; letter-spacing: 0.3px; }
-    .tx-item-new { display: flex !important; align-items: flex-start !important; gap: 12px !important; padding: 11px 16px !important; cursor: pointer; background: #ffffff; transition: background 0.15s ease; border: none !important; border-radius: 0 !important; margin: 0 !important; flex-wrap: nowrap !important; }
-    .tx-item-new:active { background: #f8fafc !important; }
-    .tx-item-new.tx-bg-in { background: linear-gradient(90deg, #f0fdf4 0%, #ffffff 70%) !important; }
-    .tx-item-new.tx-bg-out { background: linear-gradient(90deg, #fef2f2 0%, #ffffff 70%) !important; }
-    .tx-item-new.tx-bg-cancelled { background: linear-gradient(90deg, #f5f3ff 0%, #ffffff 70%) !important; }
-    .tx-item-new.tx-bg-refund { background: linear-gradient(90deg, #f5f3ff 0%, #ffffff 70%) !important; }
-    .tx-item-new.tx-bg-pending { background: linear-gradient(90deg, #fffbeb 0%, #ffffff 70%) !important; }
-    .tx-icon-circle-new { width: 42px !important; height: 42px !important; border-radius: 12px !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important; overflow: hidden !important; }
-    .tx-icon-circle-new svg { width: 19px !important; height: 19px !important; max-width: 19px !important; max-height: 19px !important; }
-    .tx-icon-circle-new.in { background: #dcfce7 !important; }
-    .tx-icon-circle-new.in svg { fill: #16a34a !important; }
-    .tx-icon-circle-new.out { background: #fee2e2 !important; }
-    .tx-icon-circle-new.out svg { fill: #dc2626 !important; }
-    .tx-icon-circle-new.cancelled { background: #ede9fe !important; }
-    .tx-icon-circle-new.cancelled svg { fill: #7c3aed !important; }
-    .tx-icon-circle-new.refund { background: #ede9fe !important; }
-    .tx-icon-circle-new.refund svg { fill: #7c3aed !important; }
-    .tx-icon-circle-new.pending { background: #fef3c7 !important; }
-    .tx-icon-circle-new.pending svg { fill: #d97706 !important; }
-    .tx-icon-circle-new.bank-logo { background: #ffffff !important; border: 1px solid #e2e8f0 !important; padding: 5px !important; box-sizing: border-box !important; }
-    .tx-icon-circle-new.bank-logo img { width: 100% !important; height: 100% !important; object-fit: contain !important; border-radius: 50% !important; display: block !important; }
-    .tx-info-new { flex: 1 !important; min-width: 0 !important; display: flex !important; flex-direction: column !important; gap: 2px !important; }
-    .tx-name-new { font-size: 13px !important; font-weight: 700 !important; color: #0f172a !important; line-height: 1.25 !important; word-break: break-word; white-space: normal; }
-    .tx-sub-new { font-size: 11.5px !important; font-weight: 400 !important; color: #64748b !important; line-height: 1.3 !important; word-break: break-word; white-space: normal; }
-    .tx-time-new { font-size: 10px !important; font-weight: 400 !important; color: #94a3b8 !important; line-height: 1.2 !important; margin-top: 2px; }
-    .tx-amount-box-new { text-align: right !important; flex-shrink: 0 !important; display: flex !important; flex-direction: column !important; align-items: flex-end !important; gap: 3px !important; margin-left: 4px !important; }
-    .tx-amount-value-new { font-size: 13.5px !important; font-weight: 700 !important; letter-spacing: -0.2px !important; white-space: nowrap !important; line-height: 1.2 !important; }
-    .tx-amount-value-new.pos { color: #16a34a !important; }
-    .tx-amount-value-new.neg { color: #dc2626 !important; }
-    .tx-amount-value-new.cancelled { color: #7c3aed !important; }
-    .tx-amount-value-new.refund { color: #7c3aed !important; }
-    .tx-amount-value-new.pending { color: #d97706 !important; }
-    .tx-status-new { font-size: 10px !important; font-weight: 500 !important; color: #94a3b8 !important; white-space: nowrap !important; line-height: 1.2 !important; }
-    .tx-status-new.pos { color: #16a34a !important; }
-    .tx-status-new.neg { color: #dc2626 !important; }
-    .tx-status-new.cancelled { color: #7c3aed !important; }
-    .tx-status-new.refund { color: #7c3aed !important; }
-    .tx-status-new.pending { color: #d97706 !important; }
-    .tx-history-empty { text-align: center; padding: 32px 20px; color: #94a3b8; font-size: 12px; font-weight: 500; }
-  `;
-  document.head.appendChild(style);
-}
-
-function getDateGroupLabel(dateStr) {
-  if (!dateStr) return '';
-  const str = String(dateStr).trim();
-  const parts = str.split(' ');
-  if (parts.length < 1) return str;
-  const dparts = parts[0].split('/');
-  if (dparts.length !== 3) return str;
-  const day = parseInt(dparts[0], 10);
-  const month = parseInt(dparts[1], 10) - 1;
-  const year = parseInt(dparts[2], 10);
-  if (isNaN(day) || isNaN(month) || isNaN(year)) return str;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const dNorm = new Date(year, month, day);
-  dNorm.setHours(0, 0, 0, 0);
-  const diffDays = Math.round((today - dNorm) / 86400000);
-  if (diffDays === 0) return t('dateToday');
-  if (diffDays === 1) return t('dateYesterday');
-  if (diffDays === -1) return t('dateTomorrow');
-  if (diffDays === 2) return t('dateDayBefore');
-  if (diffDays > 2 && diffDays < 7) return t('dateDaysAgoPrefix') + diffDays + t('dateDaysAgoSuffix');
-  return dparts[0] + '/' + dparts[1] + '/' + dparts[2];
-}
-
-function getTimeFromDateStr(dateStr) {
-  if (!dateStr) return '';
-  const parts = String(dateStr).trim().split(' ');
-  if (parts.length >= 2) return parts[1];
-  return '';
-}
-
-function getTxStatusWord(tx) {
-  if (!tx) return '';
-  const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
-  const isPending = tx.status === 'pending';
-  const isRefund = tx.status === 'cancelledPending';
-  const isFailed = tx.status === 'failed';
-  if (isPending) return t('statusPending');
-  if (isRefund) return t('statusRefund');
-  if (isCancelled) return t('statusCancelled');
-  if (isFailed) return t('statusFailed');
-  return t('statusDone');
-}
-
-function getTxStatusClass(tx) {
-  if (!tx) return 'pos';
-  const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
-  const isPending = tx.status === 'pending';
-  const isRefund = tx.status === 'cancelledPending';
-  const isFailed = tx.status === 'failed';
-  const isIn = tx.type === 'in';
-  if (isPending) return 'pending';
-  if (isRefund) return 'refund';
-  if (isCancelled) return 'cancelled';
-  if (isFailed) return 'neg';
-  return isIn ? 'pos' : 'neg';
-}
-
-function renderTransactions(txs) {
-  ensureTransactionHistoryStyles();
-  currentTransactions = txs || [];
-  if (!txs || txs.length === 0) {
-    return '<div class="tx-history-empty">' + (t('noTransactions') || 'Aucune transaction') + '</div>';
-  }
-
-  const groups = [];
-  const groupIndex = {};
-  txs.forEach((tx, idx) => {
-    const label = getDateGroupLabel(tx.date);
-    if (groupIndex[label] === undefined) {
-      groupIndex[label] = groups.length;
-      groups.push({ label: label, items: [] });
-    }
-    groups[groupIndex[label]].items.push({ tx: tx, idx: idx });
-  });
-
-  let h = '';
-  groups.forEach(function (group) {
-    h += '<div class="tx-date-group">' + group.label + '</div>';
-    group.items.forEach(function (item) {
-      const tx = item.tx;
-      const idx = item.idx;
-      const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
-      const isIn = tx.type === 'in';
-      const isPending = tx.status === 'pending';
-      const isRefund = tx.status === 'cancelledPending';
-
-      let circleClass, iconSvg, amountClass, amountSign;
-      if (isRefund) {
-        circleClass = 'refund';
-        iconSvg = '<path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>';
-        amountClass = 'refund';
-        amountSign = '+';
-      } else if (isPending) {
-        circleClass = 'pending';
-        iconSvg = '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>';
-        amountClass = 'pending';
-        amountSign = '−';
-      } else if (isCancelled) {
-        circleClass = 'cancelled';
-        iconSvg = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
-        amountClass = 'cancelled';
-        amountSign = '+';
-      } else if (isIn) {
-        circleClass = 'in';
-        iconSvg = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>';
-        amountClass = 'pos';
-        amountSign = '+';
-      } else {
-        circleClass = 'out';
-        iconSvg = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>';
-        amountClass = 'neg';
-        amountSign = '−';
-      }
-
-      let iconHtml;
-      if (tx.bankLogo && !isCancelled && !isPending && !isRefund) {
-        iconHtml = buildBankLogoHtml(tx, circleClass, iconSvg, FALLBACK_BANK_LOGO);
-      } else {
-        iconHtml = '<div class="tx-icon-circle-new ' + circleClass + '"><svg viewBox="0 0 24 24">' + iconSvg + '</svg></div>';
-      }
-
-      let title;
-      if (isRefund) { title = t('txRefund') || 'Remboursement'; }
-      else if (isPending) { title = t('pendingResultTitle') || 'Virement en attente'; }
-      else if (isCancelled) { title = t('txTransferCancelled'); }
-      else if (tx.labelKey) { title = t(tx.labelKey); }
-      else if (isIn) { title = t('txTransferReceived'); }
-      else { title = t('txTransferSent'); }
-
-      const subtitle = translateSubtitle(tx.subtitle);
-      const timeStr = getTimeFromDateStr(tx.date);
-      const statusWord = getTxStatusWord(tx);
-      const statusClass = getTxStatusClass(tx);
-
-      let bgClass = '';
-      if (isRefund) bgClass = 'tx-bg-refund';
-      else if (isPending) bgClass = 'tx-bg-pending';
-      else if (isCancelled) bgClass = 'tx-bg-cancelled';
-      else if (isIn) bgClass = 'tx-bg-in';
-      else bgClass = 'tx-bg-out';
-
-      h += '<div class="tx-item-new ' + bgClass + '" onclick="window.openReceipt(' + idx + ')">' +
-        iconHtml +
-        '<div class="tx-info-new">' +
-          '<div class="tx-name-new">' + title + '</div>' +
-          '<div class="tx-sub-new">' + subtitle + '</div>' +
-          '<div class="tx-time-new">' + timeStr + '</div>' +
-        '</div>' +
-        '<div class="tx-amount-box-new">' +
-          '<div class="tx-amount-value-new ' + amountClass + '">' + amountSign + tx.amount + '</div>' +
-          '<div class="tx-status-new ' + statusClass + '">' + statusWord + '</div>' +
-        '</div>' +
-      '</div>';
-    });
-  });
-
-  return h;
-}
-
-function escapeHtmlNotif(s) {
-  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-function renderNotifBadgeHtml(notifications) {
-  var count = (Array.isArray(notifications)) ? notifications.length : 0;
-  if (count <= 0) return '';
-  return '<span class="header-notif-badge-new">' + (count > 99 ? '99+' : count) + '</span>';
-}
-function renderHeaderNotifBtn(client) {
-  var badge = renderNotifBadgeHtml(client && client.notifications);
-  return '<button class="header-icon-btn-new" id="header-notif-btn" onclick="window.showNotifications()" style="position:relative;">' +
-    '<svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>' +
-    badge + '</button>';
-}
-function renderAdminNotificationList(cc) {
-  var notifs = (cc && Array.isArray(cc.notifications)) ? cc.notifications.slice().reverse() : [];
-  if (notifs.length === 0) return '<div class="admin-pending-empty">Aucune notification envoyée</div>';
-  var html = '';
-  notifs.forEach(function (n) {
-    var nid = n.id || '';
-    var cid = (cc && cc.id) ? cc.id : '';
-    html += '<div>';
-    html += '<div style="font-size:11.5px;font-weight:700;color:#0f172a;margin-bottom:4px;line-height:1.3;word-break:break-word;">' + escapeHtmlNotif(n.title || 'Notification') + '</div>';
-    html += '<div style="font-size:11px;color:#475569;line-height:1.5;margin-bottom:5px;white-space:pre-wrap;word-break:break-word;">' + escapeHtmlNotif(n.message || '') + '</div>';
-    html += '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">';
-    html += '<span style="font-size:10px;color:#94a3b8;font-weight:500;">' + escapeHtmlNotif(n.date || '') + '</span>';
-    html += '<button class="client-line-btn del" style="font-size:10px;padding:4px 9px;" onclick="window.deleteNotificationFromClient(\'' + cid + '\',\'' + nid + '\')">Supprimer</button>';
-    html += '</div></div>';
-  });
-  return html;
-}
-window.showNotifications = function () {
-  if (!currentClient) return;
-  const old = document.getElementById('notif-list-dynamic'); if (old) old.remove();
-  const notifs = Array.isArray(currentClient.notifications) ? currentClient.notifications.slice().reverse() : [];
-  let bodyHtml;
-  if (notifs.length === 0) { bodyHtml = '<div class="notif-empty"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg><div>Aucune notification pour le moment.</div></div>'; }
-  else { bodyHtml = ''; notifs.forEach(function (n) { bodyHtml += '<div class="notif-item"><div class="notif-item-title">' + escapeHtmlNotif(n.title || 'Notification') + '</div><div class="notif-item-message">' + escapeHtmlNotif(n.message || '') + '</div><div class="notif-item-date">' + escapeHtmlNotif(n.date || '') + '</div></div>'; }); }
-  const ov = document.createElement('div');
-  ov.id = 'notif-list-dynamic'; ov.className = 'notif-list-overlay';
-  ov.innerHTML = '<div class="notif-list-modal"><div class="notif-list-header"><div class="notif-list-header-icon"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div><div class="notif-list-header-text"><div class="notif-list-title">Mes notifications</div><div class="notif-list-subtitle">' + notifs.length + ' notification' + (notifs.length > 1 ? 's' : '') + '</div></div><button class="notif-list-close" onclick="document.getElementById(\'notif-list-dynamic\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div><div class="notif-list-body">' + bodyHtml + '</div></div>';
-  ov.addEventListener('click', function (e) { if (e.target === ov) ov.remove(); });
-  document.body.appendChild(ov);
-};
-window.sendNotificationToClient = async function () {
-  const clientId = document.getElementById('qa-client-select').value;
-  if (!clientId) { window.showNotif('Veuillez sélectionner un client.', 'warning'); return; }
-  if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez être connecté.', 'error'); return; }
-  const titleEl = document.getElementById('qa-notif-title');
-  const messageEl = document.getElementById('qa-notif-message');
-  const title = (titleEl && titleEl.value || '').trim();
-  const message = (messageEl && messageEl.value || '').trim();
-  if (!message) { window.showNotif('Veuillez saisir un message.', 'warning'); return; }
-  const client = await FireDB.getClient(clientId);
-  if (!client) { window.showNotif('Client introuvable.', 'error'); return; }
-  if (client.adminUid !== currentAdmin.uid) { window.showNotif('Accès refusé.', 'error'); return; }
-  const now = new Date();
-  const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-  const notifId = 'N' + now.getTime() + '-' + Math.floor(Math.random() * 1000);
-  const notif = { id: notifId, title: title || 'Notification', message: message, date: dateStr, ts: now.getTime() };
-  const notifs = Array.isArray(client.notifications) ? client.notifications.slice() : [];
-  notifs.push(notif);
-  await FireDB.updateClient(clientId, { notifications: notifs });
-  if (titleEl) titleEl.value = '';
-  if (messageEl) messageEl.value = '';
-  const fresh = await FireDB.getClient(clientId);
-  const container = document.getElementById('qa-notif-list-container');
-  if (container && fresh) container.innerHTML = renderAdminNotificationList(fresh);
-  window.showNotif('La notification a été envoyée au client.', 'success', 'Notification envoyée');
-};
-window.deleteNotificationFromClient = function (clientId, notifId) {
-  window.showConfirm('Voulez-vous vraiment supprimer cette notification ? Le client ne la verra plus.', async () => {
-    if (!currentAdmin || !currentAdmin.uid) return;
-    const client = await FireDB.getClient(clientId);
-    if (!client) { window.showNotif('Client introuvable.', 'error'); return; }
-    if (client.adminUid !== currentAdmin.uid) { window.showNotif('Accès refusé.', 'error'); return; }
-    const notifs = Array.isArray(client.notifications) ? client.notifications.slice() : [];
-    const filtered = notifs.filter(function (n) { return n && n.id !== notifId; });
-    await FireDB.updateClient(clientId, { notifications: filtered });
-    const container = document.getElementById('qa-notif-list-container');
-    if (container) container.innerHTML = renderAdminNotificationList({ id: clientId, notifications: filtered });
-    window.showNotif('Notification supprimée.', 'success', 'Notification supprimée');
-  }, 'Supprimer la notification', 'error');
-};
-
-function syncClientUI(fresh) {
-  if (!fresh) return;
-  const previousLang = currentLang;
-  const previousClient = currentClient;
-  currentClient = fresh;
-  currentLang = fresh.language || 'fr';
-  applyTheme(fresh.themeColor);
-
-  try {
-    if (previousClient && previousClient.transactions) {
-      const prevCancelledCount = previousClient.transactions.filter(function (t) { return t && (t.type === 'cancelled' || t.cancelled === true); }).length;
-      const newTxs = fresh.transactions || [];
-      const newCancelledList = newTxs.filter(function (t) { return t && (t.type === 'cancelled' || t.cancelled === true); });
-      if (newCancelledList.length > prevCancelledCount) {
-        const newTx = newCancelledList[0];
-        const msg = (t('transferCancelledMsg') || 'Virement annulé.').replace('{amount}', newTx.amount || '—').replace('{name}', newTx.subtitle || '—').replace('{iban}', newTx.recipientIban || '—');
-        setTimeout(function () { window.showNotif(msg, 'purple', t('transferCancelledTitle') || 'Virement annulé'); }, 500);
-      }
-    }
-  } catch (e) {}
-
-  const currency = fresh.currency || '€';
-  const balanceFormatted = formatAmount(fresh.balance || 0, currency);
-
-  const amountEl = document.getElementById('balance-amount-display');
-  if (amountEl) amountEl.innerHTML = renderBalanceAmountHtml();
-
-  const eyeBtn = document.getElementById('balance-eye-btn');
-  if (eyeBtn) eyeBtn.innerHTML = balanceVisible ? EYE_OPEN_SVG : EYE_CLOSED_SVG;
-
-  const currSymbolEl = document.querySelector('.balance-card-type-label-new .curr-symbol');
-  if (currSymbolEl) currSymbolEl.textContent = getCurrencyCode(currency);
-  const txList = document.getElementById('transaction-list');
-  if (txList) {
-    txList.innerHTML = renderTransactions(fresh.transactions);
-    const historyCountEl = document.querySelector('.tx-history-header-count');
-    if (historyCountEl) historyCountEl.textContent = (fresh.transactions && fresh.transactions.length) || 0;
-  }
-  const greetingTitleEl = document.querySelector('.greeting-title-new');
-  if (greetingTitleEl) greetingTitleEl.textContent = t('greeting') + ', ' + fresh.firstName + ' ' + fresh.lastName;
-  const transferAmountEl = document.querySelector('#screen-transfer .transfer-amount');
-  if (transferAmountEl) transferAmountEl.textContent = balanceFormatted;
-  const profileScreen = document.getElementById('screen-profile');
-  if (profileScreen) { const initials = ((fresh.firstName || '').charAt(0) + (fresh.lastName || '').charAt(0)).toUpperCase(); profileScreen.innerHTML = renderProfileScreen(fresh, initials, balanceFormatted); }
-  const cardBody = document.getElementById('card-modal-body-content');
-  if (cardBody) { virtualCardRevealed = false; cardBody.innerHTML = renderCardBody(fresh.cardNumber || '4944595344283327', getCardHolderName(fresh), fresh.cardExpiry || '02/28', fresh.cardCvv || '843', fresh.cardType || 'Visa Debit', fresh.cardMaskLast4 === true, fresh.cardMaskCvv === true, false); }
-  const creditCard = document.querySelector('.credit-card .card-holder');
-  if (creditCard) creditCard.textContent = getCardHolderName(fresh);
-
-  try {
-    const notifBtn = document.getElementById('header-notif-btn');
-    if (notifBtn) {
-      const existing = notifBtn.querySelector('.header-notif-badge-new');
-      if (existing) existing.remove();
-      const count = Array.isArray(fresh.notifications) ? fresh.notifications.length : 0;
-      if (count > 0) {
-        const span = document.createElement('span');
-        span.className = 'header-notif-badge-new';
-        span.textContent = count > 99 ? '99+' : String(count);
-        notifBtn.appendChild(span);
-      }
-    }
-  } catch (e) {}
-
-  try {
-    const chatTitle = document.getElementById('tw-chat-title');
-    if (chatTitle) { const L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr; chatTitle.textContent = L.title; }
-    const chatSub = document.getElementById('tw-chat-subtitle');
-    if (chatSub) { const L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr; chatSub.textContent = L.subtitle; }
-    const chatInput = document.getElementById('tw-chat-input');
-    if (chatInput) { const L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr; chatInput.placeholder = L.placeholder; }
-  } catch (e) {}
-  if (previousLang !== currentLang) {
-    const navLabels = { 'nav-dashboard': 'navBalance', 'nav-transfer': 'navPaymentsNew', 'nav-card': 'navCard', 'nav-profile': 'navAccount' };
-    Object.keys(navLabels).forEach(function (navId) { const el = document.getElementById(navId); if (el) { const span = el.querySelector('span'); if (span) span.textContent = t(navLabels[navId]); } });
-  }
-}
-
-function subscribeToClient(clientId) {
-  if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
-  try {
-    clientUnsubscribe = onSnapshot(doc(db, 'clients', clientId), (snap) => {
-      if (!snap.exists()) {
-        ClientSession.clear();
-        if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
-        try { removeChatbot(); } catch (e) {}
-        initClient(); return;
-      }
-      const fresh = Object.assign({ id: snap.id }, snap.data());
-      const previousClient = currentClient;
-      const previousLang = currentLang;
-      const appRoot = document.getElementById('app-root');
-      const hasStatusScreen = appRoot && appRoot.querySelector('.twd-status-screen');
-
-      if (fresh.blocked) {
-        if (hasStatusScreen) {
-          if (previousLang !== (fresh.language || 'fr')) {
-            currentClient = fresh; currentLang = fresh.language || 'fr'; applyTheme(fresh.themeColor);
-            try { removeChatbot(); } catch (e) {}
-            setTimeout(function () { initClient(); }, 0);
-          }
-          return;
-        }
-        ClientSession.clear();
-        if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
-        try { removeChatbot(); } catch (e) {}
-        initClient(); return;
-      }
-
-      const wasBlocked = previousClient && previousClient.blocked === true;
-      const langChanged = previousLang !== (fresh.language || 'fr');
-      if (wasBlocked || hasStatusScreen || langChanged) {
-        currentClient = fresh; currentLang = fresh.language || 'fr'; applyTheme(fresh.themeColor);
-        setTimeout(function () {
-          const activeId = ClientSession.getActive();
-          if (activeId === clientId) renderBankingApp(fresh);
-          else renderLoginPage(fresh);
-        }, 0);
-        return;
-      }
-      syncClientUI(fresh);
-    }, () => {});
-  } catch (e) {}
-}
-
-// (Tout le code push/FCM a été retiré ici)
-
-export function initClientApp() { initClient(); }
-export function initAdminApp() { initAdmin(); }
-export function initSuperAdminApp() { initSuperAdmin(); }
-
-function ensureStatusScreensStyles() {
-  if (document.getElementById('twd-status-styles')) return;
-  const style = document.createElement('style');
-  style.id = 'twd-status-styles';
-  style.textContent = `
-    .twd-status-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 32px 24px; text-align: center; background: #ffffff; box-sizing: border-box; font-family: 'Titillium Web', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-    .twd-status-screen > * { animation: twdStatusIn 0.5s ease-out both; }
-    .twd-status-screen > *:nth-child(2) { animation-delay: 0.08s; }
-    .twd-status-screen > *:nth-child(3) { animation-delay: 0.16s; }
-    @keyframes twdStatusIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-    .twd-status-icon { width: 140px; height: 140px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 28px; flex-shrink: 0; }
-    .twd-status-icon.blocked { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); color: #dc2626; box-shadow: 0 14px 36px rgba(220, 38, 38, 0.22), 0 0 0 8px rgba(220, 38, 38, 0.05); }
-    .twd-status-icon.deleted { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); color: #475569; box-shadow: 0 14px 36px rgba(71, 85, 105, 0.22), 0 0 0 8px rgba(71, 85, 105, 0.05); }
-    .twd-status-icon svg { width: 84px; height: 84px; display: block; }
-    .twd-status-title { font-size: 22px; font-weight: 700 !important; margin-bottom: 12px; letter-spacing: -0.3px; line-height: 1.25; white-space: normal; word-break: break-word; font-family: 'Titillium Web', sans-serif; }
-    .twd-status-title.blocked { color: #b91c1c; }
-    .twd-status-title.deleted { color: #334155; }
-    .twd-status-desc { font-size: 14px; color: #475569; line-height: 1.6; max-width: 320px; font-weight: 400 !important; white-space: normal; word-break: break-word; font-family: 'Titillium Web', sans-serif; }
-    @media (max-width: 400px) { .twd-status-icon { width: 120px; height: 120px; } .twd-status-icon svg { width: 70px; height: 70px; } .twd-status-title { font-size: 20px; } .twd-status-desc { font-size: 13px; } }
-  `;
-  document.head.appendChild(style);
-}
-
-/* ===== MODIF CLIENT : Chatbot — Épaisseurs réduites ===== */
-function ensureChatbotStyles() {
-  if (document.getElementById('tw-chat-styles')) return;
-  const style = document.createElement('style');
-  style.id = 'tw-chat-styles';
-  style.textContent = `
-    #tw-chat-fab { position: fixed; right: 14px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #ec4899 0%, #a855f7 35%, #6366f1 65%, #06b6d4 100%); border: 2.5px solid rgba(255,255,255,0.9); cursor: pointer; box-shadow: 0 11px 26px rgba(168, 85, 247, 0.55), 0 5px 12px rgba(15, 23, 42, 0.28), inset 0 2px 4px rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; z-index: 9998; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease; -webkit-tap-highlight-color: transparent; animation: twChatFabBounce 3s ease-in-out infinite; }
-    #tw-chat-fab:active { transform: scale(0.92); }
-    #tw-chat-fab svg { width: 26px; height: 26px; display: block; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25)); position: relative; z-index: 2; }
-    #tw-chat-fab.tw-chat-hidden { display: none !important; }
-    @keyframes twChatFabBounce { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-3px) scale(1.04); } }
-    #tw-chat-fab::before { content: ''; position: absolute; inset: -7px; border-radius: 50%; background: radial-gradient(circle, rgba(236,72,153,0.45) 0%, rgba(99,102,241,0.35) 50%, transparent 75%); animation: twChatPulse 2.2s ease-out infinite; z-index: -1; pointer-events: none; }
-    #tw-chat-fab::after { content: ''; position: absolute; inset: -11px; border-radius: 50%; background: radial-gradient(circle, rgba(6,182,212,0.28) 0%, transparent 70%); animation: twChatPulse 2.2s ease-out infinite 0.5s; z-index: -2; pointer-events: none; }
-    @keyframes twChatPulse { 0% { transform: scale(0.85); opacity: 0.85; } 70% { transform: scale(1.35); opacity: 0; } 100% { transform: scale(1.4); opacity: 0; } }
-    .tw-chat-ai-badge { position: absolute; top: -5px; right: -5px; min-width: 20px; height: 17px; padding: 0 5px; border-radius: 9px; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #ffffff; font-size: 9px; font-weight: 800 !important; letter-spacing: 0.4px; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 3px 8px rgba(245, 158, 11, 0.55); font-family: 'Titillium Web', sans-serif; z-index: 3; text-transform: uppercase; }
-    .tw-chat-ai-badge::before { content: '✦'; margin-right: 2px; font-size: 8px; }
-    .tw-chat-tooltip { position: fixed; right: 74px; bottom: calc(98px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; padding: 8px 12px; border-radius: 12px; font-size: 11.5px; font-weight: 600 !important; font-family: 'Titillium Web', sans-serif; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.35); white-space: nowrap; z-index: 9997; animation: twChatTooltipIn 0.5s ease-out 1s both; pointer-events: none; border: 1px solid rgba(255,255,255,0.15); }
-    .tw-chat-tooltip::after { content: ''; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 6px solid #1e293b; }
-    .tw-chat-tooltip.tw-chat-tooltip-hidden { display: none !important; }
-    @keyframes twChatTooltipIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
-    #tw-chat-window { position: fixed; right: 14px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); width: calc(100vw - 28px); max-width: 380px; height: 72vh; max-height: 580px; background: #ffffff; border-radius: 20px; box-shadow: 0 26px 70px rgba(168, 85, 247, 0.35), 0 10px 30px rgba(15, 23, 42, 0.22); display: none; flex-direction: column; overflow: hidden; z-index: 9999; transform-origin: bottom right; animation: twChatOpen 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); border: 2px solid rgba(168, 85, 247, 0.25); }
-    #tw-chat-window.tw-chat-open { display: flex; }
-    @keyframes twChatOpen { from { opacity: 0; transform: translateY(20px) scale(0.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .tw-chat-header { background: linear-gradient(135deg, #ec4899 0%, #a855f7 30%, #6366f1 65%, #06b6d4 100%); padding: 14px 16px; display: flex; align-items: center; gap: 11px; color: #ffffff; flex-shrink: 0; position: relative; overflow: hidden; }
-    .tw-chat-header::before { content: ''; position: absolute; top: -50%; right: -30%; width: 220px; height: 220px; background: radial-gradient(circle, rgba(255,255,255,0.22), transparent 70%); border-radius: 50%; pointer-events: none; }
-    .tw-chat-header-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; border: 2.5px solid rgba(255,255,255,0.55); box-shadow: 0 4px 12px rgba(0,0,0,0.28); }
-    .tw-chat-header-avatar svg { width: 24px; height: 24px; display: block; fill: #7c3aed; }
-    .tw-chat-header-avatar::after { content: ''; position: absolute; bottom: -2px; right: -2px; width: 12px; height: 12px; border-radius: 50%; background: #22c55e; border: 2.5px solid #ffffff; box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.45); animation: twChatOnlineBlink 2s ease-in-out infinite; }
-    @keyframes twChatOnlineBlink { 0%, 100% { box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.45); } 50% { box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18); } }
-    .tw-chat-header-text { flex: 1; min-width: 0; position: relative; z-index: 1; }
-    #tw-chat-title { font-size: 14.5px; font-weight: 700 !important; color: #ffffff; letter-spacing: 0.2px; line-height: 1.2; font-family: 'Titillium Web', sans-serif; display: flex; align-items: center; gap: 6px; }
-    #tw-chat-title::before { content: '✦'; font-size: 12px; color: #fde68a; text-shadow: 0 0 6px rgba(253, 230, 138, 0.8); }
-    #tw-chat-subtitle { font-size: 10px; font-weight: 500 !important; color: rgba(255,255,255,0.9); margin-top: 3px; letter-spacing: 0.2px; font-family: 'Titillium Web', sans-serif; display: flex; align-items: center; gap: 5px; }
-    #tw-chat-subtitle::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px rgba(34, 197, 94, 0.9); }
-    .tw-chat-close-btn { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.32); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; z-index: 1; }
-    .tw-chat-close-btn svg { width: 13px; height: 13px; fill: #ffffff; }
-    .tw-chat-close-btn:active { background: rgba(255,255,255,0.35); }
-    .tw-chat-messages { flex: 1; overflow-y: auto; padding: 14px 12px; background: linear-gradient(180deg, #faf5ff 0%, #f1f5f9 60%, #f8fafc 100%); display: flex; flex-direction: column; gap: 10px; -webkit-overflow-scrolling: touch; }
-    .tw-chat-messages::-webkit-scrollbar { width: 4px; }
-    .tw-chat-messages::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #a855f7, #06b6d4); border-radius: 3px; }
-    .tw-chat-msg { display: flex; align-items: flex-end; gap: 7px; max-width: 90%; animation: twChatMsgIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; word-wrap: break-word; }
-    @keyframes twChatMsgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    .tw-chat-msg.tw-chat-msg-user { align-self: flex-end; flex-direction: row-reverse; }
-    .tw-chat-msg.tw-chat-msg-bot { align-self: flex-start; }
-    .tw-chat-msg-avatar { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700 !important; color: #ffffff; font-family: 'Titillium Web', sans-serif; }
-    .tw-chat-msg-bot .tw-chat-msg-avatar { background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%); box-shadow: 0 3px 8px rgba(168, 85, 247, 0.35); }
-    .tw-chat-msg-user .tw-chat-msg-avatar { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 3px 8px rgba(34, 197, 94, 0.35); }
-    .tw-chat-msg-avatar svg { width: 15px; height: 15px; display: block; }
-    .tw-chat-msg-bubble { padding: 11px 14px; border-radius: 16px; font-size: 13px; font-weight: 400 !important; line-height: 1.55; word-break: break-word; white-space: normal; font-family: 'Titillium Web', sans-serif; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08); }
-    .tw-chat-msg-bot .tw-chat-msg-bubble { background: #ffffff; color: #0f172a; border-bottom-left-radius: 4px; border: 1px solid #e9d5ff; }
-    .tw-chat-msg-user .tw-chat-msg-bubble { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: #ffffff; border-bottom-right-radius: 4px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35); }
-    .tw-chat-msg-time { font-size: 9px; color: #94a3b8; margin-top: 3px; font-weight: 500 !important; letter-spacing: 0.2px; font-family: 'Titillium Web', sans-serif; }
-    .tw-chat-msg-user .tw-chat-msg-time { color: #c7d2fe; text-align: right; }
-    .tw-chat-typing { display: flex; align-items: center; gap: 7px; align-self: flex-start; max-width: 80%; }
-    .tw-chat-typing .tw-chat-msg-avatar { background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%); }
-    .tw-chat-typing-bubble { background: #ffffff; border: 1px solid #e9d5ff; padding: 12px 16px; border-radius: 16px; border-bottom-left-radius: 4px; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 8px rgba(168, 85, 247, 0.12); }
-    .tw-chat-typing-dot { width: 6px; height: 6px; border-radius: 50%; background: linear-gradient(135deg, #a855f7, #6366f1); animation: twChatTyping 1.2s ease-in-out infinite; }
-    .tw-chat-typing-dot:nth-child(1) { animation-delay: 0s; }
-    .tw-chat-typing-dot:nth-child(2) { animation-delay: 0.18s; }
-    .tw-chat-typing-dot:nth-child(3) { animation-delay: 0.36s; }
-    @keyframes twChatTyping { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-4px); opacity: 1; } }
-    .tw-chat-footer { padding: 10px 10px 12px 10px; background: #ffffff; border-top: 1px solid #f3e8ff; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-    #tw-chat-input { flex: 1; min-width: 0; padding: 12px 15px; border: 1.5px solid #e9d5ff; border-radius: 24px; font-size: 13px; font-weight: 400 !important; color: #0f172a; background: #faf5ff; outline: none; font-family: 'Titillium Web', sans-serif; transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease; }
-    #tw-chat-input:focus { border-color: #a855f7; background: #ffffff; box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15); }
-    #tw-chat-input::placeholder { color: #a78bfa; font-weight: 400 !important; }
-    #tw-chat-send { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #06b6d4 100%); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 6px 16px rgba(168, 85, 247, 0.45); transition: transform 0.15s ease, box-shadow 0.2s ease; -webkit-tap-highlight-color: transparent; }
-    #tw-chat-send:active { transform: scale(0.9); }
-    #tw-chat-send svg { width: 19px; height: 19px; fill: #ffffff; }
-    @media (max-width: 420px) { #tw-chat-fab { right: 12px; bottom: calc(78px + env(safe-area-inset-bottom, 0px)); width: 49px; height: 49px; } #tw-chat-fab svg { width: 25px; height: 25px; } #tw-chat-window { right: 8px; left: 8px; width: auto; bottom: calc(78px + env(safe-area-inset-bottom, 0px)); height: 74vh; max-height: none; border-radius: 18px; } .tw-chat-tooltip { right: 68px; bottom: calc(94px + env(safe-area-inset-bottom, 0px)); font-size: 11px; padding: 7px 10px; } }
-  `;
-  document.head.appendChild(style);
-}
-function removeChatbot() { var fab = document.getElementById('tw-chat-fab'); if (fab) fab.remove(); var win = document.getElementById('tw-chat-window'); if (win) win.remove(); var tooltip = document.getElementById('tw-chat-tooltip'); if (tooltip) tooltip.remove(); chatbotOpen = false; }
-function loadChatMessages() { if (!currentClient) return []; var msgs = currentClient.aiMessages; if (msgs && Array.isArray(msgs) && msgs.length > 0) return msgs; try { var localKey = 'tw_ai_msgs_' + currentClient.id; var localMsgs = JSON.parse(localStorage.getItem(localKey) || '[]'); if (Array.isArray(localMsgs) && localMsgs.length > 0) return localMsgs; } catch (e) {} return []; }
-function saveChatMessage(role, text) { if (!currentClient || !currentClient.id) return; var msg = { role: role, text: text, ts: Date.now() }; try { var localKey = 'tw_ai_msgs_' + currentClient.id; var localMsgs = JSON.parse(localStorage.getItem(localKey) || '[]'); if (!Array.isArray(localMsgs)) localMsgs = []; localMsgs.push(msg); if (localMsgs.length > 200) localMsgs = localMsgs.slice(-200); localStorage.setItem(localKey, JSON.stringify(localMsgs)); } catch (e) {} var txs = (currentClient.aiMessages || []).slice(); if (!Array.isArray(txs)) txs = []; txs.push(msg); if (txs.length > 200) txs = txs.slice(-200); currentClient.aiMessages = txs; try { FireDB.updateClient(currentClient.id, { aiMessages: txs }).catch(function () {}); } catch (e) {} }
-function formatChatTime(ts) { try { var d = new Date(ts); var hh = String(d.getHours()).padStart(2, '0'); var mm = String(d.getMinutes()).padStart(2, '0'); return hh + ':' + mm; } catch (e) { return ''; } }
-function robotAvatarSvg(size) { return '<svg viewBox="0 0 24 24" fill="#ffffff" style="width:' + (size || 15) + 'px;height:' + (size || 15) + 'px;display:block;"><path d="M12 2a1 1 0 0 1 1 1v1h3a3 3 0 0 1 3 3v2h1a1 1 0 0 1 0 2h-1v2a3 3 0 0 1-3 3h-1v1a1 1 0 0 1-2 0v-1h-2v1a1 1 0 0 1-2 0v-1H8a3 3 0 0 1-3-3v-2H4a1 1 0 0 1 0-2h1V7a3 3 0 0 1 3-3h3V3a1 1 0 0 1 1-1zm-2.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm5 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9 14a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2H9z"/></svg>'; }
-function renderChatMessages() {
-  var container = document.getElementById('tw-chat-messages');
-  if (!container) return;
-  var msgs = loadChatMessages();
-  var L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr;
-  var html = '';
-  if (!msgs || msgs.length === 0) {
-    var welcomeText = L.welcomeTitle + '\n\n' + L.welcomeBody;
-    html = '<div class="tw-chat-msg tw-chat-msg-bot"><div class="tw-chat-msg-avatar">' + robotAvatarSvg(15) + '</div><div><div class="tw-chat-msg-bubble">' + welcomeText.replace(/\n/g, '<br>') + '</div><div class="tw-chat-msg-time">' + formatChatTime(Date.now()) + '</div></div></div>';
-  } else {
-    msgs.forEach(function (m) {
-      var isUser = m.role === 'user';
-      var cls = isUser ? 'tw-chat-msg-user' : 'tw-chat-msg-bot';
-      var avatarSvg = isUser ? '<svg viewBox="0 0 24 24" fill="#ffffff" style="width:15px;height:15px;display:block;"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>' : robotAvatarSvg(15);
-      var safeText = String(m.text || '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
-      html += '<div class="tw-chat-msg ' + cls + '"><div class="tw-chat-msg-avatar">' + avatarSvg + '</div><div><div class="tw-chat-msg-bubble">' + safeText + '</div><div class="tw-chat-msg-time">' + formatChatTime(m.ts || Date.now()) + '</div></div></div>';
-    });
-  }
-  container.innerHTML = html;
-  setTimeout(function () { container.scrollTop = container.scrollHeight; }, 50);
-}
-function showChatTyping() { var container = document.getElementById('tw-chat-messages'); if (!container) return; var existing = document.getElementById('tw-chat-typing'); if (existing) existing.remove(); var typing = document.createElement('div'); typing.id = 'tw-chat-typing'; typing.className = 'tw-chat-typing'; typing.innerHTML = '<div class="tw-chat-msg-avatar">' + robotAvatarSvg(15) + '</div><div class="tw-chat-typing-bubble"><span class="tw-chat-typing-dot"></span><span class="tw-chat-typing-dot"></span><span class="tw-chat-typing-dot"></span></div>'; container.appendChild(typing); container.scrollTop = container.scrollHeight; }
-function hideChatTyping() { var t = document.getElementById('tw-chat-typing'); if (t) t.remove(); }
-window.openChatbot = function () { var win = document.getElementById('tw-chat-window'); if (!win) return; chatbotOpen = true; win.classList.add('tw-chat-open'); setTimeout(function () { renderChatMessages(); }, 30); setTimeout(function () { var input = document.getElementById('tw-chat-input'); if (input) { try { input.focus(); } catch (e) {} } }, 250); };
-window.closeChatbot = function () { var win = document.getElementById('tw-chat-window'); if (!win) return; chatbotOpen = false; win.classList.remove('tw-chat-open'); };
-window.toggleChatbot = function () { if (chatbotOpen) window.closeChatbot(); else window.openChatbot(); };
-window.sendChatMessage = function () { var input = document.getElementById('tw-chat-input'); if (!input) return; var text = String(input.value || '').trim(); if (!text) return; input.value = ''; saveChatMessage('user', text); renderChatMessages(); showChatTyping(); var delay = 700 + Math.floor(Math.random() * 600); setTimeout(function () { var reply = getChatbotResponse(text); hideChatTyping(); saveChatMessage('bot', reply); renderChatMessages(); }, delay); };
-function injectChatbot(client) {
-  if (!client) return;
-  removeChatbot();
-  ensureChatbotStyles();
-  var L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr;
-  var fab = document.createElement('button');
-  fab.id = 'tw-chat-fab'; fab.setAttribute('type', 'button'); fab.setAttribute('aria-label', L.title);
-  fab.innerHTML = robotAvatarSvg(26) + '<span class="tw-chat-ai-badge">AI</span>';
-  fab.addEventListener('click', function () { var tt = document.getElementById('tw-chat-tooltip'); if (tt) tt.classList.add('tw-chat-tooltip-hidden'); window.toggleChatbot(); });
-  document.body.appendChild(fab);
-  var tooltip = document.createElement('div');
-  tooltip.id = 'tw-chat-tooltip'; tooltip.className = 'tw-chat-tooltip'; tooltip.textContent = '💬 Assistant IA · Posez-moi une question';
-  document.body.appendChild(tooltip);
-  setTimeout(function () { var t = document.getElementById('tw-chat-tooltip'); if (t) t.classList.add('tw-chat-tooltip-hidden'); }, 8000);
-  var win = document.createElement('div');
-  win.id = 'tw-chat-window';
-  win.innerHTML = '<div class="tw-chat-header"><div class="tw-chat-header-avatar">' + robotAvatarSvg(24) + '</div><div class="tw-chat-header-text"><div id="tw-chat-title">' + L.title + '</div><div id="tw-chat-subtitle">' + L.subtitle + '</div></div><button type="button" class="tw-chat-close-btn" onclick="window.closeChatbot()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div><div class="tw-chat-messages" id="tw-chat-messages"></div><div class="tw-chat-footer"><input type="text" id="tw-chat-input" placeholder="' + L.placeholder + '" autocomplete="off" /><button type="button" id="tw-chat-send" onclick="window.sendChatMessage()" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button></div>';
-  document.body.appendChild(win);
-  var chatInput = document.getElementById('tw-chat-input');
-  if (chatInput) { chatInput.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); window.sendChatMessage(); } }); }
-  renderChatMessages();
-}
-
-async function initClient() {
-  const clientId = new URLSearchParams(window.location.search).get('id');
-  const root = document.getElementById('app-root');
-  if (!root) return;
-  ensureGlobalStyles();
-  ensureStatusScreensStyles();
-  try { removeChatbot(); } catch (e) {}
-  if (!clientId) { root.innerHTML = '<div class="view active"><div class="no-access"><div class="ico"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm3 11c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg></div><h2>Acces restreint</h2><p>Cette application necessite un lien de connexion valide.</p></div></div>'; return; }
-  const client = await FireDB.getClient(clientId);
-  if (!client) {
-    var navLang = (navigator.language || 'fr').toLowerCase().slice(0, 2);
-    if (['fr', 'pl', 'es', 'it', 'de'].indexOf(navLang) === -1) navLang = 'fr';
-    currentLang = navLang;
-    root.innerHTML = '<div class="view active"><div class="twd-status-screen"><div class="twd-status-icon deleted"><svg viewBox="0 0 120 130" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="46" y="14" width="28" height="10" rx="5" fill="currentColor"/><rect x="16" y="26" width="88" height="14" rx="4" fill="currentColor"/><path d="M24 40 L32 108 Q33 114 40 114 H80 Q87 114 88 108 L96 40 Z" fill="currentColor"/><line x1="42" y1="52" x2="42" y2="104" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="52" x2="60" y2="104" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/><line x1="78" y1="52" x2="78" y2="104" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/></svg></div><div class="twd-status-title deleted">' + t('deletedTitle') + '</div><div class="twd-status-desc">' + t('deletedDesc') + '</div></div></div>'; return;
-  }
-  if (client.blocked) {
-    currentLang = client.language || 'fr';
-    root.innerHTML = '<div class="view active"><div class="twd-status-screen"><div class="twd-status-icon blocked"><svg viewBox="0 0 175 125" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M33 52V40a22 22 0 0 1 44 0v12" stroke="currentColor" stroke-width="7" stroke-linecap="round"/><rect x="20" y="52" width="70" height="55" rx="8" fill="currentColor"/><circle cx="55" cy="75" r="6" fill="#ffffff"/><rect x="52.5" y="75" width="5" height="14" rx="2" fill="#ffffff"/><g transform="translate(110, 75)" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"><circle cx="0" cy="0" r="11"/><circle cx="0" cy="0" r="4" fill="currentColor" stroke="none"/><line x1="11" y1="0" x2="50" y2="0"/><line x1="43" y1="0" x2="43" y2="8"/><line x1="35" y1="0" x2="35" y2="6"/></g></svg></div><div class="twd-status-title blocked">' + t('blockedTitle') + '</div><div class="twd-status-desc">' + t('blockedDesc') + '</div></div></div>'; return;
-  }
-  currentLang = client.language || 'fr';
-  applyTheme(client.themeColor);
-  const activeId = ClientSession.getActive();
-  if (activeId === clientId) renderBankingApp(client);
-  else renderLoginPage(client);
-}
 function renderLoginPage(client) {
   currentLang = client.language || 'fr';
   applyTheme(client.themeColor);
@@ -2201,7 +1206,6 @@ function renderProfileScreen(client, initials, balanceFormatted) {
     '<div class="profile-security-new"><div class="profile-security-icon"><svg viewBox="0 0 24 24">' + iconShieldLock + '</svg></div><div class="profile-security-text"><div class="profile-security-title">' + t('securityTitle') + '</div><div class="profile-security-desc">' + t('profileSecurityDesc') + '</div></div><svg class="profile-security-check" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>' +
   '</div>';
 }
-
 /* ===== MODIF CLIENT : Reçu — Épaisseurs réduites ===== */
 function ensureReceiptV4Styles() {
   if (document.getElementById('receipt-v4-styles')) return;
@@ -2930,6 +1934,57 @@ function getCreatedAtSeconds(client) {
   return 0;
 }
 
+/* ===== HELPERS : Mise à jour d'une ligne client sans recharger la page ===== */
+function __updateClientLineInList(clientId) {
+  const cached = (window.__adminClients && window.__adminClients[clientId]);
+  if (!cached) return;
+  const listCard = document.querySelector('#admin-root .client-list-card');
+  if (!listCard) return;
+  const lines = listCard.querySelectorAll('.client-line');
+  for (let i = 0; i < lines.length; i++) {
+    const nameEl = lines[i].querySelector('.client-line-name');
+    if (nameEl && nameEl.getAttribute('onclick') && nameEl.getAttribute('onclick').indexOf("'" + clientId + "'") !== -1) {
+      const balance = formatAmount(parseFloat(cached.balance) || 0, cached.currency || '€');
+      const blocked = cached.blocked === true;
+      const balEl = lines[i].querySelector('.client-line-balance');
+      if (balEl) balEl.textContent = balance;
+      const btn = lines[i].querySelector('.client-line-btn');
+      if (btn) {
+        btn.className = 'client-line-btn ' + (blocked ? 'unblock' : 'block');
+        btn.textContent = blocked ? 'Activer' : 'Bloquer';
+      }
+      break;
+    }
+  }
+  __updateStatsCounts();
+}
+
+function __removeClientLineFromList(clientId) {
+  const listCard = document.querySelector('#admin-root .client-list-card');
+  if (!listCard) return;
+  const lines = listCard.querySelectorAll('.client-line');
+  for (let i = 0; i < lines.length; i++) {
+    const nameEl = lines[i].querySelector('.client-line-name');
+    if (nameEl && nameEl.getAttribute('onclick') && nameEl.getAttribute('onclick').indexOf("'" + clientId + "'") !== -1) {
+      lines[i].remove();
+      break;
+    }
+  }
+  __updateStatsCounts();
+}
+
+function __updateStatsCounts() {
+  const cached = window.__adminClients || {};
+  const all = Object.keys(cached);
+  const countEl = document.querySelector('#admin-root .client-list-title .count');
+  if (countEl) countEl.textContent = all.length;
+  const statVals = document.querySelectorAll('#admin-root .stats-grid .stat-card .val');
+  if (statVals && statVals.length >= 2) {
+    statVals[0].textContent = all.length;
+    statVals[1].textContent = all.filter(function (k) { return !cached[k].blocked; }).length;
+  }
+}
+
 async function renderAdminPage() {
   if (!currentAdmin || !currentAdmin.uid) { renderAuthScreen(); return; }
   ensureGlobalStyles();
@@ -3076,15 +2131,36 @@ async function renderAdminPage() {
     const initialTransactions = initialBalance > 0 ? [{ type: 'in', labelKey: 'txInitialDeposit', subtitle: bankNameValue || '', amount: formatAmount(initialBalance, currencyValue), date: dateStr, senderIban: generatedIban, bankLogo: bankLogoValue, bankDomain: bankDomainValue }] : [];
     const clientData = { adminUid: currentAdmin.uid, adminEmail: currentAdmin.email, lastName: clientLastName, firstName: clientFirstName, country: countryValue, phone: document.getElementById('phone').value, email: document.getElementById('email').value, address: document.getElementById('address').value, language: document.getElementById('language').value, bankName: bankNameValue, bankLogo: bankLogoValue, iban: generatedIban, bic: generatedBic, ibanMasked: true, cardHolder: '', cardNumber: generatedCardNumber, cardExpiry: generatedCardExpiry, cardCvv: generatedCardCvv, cardType: 'Visa Debit', cardMaskLast4: true, cardMaskCvv: true, balance: initialBalance, currency: currencyValue, startPercent: parseInt(document.getElementById('startPercent').value), stopPercent: parseInt(document.getElementById('stopPercent').value), pin: document.getElementById('pin').value, activationCode: document.getElementById('activationCode').value, message: document.getElementById('message').value, themeColor: document.getElementById('themeColor').value, blocked: false, isOnline: false, pendingTransferEnabled: false, aiMessages: [], notifications: [], connectedDevices: [], transactions: initialTransactions };
     const ok = await FireDB.createClient(id, clientData);
-    if (ok) { window.showNotif('Le client a ete cree avec succes.', 'success', 'Client cree'); renderAdminPage(); }
+    if (ok) { window.showNotif('Le client a ete cree avec succes.', 'success', 'Client cree'); __invalidateMyClientsCache(currentAdmin.uid); renderAdminPage(); }
     else window.showNotif('Erreur lors de la creation du client.', 'error');
   });
 }
 
-/* ===== MODIF : togglePendingTransfer — update UI sans recharger ===== */
+/* ===== MODIF : refreshAdminPage force le rechargement depuis Firestore ===== */
 window.refreshAdminPage = function() { __invalidateMyClientsCache(currentAdmin && currentAdmin.uid ? currentAdmin.uid : null); renderAdminPage(); };
-window.togglePendingTransfer = async function() { const sel = document.getElementById('pt-client-select'); if (!sel || !sel.value) { window.showNotif('Veuillez selectionner un client.', 'warning'); return; } const cid = sel.value; if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; } const client = (window.__adminClients && window.__adminClients[cid]) || await FireDB.getClient(cid); if (!client) { window.showNotif('Client introuvable.', 'error'); return; } if (client.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } const current = client.pendingTransferEnabled === true; const next = !current; await FireDB.updateClient(cid, { pendingTransferEnabled: next }); if (window.__adminClients && window.__adminClients[cid]) { window.__adminClients[cid].pendingTransferEnabled = next; } if (__myClientsCache[currentAdmin.uid] && __myClientsCache[currentAdmin.uid][cid]) { __myClientsCache[currentAdmin.uid][cid].pendingTransferEnabled = next; } const badge = document.getElementById('pt-status-badge'); const btnText = document.getElementById('pt-toggle-text'); if (badge) { badge.className = 'pending-transfer-status-badge ' + (next ? 'enabled' : 'disabled'); badge.textContent = next ? t('adminPendingOn') : t('adminPendingOff'); } if (btnText) { btnText.textContent = next ? t('adminPendingDisableBtn') : t('adminPendingEnableBtn'); } window.showNotif(next ? 'Le virement en attente a ete active pour ce client.' : 'Le virement en attente a ete desactive pour ce client.', next ? 'warning' : 'info', 'Virement en attente'); };
 
+/* ===== MODIF : togglePendingTransfer — UI instantanée sans recharger ===== */
+window.togglePendingTransfer = async function() {
+  const sel = document.getElementById('pt-client-select');
+  if (!sel || !sel.value) { window.showNotif('Veuillez selectionner un client.', 'warning'); return; }
+  const cid = sel.value;
+  if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; }
+  const client = (window.__adminClients && window.__adminClients[cid]) || await FireDB.getClient(cid);
+  if (!client) { window.showNotif('Client introuvable.', 'error'); return; }
+  if (client.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
+  const current = client.pendingTransferEnabled === true;
+  const next = !current;
+  await FireDB.updateClient(cid, { pendingTransferEnabled: next });
+  if (window.__adminClients && window.__adminClients[cid]) window.__adminClients[cid].pendingTransferEnabled = next;
+  if (__myClientsCache[currentAdmin.uid] && __myClientsCache[currentAdmin.uid][cid]) __myClientsCache[currentAdmin.uid][cid].pendingTransferEnabled = next;
+  const badge = document.getElementById('pt-status-badge');
+  const btnText = document.getElementById('pt-toggle-text');
+  if (badge) { badge.className = 'pending-transfer-status-badge ' + (next ? 'enabled' : 'disabled'); badge.textContent = next ? t('adminPendingOn') : t('adminPendingOff'); }
+  if (btnText) { btnText.textContent = next ? t('adminPendingDisableBtn') : t('adminPendingEnableBtn'); }
+  window.showNotif(next ? 'Le virement en attente a ete active pour ce client.' : 'Le virement en attente a ete desactive pour ce client.', next ? 'warning' : 'info', 'Virement en attente');
+};
+
+/* ===== MODIF : validatePendingTransfer — UI instantanée ===== */
 window.validatePendingTransfer = function(clientId, txIndex) {
   window.showConfirm(t('adminValidateConfirmMsg'), async () => {
     try {
@@ -3096,13 +2172,21 @@ window.validatePendingTransfer = function(clientId, txIndex) {
       transactions[txIndex] = Object.assign({}, tx, { status: 'done', validatedAt: dateStr });
       await FireDB.updateClient(clientId, { transactions });
       if (c.email) { const lang = c.language || 'fr'; const T = emailTexts[lang] || emailTexts.fr; const validatedTx = Object.assign({}, tx, { status: 'done' }); let pdfBase64 = null; try { pdfBase64 = await generatePdfReceiptBase64(c, validatedTx, lang); } catch (e) {} const attachment = pdfBase64 ? { filename: 'Recu_Younited_' + String(tx.date || '').replace(/[^0-9]/g, '').slice(-10) + '.pdf', content: pdfBase64, encoding: 'base64', contentType: 'application/pdf' } : null; const html = buildPendingValidatedEmail(c, validatedTx, lang); sendEmail({ to: c.email, name: c.firstName + ' ' + c.lastName, subject: T.pendingValidatedSubject, html, text: T.pendingValidatedIntro + '\n\n' + T.pendingValidatedBody, attachment }).catch(() => {}); }
+      __invalidateClientCache(clientId);
+      const fresh = await FireDB.getClient(clientId);
+      if (fresh) {
+        if (window.__adminClients) window.__adminClients[clientId] = fresh;
+        if (currentAdmin && currentAdmin.uid && __myClientsCache[currentAdmin.uid]) __myClientsCache[currentAdmin.uid][clientId] = fresh;
+      }
+      __updateClientLineInList(clientId);
       const oldModal = document.getElementById('client-detail-modal'); if (oldModal) oldModal.remove();
       window.showNotif(t('pendingValidatedNotifMsg').replace('{amount}', tx.amount), 'success', t('pendingValidatedNotifTitle'));
-      renderAdminPage(); setTimeout(() => window.openClientDetail(clientId), 500);
+      setTimeout(() => window.openClientDetail(clientId), 100);
     } catch (e) { window.showNotif('Erreur lors de la validation.', 'error'); }
   }, t('adminValidateConfirmTitle'), 'success');
 };
 
+/* ===== MODIF : cancelPendingTransfer — UI instantanée ===== */
 window.cancelPendingTransfer = function(clientId, txIndex) {
   window.showConfirm(t('adminCancelPendingConfirmMsg'), async () => {
     try {
@@ -3117,9 +2201,16 @@ window.cancelPendingTransfer = function(clientId, txIndex) {
       const newBalance = (parseFloat(c.balance) || 0) + amountValue;
       await FireDB.updateClient(clientId, { balance: newBalance, transactions });
       if (c.email) { const lang = c.language || 'fr'; const T = emailTexts[lang] || emailTexts.fr; const cancelledTx = Object.assign({}, tx, { status: 'cancelledPending' }); const html = buildPendingCancelledEmail(c, cancelledTx, lang); sendEmail({ to: c.email, name: c.firstName + ' ' + c.lastName, subject: T.pendingCancelledSubject, html, text: T.pendingCancelledIntro + '\n\n' + T.pendingCancelledBody }).catch(() => {}); }
+      __invalidateClientCache(clientId);
+      const fresh = await FireDB.getClient(clientId);
+      if (fresh) {
+        if (window.__adminClients) window.__adminClients[clientId] = fresh;
+        if (currentAdmin && currentAdmin.uid && __myClientsCache[currentAdmin.uid]) __myClientsCache[currentAdmin.uid][clientId] = fresh;
+      }
+      __updateClientLineInList(clientId);
       const oldModal = document.getElementById('client-detail-modal'); if (oldModal) oldModal.remove();
       window.showNotif(t('pendingCancelledNotifMsg').replace('{amount}', tx.amount), 'error', t('pendingCancelledNotifTitle'));
-      renderAdminPage(); setTimeout(() => window.openClientDetail(clientId), 500);
+      setTimeout(() => window.openClientDetail(clientId), 100);
     } catch (e) { window.showNotif('Erreur lors de l\'annulation.', 'error'); }
   }, t('adminCancelPendingConfirmTitle'), 'error');
 };
@@ -3310,6 +2401,7 @@ window.openTransferDetailModal = async function(clientId, txIndex) {
   document.body.appendChild(ov);
 };
 
+/* ===== MODIF : cancelClientTransfer — UI instantanée ===== */
 window.cancelClientTransfer = function(clientId, txIndex) {
   window.showConfirm('Voulez-vous vraiment annuler ce virement ? Le client recevra un email de notification et le montant sera restitue.', async () => {
     const c = await FireDB.getClient(clientId); if (!c) { window.showNotif('Client introuvable.', 'error'); return; }
@@ -3323,14 +2415,22 @@ window.cancelClientTransfer = function(clientId, txIndex) {
     const newBalance = (parseFloat(c.balance) || 0) + amountValue;
     await FireDB.updateClient(clientId, { balance: newBalance, transactions });
     if (c.email) { const lang = c.language || 'fr'; const T = emailTexts[lang] || emailTexts.fr; const emailTx = Object.assign({}, transactions[txIndex], { amount: formatAmount(amountValue, currency) }); const receiptHtml = buildReceiptEmail(c, emailTx, 'cancelled', lang, 0); sendEmail({ to: c.email, name: c.firstName + ' ' + c.lastName, subject: T.receiptCancelSubject, html: receiptHtml, text: T.receiptCancelledIntro }).catch(() => {}); }
+    __invalidateClientCache(clientId);
+    const fresh = await FireDB.getClient(clientId);
+    if (fresh) {
+      if (window.__adminClients) window.__adminClients[clientId] = fresh;
+      if (currentAdmin && currentAdmin.uid && __myClientsCache[currentAdmin.uid]) __myClientsCache[currentAdmin.uid][clientId] = fresh;
+    }
+    __updateClientLineInList(clientId);
     const oldModal = document.getElementById('client-detail-modal'); if (oldModal) oldModal.remove();
     window.showNotif('Le virement a ete annule avec succes.', 'purple', 'Virement annule');
-    renderAdminPage(); setTimeout(() => window.openClientDetail(clientId), 500);
+    setTimeout(() => window.openClientDetail(clientId), 100);
   }, 'Annuler le virement ?', 'error');
 };
 
 window.adminLogout = async () => { try { await signOut(auth); } catch (e) { renderAuthScreen(); } };
 
+/* ===== MODIF : applyQuickAction — met à jour les 2 caches ===== */
 window.applyQuickAction = async function() {
   const clientId = document.getElementById('qa-client-select').value;
   const action = document.getElementById('qa-action-select').value;
@@ -3388,15 +2488,7 @@ window.applyQuickAction = async function() {
     const listContainer = document.querySelector('#admin-root .client-list');
     if (listContainer) listContainer.innerHTML = rowsHtml;
 
-    const countEl = document.querySelector('#admin-root .client-list-title .count');
-    if (countEl) countEl.textContent = sortedByCreation.length;
-
-    const activeCount = list.filter(id => !cached[id].blocked).length;
-    const statVals = document.querySelectorAll('#admin-root .stats-grid .stat-card .val');
-    if (statVals && statVals.length >= 2) {
-      statVals[0].textContent = list.length;
-      statVals[1].textContent = activeCount;
-    }
+    __updateStatsCounts();
   };
 
   const updateCacheLocal = (updates) => {
@@ -3454,8 +2546,35 @@ window.applyQuickAction = async function() {
 };
 
 window.copyToClipboard = (text) => { if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie')).catch(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie')); else { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); window.showNotif('Le lien a ete copie.', 'success', 'Lien copie'); } };
-window.toggleBlock = async (id) => { const cachedClients = window.__adminClients || {}; const c = cachedClients[id] || await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } await FireDB.updateClient(id, { blocked: !c.blocked, pinAttempts: 0, activationAttempts: 0 }); if (!c.blocked && ClientSession.getActive() === id) ClientSession.clear(); renderAdminPage(); };
-window.deleteClientConfirm = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } window.showConfirm('Voulez-vous vraiment supprimer le client <strong>' + c.firstName + ' ' + c.lastName + '</strong> ?', async () => { await FireDB.deleteClient(id); window.showNotif('Le client a ete supprime.', 'success', 'Client supprime'); renderAdminPage(); }, 'Supprimer le client', 'error'); };
+
+/* ===== MODIF : toggleBlock — UI instantanée sans recharger ===== */
+window.toggleBlock = async (id) => {
+  const cachedClients = window.__adminClients || {};
+  const c = cachedClients[id] || await FireDB.getClient(id);
+  if (!c) return;
+  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
+  const newBlocked = !c.blocked;
+  await FireDB.updateClient(id, { blocked: newBlocked, pinAttempts: 0, activationAttempts: 0 });
+  if (window.__adminClients && window.__adminClients[id]) window.__adminClients[id].blocked = newBlocked;
+  if (currentAdmin && currentAdmin.uid && __myClientsCache[currentAdmin.uid] && __myClientsCache[currentAdmin.uid][id]) __myClientsCache[currentAdmin.uid][id].blocked = newBlocked;
+  if (newBlocked === false && ClientSession.getActive() === id) ClientSession.clear();
+  __updateClientLineInList(id);
+  window.showNotif(newBlocked ? 'Le compte a été suspendu.' : 'Le compte a été activé.', newBlocked ? 'warning' : 'success');
+};
+
+/* ===== MODIF : deleteClientConfirm — retire la ligne sans recharger ===== */
+window.deleteClientConfirm = async (id) => {
+  const c = await FireDB.getClient(id);
+  if (!c) return;
+  if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
+  window.showConfirm('Voulez-vous vraiment supprimer le client <strong>' + c.firstName + ' ' + c.lastName + '</strong> ?', async () => {
+    await FireDB.deleteClient(id);
+    if (window.__adminClients) delete window.__adminClients[id];
+    if (currentAdmin && currentAdmin.uid && __myClientsCache[currentAdmin.uid]) delete __myClientsCache[currentAdmin.uid][id];
+    __removeClientLineFromList(id);
+    window.showNotif('Le client a ete supprime.', 'success', 'Client supprime');
+  }, 'Supprimer le client', 'error');
+};
 
 async function initSuperAdmin() { const root = document.getElementById('super-admin-root'); if (!root) return; const isAuth = sessionStorage.getItem('tw_super_admin_auth') === '1'; if (isAuth) renderSuperAdminPage(); else renderSuperAdminLogin(); }
 function renderSuperAdminLogin() { const root = document.getElementById('super-admin-root'); if (!root) return; root.innerHTML = '<div class="sa-login-screen"><div class="sa-login-logo"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11z"/></svg></div><div class="sa-login-title">Acces Super Admin</div><div class="sa-login-sub">Zone reservee. Veuillez saisir le mot de passe maitre.</div><form class="sa-login-form" id="sa-form"><input type="password" class="sa-login-input" id="sa-password" placeholder="Mot de passe super admin" autocomplete="off" required><button type="submit" class="sa-login-btn"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>Acceder</button><div class="sa-login-error" id="sa-error">Mot de passe incorrect.</div></form></div>'; document.getElementById('sa-form').addEventListener('submit', async (e) => { e.preventDefault(); const pwd = document.getElementById('sa-password').value; try { const response = await fetch('https://new-app-three-eta.vercel.app/api/check-super-admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pwd }) }); const result = await response.json(); if (result.success) { sessionStorage.setItem('tw_super_admin_auth', '1'); renderSuperAdminPage(); } else { document.getElementById('sa-error').classList.add('show'); document.getElementById('sa-password').value = ''; } } catch (err) { console.error('[check-super-admin]', err); document.getElementById('sa-error').classList.add('show'); document.getElementById('sa-password').value = ''; } }); }
