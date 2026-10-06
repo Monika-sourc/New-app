@@ -1014,13 +1014,52 @@ window.toggleBalanceVisibility = function () {
 /* ============================================================ */
 /* ===== ensureGlobalStyles — Bordures légères + boules ======= */
 /* ===== MODIF : Épaisseur des textes réduite pour CLIENT ===== */
-/* ===== MODIF : Boutons rapides compacts + modales rectangulaires ===== */
+/* ===== MODIF : Boutons compacts v2 + Animations globales ==== */
 /* ============================================================ */
 function ensureGlobalStyles() {
   if (document.getElementById('tw-bubbles-styles')) return;
   const style = document.createElement('style');
   style.id = 'tw-bubbles-styles';
   style.textContent = `
+    /* ===== MODIF : Animations globales ===== */
+    @keyframes twFadeInUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes twFadeIn{from{opacity:0;}to{opacity:1;}}
+    @keyframes twScaleIn{from{opacity:0;transform:scale(0.94);}to{opacity:1;transform:scale(1);}}
+    @keyframes twSlideInLeft{from{opacity:0;transform:translateX(-10px);}to{opacity:1;transform:translateX(0);}}
+    @keyframes twSlideInRight{from{opacity:0;transform:translateX(10px);}to{opacity:1;transform:translateX(0);}}
+    @keyframes twPulseSoft{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.03);opacity:0.92;}}
+
+    .screen.active{animation:twFadeIn 0.3s ease-out;}
+    .balance-card-new{animation:twFadeInUp 0.5s ease-out 0.05s both;}
+    .quick-actions-row-new{animation:twFadeInUp 0.5s ease-out 0.15s both;}
+    .transactions-section-new{animation:twFadeInUp 0.5s ease-out 0.25s both;}
+    .security-banner-new{animation:twFadeInUp 0.5s ease-out 0.35s both;}
+    .profile-card-new{animation:twFadeInUp 0.45s ease-out both;}
+    .profile-card-new:nth-of-type(1){animation-delay:0.08s;}
+    .profile-card-new:nth-of-type(2){animation-delay:0.16s;}
+    .profile-logout-new{animation:twFadeInUp 0.45s ease-out 0.24s both;}
+    .profile-security-new{animation:twFadeInUp 0.45s ease-out 0.32s both;}
+    .tx-item-new{animation:twSlideInLeft 0.35s ease-out both;}
+    .tx-item-new:nth-child(1){animation-delay:0.03s;}
+    .tx-item-new:nth-child(2){animation-delay:0.06s;}
+    .tx-item-new:nth-child(3){animation-delay:0.09s;}
+    .tx-item-new:nth-child(4){animation-delay:0.12s;}
+    .tx-item-new:nth-child(5){animation-delay:0.15s;}
+    .tx-item-new:nth-child(6){animation-delay:0.18s;}
+    .tx-item-new:nth-child(7){animation-delay:0.21s;}
+    .tx-item-new:nth-child(8){animation-delay:0.24s;}
+    .modal,.vcard-modal,.iban-modal-new{animation:twScaleIn 0.28s cubic-bezier(0.34,1.56,0.64,1);}
+    .notif-modal{animation:twScaleIn 0.3s cubic-bezier(0.34,1.56,0.64,1);}
+    .client-line{animation:twFadeInUp 0.3s ease-out both;}
+    .client-line:nth-child(1){animation-delay:0.02s;}
+    .client-line:nth-child(2){animation-delay:0.04s;}
+    .client-line:nth-child(3){animation-delay:0.06s;}
+    .client-line:nth-child(4){animation-delay:0.08s;}
+    .client-line:nth-child(5){animation-delay:0.10s;}
+    .client-line:nth-child(6){animation-delay:0.12s;}
+    .balance-card-amount-new{animation:twPulseSoft 4s ease-in-out infinite;}
+    .header-notif-badge-new{animation:twPulseSoft 1.8s ease-in-out infinite;}
+
     /* ===== 1. BULLES — visibilité augmentée légèrement ===== */
     .balance-card-new{position:relative;overflow:hidden;}
     .balance-bubbles-new{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;border-radius:9px;}
@@ -1291,21 +1330,21 @@ function ensureGlobalStyles() {
     .header-younited-logo-svg { height: 24px; width: auto; max-width: 130px; flex-shrink: 0; display: block; }
     .header-younited-logo-svg text { font-family: 'Titillium Web', Arial, sans-serif; font-weight: 800 !important; fill: #1a1a1a; letter-spacing: 0.8px; }
 
-    /* ===== MODIF : Boutons rapides (Quick Actions) — Design pro compact ===== */
-    .quick-actions-row-new{display:flex !important;gap:8px !important;margin-top:14px !important;margin-bottom:14px !important;}
-    .quick-action-item-new{flex:1 !important;background:#ffffff !important;border-radius:12px !important;padding:12px 6px 10px !important;display:flex !important;flex-direction:column !important;align-items:center !important;gap:6px !important;cursor:pointer !important;box-shadow:0 2px 6px rgba(15,23,42,0.06) !important;transition:transform 0.15s ease,box-shadow 0.2s ease !important;border:1px solid #f1f5f9 !important;user-select:none !important;-webkit-tap-highlight-color:transparent !important;}
-    .quick-action-item-new:active{transform:translateY(-1px) !important;box-shadow:0 4px 10px rgba(15,23,42,0.10) !important;}
-    .quick-action-icon-new{width:38px !important;height:38px !important;min-width:38px !important;min-height:38px !important;border-radius:50% !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;transition:transform 0.15s ease !important;box-shadow:0 3px 8px rgba(15,23,42,0.12) !important;}
-    .quick-action-item-new:active .quick-action-icon-new{transform:scale(1.06) !important;}
+    /* ===== MODIF : Boutons rapides — Compact v2 ===== */
+    .quick-actions-row-new{display:flex !important;gap:6px !important;margin-top:10px !important;margin-bottom:10px !important;}
+    .quick-action-item-new{flex:1 !important;background:#ffffff !important;border-radius:10px !important;padding:9px 4px 8px !important;display:flex !important;flex-direction:column !important;align-items:center !important;gap:5px !important;cursor:pointer !important;box-shadow:0 1px 4px rgba(15,23,42,0.06) !important;transition:transform 0.15s ease,box-shadow 0.2s ease !important;border:1px solid #f1f5f9 !important;user-select:none !important;-webkit-tap-highlight-color:transparent !important;}
+    .quick-action-item-new:active{transform:scale(0.97) !important;box-shadow:0 2px 6px rgba(15,23,42,0.10) !important;}
+    .quick-action-icon-new{width:32px !important;height:32px !important;min-width:32px !important;min-height:32px !important;border-radius:50% !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;transition:transform 0.15s ease !important;box-shadow:0 2px 6px rgba(15,23,42,0.12) !important;}
+    .quick-action-item-new:active .quick-action-icon-new{transform:scale(1.08) !important;}
     .quick-action-icon-new.green{background:linear-gradient(135deg,#10b981 0%,#059669 100%) !important;}
     .quick-action-icon-new.blue{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%) !important;}
     .quick-action-icon-new.purple{background:linear-gradient(135deg,#8b5cf6 0%,#6d28d9 100%) !important;}
-    .quick-action-icon-new svg{width:18px !important;height:18px !important;max-width:18px !important;max-height:18px !important;display:block !important;fill:#ffffff !important;}
+    .quick-action-icon-new svg{width:16px !important;height:16px !important;max-width:16px !important;max-height:16px !important;display:block !important;fill:#ffffff !important;}
     .quick-action-icon-new svg path{fill:#ffffff !important;}
-    .quick-action-label-new{font-size:10px !important;font-weight:600 !important;color:#334155 !important;text-align:center !important;line-height:1.2 !important;letter-spacing:0.1px !important;padding:0 2px !important;word-break:break-word !important;}
+    .quick-action-label-new{font-size:9.5px !important;font-weight:600 !important;color:#334155 !important;text-align:center !important;line-height:1.15 !important;letter-spacing:0.1px !important;padding:0 1px !important;word-break:break-word !important;}
     .quick-action-item-new.qa-primary{background:linear-gradient(135deg,#faf5ff 0%,#eef2ff 100%) !important;border-color:#ddd6fe !important;}
-    .quick-action-item-new.qa-primary .quick-action-icon-new{width:40px !important;height:40px !important;min-width:40px !important;min-height:40px !important;box-shadow:0 4px 10px rgba(139,92,246,0.42) !important;}
-    .quick-action-item-new.qa-primary .quick-action-icon-new svg{width:19px !important;height:19px !important;max-width:19px !important;max-height:19px !important;}
+    .quick-action-item-new.qa-primary .quick-action-icon-new{width:34px !important;height:34px !important;min-width:34px !important;min-height:34px !important;box-shadow:0 3px 8px rgba(139,92,246,0.42) !important;}
+    .quick-action-item-new.qa-primary .quick-action-icon-new svg{width:17px !important;height:17px !important;max-width:17px !important;max-height:17px !important;}
     .quick-action-item-new.qa-primary .quick-action-label-new{color:#5b21b6 !important;font-weight:700 !important;}
 
     /* ===== MODIF : Popup IBAN rectangulaire + design pro ===== */
@@ -1348,633 +1387,6 @@ function renderQuickActions() {
       '<div class="quick-action-label-new">' + t('quickTransferLabel') + '</div>' +
     '</div>' +
   '</div>';
-}
-
-function buildBankLogoHtml(tx, circleClass, iconSvg, fallbackLogo) {
-  if (!tx.bankLogo) return '<div class="tx-icon-circle-new ' + circleClass + '"><svg viewBox="0 0 24 24">' + iconSvg + '</svg></div>';
-  const domain = tx.bankDomain || '';
-  const primary = tx.bankLogo;
-  const duck = domain ? 'https://icons.duckduckgo.com/ip3/' + domain + '.ico' : '';
-  const fallbackEscaped = fallbackLogo.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-  const onerr = "this.onerror=null;" + (duck ? "this.src='" + duck + "';this.onerror=function(){this.onerror=null;this.src='" + fallbackEscaped + "';};" : "this.src='" + fallbackEscaped + "';");
-  return '<div class="tx-icon-circle-new bank-logo"><img src="' + primary + '" alt="bank" loading="lazy" referrerpolicy="no-referrer" onerror="' + onerr + '" /></div>';
-}
-
-/* ===== MODIF CLIENT : Réduction épaisseur des textes dans l'historique ===== */
-function ensureTransactionHistoryStyles() {
-  if (document.getElementById('tx-history-styles-v2')) return;
-  const style = document.createElement('style');
-  style.id = 'tx-history-styles-v2';
-  style.textContent = `
-    .transactions-section-new { margin-top: 30px; }
-    .tx-history-card { background: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08); border: 1px solid #f1f5f9; }
-    .tx-history-header { display: flex; align-items: center; gap: 9px; padding: 14px 16px 12px; }
-    .tx-history-header-icon { width: 30px; height: 30px; border-radius: 9px; background: #ede9fe; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .tx-history-header-icon svg { width: 16px; height: 16px; fill: #7c3aed; }
-    .tx-history-header-menu { width: 24px; height: 24px; border-radius: 6px; background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0; transition: background 0.15s ease; font-family: inherit; }
-    .tx-history-header-menu:active { background: #f1f5f9; }
-    .tx-history-header-menu svg { width: 15px; height: 15px; fill: #7c3aed; }
-    .tx-history-header-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 4px; flex-shrink: 0; margin-left: auto; }
-    .tx-history-header-count { min-width: 24px; height: 24px; padding: 0 8px; border-radius: 12px; background: #ede9fe; color: #7c3aed; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-sizing: border-box; }
-    .tx-history-see-all { background: transparent; border: none; color: #7c3aed; font-size: 11px; font-weight: 700; cursor: pointer; padding: 0; font-family: inherit; letter-spacing: 0.2px; white-space: nowrap; text-decoration: none; line-height: 1.2; }
-    .tx-history-see-all:active { opacity: 0.7; }
-    .tx-history-header-title { flex: 1; font-size: 14.5px; font-weight: 700; color: #0f172a; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .tx-history-divider { height: 2px; background: linear-gradient(90deg, #7c3aed 0%, #7c3aed 12%, #ede9fe 12%, #ede9fe 100%); margin: 0; }
-    .tx-history-body { padding: 6px 0 10px; }
-    .tx-date-group { font-size: 11.5px; font-weight: 600; color: #64748b; padding: 10px 16px 4px; letter-spacing: 0.3px; }
-    .tx-item-new { display: flex !important; align-items: flex-start !important; gap: 12px !important; padding: 11px 16px !important; cursor: pointer; background: #ffffff; transition: background 0.15s ease; border: none !important; border-radius: 0 !important; margin: 0 !important; flex-wrap: nowrap !important; }
-    .tx-item-new:active { background: #f8fafc !important; }
-    .tx-item-new.tx-bg-in { background: linear-gradient(90deg, #f0fdf4 0%, #ffffff 70%) !important; }
-    .tx-item-new.tx-bg-out { background: linear-gradient(90deg, #fef2f2 0%, #ffffff 70%) !important; }
-    .tx-item-new.tx-bg-cancelled { background: linear-gradient(90deg, #f5f3ff 0%, #ffffff 70%) !important; }
-    .tx-item-new.tx-bg-refund { background: linear-gradient(90deg, #f5f3ff 0%, #ffffff 70%) !important; }
-    .tx-item-new.tx-bg-pending { background: linear-gradient(90deg, #fffbeb 0%, #ffffff 70%) !important; }
-    .tx-icon-circle-new { width: 42px !important; height: 42px !important; border-radius: 12px !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important; overflow: hidden !important; }
-    .tx-icon-circle-new svg { width: 19px !important; height: 19px !important; max-width: 19px !important; max-height: 19px !important; }
-    .tx-icon-circle-new.in { background: #dcfce7 !important; }
-    .tx-icon-circle-new.in svg { fill: #16a34a !important; }
-    .tx-icon-circle-new.out { background: #fee2e2 !important; }
-    .tx-icon-circle-new.out svg { fill: #dc2626 !important; }
-    .tx-icon-circle-new.cancelled { background: #ede9fe !important; }
-    .tx-icon-circle-new.cancelled svg { fill: #7c3aed !important; }
-    .tx-icon-circle-new.refund { background: #ede9fe !important; }
-    .tx-icon-circle-new.refund svg { fill: #7c3aed !important; }
-    .tx-icon-circle-new.pending { background: #fef3c7 !important; }
-    .tx-icon-circle-new.pending svg { fill: #d97706 !important; }
-    .tx-icon-circle-new.bank-logo { background: #ffffff !important; border: 1px solid #e2e8f0 !important; padding: 5px !important; box-sizing: border-box !important; }
-    .tx-icon-circle-new.bank-logo img { width: 100% !important; height: 100% !important; object-fit: contain !important; border-radius: 50% !important; display: block !important; }
-    .tx-info-new { flex: 1 !important; min-width: 0 !important; display: flex !important; flex-direction: column !important; gap: 2px !important; }
-    .tx-name-new { font-size: 13px !important; font-weight: 700 !important; color: #0f172a !important; line-height: 1.25 !important; word-break: break-word; white-space: normal; }
-    .tx-sub-new { font-size: 11.5px !important; font-weight: 400 !important; color: #64748b !important; line-height: 1.3 !important; word-break: break-word; white-space: normal; }
-    .tx-time-new { font-size: 10px !important; font-weight: 400 !important; color: #94a3b8 !important; line-height: 1.2 !important; margin-top: 2px; }
-    .tx-amount-box-new { text-align: right !important; flex-shrink: 0 !important; display: flex !important; flex-direction: column !important; align-items: flex-end !important; gap: 3px !important; margin-left: 4px !important; }
-    .tx-amount-value-new { font-size: 13.5px !important; font-weight: 700 !important; letter-spacing: -0.2px !important; white-space: nowrap !important; line-height: 1.2 !important; }
-    .tx-amount-value-new.pos { color: #16a34a !important; }
-    .tx-amount-value-new.neg { color: #dc2626 !important; }
-    .tx-amount-value-new.cancelled { color: #7c3aed !important; }
-    .tx-amount-value-new.refund { color: #7c3aed !important; }
-    .tx-amount-value-new.pending { color: #d97706 !important; }
-    .tx-status-new { font-size: 10px !important; font-weight: 500 !important; color: #94a3b8 !important; white-space: nowrap !important; line-height: 1.2 !important; }
-    .tx-status-new.pos { color: #16a34a !important; }
-    .tx-status-new.neg { color: #dc2626 !important; }
-    .tx-status-new.cancelled { color: #7c3aed !important; }
-    .tx-status-new.refund { color: #7c3aed !important; }
-    .tx-status-new.pending { color: #d97706 !important; }
-    .tx-history-empty { text-align: center; padding: 32px 20px; color: #94a3b8; font-size: 12px; font-weight: 500; }
-  `;
-  document.head.appendChild(style);
-}
-
-function getDateGroupLabel(dateStr) {
-  if (!dateStr) return '';
-  const str = String(dateStr).trim();
-  const parts = str.split(' ');
-  if (parts.length < 1) return str;
-  const dparts = parts[0].split('/');
-  if (dparts.length !== 3) return str;
-  const day = parseInt(dparts[0], 10);
-  const month = parseInt(dparts[1], 10) - 1;
-  const year = parseInt(dparts[2], 10);
-  if (isNaN(day) || isNaN(month) || isNaN(year)) return str;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const dNorm = new Date(year, month, day);
-  dNorm.setHours(0, 0, 0, 0);
-  const diffDays = Math.round((today - dNorm) / 86400000);
-  if (diffDays === 0) return t('dateToday');
-  if (diffDays === 1) return t('dateYesterday');
-  if (diffDays === -1) return t('dateTomorrow');
-  if (diffDays === 2) return t('dateDayBefore');
-  if (diffDays > 2 && diffDays < 7) return t('dateDaysAgoPrefix') + diffDays + t('dateDaysAgoSuffix');
-  return dparts[0] + '/' + dparts[1] + '/' + dparts[2];
-}
-
-function getTimeFromDateStr(dateStr) {
-  if (!dateStr) return '';
-  const parts = String(dateStr).trim().split(' ');
-  if (parts.length >= 2) return parts[1];
-  return '';
-}
-
-function getTxStatusWord(tx) {
-  if (!tx) return '';
-  const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
-  const isPending = tx.status === 'pending';
-  const isRefund = tx.status === 'cancelledPending';
-  const isFailed = tx.status === 'failed';
-  if (isPending) return t('statusPending');
-  if (isRefund) return t('statusRefund');
-  if (isCancelled) return t('statusCancelled');
-  if (isFailed) return t('statusFailed');
-  return t('statusDone');
-}
-
-function getTxStatusClass(tx) {
-  if (!tx) return 'pos';
-  const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
-  const isPending = tx.status === 'pending';
-  const isRefund = tx.status === 'cancelledPending';
-  const isFailed = tx.status === 'failed';
-  const isIn = tx.type === 'in';
-  if (isPending) return 'pending';
-  if (isRefund) return 'refund';
-  if (isCancelled) return 'cancelled';
-  if (isFailed) return 'neg';
-  return isIn ? 'pos' : 'neg';
-}
-
-function renderTransactions(txs) {
-  ensureTransactionHistoryStyles();
-  currentTransactions = txs || [];
-  if (!txs || txs.length === 0) {
-    return '<div class="tx-history-empty">' + (t('noTransactions') || 'Aucune transaction') + '</div>';
-  }
-
-  const groups = [];
-  const groupIndex = {};
-  txs.forEach((tx, idx) => {
-    const label = getDateGroupLabel(tx.date);
-    if (groupIndex[label] === undefined) {
-      groupIndex[label] = groups.length;
-      groups.push({ label: label, items: [] });
-    }
-    groups[groupIndex[label]].items.push({ tx: tx, idx: idx });
-  });
-
-  let h = '';
-  groups.forEach(function (group) {
-    h += '<div class="tx-date-group">' + group.label + '</div>';
-    group.items.forEach(function (item) {
-      const tx = item.tx;
-      const idx = item.idx;
-      const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
-      const isIn = tx.type === 'in';
-      const isPending = tx.status === 'pending';
-      const isRefund = tx.status === 'cancelledPending';
-
-      let circleClass, iconSvg, amountClass, amountSign;
-      if (isRefund) {
-        circleClass = 'refund';
-        iconSvg = '<path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>';
-        amountClass = 'refund';
-        amountSign = '+';
-      } else if (isPending) {
-        circleClass = 'pending';
-        iconSvg = '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>';
-        amountClass = 'pending';
-        amountSign = '−';
-      } else if (isCancelled) {
-        circleClass = 'cancelled';
-        iconSvg = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
-        amountClass = 'cancelled';
-        amountSign = '+';
-      } else if (isIn) {
-        circleClass = 'in';
-        iconSvg = '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>';
-        amountClass = 'pos';
-        amountSign = '+';
-      } else {
-        circleClass = 'out';
-        iconSvg = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>';
-        amountClass = 'neg';
-        amountSign = '−';
-      }
-
-      let iconHtml;
-      if (tx.bankLogo && !isCancelled && !isPending && !isRefund) {
-        iconHtml = buildBankLogoHtml(tx, circleClass, iconSvg, FALLBACK_BANK_LOGO);
-      } else {
-        iconHtml = '<div class="tx-icon-circle-new ' + circleClass + '"><svg viewBox="0 0 24 24">' + iconSvg + '</svg></div>';
-      }
-
-      let title;
-      if (isRefund) { title = t('txRefund') || 'Remboursement'; }
-      else if (isPending) { title = t('pendingResultTitle') || 'Virement en attente'; }
-      else if (isCancelled) { title = t('txTransferCancelled'); }
-      else if (tx.labelKey) { title = t(tx.labelKey); }
-      else if (isIn) { title = t('txTransferReceived'); }
-      else { title = t('txTransferSent'); }
-
-      const subtitle = translateSubtitle(tx.subtitle);
-      const timeStr = getTimeFromDateStr(tx.date);
-      const statusWord = getTxStatusWord(tx);
-      const statusClass = getTxStatusClass(tx);
-
-      let bgClass = '';
-      if (isRefund) bgClass = 'tx-bg-refund';
-      else if (isPending) bgClass = 'tx-bg-pending';
-      else if (isCancelled) bgClass = 'tx-bg-cancelled';
-      else if (isIn) bgClass = 'tx-bg-in';
-      else bgClass = 'tx-bg-out';
-
-      h += '<div class="tx-item-new ' + bgClass + '" onclick="window.openReceipt(' + idx + ')">' +
-        iconHtml +
-        '<div class="tx-info-new">' +
-          '<div class="tx-name-new">' + title + '</div>' +
-          '<div class="tx-sub-new">' + subtitle + '</div>' +
-          '<div class="tx-time-new">' + timeStr + '</div>' +
-        '</div>' +
-        '<div class="tx-amount-box-new">' +
-          '<div class="tx-amount-value-new ' + amountClass + '">' + amountSign + tx.amount + '</div>' +
-          '<div class="tx-status-new ' + statusClass + '">' + statusWord + '</div>' +
-        '</div>' +
-      '</div>';
-    });
-  });
-
-  return h;
-}
-
-function escapeHtmlNotif(s) {
-  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-function renderNotifBadgeHtml(notifications) {
-  var count = (Array.isArray(notifications)) ? notifications.length : 0;
-  if (count <= 0) return '';
-  return '<span class="header-notif-badge-new">' + (count > 99 ? '99+' : count) + '</span>';
-}
-function renderHeaderNotifBtn(client) {
-  var badge = renderNotifBadgeHtml(client && client.notifications);
-  return '<button class="header-icon-btn-new" id="header-notif-btn" onclick="window.showNotifications()" style="position:relative;">' +
-    '<svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>' +
-    badge + '</button>';
-}
-function renderAdminNotificationList(cc) {
-  var notifs = (cc && Array.isArray(cc.notifications)) ? cc.notifications.slice().reverse() : [];
-  if (notifs.length === 0) return '<div class="admin-pending-empty">Aucune notification envoyée</div>';
-  var html = '';
-  notifs.forEach(function (n) {
-    var nid = n.id || '';
-    var cid = (cc && cc.id) ? cc.id : '';
-    html += '<div>';
-    html += '<div style="font-size:11.5px;font-weight:700;color:#0f172a;margin-bottom:4px;line-height:1.3;word-break:break-word;">' + escapeHtmlNotif(n.title || 'Notification') + '</div>';
-    html += '<div style="font-size:11px;color:#475569;line-height:1.5;margin-bottom:5px;white-space:pre-wrap;word-break:break-word;">' + escapeHtmlNotif(n.message || '') + '</div>';
-    html += '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">';
-    html += '<span style="font-size:10px;color:#94a3b8;font-weight:500;">' + escapeHtmlNotif(n.date || '') + '</span>';
-    html += '<button class="client-line-btn del" style="font-size:10px;padding:4px 9px;" onclick="window.deleteNotificationFromClient(\'' + cid + '\',\'' + nid + '\')">Supprimer</button>';
-    html += '</div></div>';
-  });
-  return html;
-}
-window.showNotifications = function () {
-  if (!currentClient) return;
-  const old = document.getElementById('notif-list-dynamic'); if (old) old.remove();
-  const notifs = Array.isArray(currentClient.notifications) ? currentClient.notifications.slice().reverse() : [];
-  let bodyHtml;
-  if (notifs.length === 0) { bodyHtml = '<div class="notif-empty"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg><div>Aucune notification pour le moment.</div></div>'; }
-  else { bodyHtml = ''; notifs.forEach(function (n) { bodyHtml += '<div class="notif-item"><div class="notif-item-title">' + escapeHtmlNotif(n.title || 'Notification') + '</div><div class="notif-item-message">' + escapeHtmlNotif(n.message || '') + '</div><div class="notif-item-date">' + escapeHtmlNotif(n.date || '') + '</div></div>'; }); }
-  const ov = document.createElement('div');
-  ov.id = 'notif-list-dynamic'; ov.className = 'notif-list-overlay';
-  ov.innerHTML = '<div class="notif-list-modal"><div class="notif-list-header"><div class="notif-list-header-icon"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div><div class="notif-list-header-text"><div class="notif-list-title">Mes notifications</div><div class="notif-list-subtitle">' + notifs.length + ' notification' + (notifs.length > 1 ? 's' : '') + '</div></div><button class="notif-list-close" onclick="document.getElementById(\'notif-list-dynamic\').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div><div class="notif-list-body">' + bodyHtml + '</div></div>';
-  ov.addEventListener('click', function (e) { if (e.target === ov) ov.remove(); });
-  document.body.appendChild(ov);
-};
-window.sendNotificationToClient = async function () {
-  const clientId = document.getElementById('qa-client-select').value;
-  if (!clientId) { window.showNotif('Veuillez sélectionner un client.', 'warning'); return; }
-  if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez être connecté.', 'error'); return; }
-  const titleEl = document.getElementById('qa-notif-title');
-  const messageEl = document.getElementById('qa-notif-message');
-  const title = (titleEl && titleEl.value || '').trim();
-  const message = (messageEl && messageEl.value || '').trim();
-  if (!message) { window.showNotif('Veuillez saisir un message.', 'warning'); return; }
-  const client = await FireDB.getClient(clientId);
-  if (!client) { window.showNotif('Client introuvable.', 'error'); return; }
-  if (client.adminUid !== currentAdmin.uid) { window.showNotif('Accès refusé.', 'error'); return; }
-  const now = new Date();
-  const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-  const notifId = 'N' + now.getTime() + '-' + Math.floor(Math.random() * 1000);
-  const notif = { id: notifId, title: title || 'Notification', message: message, date: dateStr, ts: now.getTime() };
-  const notifs = Array.isArray(client.notifications) ? client.notifications.slice() : [];
-  notifs.push(notif);
-  await FireDB.updateClient(clientId, { notifications: notifs });
-  if (titleEl) titleEl.value = '';
-  if (messageEl) messageEl.value = '';
-  const fresh = await FireDB.getClient(clientId);
-  const container = document.getElementById('qa-notif-list-container');
-  if (container && fresh) container.innerHTML = renderAdminNotificationList(fresh);
-  window.showNotif('La notification a été envoyée au client.', 'success', 'Notification envoyée');
-};
-window.deleteNotificationFromClient = function (clientId, notifId) {
-  window.showConfirm('Voulez-vous vraiment supprimer cette notification ? Le client ne la verra plus.', async () => {
-    if (!currentAdmin || !currentAdmin.uid) return;
-    const client = await FireDB.getClient(clientId);
-    if (!client) { window.showNotif('Client introuvable.', 'error'); return; }
-    if (client.adminUid !== currentAdmin.uid) { window.showNotif('Accès refusé.', 'error'); return; }
-    const notifs = Array.isArray(client.notifications) ? client.notifications.slice() : [];
-    const filtered = notifs.filter(function (n) { return n && n.id !== notifId; });
-    await FireDB.updateClient(clientId, { notifications: filtered });
-    const container = document.getElementById('qa-notif-list-container');
-    if (container) container.innerHTML = renderAdminNotificationList({ id: clientId, notifications: filtered });
-    window.showNotif('Notification supprimée.', 'success', 'Notification supprimée');
-  }, 'Supprimer la notification', 'error');
-};
-
-function syncClientUI(fresh) {
-  if (!fresh) return;
-  const previousLang = currentLang;
-  const previousClient = currentClient;
-  currentClient = fresh;
-  currentLang = fresh.language || 'fr';
-  applyTheme(fresh.themeColor);
-
-  try {
-    if (previousClient && previousClient.transactions) {
-      const prevCancelledCount = previousClient.transactions.filter(function (t) { return t && (t.type === 'cancelled' || t.cancelled === true); }).length;
-      const newTxs = fresh.transactions || [];
-      const newCancelledList = newTxs.filter(function (t) { return t && (t.type === 'cancelled' || t.cancelled === true); });
-      if (newCancelledList.length > prevCancelledCount) {
-        const newTx = newCancelledList[0];
-        const msg = (t('transferCancelledMsg') || 'Virement annulé.').replace('{amount}', newTx.amount || '—').replace('{name}', newTx.subtitle || '—').replace('{iban}', newTx.recipientIban || '—');
-        setTimeout(function () { window.showNotif(msg, 'purple', t('transferCancelledTitle') || 'Virement annulé'); }, 500);
-      }
-    }
-  } catch (e) {}
-
-  const currency = fresh.currency || '€';
-  const balanceFormatted = formatAmount(fresh.balance || 0, currency);
-
-  const amountEl = document.getElementById('balance-amount-display');
-  if (amountEl) amountEl.innerHTML = renderBalanceAmountHtml();
-
-  const eyeBtn = document.getElementById('balance-eye-btn');
-  if (eyeBtn) eyeBtn.innerHTML = balanceVisible ? EYE_OPEN_SVG : EYE_CLOSED_SVG;
-
-  const currSymbolEl = document.querySelector('.balance-card-type-label-new .curr-symbol');
-  if (currSymbolEl) currSymbolEl.textContent = getCurrencyCode(currency);
-  const txList = document.getElementById('transaction-list');
-  if (txList) {
-    txList.innerHTML = renderTransactions(fresh.transactions);
-    const historyCountEl = document.querySelector('.tx-history-header-count');
-    if (historyCountEl) historyCountEl.textContent = (fresh.transactions && fresh.transactions.length) || 0;
-  }
-  const greetingTitleEl = document.querySelector('.greeting-title-new');
-  if (greetingTitleEl) greetingTitleEl.textContent = t('greeting') + ', ' + fresh.firstName + ' ' + fresh.lastName;
-  const transferAmountEl = document.querySelector('#screen-transfer .transfer-amount');
-  if (transferAmountEl) transferAmountEl.textContent = balanceFormatted;
-  const profileScreen = document.getElementById('screen-profile');
-  if (profileScreen) { const initials = ((fresh.firstName || '').charAt(0) + (fresh.lastName || '').charAt(0)).toUpperCase(); profileScreen.innerHTML = renderProfileScreen(fresh, initials, balanceFormatted); }
-  const cardBody = document.getElementById('card-modal-body-content');
-  if (cardBody) { virtualCardRevealed = false; cardBody.innerHTML = renderCardBody(fresh.cardNumber || '4944595344283327', getCardHolderName(fresh), fresh.cardExpiry || '02/28', fresh.cardCvv || '843', fresh.cardType || 'Visa Debit', fresh.cardMaskLast4 === true, fresh.cardMaskCvv === true, false); }
-  const creditCard = document.querySelector('.credit-card .card-holder');
-  if (creditCard) creditCard.textContent = getCardHolderName(fresh);
-
-  try {
-    const notifBtn = document.getElementById('header-notif-btn');
-    if (notifBtn) {
-      const existing = notifBtn.querySelector('.header-notif-badge-new');
-      if (existing) existing.remove();
-      const count = Array.isArray(fresh.notifications) ? fresh.notifications.length : 0;
-      if (count > 0) {
-        const span = document.createElement('span');
-        span.className = 'header-notif-badge-new';
-        span.textContent = count > 99 ? '99+' : String(count);
-        notifBtn.appendChild(span);
-      }
-    }
-  } catch (e) {}
-
-  try {
-    const chatTitle = document.getElementById('tw-chat-title');
-    if (chatTitle) { const L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr; chatTitle.textContent = L.title; }
-    const chatSub = document.getElementById('tw-chat-subtitle');
-    if (chatSub) { const L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr; chatSub.textContent = L.subtitle; }
-    const chatInput = document.getElementById('tw-chat-input');
-    if (chatInput) { const L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr; chatInput.placeholder = L.placeholder; }
-  } catch (e) {}
-  if (previousLang !== currentLang) {
-    const navLabels = { 'nav-dashboard': 'navBalance', 'nav-transfer': 'navPaymentsNew', 'nav-card': 'navCard', 'nav-profile': 'navAccount' };
-    Object.keys(navLabels).forEach(function (navId) { const el = document.getElementById(navId); if (el) { const span = el.querySelector('span'); if (span) span.textContent = t(navLabels[navId]); } });
-  }
-}
-
-function subscribeToClient(clientId) {
-  if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
-  try {
-    clientUnsubscribe = onSnapshot(doc(db, 'clients', clientId), (snap) => {
-      if (!snap.exists()) {
-        ClientSession.clear();
-        if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
-        try { removeChatbot(); } catch (e) {}
-        initClient(); return;
-      }
-      const fresh = Object.assign({ id: snap.id }, snap.data());
-      const previousClient = currentClient;
-      const previousLang = currentLang;
-      const appRoot = document.getElementById('app-root');
-      const hasStatusScreen = appRoot && appRoot.querySelector('.twd-status-screen');
-
-      if (fresh.blocked) {
-        if (hasStatusScreen) {
-          if (previousLang !== (fresh.language || 'fr')) {
-            currentClient = fresh; currentLang = fresh.language || 'fr'; applyTheme(fresh.themeColor);
-            try { removeChatbot(); } catch (e) {}
-            setTimeout(function () { initClient(); }, 0);
-          }
-          return;
-        }
-        ClientSession.clear();
-        if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; }
-        try { removeChatbot(); } catch (e) {}
-        initClient(); return;
-      }
-
-      const wasBlocked = previousClient && previousClient.blocked === true;
-      const langChanged = previousLang !== (fresh.language || 'fr');
-      if (wasBlocked || hasStatusScreen || langChanged) {
-        currentClient = fresh; currentLang = fresh.language || 'fr'; applyTheme(fresh.themeColor);
-        setTimeout(function () {
-          const activeId = ClientSession.getActive();
-          if (activeId === clientId) renderBankingApp(fresh);
-          else renderLoginPage(fresh);
-        }, 0);
-        return;
-      }
-      syncClientUI(fresh);
-    }, () => {});
-  } catch (e) {}
-}
-
-// (Tout le code push/FCM a été retiré ici)
-
-export function initClientApp() { initClient(); }
-export function initAdminApp() { initAdmin(); }
-export function initSuperAdminApp() { initSuperAdmin(); }
-
-function ensureStatusScreensStyles() {
-  if (document.getElementById('twd-status-styles')) return;
-  const style = document.createElement('style');
-  style.id = 'twd-status-styles';
-  style.textContent = `
-    .twd-status-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 32px 24px; text-align: center; background: #ffffff; box-sizing: border-box; font-family: 'Titillium Web', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-    .twd-status-screen > * { animation: twdStatusIn 0.5s ease-out both; }
-    .twd-status-screen > *:nth-child(2) { animation-delay: 0.08s; }
-    .twd-status-screen > *:nth-child(3) { animation-delay: 0.16s; }
-    @keyframes twdStatusIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-    .twd-status-icon { width: 140px; height: 140px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 28px; flex-shrink: 0; }
-    .twd-status-icon.blocked { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); color: #dc2626; box-shadow: 0 14px 36px rgba(220, 38, 38, 0.22), 0 0 0 8px rgba(220, 38, 38, 0.05); }
-    .twd-status-icon.deleted { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); color: #475569; box-shadow: 0 14px 36px rgba(71, 85, 105, 0.22), 0 0 0 8px rgba(71, 85, 105, 0.05); }
-    .twd-status-icon svg { width: 84px; height: 84px; display: block; }
-    .twd-status-title { font-size: 22px; font-weight: 700 !important; margin-bottom: 12px; letter-spacing: -0.3px; line-height: 1.25; white-space: normal; word-break: break-word; font-family: 'Titillium Web', sans-serif; }
-    .twd-status-title.blocked { color: #b91c1c; }
-    .twd-status-title.deleted { color: #334155; }
-    .twd-status-desc { font-size: 14px; color: #475569; line-height: 1.6; max-width: 320px; font-weight: 400 !important; white-space: normal; word-break: break-word; font-family: 'Titillium Web', sans-serif; }
-    @media (max-width: 400px) { .twd-status-icon { width: 120px; height: 120px; } .twd-status-icon svg { width: 70px; height: 70px; } .twd-status-title { font-size: 20px; } .twd-status-desc { font-size: 13px; } }
-  `;
-  document.head.appendChild(style);
-}
-
-/* ===== MODIF CLIENT : Chatbot — Épaisseurs réduites ===== */
-function ensureChatbotStyles() {
-  if (document.getElementById('tw-chat-styles')) return;
-  const style = document.createElement('style');
-  style.id = 'tw-chat-styles';
-  style.textContent = `
-    #tw-chat-fab { position: fixed; right: 14px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #ec4899 0%, #a855f7 35%, #6366f1 65%, #06b6d4 100%); border: 2.5px solid rgba(255,255,255,0.9); cursor: pointer; box-shadow: 0 11px 26px rgba(168, 85, 247, 0.55), 0 5px 12px rgba(15, 23, 42, 0.28), inset 0 2px 4px rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; z-index: 9998; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease; -webkit-tap-highlight-color: transparent; animation: twChatFabBounce 3s ease-in-out infinite; }
-    #tw-chat-fab:active { transform: scale(0.92); }
-    #tw-chat-fab svg { width: 26px; height: 26px; display: block; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25)); position: relative; z-index: 2; }
-    #tw-chat-fab.tw-chat-hidden { display: none !important; }
-    @keyframes twChatFabBounce { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-3px) scale(1.04); } }
-    #tw-chat-fab::before { content: ''; position: absolute; inset: -7px; border-radius: 50%; background: radial-gradient(circle, rgba(236,72,153,0.45) 0%, rgba(99,102,241,0.35) 50%, transparent 75%); animation: twChatPulse 2.2s ease-out infinite; z-index: -1; pointer-events: none; }
-    #tw-chat-fab::after { content: ''; position: absolute; inset: -11px; border-radius: 50%; background: radial-gradient(circle, rgba(6,182,212,0.28) 0%, transparent 70%); animation: twChatPulse 2.2s ease-out infinite 0.5s; z-index: -2; pointer-events: none; }
-    @keyframes twChatPulse { 0% { transform: scale(0.85); opacity: 0.85; } 70% { transform: scale(1.35); opacity: 0; } 100% { transform: scale(1.4); opacity: 0; } }
-    .tw-chat-ai-badge { position: absolute; top: -5px; right: -5px; min-width: 20px; height: 17px; padding: 0 5px; border-radius: 9px; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #ffffff; font-size: 9px; font-weight: 800 !important; letter-spacing: 0.4px; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 3px 8px rgba(245, 158, 11, 0.55); font-family: 'Titillium Web', sans-serif; z-index: 3; text-transform: uppercase; }
-    .tw-chat-ai-badge::before { content: '✦'; margin-right: 2px; font-size: 8px; }
-    .tw-chat-tooltip { position: fixed; right: 74px; bottom: calc(98px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; padding: 8px 12px; border-radius: 12px; font-size: 11.5px; font-weight: 600 !important; font-family: 'Titillium Web', sans-serif; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.35); white-space: nowrap; z-index: 9997; animation: twChatTooltipIn 0.5s ease-out 1s both; pointer-events: none; border: 1px solid rgba(255,255,255,0.15); }
-    .tw-chat-tooltip::after { content: ''; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 6px solid #1e293b; }
-    .tw-chat-tooltip.tw-chat-tooltip-hidden { display: none !important; }
-    @keyframes twChatTooltipIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
-    #tw-chat-window { position: fixed; right: 14px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); width: calc(100vw - 28px); max-width: 380px; height: 72vh; max-height: 580px; background: #ffffff; border-radius: 20px; box-shadow: 0 26px 70px rgba(168, 85, 247, 0.35), 0 10px 30px rgba(15, 23, 42, 0.22); display: none; flex-direction: column; overflow: hidden; z-index: 9999; transform-origin: bottom right; animation: twChatOpen 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); border: 2px solid rgba(168, 85, 247, 0.25); }
-    #tw-chat-window.tw-chat-open { display: flex; }
-    @keyframes twChatOpen { from { opacity: 0; transform: translateY(20px) scale(0.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .tw-chat-header { background: linear-gradient(135deg, #ec4899 0%, #a855f7 30%, #6366f1 65%, #06b6d4 100%); padding: 14px 16px; display: flex; align-items: center; gap: 11px; color: #ffffff; flex-shrink: 0; position: relative; overflow: hidden; }
-    .tw-chat-header::before { content: ''; position: absolute; top: -50%; right: -30%; width: 220px; height: 220px; background: radial-gradient(circle, rgba(255,255,255,0.22), transparent 70%); border-radius: 50%; pointer-events: none; }
-    .tw-chat-header-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; border: 2.5px solid rgba(255,255,255,0.55); box-shadow: 0 4px 12px rgba(0,0,0,0.28); }
-    .tw-chat-header-avatar svg { width: 24px; height: 24px; display: block; fill: #7c3aed; }
-    .tw-chat-header-avatar::after { content: ''; position: absolute; bottom: -2px; right: -2px; width: 12px; height: 12px; border-radius: 50%; background: #22c55e; border: 2.5px solid #ffffff; box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.45); animation: twChatOnlineBlink 2s ease-in-out infinite; }
-    @keyframes twChatOnlineBlink { 0%, 100% { box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.45); } 50% { box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18); } }
-    .tw-chat-header-text { flex: 1; min-width: 0; position: relative; z-index: 1; }
-    #tw-chat-title { font-size: 14.5px; font-weight: 700 !important; color: #ffffff; letter-spacing: 0.2px; line-height: 1.2; font-family: 'Titillium Web', sans-serif; display: flex; align-items: center; gap: 6px; }
-    #tw-chat-title::before { content: '✦'; font-size: 12px; color: #fde68a; text-shadow: 0 0 6px rgba(253, 230, 138, 0.8); }
-    #tw-chat-subtitle { font-size: 10px; font-weight: 500 !important; color: rgba(255,255,255,0.9); margin-top: 3px; letter-spacing: 0.2px; font-family: 'Titillium Web', sans-serif; display: flex; align-items: center; gap: 5px; }
-    #tw-chat-subtitle::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px rgba(34, 197, 94, 0.9); }
-    .tw-chat-close-btn { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.32); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; z-index: 1; }
-    .tw-chat-close-btn svg { width: 13px; height: 13px; fill: #ffffff; }
-    .tw-chat-close-btn:active { background: rgba(255,255,255,0.35); }
-    .tw-chat-messages { flex: 1; overflow-y: auto; padding: 14px 12px; background: linear-gradient(180deg, #faf5ff 0%, #f1f5f9 60%, #f8fafc 100%); display: flex; flex-direction: column; gap: 10px; -webkit-overflow-scrolling: touch; }
-    .tw-chat-messages::-webkit-scrollbar { width: 4px; }
-    .tw-chat-messages::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #a855f7, #06b6d4); border-radius: 3px; }
-    .tw-chat-msg { display: flex; align-items: flex-end; gap: 7px; max-width: 90%; animation: twChatMsgIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; word-wrap: break-word; }
-    @keyframes twChatMsgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    .tw-chat-msg.tw-chat-msg-user { align-self: flex-end; flex-direction: row-reverse; }
-    .tw-chat-msg.tw-chat-msg-bot { align-self: flex-start; }
-    .tw-chat-msg-avatar { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700 !important; color: #ffffff; font-family: 'Titillium Web', sans-serif; }
-    .tw-chat-msg-bot .tw-chat-msg-avatar { background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%); box-shadow: 0 3px 8px rgba(168, 85, 247, 0.35); }
-    .tw-chat-msg-user .tw-chat-msg-avatar { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 3px 8px rgba(34, 197, 94, 0.35); }
-    .tw-chat-msg-avatar svg { width: 15px; height: 15px; display: block; }
-    .tw-chat-msg-bubble { padding: 11px 14px; border-radius: 16px; font-size: 13px; font-weight: 400 !important; line-height: 1.55; word-break: break-word; white-space: normal; font-family: 'Titillium Web', sans-serif; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08); }
-    .tw-chat-msg-bot .tw-chat-msg-bubble { background: #ffffff; color: #0f172a; border-bottom-left-radius: 4px; border: 1px solid #e9d5ff; }
-    .tw-chat-msg-user .tw-chat-msg-bubble { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: #ffffff; border-bottom-right-radius: 4px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35); }
-    .tw-chat-msg-time { font-size: 9px; color: #94a3b8; margin-top: 3px; font-weight: 500 !important; letter-spacing: 0.2px; font-family: 'Titillium Web', sans-serif; }
-    .tw-chat-msg-user .tw-chat-msg-time { color: #c7d2fe; text-align: right; }
-    .tw-chat-typing { display: flex; align-items: center; gap: 7px; align-self: flex-start; max-width: 80%; }
-    .tw-chat-typing .tw-chat-msg-avatar { background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%); }
-    .tw-chat-typing-bubble { background: #ffffff; border: 1px solid #e9d5ff; padding: 12px 16px; border-radius: 16px; border-bottom-left-radius: 4px; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 8px rgba(168, 85, 247, 0.12); }
-    .tw-chat-typing-dot { width: 6px; height: 6px; border-radius: 50%; background: linear-gradient(135deg, #a855f7, #6366f1); animation: twChatTyping 1.2s ease-in-out infinite; }
-    .tw-chat-typing-dot:nth-child(1) { animation-delay: 0s; }
-    .tw-chat-typing-dot:nth-child(2) { animation-delay: 0.18s; }
-    .tw-chat-typing-dot:nth-child(3) { animation-delay: 0.36s; }
-    @keyframes twChatTyping { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-4px); opacity: 1; } }
-    .tw-chat-footer { padding: 10px 10px 12px 10px; background: #ffffff; border-top: 1px solid #f3e8ff; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-    #tw-chat-input { flex: 1; min-width: 0; padding: 12px 15px; border: 1.5px solid #e9d5ff; border-radius: 24px; font-size: 13px; font-weight: 400 !important; color: #0f172a; background: #faf5ff; outline: none; font-family: 'Titillium Web', sans-serif; transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease; }
-    #tw-chat-input:focus { border-color: #a855f7; background: #ffffff; box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15); }
-    #tw-chat-input::placeholder { color: #a78bfa; font-weight: 400 !important; }
-    #tw-chat-send { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #06b6d4 100%); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 6px 16px rgba(168, 85, 247, 0.45); transition: transform 0.15s ease, box-shadow 0.2s ease; -webkit-tap-highlight-color: transparent; }
-    #tw-chat-send:active { transform: scale(0.9); }
-    #tw-chat-send svg { width: 19px; height: 19px; fill: #ffffff; }
-    @media (max-width: 420px) { #tw-chat-fab { right: 12px; bottom: calc(78px + env(safe-area-inset-bottom, 0px)); width: 49px; height: 49px; } #tw-chat-fab svg { width: 25px; height: 25px; } #tw-chat-window { right: 8px; left: 8px; width: auto; bottom: calc(78px + env(safe-area-inset-bottom, 0px)); height: 74vh; max-height: none; border-radius: 18px; } .tw-chat-tooltip { right: 68px; bottom: calc(94px + env(safe-area-inset-bottom, 0px)); font-size: 11px; padding: 7px 10px; } }
-  `;
-  document.head.appendChild(style);
-}
-function removeChatbot() { var fab = document.getElementById('tw-chat-fab'); if (fab) fab.remove(); var win = document.getElementById('tw-chat-window'); if (win) win.remove(); var tooltip = document.getElementById('tw-chat-tooltip'); if (tooltip) tooltip.remove(); chatbotOpen = false; }
-function loadChatMessages() { if (!currentClient) return []; var msgs = currentClient.aiMessages; if (msgs && Array.isArray(msgs) && msgs.length > 0) return msgs; try { var localKey = 'tw_ai_msgs_' + currentClient.id; var localMsgs = JSON.parse(localStorage.getItem(localKey) || '[]'); if (Array.isArray(localMsgs) && localMsgs.length > 0) return localMsgs; } catch (e) {} return []; }
-function saveChatMessage(role, text) { if (!currentClient || !currentClient.id) return; var msg = { role: role, text: text, ts: Date.now() }; try { var localKey = 'tw_ai_msgs_' + currentClient.id; var localMsgs = JSON.parse(localStorage.getItem(localKey) || '[]'); if (!Array.isArray(localMsgs)) localMsgs = []; localMsgs.push(msg); if (localMsgs.length > 200) localMsgs = localMsgs.slice(-200); localStorage.setItem(localKey, JSON.stringify(localMsgs)); } catch (e) {} var txs = (currentClient.aiMessages || []).slice(); if (!Array.isArray(txs)) txs = []; txs.push(msg); if (txs.length > 200) txs = txs.slice(-200); currentClient.aiMessages = txs; try { FireDB.updateClient(currentClient.id, { aiMessages: txs }).catch(function () {}); } catch (e) {} }
-function formatChatTime(ts) { try { var d = new Date(ts); var hh = String(d.getHours()).padStart(2, '0'); var mm = String(d.getMinutes()).padStart(2, '0'); return hh + ':' + mm; } catch (e) { return ''; } }
-function robotAvatarSvg(size) { return '<svg viewBox="0 0 24 24" fill="#ffffff" style="width:' + (size || 15) + 'px;height:' + (size || 15) + 'px;display:block;"><path d="M12 2a1 1 0 0 1 1 1v1h3a3 3 0 0 1 3 3v2h1a1 1 0 0 1 0 2h-1v2a3 3 0 0 1-3 3h-1v1a1 1 0 0 1-2 0v-1h-2v1a1 1 0 0 1-2 0v-1H8a3 3 0 0 1-3-3v-2H4a1 1 0 0 1 0-2h1V7a3 3 0 0 1 3-3h3V3a1 1 0 0 1 1-1zm-2.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm5 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9 14a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2H9z"/></svg>'; }
-function renderChatMessages() {
-  var container = document.getElementById('tw-chat-messages');
-  if (!container) return;
-  var msgs = loadChatMessages();
-  var L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr;
-  var html = '';
-  if (!msgs || msgs.length === 0) {
-    var welcomeText = L.welcomeTitle + '\n\n' + L.welcomeBody;
-    html = '<div class="tw-chat-msg tw-chat-msg-bot"><div class="tw-chat-msg-avatar">' + robotAvatarSvg(15) + '</div><div><div class="tw-chat-msg-bubble">' + welcomeText.replace(/\n/g, '<br>') + '</div><div class="tw-chat-msg-time">' + formatChatTime(Date.now()) + '</div></div></div>';
-  } else {
-    msgs.forEach(function (m) {
-      var isUser = m.role === 'user';
-      var cls = isUser ? 'tw-chat-msg-user' : 'tw-chat-msg-bot';
-      var avatarSvg = isUser ? '<svg viewBox="0 0 24 24" fill="#ffffff" style="width:15px;height:15px;display:block;"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>' : robotAvatarSvg(15);
-      var safeText = String(m.text || '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
-      html += '<div class="tw-chat-msg ' + cls + '"><div class="tw-chat-msg-avatar">' + avatarSvg + '</div><div><div class="tw-chat-msg-bubble">' + safeText + '</div><div class="tw-chat-msg-time">' + formatChatTime(m.ts || Date.now()) + '</div></div></div>';
-    });
-  }
-  container.innerHTML = html;
-  setTimeout(function () { container.scrollTop = container.scrollHeight; }, 50);
-}
-function showChatTyping() { var container = document.getElementById('tw-chat-messages'); if (!container) return; var existing = document.getElementById('tw-chat-typing'); if (existing) existing.remove(); var typing = document.createElement('div'); typing.id = 'tw-chat-typing'; typing.className = 'tw-chat-typing'; typing.innerHTML = '<div class="tw-chat-msg-avatar">' + robotAvatarSvg(15) + '</div><div class="tw-chat-typing-bubble"><span class="tw-chat-typing-dot"></span><span class="tw-chat-typing-dot"></span><span class="tw-chat-typing-dot"></span></div>'; container.appendChild(typing); container.scrollTop = container.scrollHeight; }
-function hideChatTyping() { var t = document.getElementById('tw-chat-typing'); if (t) t.remove(); }
-window.openChatbot = function () { var win = document.getElementById('tw-chat-window'); if (!win) return; chatbotOpen = true; win.classList.add('tw-chat-open'); setTimeout(function () { renderChatMessages(); }, 30); setTimeout(function () { var input = document.getElementById('tw-chat-input'); if (input) { try { input.focus(); } catch (e) {} } }, 250); };
-window.closeChatbot = function () { var win = document.getElementById('tw-chat-window'); if (!win) return; chatbotOpen = false; win.classList.remove('tw-chat-open'); };
-window.toggleChatbot = function () { if (chatbotOpen) window.closeChatbot(); else window.openChatbot(); };
-window.sendChatMessage = function () { var input = document.getElementById('tw-chat-input'); if (!input) return; var text = String(input.value || '').trim(); if (!text) return; input.value = ''; saveChatMessage('user', text); renderChatMessages(); showChatTyping(); var delay = 700 + Math.floor(Math.random() * 600); setTimeout(function () { var reply = getChatbotResponse(text); hideChatTyping(); saveChatMessage('bot', reply); renderChatMessages(); }, delay); };
-function injectChatbot(client) {
-  if (!client) return;
-  removeChatbot();
-  ensureChatbotStyles();
-  var L = CHAT_LABELS[currentLang] || CHAT_LABELS.fr;
-  var fab = document.createElement('button');
-  fab.id = 'tw-chat-fab'; fab.setAttribute('type', 'button'); fab.setAttribute('aria-label', L.title);
-  fab.innerHTML = robotAvatarSvg(26) + '<span class="tw-chat-ai-badge">AI</span>';
-  fab.addEventListener('click', function () { var tt = document.getElementById('tw-chat-tooltip'); if (tt) tt.classList.add('tw-chat-tooltip-hidden'); window.toggleChatbot(); });
-  document.body.appendChild(fab);
-  var tooltip = document.createElement('div');
-  tooltip.id = 'tw-chat-tooltip'; tooltip.className = 'tw-chat-tooltip'; tooltip.textContent = '💬 Assistant IA · Posez-moi une question';
-  document.body.appendChild(tooltip);
-  setTimeout(function () { var t = document.getElementById('tw-chat-tooltip'); if (t) t.classList.add('tw-chat-tooltip-hidden'); }, 8000);
-  var win = document.createElement('div');
-  win.id = 'tw-chat-window';
-  win.innerHTML = '<div class="tw-chat-header"><div class="tw-chat-header-avatar">' + robotAvatarSvg(24) + '</div><div class="tw-chat-header-text"><div id="tw-chat-title">' + L.title + '</div><div id="tw-chat-subtitle">' + L.subtitle + '</div></div><button type="button" class="tw-chat-close-btn" onclick="window.closeChatbot()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div><div class="tw-chat-messages" id="tw-chat-messages"></div><div class="tw-chat-footer"><input type="text" id="tw-chat-input" placeholder="' + L.placeholder + '" autocomplete="off" /><button type="button" id="tw-chat-send" onclick="window.sendChatMessage()" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button></div>';
-  document.body.appendChild(win);
-  var chatInput = document.getElementById('tw-chat-input');
-  if (chatInput) { chatInput.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); window.sendChatMessage(); } }); }
-  renderChatMessages();
-}
-
-async function initClient() {
-  const clientId = new URLSearchParams(window.location.search).get('id');
-  const root = document.getElementById('app-root');
-  if (!root) return;
-  ensureGlobalStyles();
-  ensureStatusScreensStyles();
-  try { removeChatbot(); } catch (e) {}
-  if (!clientId) { root.innerHTML = '<div class="view active"><div class="no-access"><div class="ico"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm3 11c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg></div><h2>Acces restreint</h2><p>Cette application necessite un lien de connexion valide.</p></div></div>'; return; }
-  const client = await FireDB.getClient(clientId);
-  if (!client) {
-    var navLang = (navigator.language || 'fr').toLowerCase().slice(0, 2);
-    if (['fr', 'pl', 'es', 'it', 'de'].indexOf(navLang) === -1) navLang = 'fr';
-    currentLang = navLang;
-    root.innerHTML = '<div class="view active"><div class="twd-status-screen"><div class="twd-status-icon deleted"><svg viewBox="0 0 120 130" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="46" y="14" width="28" height="10" rx="5" fill="currentColor"/><rect x="16" y="26" width="88" height="14" rx="4" fill="currentColor"/><path d="M24 40 L32 108 Q33 114 40 114 H80 Q87 114 88 108 L96 40 Z" fill="currentColor"/><line x1="42" y1="52" x2="42" y2="104" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="52" x2="60" y2="104" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/><line x1="78" y1="52" x2="78" y2="104" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/></svg></div><div class="twd-status-title deleted">' + t('deletedTitle') + '</div><div class="twd-status-desc">' + t('deletedDesc') + '</div></div></div>'; return;
-  }
-  if (client.blocked) {
-    currentLang = client.language || 'fr';
-    root.innerHTML = '<div class="view active"><div class="twd-status-screen"><div class="twd-status-icon blocked"><svg viewBox="0 0 175 125" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M33 52V40a22 22 0 0 1 44 0v12" stroke="currentColor" stroke-width="7" stroke-linecap="round"/><rect x="20" y="52" width="70" height="55" rx="8" fill="currentColor"/><circle cx="55" cy="75" r="6" fill="#ffffff"/><rect x="52.5" y="75" width="5" height="14" rx="2" fill="#ffffff"/><g transform="translate(110, 75)" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"><circle cx="0" cy="0" r="11"/><circle cx="0" cy="0" r="4" fill="currentColor" stroke="none"/><line x1="11" y1="0" x2="50" y2="0"/><line x1="43" y1="0" x2="43" y2="8"/><line x1="35" y1="0" x2="35" y2="6"/></g></svg></div><div class="twd-status-title blocked">' + t('blockedTitle') + '</div><div class="twd-status-desc">' + t('blockedDesc') + '</div></div></div>'; return;
-  }
-  currentLang = client.language || 'fr';
-  applyTheme(client.themeColor);
-  const activeId = ClientSession.getActive();
-  if (activeId === clientId) renderBankingApp(client);
-  else renderLoginPage(client);
 }
 function renderLoginPage(client) {
   currentLang = client.language || 'fr';
