@@ -3,43 +3,55 @@
 // Proxy sécurisé pour l'envoi d'emails
 // - Clé API conservée côté serveur (jamais exposée)
 // - CORS restreint au domaine officiel
-// - Vérification de l'origine des requêtes
+// - Accepte les requêtes same-origin (sans header Origin)
 // ============================================================
 
 export default async function handler(req, res) {
-  // Domaines autorisés à appeler cette API
   const ALLOWED_ORIGINS = [
     'https://new-app-three-eta.vercel.app',
     'https://www.new-app-three-eta.vercel.app'
   ];
 
   const origin = req.headers.origin || '';
-  const isAllowedOrigin = ALLOWED_ORIGINS.indexOf(origin) !== -1;
+  const referer = req.headers.referer || '';
 
-  // Toujours indiquer que la réponse varie selon l'origine (cache)
+  // Cas 1 : Pas d'Origin (same-origin depuis notre propre site, ou appel direct)
+  // Cas 2 : Origin présent et dans la whitelist
+  const noOrigin = !origin;
+  const isAllowedOrigin = noOrigin || ALLOWED_ORIGINS.indexOf(origin) !== -1;
+
+  // Vérification supplémentaire via Referer si Origin absent
+  let refererOk = true;
+  if (noOrigin && referer) {
+    refererOk = ALLOWED_ORIGINS.some(function (o) { return referer.indexOf(o) === 0; });
+  }
+
   res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // CORS : n'autoriser que les origines whitelistées
-  if (isAllowedOrigin) {
+  if (origin && isAllowedOrigin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
 
-  // Requête preflight (OPTIONS)
   if (req.method === 'OPTIONS') {
     if (!isAllowedOrigin) return res.status(403).end();
     return res.status(200).end();
   }
 
-  // Seul le POST est accepté
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, error: 'Method not allowed' });
   }
 
-  // Vérification de l'origine : bloquer les appels externes
-  if (!isAllowedOrigin) {
-    console.error('[send-email] Origin refusée :', origin || '(vide)');
+  // Blocage : si Origin présent ET pas dans la whitelist
+  if (origin && !isAllowedOrigin) {
+    console.error('[send-email] Origin refusée :', origin);
+    return res.status(403).json({ success: false, error: 'Forbidden' });
+  }
+
+  // Blocage : si Origin absent ET Referer présent ET pas bon
+  if (noOrigin && !refererOk) {
+    console.error('[send-email] Referer refusé :', referer);
     return res.status(403).json({ success: false, error: 'Forbidden' });
   }
 
@@ -52,10 +64,8 @@ export default async function handler(req, res) {
       return res.status(500).json({ success: false, error: 'Server not configured' });
     }
 
-    // Récupère le corps de la requête client
     const body = req.body || {};
 
-    // Transmet la requête à l'API email avec la clé secrète
     const response = await fetch(EMAIL_API_URL, {
       method: 'POST',
       headers: {
