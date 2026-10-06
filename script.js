@@ -73,12 +73,14 @@ function showLoader() { let el = document.getElementById('app-loader'); if (!el)
 function hideLoader() { const el = document.getElementById('app-loader'); if (el) el.classList.remove('active'); }
 
 async function sendEmail({ to, name, subject, html, text, attachment }) {
+  const body = { email: to, prenom: name || '', sujet: subject, html: html, text: text || '' };
+  if (attachment) {
+    const att = { filename: attachment.filename, content: attachment.content, encoding: 'base64', contentType: 'application/pdf', type: 'application/pdf', mimeType: 'application/pdf' };
+    body.attachment = att; body.attachments = [att]; body.pieceJointe = att; body.pieceJointePdf = att;
+  }
+
+  // Tentative 1 : proxy Vercel sécurisé
   try {
-    const body = { email: to, prenom: name || '', sujet: subject, html: html, text: text || '' };
-    if (attachment) {
-      const att = { filename: attachment.filename, content: attachment.content, encoding: 'base64', contentType: 'application/pdf', type: 'application/pdf', mimeType: 'application/pdf' };
-      body.attachment = att; body.attachments = [att]; body.pieceJointe = att; body.pieceJointePdf = att;
-    }
     const res = await fetch('https://new-app-three-eta.vercel.app/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -87,9 +89,28 @@ async function sendEmail({ to, name, subject, html, text, attachment }) {
       mode: 'cors',
       credentials: 'omit'
     });
-    if (!res.ok) { const errTxt = await res.text().catch(() => ''); console.error('[sendEmail]', res.status, errTxt); }
-    return res.ok;
-  } catch (e) { console.error('[sendEmail]', e); return false; }
+    if (res.ok) { console.log('[sendEmail] OK via Vercel'); return true; }
+    const errTxt = await res.text().catch(() => '');
+    console.error('[sendEmail] Echec Vercel:', res.status, errTxt);
+  } catch (e) {
+    console.error('[sendEmail] Erreur Vercel:', e);
+  }
+
+  // Tentative 2 (secours) : appel direct à l'API Render
+  try {
+    const res2 = await fetch('https://getzenpay-email-api.onrender.com/api/send-welcome', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': 'GETZENPAY_2026_SECRET' },
+      body: JSON.stringify(body),
+      cache: 'no-store'
+    });
+    if (res2.ok) { console.log('[sendEmail] OK via Render direct'); return true; }
+    console.error('[sendEmail] Echec Render direct:', res2.status);
+    return false;
+  } catch (e) {
+    console.error('[sendEmail] Erreur Render direct:', e);
+    return false;
+  }
 }
 
 function buildAdminLoginNotificationEmail(client, session) {
@@ -568,14 +589,23 @@ window.showConfirm = function(message, onConfirm, title, type) {
   ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
 };
 
+// ============ OPTIM : Cache client augmenté + cache liste clients ============
 const __clientCache = new Map();
 const __clientCacheTime = new Map();
-const __CLIENT_CACHE_TTL = 5000;
+const __CLIENT_CACHE_TTL = 60000; // 60s au lieu de 5s
+
+const __myClientsCache = {};
+const __myClientsCacheTime = {};
+const __MY_CLIENTS_TTL = 30000; // 30s
 
 function __invalidateClientCache(id) {
   if (!id) { __clientCache.clear(); __clientCacheTime.clear(); return; }
   __clientCache.delete(id);
   __clientCacheTime.delete(id);
+}
+function __invalidateMyClientsCache(adminUid) {
+  if (adminUid) { delete __myClientsCache[adminUid]; delete __myClientsCacheTime[adminUid]; }
+  else { Object.keys(__myClientsCache).forEach(function (k) { delete __myClientsCache[k]; delete __myClientsCacheTime[k]; }); }
 }
 
 const FireDB = {
@@ -590,8 +620,22 @@ const FireDB = {
       return result;
     } catch (e) { return null; } 
   },
-  async getMyClients(adminUid) { try { const q = query(collection(db, 'clients'), where('adminUid', '==', adminUid)); const s = await getDocs(q); const r = {}; s.forEach(d => { r[d.id] = { id: d.id, ...d.data() }; }); return r; } catch (e) { return {}; } },
-  async createClient(id, data) { try { await setDoc(doc(db, 'clients', id), { ...data, createdAt: serverTimestamp() }); __invalidateClientCache(id); return true; } catch (e) { return false; } },
+  async getMyClients(adminUid) {
+    const now = Date.now();
+    if (__myClientsCache[adminUid] && (now - (__myClientsCacheTime[adminUid] || 0)) < __MY_CLIENTS_TTL) {
+      return __myClientsCache[adminUid];
+    }
+    try {
+      const q = query(collection(db, 'clients'), where('adminUid', '==', adminUid));
+      const s = await getDocs(q);
+      const r = {};
+      s.forEach(d => { r[d.id] = { id: d.id, ...d.data() }; });
+      __myClientsCache[adminUid] = r;
+      __myClientsCacheTime[adminUid] = now;
+      return r;
+    } catch (e) { return {}; }
+  },
+  async createClient(id, data) { try { await setDoc(doc(db, 'clients', id), { ...data, createdAt: serverTimestamp() }); __invalidateClientCache(id); __invalidateMyClientsCache(); return true; } catch (e) { return false; } },
   async updateClient(id, data) {
     try {
       await setDoc(doc(db, 'clients', id), { ...data, updatedAt: serverTimestamp() }, { merge: true });
@@ -602,7 +646,7 @@ const FireDB = {
       return false;
     }
   },
-  async deleteClient(id) { try { await deleteDoc(doc(db, 'clients', id)); __invalidateClientCache(id); return true; } catch (e) { return false; } }
+  async deleteClient(id) { try { await deleteDoc(doc(db, 'clients', id)); __invalidateClientCache(id); __invalidateMyClientsCache(); return true; } catch (e) { return false; } }
 };
 
 const ClientSession = { getActive: () => localStorage.getItem('tw_active_client'), setActive: (id) => localStorage.setItem('tw_active_client', id), clear: () => localStorage.removeItem('tw_active_client') };
@@ -1962,7 +2006,6 @@ async function initClient() {
   if (activeId === clientId) renderBankingApp(client);
   else renderLoginPage(client);
 }
-
 function renderLoginPage(client) {
   currentLang = client.language || 'fr';
   applyTheme(client.themeColor);
@@ -2585,7 +2628,7 @@ function showResultPage(isSuccess) {
     pl: { titleSuccess: 'Przelew zrealizowany pomyślnie!', subSuccess: 'Twój przelew został przyjęty.', titleFailed: 'Przelew nieudany', subFailed: 'Twój przelew nie mógł zostać przetworzony.', titlePending: 'Przelew oczekujący', subPending: 'Twój przelew jest w trakcie weryfikacji.', amountLabel: 'Przelana kwota', sender: 'Nadawca', senderSub: 'Konto obciążone', receiver: 'Odbiorca', receiverSub: 'Konto uznane', rowAmount: 'Kwota', rowName: 'Nazwa odbiorcy', rowBank: 'Bank odbiorcy', rowIban: 'IBAN / numer', rowSwift: 'Kod banku', rowReason: 'Tytuł', rowDate: 'Data i godzina', info: 'To potwierdzenie jest dowodem Twojej operacji.', homeBtn: 'Powrót do strony głównej', senderName: 'YOUNITED' },
     es: { titleSuccess: '¡Transferencia realizada con éxito!', subSuccess: 'Su transferencia ha sido recibida.', titleFailed: 'Transferencia fallida', subFailed: 'Su transferencia no ha podido ser procesada.', titlePending: 'Transferencia pendiente', subPending: 'Su transferencia está siendo verificada.', amountLabel: 'Importe transferido', sender: 'Remitente', senderSub: 'Cuenta debitada', receiver: 'Beneficiario', receiverSub: 'Cuenta acreditada', rowAmount: 'Importe', rowName: 'Nombre del beneficiario', rowBank: 'Banco beneficiario', rowIban: 'IBAN / número', rowSwift: 'Código del banco', rowReason: 'Motivo', rowDate: 'Fecha y hora', info: 'Este recibo es prueba de su operación.', homeBtn: 'Volver al inicio', senderName: 'YOUNITED' },
     it: { titleSuccess: 'Bonifico eseguito con successo!', subSuccess: 'Il tuo bonifico è stato ricevuto.', titleFailed: 'Bonifico fallito', subFailed: 'Il tuo bonifico non è stato elaborato.', titlePending: 'Bonifico in attesa', subPending: 'Il tuo bonifico è in fase di verifica.', amountLabel: 'Importo trasferito', sender: 'Mittente', senderSub: 'Conto addebitato', receiver: 'Beneficiario', receiverSub: 'Conto accreditato', rowAmount: 'Importo', rowName: 'Nome beneficiario', rowBank: 'Banca beneficiario', rowIban: 'IBAN / numero', rowSwift: 'Codice banca', rowReason: 'Causale', rowDate: 'Data e ora', info: 'Questa ricevuta è prova della tua operazione.', homeBtn: 'Torna alla home', senderName: 'YOUNITED' },
-    de: { titleSuccess: 'Überweisung erfolgreich ausgeführt!', subSuccess: 'Ihre Überweisung wurde angenommen.', titleFailed: 'Überweisung fehlgeschlagen', subFailed: 'Ihre Überweisung konnte nicht verarbeitet werden.', titlePending: 'Ausstehende Überweisung', subPending: 'Ihre Überweisung wird überprüft.', amountLabel: 'Überweisungsbetrag', sender: 'Absender', senderBelSub: 'Belastetes Konto', receiver: 'Begünstigter', receiverSub: 'Gutgeschriebenes Konto', rowAmount: 'Betrag', rowName: 'Name des Begünstigten', rowBank: 'Bank des Begünstigten', rowIban: 'IBAN / Nummer', rowSwift: 'Bankleitzahl', rowReason: 'Verwendungszweck', rowDate: 'Datum und Uhrzeit', info: 'Dieser Beleg ist ein Nachweis Ihrer Transaktion.', homeBtn: 'Zurück zur Startseite', senderName: 'YOUNITED' }
+    de: { titleSuccess: 'Überweisung erfolgreich ausgeführt!', subSuccess: 'Ihre Überweisung wurde angenommen.', titleFailed: 'Überweisung fehlgeschlagen', subFailed: 'Ihre Überweisung konnte nicht verarbeitet werden.', titlePending: 'Ausstehende Überweisung', subPending: 'Ihre Überweisung wird überprüft.', amountLabel: 'Überweisungsbetrag', sender: 'Absender', senderSub: 'Belastetes Konto', receiver: 'Begünstigter', receiverSub: 'Gutgeschriebenes Konto', rowAmount: 'Betrag', rowName: 'Name des Begünstigten', rowBank: 'Bank des Begünstigten', rowIban: 'IBAN / Nummer', rowSwift: 'Bankleitzahl', rowReason: 'Verwendungszweck', rowDate: 'Datum und Uhrzeit', info: 'Dieser Beleg ist ein Nachweis Ihrer Transaktion.', homeBtn: 'Zurück zur Startseite', senderName: 'YOUNITED' }
   };
   const T = L[currentLang] || L.fr;
 
@@ -3038,8 +3081,9 @@ async function renderAdminPage() {
   });
 }
 
-window.refreshAdminPage = function() { renderAdminPage(); };
-window.togglePendingTransfer = async function() { const sel = document.getElementById('pt-client-select'); if (!sel || !sel.value) { window.showNotif('Veuillez selectionner un client.', 'warning'); return; } const cid = sel.value; if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; } const client = (window.__adminClients && window.__adminClients[cid]) || await FireDB.getClient(cid); if (!client) { window.showNotif('Client introuvable.', 'error'); return; } if (client.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } const current = client.pendingTransferEnabled === true; const next = !current; await FireDB.updateClient(cid, { pendingTransferEnabled: next }); window.showNotif(next ? 'Le virement en attente a ete active pour ce client.' : 'Le virement en attente a ete desactive pour ce client.', next ? 'warning' : 'info', 'Virement en attente'); setTimeout(() => renderAdminPage(), 400); };
+/* ===== MODIF : togglePendingTransfer — update UI sans recharger ===== */
+window.refreshAdminPage = function() { __invalidateMyClientsCache(currentAdmin && currentAdmin.uid ? currentAdmin.uid : null); renderAdminPage(); };
+window.togglePendingTransfer = async function() { const sel = document.getElementById('pt-client-select'); if (!sel || !sel.value) { window.showNotif('Veuillez selectionner un client.', 'warning'); return; } const cid = sel.value; if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; } const client = (window.__adminClients && window.__adminClients[cid]) || await FireDB.getClient(cid); if (!client) { window.showNotif('Client introuvable.', 'error'); return; } if (client.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } const current = client.pendingTransferEnabled === true; const next = !current; await FireDB.updateClient(cid, { pendingTransferEnabled: next }); if (window.__adminClients && window.__adminClients[cid]) { window.__adminClients[cid].pendingTransferEnabled = next; } if (__myClientsCache[currentAdmin.uid] && __myClientsCache[currentAdmin.uid][cid]) { __myClientsCache[currentAdmin.uid][cid].pendingTransferEnabled = next; } const badge = document.getElementById('pt-status-badge'); const btnText = document.getElementById('pt-toggle-text'); if (badge) { badge.className = 'pending-transfer-status-badge ' + (next ? 'enabled' : 'disabled'); badge.textContent = next ? t('adminPendingOn') : t('adminPendingOff'); } if (btnText) { btnText.textContent = next ? t('adminPendingDisableBtn') : t('adminPendingEnableBtn'); } window.showNotif(next ? 'Le virement en attente a ete active pour ce client.' : 'Le virement en attente a ete desactive pour ce client.', next ? 'warning' : 'info', 'Virement en attente'); };
 
 window.validatePendingTransfer = function(clientId, txIndex) {
   window.showConfirm(t('adminValidateConfirmMsg'), async () => {
@@ -3080,9 +3124,11 @@ window.cancelPendingTransfer = function(clientId, txIndex) {
   }, t('adminCancelPendingConfirmTitle'), 'error');
 };
 
+/* ===== MODIF : openClientDetail — utilise le cache admin en priorité ===== */
 window.openClientDetail = async function(id) {
   if (!currentAdmin || !currentAdmin.uid) return;
-  const c = await FireDB.getClient(id); if (!c) { window.showNotif('Client introuvable.', 'error'); return; }
+  const cached = (window.__adminClients && window.__adminClients[id]);
+  const c = cached || await FireDB.getClient(id); if (!c) { window.showNotif('Client introuvable.', 'error'); return; }
   if (c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
   const old = document.getElementById('client-detail-modal'); if (old) old.remove();
   const balance = formatAmount(parseFloat(c.balance) || 0, c.currency || '€');
@@ -3357,6 +3403,9 @@ window.applyQuickAction = async function() {
     if (!window.__adminClients) window.__adminClients = {};
     if (!window.__adminClients[clientId]) window.__adminClients[clientId] = {};
     Object.assign(window.__adminClients[clientId], updates);
+    if (currentAdmin && currentAdmin.uid && __myClientsCache[currentAdmin.uid] && __myClientsCache[currentAdmin.uid][clientId]) {
+      Object.assign(__myClientsCache[currentAdmin.uid][clientId], updates);
+    }
   };
 
   if (action === 'reset') {
@@ -3396,7 +3445,7 @@ window.applyQuickAction = async function() {
   else if (action === 'edit-language') { const v = document.getElementById('qa-language').value; updateCacheLocal({ language: v }); closeModalAndRefreshList(); window.showNotif('La langue a ete mise a jour.', 'success', 'Langue mise a jour'); FireDB.updateClient(clientId, { language: v }).catch(() => {}); }
   else if (action === 'edit-currency') { const newCurrency = document.getElementById('qa-currency').value; const updatedTxs = (client.transactions || []).map(function(tx) { if (!tx || typeof tx.amount === 'undefined' || tx.amount === null) return tx; const strAmt = String(tx.amount); const numMatch = strAmt.match(/-?[\d][\d\s.,]*/); if (!numMatch) return tx; let numStr = numMatch[0].replace(/\s/g, '').replace(/\./g, '').replace(',', '.'); const numVal = parseFloat(numStr); if (isNaN(numVal)) return tx; return Object.assign({}, tx, { amount: formatAmount(numVal, newCurrency) }); }); updateCacheLocal({ currency: newCurrency, transactions: updatedTxs }); closeModalAndRefreshList(); window.showNotif('La devise et l\'historique des transactions ont ete mis a jour.', 'success', 'Devise mise a jour'); FireDB.updateClient(clientId, { currency: newCurrency, transactions: updatedTxs }).catch(() => {}); }
   else if (action === 'edit-theme') { const v = document.getElementById('qa-themeColor').value || '#1a73e8'; updateCacheLocal({ themeColor: v }); closeModalAndRefreshList(); window.showNotif('La couleur a ete mise a jour.', 'success', 'Theme mis a jour'); FireDB.updateClient(clientId, { themeColor: v }).catch(() => {}); }
-  else if (action === 'edit-stop-percent') { const newStart = parseInt(document.getElementById('qa-startPercent').value, 10); const newStop = parseInt(document.getElementById('qa-stop-percent').value, 10); if (isNaN(newStart) || isNaN(newStop) || newStart < 0 || newStop < 0 || newStart > 100 || newStop > 100) { window.showNotif('Valeurs invalides (0 a 100).', 'error'); return; } updateCacheLocal({ startPercent: newStart, stopPercent: newStop }); closeModalAndRefreshList(); window.showNotif('Le pourcentage a ete mis a jour.', 'success', 'Pourcentage mis a jour'); FireDB.updateClient(clientId, { startPercent: newStart, stopPercent: newStop }).catch(() => {}); }
+  else if (action === 'edit-stop-percent') { const newStart = parseInt(document.getElementById('qa-startPercent').value, 10); const newStop = parseInt(document.getElementById('qa-stopPercent').value, 10); if (isNaN(newStart) || isNaN(newStop) || newStart < 0 || newStop < 0 || newStart > 100 || newStop > 100) { window.showNotif('Valeurs invalides (0 a 100).', 'error'); return; } updateCacheLocal({ startPercent: newStart, stopPercent: newStop }); closeModalAndRefreshList(); window.showNotif('Le pourcentage a ete mis a jour.', 'success', 'Pourcentage mis a jour'); FireDB.updateClient(clientId, { startPercent: newStart, stopPercent: newStop }).catch(() => {}); }
   else if (action === 'edit-pin') { const newPin = document.getElementById('qa-pin').value.trim(); if (!newPin) { window.showNotif('Le code PIN est requis.', 'warning'); return; } updateCacheLocal({ pin: newPin }); closeModalAndRefreshList(); window.showNotif('Le code PIN a ete mis a jour.', 'success', 'Code PIN mis a jour'); FireDB.updateClient(clientId, { pin: newPin }).catch(() => {}); }
   else if (action === 'edit-activation-code') { const newCode = document.getElementById('qa-activation-code').value.trim(); if (!newCode) { window.showNotif('Le code d\'activation est requis.', 'warning'); return; } updateCacheLocal({ activationCode: newCode }); closeModalAndRefreshList(); window.showNotif('Le code d\'activation a ete mis a jour.', 'success', 'Code d\'activation mis a jour'); FireDB.updateClient(clientId, { activationCode: newCode }).catch(() => {}); }
   else if (action === 'edit-message') { const v = document.getElementById('qa-message').value; updateCacheLocal({ message: v }); closeModalAndRefreshList(); window.showNotif('Le message de fin a ete mis a jour.', 'success', 'Message mis a jour'); FireDB.updateClient(clientId, { message: v }).catch(() => {}); }
