@@ -1014,6 +1014,7 @@ window.toggleBalanceVisibility = function () {
 /* ============================================================ */
 /* ===== ensureGlobalStyles — Bordures légères + boules ======= */
 /* ===== MODIF : Épaisseur des textes réduite pour CLIENT ===== */
+/* ===== MODIF : Boutons rapides — design pro attractif ====== */
 /* ============================================================ */
 function ensureGlobalStyles() {
   if (document.getElementById('tw-bubbles-styles')) return;
@@ -1275,108 +1276,58 @@ function ensureGlobalStyles() {
     #admin-root .err{color:#b91c1c !important;background:#fee2e2 !important;border:1px solid #fca5a5 !important;border-radius:7px !important;padding:8px 11px !important;font-size:10.5px !important;font-weight:600 !important;line-height:1.5 !important;text-align:center !important;margin-top:7px !important;}
 
     /* ===== MODIF CLIENT : Épaisseurs réduites (tailles inchangées) ===== */
-    .balance-card-type-label-new {
-      font-size: 14.5px !important;
-      margin-bottom: 10px !important;
-      letter-spacing: 0.2px !important;
-      line-height: 1.3 !important;
-    }
-    .balance-card-type-label-new .curr-symbol {
-      font-size: 14.5px !important;
-      font-weight: 600 !important;
-    }
-    .balance-card-type-label-new .chev {
-      width: 16px !important;
-      height: 16px !important;
-    }
+    .balance-card-type-label-new { font-size: 14.5px !important; margin-bottom: 10px !important; letter-spacing: 0.2px !important; line-height: 1.3 !important; }
+    .balance-card-type-label-new .curr-symbol { font-size: 14.5px !important; font-weight: 600 !important; }
+    .balance-card-type-label-new .chev { width: 16px !important; height: 16px !important; }
+    .greeting-title-new { font-size: 18px !important; font-weight: 700 !important; line-height: 1.3 !important; letter-spacing: -0.2px !important; }
+    .balance-card-amount-new { margin-top: 6px !important; margin-bottom: 6px !important; font-size: 26px !important; font-weight: 700 !important; letter-spacing: -0.6px !important; line-height: 1.1 !important; }
+    .balance-card-amount-new .int-part { font-size: 26px !important; font-weight: 700 !important; }
+    .balance-card-amount-new .dec-part { font-size: 18px !important; font-weight: 600 !important; }
+    .balance-card-amount-new .cur-part { font-size: 18px !important; font-weight: 600 !important; margin-left: 4px !important; }
+    .balance-coins-icon { width: 20px !important; height: 20px !important; min-width: 20px !important; min-height: 20px !important; max-width: 20px !important; max-height: 20px !important; display: inline-block !important; vertical-align: middle !important; margin-left: 8px !important; margin-bottom: 2px !important; filter: drop-shadow(0 1px 3px rgba(255, 215, 0, 0.55)) drop-shadow(0 0 6px rgba(255, 215, 0, 0.35)) !important; }
+    .balance-card-sub-new { font-size: 15px !important; font-weight: 500 !important; letter-spacing: 0.2px !important; line-height: 1.3 !important; }
+    .header-logo-group-new { display: flex; align-items: center; gap: 8px; flex-shrink: 0; min-width: 0; position: relative; z-index: 2; }
+    .header-banking-logo-svg { width: 28px; height: 28px; flex-shrink: 0; display: block; }
+    .header-younited-logo-svg { height: 24px; width: auto; max-width: 130px; flex-shrink: 0; display: block; }
+    .header-younited-logo-svg text { font-family: 'Titillium Web', Arial, sans-serif; font-weight: 800 !important; fill: #1a1a1a; letter-spacing: 0.8px; }
 
-    .greeting-title-new {
-      font-size: 18px !important;
-      font-weight: 700 !important;
-      line-height: 1.3 !important;
-      letter-spacing: -0.2px !important;
-    }
+    /* ===== MODIF : Boutons rapides (Quick Actions) — Design pro attractif ===== */
+    .quick-actions-row-new{display:flex !important;gap:10px !important;margin-top:18px !important;margin-bottom:18px !important;}
+    .quick-action-item-new{flex:1 !important;background:#ffffff !important;border-radius:14px !important;padding:16px 8px 14px !important;display:flex !important;flex-direction:column !important;align-items:center !important;gap:8px !important;cursor:pointer !important;box-shadow:0 2px 8px rgba(15,23,42,0.06) !important;transition:transform 0.15s ease,box-shadow 0.2s ease !important;border:1px solid #f1f5f9 !important;user-select:none !important;-webkit-tap-highlight-color:transparent !important;}
+    .quick-action-item-new:active{transform:translateY(-2px) !important;box-shadow:0 6px 16px rgba(15,23,42,0.12) !important;}
+    .quick-action-icon-new{width:48px !important;height:48px !important;min-width:48px !important;min-height:48px !important;border-radius:50% !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;transition:transform 0.15s ease !important;box-shadow:0 4px 10px rgba(15,23,42,0.10) !important;}
+    .quick-action-item-new:active .quick-action-icon-new{transform:scale(1.08) !important;}
+    .quick-action-icon-new.green{background:linear-gradient(135deg,#10b981 0%,#059669 100%) !important;box-shadow:0 4px 10px rgba(16,185,129,0.35) !important;}
+    .quick-action-icon-new.blue{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%) !important;box-shadow:0 4px 10px rgba(59,130,246,0.35) !important;}
+    .quick-action-icon-new.purple{background:linear-gradient(135deg,#8b5cf6 0%,#6d28d9 100%) !important;box-shadow:0 4px 10px rgba(139,92,246,0.35) !important;}
+    .quick-action-icon-new svg{width:22px !important;height:22px !important;max-width:22px !important;max-height:22px !important;display:block !important;fill:#ffffff !important;}
+    .quick-action-icon-new svg path{fill:#ffffff !important;}
+    .quick-action-label-new{font-size:10.5px !important;font-weight:600 !important;color:#334155 !important;text-align:center !important;line-height:1.25 !important;letter-spacing:0.1px !important;padding:0 2px !important;word-break:break-word !important;}
 
-    .balance-card-amount-new {
-      margin-top: 6px !important;
-      margin-bottom: 6px !important;
-      font-size: 26px !important;
-      font-weight: 700 !important;
-      letter-spacing: -0.6px !important;
-      line-height: 1.1 !important;
-    }
-    .balance-card-amount-new .int-part {
-      font-size: 26px !important;
-      font-weight: 700 !important;
-    }
-    .balance-card-amount-new .dec-part {
-      font-size: 18px !important;
-      font-weight: 600 !important;
-    }
-    .balance-card-amount-new .cur-part {
-      font-size: 18px !important;
-      font-weight: 600 !important;
-      margin-left: 4px !important;
-    }
-
-    .balance-coins-icon {
-      width: 20px !important;
-      height: 20px !important;
-      min-width: 20px !important;
-      min-height: 20px !important;
-      max-width: 20px !important;
-      max-height: 20px !important;
-      display: inline-block !important;
-      vertical-align: middle !important;
-      margin-left: 8px !important;
-      margin-bottom: 2px !important;
-      filter: drop-shadow(0 1px 3px rgba(255, 215, 0, 0.55)) drop-shadow(0 0 6px rgba(255, 215, 0, 0.35)) !important;
-    }
-
-    .balance-card-sub-new {
-      font-size: 15px !important;
-      font-weight: 500 !important;
-      letter-spacing: 0.2px !important;
-      line-height: 1.3 !important;
-    }
-
-    .header-logo-group-new {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-      min-width: 0;
-      position: relative;
-      z-index: 2;
-    }
-    .header-banking-logo-svg {
-      width: 28px;
-      height: 28px;
-      flex-shrink: 0;
-      display: block;
-    }
-    .header-younited-logo-svg {
-      height: 24px;
-      width: auto;
-      max-width: 130px;
-      flex-shrink: 0;
-      display: block;
-    }
-    .header-younited-logo-svg text {
-      font-family: 'Titillium Web', Arial, sans-serif;
-      font-weight: 800 !important;
-      fill: #1a1a1a;
-      letter-spacing: 0.8px;
-    }
+    /* Bouton principal (Przelew) mis en valeur */
+    .quick-action-item-new.qa-primary{background:linear-gradient(135deg,#faf5ff 0%,#eef2ff 100%) !important;border-color:#ddd6fe !important;box-shadow:0 4px 14px rgba(139,92,246,0.15) !important;}
+    .quick-action-item-new.qa-primary:active{box-shadow:0 8px 22px rgba(139,92,246,0.25) !important;}
+    .quick-action-item-new.qa-primary .quick-action-icon-new{width:52px !important;height:52px !important;min-width:52px !important;min-height:52px !important;box-shadow:0 6px 16px rgba(139,92,246,0.45) !important;}
+    .quick-action-item-new.qa-primary .quick-action-icon-new svg{width:24px !important;height:24px !important;max-width:24px !important;max-height:24px !important;}
+    .quick-action-item-new.qa-primary .quick-action-label-new{color:#5b21b6 !important;font-weight:700 !important;}
   `;
   document.head.appendChild(style);
 }
 
 function renderQuickActions() {
   return '<div class="quick-actions-row-new">' +
-    '<div class="quick-action-item-new" onclick="window.showIban()"><div class="quick-action-icon-new green"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></div><div class="quick-action-label-new">' + t('quickIbanLabel') + '</div></div>' +
-    '<div class="quick-action-item-new" onclick="window.showVirtualCard()"><div class="quick-action-icon-new blue"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div><div class="quick-action-label-new">' + t('quickCardLabel') + '</div></div>' +
-    '<div class="quick-action-item-new" onclick="window.navigateTo(\'screen-transfer\')"><div class="quick-action-icon-new purple"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></div><div class="quick-action-label-new">' + t('quickTransferLabel') + '</div></div>' +
+    '<div class="quick-action-item-new qa-iban" onclick="window.showIban()">' +
+      '<div class="quick-action-icon-new green"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></div>' +
+      '<div class="quick-action-label-new">' + t('quickIbanLabel') + '</div>' +
+    '</div>' +
+    '<div class="quick-action-item-new qa-card" onclick="window.showVirtualCard()">' +
+      '<div class="quick-action-icon-new blue"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div>' +
+      '<div class="quick-action-label-new">' + t('quickCardLabel') + '</div>' +
+    '</div>' +
+    '<div class="quick-action-item-new qa-transfer qa-primary" onclick="window.navigateTo(\'screen-transfer\')">' +
+      '<div class="quick-action-icon-new purple"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></div>' +
+      '<div class="quick-action-label-new">' + t('quickTransferLabel') + '</div>' +
+    '</div>' +
   '</div>';
 }
 
