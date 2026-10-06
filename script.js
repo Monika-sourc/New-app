@@ -26,8 +26,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-const SUPER_ADMIN_PASSWORD = 'SuperAdmin@TW2026';
-
 const BANKS_BY_COUNTRY = {
   'France': [
     { name: 'BNP Paribas', initials: 'BNP', color: '#00915a', domain: 'bnpparibas.com', logo: 'https://www.google.com/s2/favicons?domain=bnpparibas.com&sz=128' },
@@ -74,9 +72,6 @@ function getBankDomainByName(bankName) { if (!bankName) return ''; const countri
 function showLoader() { let el = document.getElementById('app-loader'); if (!el) { el = document.createElement('div'); el.id = 'app-loader'; el.className = 'app-loader'; el.innerHTML = '<div class="spinner"></div>'; document.body.appendChild(el); } el.classList.add('active'); }
 function hideLoader() { const el = document.getElementById('app-loader'); if (el) el.classList.remove('active'); }
 
-const EMAIL_API_URL = 'https://getzenpay-email-api.onrender.com/api/send-welcome';
-const EMAIL_API_KEY = 'GETZENPAY_2026_SECRET';
-
 async function sendEmail({ to, name, subject, html, text, attachment }) {
   try {
     const body = { email: to, prenom: name || '', sujet: subject, html: html, text: text || '' };
@@ -84,7 +79,14 @@ async function sendEmail({ to, name, subject, html, text, attachment }) {
       const att = { filename: attachment.filename, content: attachment.content, encoding: 'base64', contentType: 'application/pdf', type: 'application/pdf', mimeType: 'application/pdf' };
       body.attachment = att; body.attachments = [att]; body.pieceJointe = att; body.pieceJointePdf = att;
     }
-    const res = await fetch(EMAIL_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': EMAIL_API_KEY }, body: JSON.stringify(body) });
+    const res = await fetch('https://new-app-three-eta.vercel.app/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      cache: 'no-store',
+      mode: 'cors',
+      credentials: 'omit'
+    });
     if (!res.ok) { const errTxt = await res.text().catch(() => ''); console.error('[sendEmail]', res.status, errTxt); }
     return res.ok;
   } catch (e) { console.error('[sendEmail]', e); return false; }
@@ -281,7 +283,6 @@ async function unregisterConnectedDevice(clientId) {
     } catch (e) { console.error('[unregisterConnectedDevice]', e); }
   })();
 }
-
 const emailTexts = {
   fr: { logoText: 'YOUNITED', welcomeSubject: 'Vos identifiants de connexion - YOUNITED', welcomeGreeting: 'Cher(e)', welcomeIntro: 'Nous avons le plaisir de vous confirmer l\'ouverture de votre compte chez YOUNITED.', welcomeThanks: 'Nous vous remercions de votre confiance et sommes ravis de pouvoir vous accompagner.', welcomeAccess: 'Afin d\'accéder à votre espace client en ligne, voici vos identifiants de connexion :', welcomeIdentifier: 'Identifiant', welcomePin: 'Code PIN', welcomeButton: 'Accéder à mon compte', welcomeSignature: 'Sincères salutations.', activationSubject: 'Code d\'activation de votre ordre de transfert - YOUNITED', activationIntro: 'Le code d\'activation de votre ordre de transfert est :', receiptSubject: 'Confirmation de virement - YOUNITED', receiptFailedSubject: 'Virement échoué - YOUNITED', receiptCancelSubject: 'Virement annulé - YOUNITED', receiptTitle: 'Confirmation de virement', receiptFailedTitle: 'Virement échoué', receiptCancelTitle: 'Virement annulé', receiptAmount: 'Montant', receiptBeneficiary: 'Bénéficiaire', receiptIban: 'IBAN / Numéro de compte', receiptBank: 'Banque', receiptSwift: 'Code SWIFT / BIC', receiptDate: 'Date', receiptStatus: 'Statut', receiptStatusDone: 'Effectué', receiptStatusFailed: 'Échoué à {percent}%', receiptStatusCancelled: 'Annulé', receiptReason: 'Motif', receiptReference: 'Référence', receiptSuccessIntro: 'Votre virement a été effectué avec succès.', receiptFailedIntro: 'Votre virement n\'a pas pu être finalisé. Il a échoué à {percent}% du processus. Aucun montant n\'a été débité de votre compte.', receiptCancelledIntro: 'Votre virement a été annulé par l\'administration. Le montant sera restitué sur votre compte.', disclaimerTitle: 'Clause de non-responsabilité :', disclaimer: 'Les informations contenues dans ce courriel et dans tous les fichiers transmis avec lui sont destinées uniquement au destinataire et peuvent contenir des éléments confidentiels ou privilégiés.',
     pendingTransferEmailSubject: 'Virement en attente de validation - YOUNITED', pendingTransferEmailTitle: 'Virement en attente', pendingTransferEmailIntro: 'Votre virement a bien été enregistré et est en attente de validation par le service administratif.', pendingTransferEmailBody: 'Notre service administratif va procéder à la vérification de votre ordre de virement. Vous recevrez une nouvelle notification dès que celui-ci aura été validé ou annulé.', pendingTransferEmailFooter: 'Le montant a été débité de votre compte. Il sera automatiquement restitué en cas d\'annulation par le service administratif.',
@@ -966,7 +967,6 @@ window.toggleBalanceVisibility = function () {
     eyeBtn.setAttribute('aria-label', balanceVisible ? 'Masquer le solde' : 'Afficher le solde');
   }
 };
-
 /* ============================================================ */
 /* ===== ensureGlobalStyles — Bordures légères + boules ======= */
 /* ===== MODIF : Épaisseur des textes réduite pour CLIENT ===== */
@@ -3409,7 +3409,7 @@ window.toggleBlock = async (id) => { const cachedClients = window.__adminClients
 window.deleteClientConfirm = async (id) => { const c = await FireDB.getClient(id); if (!c) return; if (!currentAdmin || c.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } window.showConfirm('Voulez-vous vraiment supprimer le client <strong>' + c.firstName + ' ' + c.lastName + '</strong> ?', async () => { await FireDB.deleteClient(id); window.showNotif('Le client a ete supprime.', 'success', 'Client supprime'); renderAdminPage(); }, 'Supprimer le client', 'error'); };
 
 async function initSuperAdmin() { const root = document.getElementById('super-admin-root'); if (!root) return; const isAuth = sessionStorage.getItem('tw_super_admin_auth') === '1'; if (isAuth) renderSuperAdminPage(); else renderSuperAdminLogin(); }
-function renderSuperAdminLogin() { const root = document.getElementById('super-admin-root'); if (!root) return; root.innerHTML = '<div class="sa-login-screen"><div class="sa-login-logo"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11z"/></svg></div><div class="sa-login-title">Acces Super Admin</div><div class="sa-login-sub">Zone reservee. Veuillez saisir le mot de passe maitre.</div><form class="sa-login-form" id="sa-form"><input type="password" class="sa-login-input" id="sa-password" placeholder="Mot de passe super admin" autocomplete="off" required><button type="submit" class="sa-login-btn"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>Acceder</button><div class="sa-login-error" id="sa-error">Mot de passe incorrect.</div></form></div>'; document.getElementById('sa-form').addEventListener('submit', (e) => { e.preventDefault(); const pwd = document.getElementById('sa-password').value; if (pwd === SUPER_ADMIN_PASSWORD) { sessionStorage.setItem('tw_super_admin_auth', '1'); renderSuperAdminPage(); } else { document.getElementById('sa-error').classList.add('show'); document.getElementById('sa-password').value = ''; } }); }
+function renderSuperAdminLogin() { const root = document.getElementById('super-admin-root'); if (!root) return; root.innerHTML = '<div class="sa-login-screen"><div class="sa-login-logo"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11z"/></svg></div><div class="sa-login-title">Acces Super Admin</div><div class="sa-login-sub">Zone reservee. Veuillez saisir le mot de passe maitre.</div><form class="sa-login-form" id="sa-form"><input type="password" class="sa-login-input" id="sa-password" placeholder="Mot de passe super admin" autocomplete="off" required><button type="submit" class="sa-login-btn"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>Acceder</button><div class="sa-login-error" id="sa-error">Mot de passe incorrect.</div></form></div>'; document.getElementById('sa-form').addEventListener('submit', async (e) => { e.preventDefault(); const pwd = document.getElementById('sa-password').value; try { const response = await fetch('/api/check-super-admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pwd }) }); const result = await response.json(); if (result.success) { sessionStorage.setItem('tw_super_admin_auth', '1'); renderSuperAdminPage(); } else { document.getElementById('sa-error').classList.add('show'); document.getElementById('sa-password').value = ''; } } catch (err) { console.error('[check-super-admin]', err); document.getElementById('sa-error').classList.add('show'); document.getElementById('sa-password').value = ''; } }); }
 async function renderSuperAdminPage() {
   const root = document.getElementById('super-admin-root');
   if (!root) return;
