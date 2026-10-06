@@ -3030,6 +3030,7 @@ async function renderAdminPage() {
     else window.showNotif('Erreur lors de la creation du client.', 'error');
   });
 }
+
 window.refreshAdminPage = function() { renderAdminPage(); };
 window.togglePendingTransfer = async function() { const sel = document.getElementById('pt-client-select'); if (!sel || !sel.value) { window.showNotif('Veuillez selectionner un client.', 'warning'); return; } const cid = sel.value; if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; } const client = (window.__adminClients && window.__adminClients[cid]) || await FireDB.getClient(cid); if (!client) { window.showNotif('Client introuvable.', 'error'); return; } if (client.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; } const current = client.pendingTransferEnabled === true; const next = !current; await FireDB.updateClient(cid, { pendingTransferEnabled: next }); window.showNotif(next ? 'Le virement en attente a ete active pour ce client.' : 'Le virement en attente a ete desactive pour ce client.', next ? 'warning' : 'info', 'Virement en attente'); setTimeout(() => renderAdminPage(), 400); };
 
