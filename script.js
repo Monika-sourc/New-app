@@ -2104,6 +2104,15 @@ window.toggleLoginPinVisibility = function () {
   if (isHidden) { eyeBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'; }
   else { eyeBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'; }
 };
+const SEARCH_LABELS = {
+  fr: { placeholder: "Rechercher", overlayPlaceholder: "Rechercher dans l'application...", noResults: "Aucun résultat trouvé", catPages: "Pages", catActions: "Actions rapides", catTransactions: "Transactions", catNotifications: "Notifications", hintsTitle: "Suggestions", close: "Fermer" },
+  pl: { placeholder: "Szukaj", overlayPlaceholder: "Szukaj w aplikacji...", noResults: "Nie znaleziono wyników", catPages: "Strony", catActions: "Szybkie akcje", catTransactions: "Transakcje", catNotifications: "Powiadomienia", hintsTitle: "Sugestie", close: "Zamknij" },
+  es: { placeholder: "Buscar", overlayPlaceholder: "Buscar en la aplicación...", noResults: "No se encontraron resultados", catPages: "Páginas", catActions: "Acciones rápidas", catTransactions: "Transacciones", catNotifications: "Notificaciones", hintsTitle: "Sugerencias", close: "Cerrar" },
+  it: { placeholder: "Cerca", overlayPlaceholder: "Cerca nell'app...", noResults: "Nessun risultato trovato", catPages: "Pagine", catActions: "Azioni rapide", catTransactions: "Transazioni", catNotifications: "Notifiche", hintsTitle: "Suggerimenti", close: "Chiudi" },
+  de: { placeholder: "Suchen", overlayPlaceholder: "In der App suchen...", noResults: "Keine Ergebnisse gefunden", catPages: "Seiten", catActions: "Schnellaktionen", catTransactions: "Transaktionen", catNotifications: "Benachrichtigungen", hintsTitle: "Vorschläge", close: "Schließen" }
+};
+function getSearchLabels() { return SEARCH_LABELS[currentLang] || SEARCH_LABELS.fr; }
+
 function ensureProfileStyles() {
   if (document.getElementById('profile-new-styles')) return;
   const style = document.createElement('style');
@@ -2185,6 +2194,7 @@ function renderProfileScreen(client, initials, balanceFormatted) {
     '<div class="profile-security-new"><div class="profile-security-icon"><svg viewBox="0 0 24 24">' + iconShieldLock + '</svg></div><div class="profile-security-text"><div class="profile-security-title">' + t('securityTitle') + '</div><div class="profile-security-desc">' + t('profileSecurityDesc') + '</div></div><svg class="profile-security-check" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>' +
   '</div>';
 }
+
 function ensureReceiptV4Styles() {
   if (document.getElementById('receipt-v4-styles')) return;
   const style = document.createElement('style');
@@ -2242,6 +2252,260 @@ function ensureReceiptV4Styles() {
   document.head.appendChild(style);
 }
 
+function ensureAppSearchStyles() {
+  if (document.getElementById('app-search-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'app-search-styles';
+  style.textContent = `
+    .header-search-pill{height:26px;padding:0 9px 0 7px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:13px;display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-family:inherit;min-width:0;max-width:110px;transition:background 0.15s ease,border-color 0.15s ease,transform 0.1s ease;-webkit-tap-highlight-color:transparent;}
+    .header-search-pill:active{background:#e2e8f0;border-color:#cbd5e1;transform:scale(0.97);}
+    .header-search-pill svg{width:12px;height:12px;fill:#64748b;flex-shrink:0;min-width:12px;}
+    .header-search-pill span{font-size:10px;font-weight:500;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+
+    .app-search-overlay{position:fixed;inset:0;background:#f1f5f9;z-index:2147483647;display:flex;flex-direction:column;animation:appSearchFadeIn 0.22s ease-out;}
+    @keyframes appSearchFadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+    .app-search-header{background:#ffffff;padding:10px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #e2e8f0;flex-shrink:0;}
+    .app-search-input-wrap{flex:1;min-width:0;display:flex;align-items:center;background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:22px;padding:0 12px;height:42px;transition:border-color 0.2s ease,background 0.2s ease,box-shadow 0.2s ease;}
+    .app-search-input-wrap:focus-within{border-color:#3b82f6;background:#ffffff;box-shadow:0 0 0 3px rgba(59,130,246,0.12);}
+    .app-search-input-wrap svg.app-search-icon{width:17px;height:17px;fill:#64748b;flex-shrink:0;margin-right:8px;}
+    #app-search-input{flex:1;min-width:0;border:none;background:transparent;outline:none;font-family:'Titillium Web',Arial,sans-serif;font-size:14px;font-weight:500;color:#0f172a;padding:0;height:100%;}
+    #app-search-input::placeholder{color:#94a3b8;font-weight:400;}
+    .app-search-clear{width:22px;height:22px;border-radius:50%;background:#cbd5e1;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;flex-shrink:0;padding:0;font-family:inherit;}
+    .app-search-clear.show{display:flex;}
+    .app-search-clear svg{width:10px;height:10px;fill:#ffffff;}
+    .app-search-close{width:40px;height:40px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;font-family:inherit;transition:background 0.15s ease;}
+    .app-search-close:active{background:#e2e8f0;}
+    .app-search-close svg{width:15px;height:15px;fill:#475569;}
+
+    .app-search-body{flex:1;overflow-y:auto;padding:8px 0 40px 0;-webkit-overflow-scrolling:touch;}
+    .app-search-section-title{padding:12px 16px 6px 16px;font-size:10.5px;font-weight:700;color:#64748b;letter-spacing:0.6px;text-transform:uppercase;}
+    .app-search-item{display:flex;align-items:center;gap:12px;padding:11px 16px;background:#ffffff;border-bottom:1px solid #f1f5f9;cursor:pointer;transition:background 0.15s ease;-webkit-tap-highlight-color:transparent;}
+    .app-search-item:active{background:#f8fafc;}
+    .app-search-item-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#eff6ff;}
+    .app-search-item-icon svg{width:18px;height:18px;fill:#2563eb;}
+    .app-search-item-icon.green{background:#dcfce7;}
+    .app-search-item-icon.green svg{fill:#16a34a;}
+    .app-search-item-icon.purple{background:#ede9fe;}
+    .app-search-item-icon.purple svg{fill:#7c3aed;}
+    .app-search-item-icon.orange{background:#fef3c7;}
+    .app-search-item-icon.orange svg{fill:#d97706;}
+    .app-search-item-icon.red{background:#fee2e2;}
+    .app-search-item-icon.red svg{fill:#dc2626;}
+    .app-search-item-text{flex:1;min-width:0;}
+    .app-search-item-title{font-size:13.5px;font-weight:700;color:#0f172a;line-height:1.25;margin-bottom:2px;word-break:break-word;}
+    .app-search-item-sub{font-size:11.5px;color:#64748b;font-weight:400;line-height:1.3;word-break:break-word;}
+    .app-search-item-arrow{width:14px;height:14px;fill:#cbd5e1;flex-shrink:0;}
+
+    .app-search-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 30px;text-align:center;}
+    .app-search-empty svg{width:60px;height:60px;fill:#cbd5e1;margin-bottom:16px;}
+    .app-search-empty-title{font-size:15px;font-weight:700;color:#334155;margin-bottom:6px;}
+
+    .app-search-hints{padding:8px 0 20px 0;}
+    .app-search-hint-item{display:flex;align-items:center;gap:10px;padding:11px 16px;background:#ffffff;border-bottom:1px solid #f1f5f9;cursor:pointer;transition:background 0.15s ease;font-family:inherit;-webkit-tap-highlight-color:transparent;}
+    .app-search-hint-item:active{background:#f8fafc;}
+    .app-search-hint-item-icon{width:32px;height:32px;border-radius:9px;background:#eff6ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .app-search-hint-item-icon svg{width:15px;height:15px;fill:#3b82f6;}
+    .app-search-hint-item-icon.green{background:#dcfce7;}
+    .app-search-hint-item-icon.green svg{fill:#16a34a;}
+    .app-search-hint-item-icon.purple{background:#ede9fe;}
+    .app-search-hint-item-icon.purple svg{fill:#7c3aed;}
+    .app-search-hint-item span{font-size:12.5px;font-weight:600;color:#334155;text-align:left;flex:1;min-width:0;}
+    .app-search-hint-item-arrow{width:12px;height:12px;fill:#cbd5e1;flex-shrink:0;}
+  `;
+  document.head.appendChild(style);
+}
+
+function normalizeSearchText(str) {
+  if (!str) return '';
+  return String(str).toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getSearchIconSvg(name) {
+  const icons = {
+    home: '<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>',
+    transfer: '<path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/>',
+    card: '<path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>',
+    profile: '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>',
+    bell: '<path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>',
+    bank: '<path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>',
+    search: '<path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>',
+    arrow: '<path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>'
+  };
+  return icons[name] || icons.search;
+}
+
+function renderSearchItem(item) {
+  const iconSvg = getSearchIconSvg(item.icon);
+  const arrowSvg = getSearchIconSvg('arrow');
+  let clickAttr = '';
+  if (item.type === 'navigate') clickAttr = 'onclick="window.navigateTo(\'' + item.id + '\');window.closeAppSearch();"';
+  else if (item.type === 'action') {
+    if (item.action === 'iban') clickAttr = 'onclick="window.closeAppSearch();setTimeout(function(){window.showIban();},80);"';
+    else if (item.action === 'card') clickAttr = 'onclick="window.closeAppSearch();setTimeout(function(){window.showVirtualCard();},80);"';
+    else if (item.action === 'transfer') clickAttr = 'onclick="window.closeAppSearch();setTimeout(function(){window.navigateTo(\'screen-transfer\');},80);"';
+  }
+  else if (item.type === 'transaction') clickAttr = 'onclick="window.closeAppSearch();setTimeout(function(){window.openReceipt(' + item.idx + ');},80);"';
+  else if (item.type === 'notification') clickAttr = 'onclick="window.closeAppSearch();setTimeout(function(){window.showNotifications();},80);"';
+  return '<div class="app-search-item" ' + clickAttr + '>' +
+    '<div class="app-search-item-icon ' + (item.color || '') + '"><svg viewBox="0 0 24 24">' + iconSvg + '</svg></div>' +
+    '<div class="app-search-item-text">' +
+      '<div class="app-search-item-title">' + (item.title || '') + '</div>' +
+      (item.sub ? '<div class="app-search-item-sub">' + item.sub + '</div>' : '') +
+    '</div>' +
+    '<svg class="app-search-item-arrow" viewBox="0 0 24 24">' + arrowSvg + '</svg>' +
+  '</div>';
+}
+
+function renderAppSearchHints() {
+  const body = document.getElementById('app-search-body');
+  if (!body) return;
+  const L = getSearchLabels();
+  const arrow = getSearchIconSvg('arrow');
+  const pages = [
+    { id: 'screen-dashboard', icon: 'home', label: t('navBalance') },
+    { id: 'screen-transfer', icon: 'transfer', label: t('navPaymentsNew') },
+    { id: 'screen-profile', icon: 'profile', label: t('navAccount') }
+  ];
+  const actions = [
+    { action: 'iban', icon: 'bank', color: 'green', label: t('quickIbanLabel') },
+    { action: 'card', icon: 'card', color: 'blue', label: t('quickCardLabel') },
+    { action: 'transfer', icon: 'transfer', color: 'purple', label: t('quickTransferLabel') }
+  ];
+  let html = '<div class="app-search-section-title">' + L.catPages + '</div>';
+  pages.forEach(p => { html += '<div class="app-search-hint-item" onclick="window.navigateTo(\'' + p.id + '\');window.closeAppSearch();"><div class="app-search-hint-item-icon"><svg viewBox="0 0 24 24">' + getSearchIconSvg(p.icon) + '</svg></div><span>' + p.label + '</span><svg class="app-search-hint-item-arrow" viewBox="0 0 24 24">' + arrow + '</svg></div>'; });
+  html += '<div class="app-search-section-title">' + L.catActions + '</div>';
+  actions.forEach(a => {
+    let click = '';
+    if (a.action === 'iban') click = 'window.closeAppSearch();setTimeout(function(){window.showIban();},80);';
+    else if (a.action === 'card') click = 'window.closeAppSearch();setTimeout(function(){window.showVirtualCard();},80);';
+    else if (a.action === 'transfer') click = 'window.closeAppSearch();setTimeout(function(){window.navigateTo(\'screen-transfer\');},80);';
+    html += '<div class="app-search-hint-item" onclick="' + click + '"><div class="app-search-hint-item-icon ' + (a.color || '') + '"><svg viewBox="0 0 24 24">' + getSearchIconSvg(a.icon) + '</svg></div><span>' + a.label + '</span><svg class="app-search-hint-item-arrow" viewBox="0 0 24 24">' + arrow + '</svg></div>';
+  });
+  body.innerHTML = '<div class="app-search-hints">' + html + '</div>';
+}
+
+function renderAppSearchResults(query) {
+  const body = document.getElementById('app-search-body');
+  if (!body || !currentClient) return;
+  const L = getSearchLabels();
+  const norm = normalizeSearchText(query);
+  if (!norm) { renderAppSearchHints(); return; }
+
+  const results = [];
+
+  const pages = [
+    { id: 'screen-dashboard', icon: 'home', title: t('navBalance') },
+    { id: 'screen-transfer', icon: 'transfer', title: t('navPaymentsNew') },
+    { id: 'screen-card', icon: 'card', title: t('navCard') },
+    { id: 'screen-profile', icon: 'profile', title: t('navAccount') }
+  ];
+  pages.forEach(p => { if (normalizeSearchText(p.title).indexOf(norm) !== -1) results.push({ category: 'pages', type: 'navigate', id: p.id, icon: p.icon, color: '', title: p.title, sub: '' }); });
+
+  const actions = [
+    { action: 'iban', icon: 'bank', color: 'green', title: t('quickIbanLabel') },
+    { action: 'card', icon: 'card', color: 'blue', title: t('quickCardLabel') },
+    { action: 'transfer', icon: 'transfer', color: 'purple', title: t('quickTransferLabel') }
+  ];
+  actions.forEach(a => { if (normalizeSearchText(a.title).indexOf(norm) !== -1) results.push({ category: 'actions', type: 'action', action: a.action, icon: a.icon, color: a.color, title: a.title, sub: '' }); });
+
+  const txs = currentClient.transactions || [];
+  txs.forEach((tx, idx) => {
+    const isCancelled = (tx.type === 'cancelled' || tx.cancelled === true);
+    const isIn = tx.type === 'in';
+    const isPending = tx.status === 'pending';
+    let title = t('txTransferSent');
+    if (isPending) title = t('pendingResultTitle') || 'Pending';
+    else if (isCancelled) title = t('txTransferCancelled');
+    else if (tx.labelKey) title = t(tx.labelKey);
+    else if (isIn) title = t('txTransferReceived');
+    const sub = translateSubtitle(tx.subtitle) || '';
+    const haystack = normalizeSearchText(title + ' ' + sub + ' ' + (tx.amount || '') + ' ' + (tx.date || ''));
+    if (haystack.indexOf(norm) !== -1) {
+      let color = 'red';
+      if (isCancelled) color = 'purple';
+      else if (isIn) color = 'green';
+      else if (isPending) color = 'orange';
+      results.push({ category: 'transactions', type: 'transaction', idx: idx, icon: 'transfer', color: color, title: title, sub: sub + ' · ' + (tx.amount || '') });
+    }
+  });
+
+  const notifs = currentClient.notifications || [];
+  notifs.forEach((n, idx) => {
+    const nt = n.title || '';
+    const nm = n.message || '';
+    const haystack = normalizeSearchText(nt + ' ' + nm);
+    if (haystack.indexOf(norm) !== -1) results.push({ category: 'notifications', type: 'notification', idx: idx, icon: 'bell', color: 'orange', title: nt || 'Notification', sub: nm });
+  });
+
+  if (results.length === 0) {
+    body.innerHTML = '<div class="app-search-empty"><svg viewBox="0 0 24 24">' + getSearchIconSvg('search') + '</svg><div class="app-search-empty-title">' + L.noResults + '</div></div>';
+    return;
+  }
+
+  const grouped = { pages: [], actions: [], transactions: [], notifications: [] };
+  results.forEach(r => grouped[r.category].push(r));
+
+  let html = '';
+  if (grouped.pages.length) { html += '<div class="app-search-section-title">' + L.catPages + '</div>'; grouped.pages.forEach(r => html += renderSearchItem(r)); }
+  if (grouped.actions.length) { html += '<div class="app-search-section-title">' + L.catActions + '</div>'; grouped.actions.forEach(r => html += renderSearchItem(r)); }
+  if (grouped.transactions.length) { html += '<div class="app-search-section-title">' + L.catTransactions + '</div>'; grouped.transactions.forEach(r => html += renderSearchItem(r)); }
+  if (grouped.notifications.length) { html += '<div class="app-search-section-title">' + L.catNotifications + '</div>'; grouped.notifications.forEach(r => html += renderSearchItem(r)); }
+
+  body.innerHTML = html;
+}
+
+window.openAppSearch = function () {
+  if (!currentClient) return;
+  ensureAppSearchStyles();
+  const old = document.getElementById('app-search-overlay');
+  if (old) old.remove();
+  const L = getSearchLabels();
+  const ov = document.createElement('div');
+  ov.id = 'app-search-overlay';
+  ov.className = 'app-search-overlay';
+  ov.innerHTML = '<div class="app-search-header">' +
+    '<div class="app-search-input-wrap">' +
+      '<svg class="app-search-icon" viewBox="0 0 24 24">' + getSearchIconSvg('search') + '</svg>' +
+      '<input type="text" id="app-search-input" placeholder="' + L.overlayPlaceholder + '" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">' +
+      '<button type="button" class="app-search-clear" id="app-search-clear" onclick="window.clearAppSearch()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
+    '</div>' +
+    '<button type="button" class="app-search-close" onclick="window.closeAppSearch()" aria-label="' + L.close + '"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>' +
+    '</div>' +
+    '<div class="app-search-body" id="app-search-body"></div>';
+  document.body.appendChild(ov);
+
+  const input = document.getElementById('app-search-input');
+  const clearBtn = document.getElementById('app-search-clear');
+
+  renderAppSearchHints();
+
+  input.addEventListener('input', () => {
+    const q = input.value.trim();
+    clearBtn.classList.toggle('show', q.length > 0);
+    if (q.length === 0) renderAppSearchHints();
+    else renderAppSearchResults(q);
+  });
+
+  setTimeout(() => { try { input.focus(); } catch (e) {} }, 120);
+};
+
+window.closeAppSearch = function () {
+  const ov = document.getElementById('app-search-overlay');
+  if (ov) ov.remove();
+};
+
+window.clearAppSearch = function () {
+  const input = document.getElementById('app-search-input');
+  const clearBtn = document.getElementById('app-search-clear');
+  if (input) { input.value = ''; try { input.focus(); } catch (e) {} }
+  if (clearBtn) clearBtn.classList.remove('show');
+  renderAppSearchHints();
+};
+
 function renderBankingApp(client) {
   currentClient = client;
   currentLang = client.language || 'fr';
@@ -2250,6 +2514,7 @@ function renderBankingApp(client) {
   ensureProfileStyles();
   ensureReceiptV4Styles();
   ensureTransactionHistoryStyles();
+  ensureAppSearchStyles();
   const root = document.getElementById('app-root');
   const currency = client.currency || '€';
   const balanceFormatted = formatAmount(client.balance || 0, currency);
@@ -2275,7 +2540,14 @@ function renderBankingApp(client) {
           '<text x="130" y="37" font-size="26" text-anchor="middle">YOUNITED</text>' +
         '</svg>' +
       '</div>' +
-      '<div class="header-actions-new">' + renderHeaderNotifBtn(client) + '<button class="header-icon-btn-new avatar-new" onclick="window.navigateTo(\'screen-profile\')"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#fff"/></svg></button></div>' +
+      '<div class="header-actions-new">' +
+        '<button type="button" class="header-search-pill" onclick="window.openAppSearch()" aria-label="' + (getSearchLabels().placeholder || 'Rechercher') + '">' +
+          '<svg viewBox="0 0 24 24">' + getSearchIconSvg('search') + '</svg>' +
+          '<span>' + (getSearchLabels().placeholder || 'Rechercher') + '</span>' +
+        '</button>' +
+        renderHeaderNotifBtn(client) +
+        '<button class="header-icon-btn-new avatar-new" onclick="window.navigateTo(\'screen-profile\')"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#fff"/></svg></button>' +
+      '</div>' +
     '</header>' +
     '<div class="screens-container">' +
       '<div id="screen-dashboard" class="screen active">' +
