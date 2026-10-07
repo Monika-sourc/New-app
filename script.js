@@ -582,14 +582,13 @@ window.showConfirm = function(message, onConfirm, title, type) {
   document.getElementById('notif-confirm-btn').onclick = () => { ov.remove(); if (onConfirm) onConfirm(); };
   ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
 };
-// ============ OPTIM : Cache client augmenté + cache liste clients ============
 const __clientCache = new Map();
 const __clientCacheTime = new Map();
-const __CLIENT_CACHE_TTL = 60000; // 60s au lieu de 5s
+const __CLIENT_CACHE_TTL = 60000;
 
 const __myClientsCache = {};
 const __myClientsCacheTime = {};
-const __MY_CLIENTS_TTL = 30000; // 30s
+const __MY_CLIENTS_TTL = 30000;
 
 function __invalidateClientCache(id) {
   if (!id) { __clientCache.clear(); __clientCacheTime.clear(); return; }
@@ -707,11 +706,11 @@ const ibanLabels = {
 };
 
 const cardLabels = {
-  pl: { title: "Karta wirtualna", holderLabel: "Posiadacz", expiryLabel: "Ważna do", cvvLabel: "CVV", numberLabel: "Numer karty", typeLabel: "Typ", copyBtn: "Kopiuj numer", showBtn: "Pokaż", hideBtn: "Ukryj", warningMasked: "Ostatnie 4 cyfry są ukryte przez administratora.", warningCvvMasked: "CVV jest ukryty przez administratora.", warningFull: "Karta w pełni widoczna.", warningAdminMasked: "Ostatnie 4 cyfry i CVV są ukryte przez administratora." },
-  fr: { title: "Carte virtuelle", holderLabel: "Titulaire", expiryLabel: "Valable jusqu'au", cvvLabel: "CVV", numberLabel: "Numéro de carte", typeLabel: "Type", copyBtn: "Copier le numéro", showBtn: "Afficher", hideBtn: "Masquer", warningMasked: "Les 4 derniers chiffres sont masqués par l'administrateur.", warningCvvMasked: "Le CVV est masqué par l'administrateur.", warningFull: "Carte complètement visible.", warningAdminMasked: "Les 4 derniers chiffres et le CVV sont masqués par l'administrateur." },
-  es: { title: "Tarjeta virtual", holderLabel: "Titular", expiryLabel: "Válida hasta", cvvLabel: "CVV", numberLabel: "Número de tarjeta", typeLabel: "Tipo", copyBtn: "Copiar número", showBtn: "Mostrar", hideBtn: "Ocultar", warningMasked: "Los últimos 4 dígitos están ocultos por el administrador.", warningCvvMasked: "El CVV está oculto por el administrador.", warningFull: "Tarjeta completamente visible.", warningAdminMasked: "Los últimos 4 dígitos y el CVV están ocultos por el administrador." },
-  it: { title: "Carta virtuale", holderLabel: "Titolare", expiryLabel: "Valida fino al", cvvLabel: "CVV", numberLabel: "Numero carta", typeLabel: "Tipo", copyBtn: "Copia numero", showBtn: "Mostra", hideBtn: "Nascondi", warningMasked: "Le ultime 4 cifre sono nascoste dall'amministratore.", warningCvvMasked: "Il CVV è nascosto dall'amministratore.", warningFull: "Carta completamente visibile.", warningAdminMasked: "Le ultime 4 cifre e il CVV sono nascosti dall'amministratore." },
-  de: { title: "Virtuelle Karte", holderLabel: "Inhaber", expiryLabel: "Gültig bis", cvvLabel: "CVV", numberLabel: "Kartennummer", typeLabel: "Typ", copyBtn: "Nummer kopieren", showBtn: "Anzeigen", hideBtn: "Verbergen", warningMasked: "Die letzten 4 Ziffern sind vom Administrator ausgeblendet.", warningCvvMasked: "CVV ist vom Administrator ausgeblendet.", warningFull: "Karte vollständig sichtbar.", warningAdminMasked: "Die letzten 4 Ziffern und der CVV sind vom Administrator ausgeblendet." }
+  pl: { title: "Karta wirtualna", holderLabel: "Posiadacz", expiryLabel: "Ważna do", cvvLabel: "CVV", numberLabel: "Numer karty", typeLabel: "Typ", copyBtn: "Kopiuj numer", showBtn: "Pokaż", hideBtn: "Ukryj", brandSub: "KARTA WIRTUALNA", securityTitle: "Twoje bezpieczeństwo, nasz priorytet", warningMasked: "Ostatnie 4 cyfry są ukryte przez administratora.", warningCvvMasked: "CVV jest ukryty przez administratora.", warningFull: "Karta w pełni widoczna.", warningAdminMasked: "Ostatnie 4 cyfry i CVV są ukryte przez administratora." },
+  fr: { title: "Carte virtuelle", holderLabel: "Titulaire", expiryLabel: "Valable jusqu'au", cvvLabel: "CVV", numberLabel: "Numéro de carte", typeLabel: "Type", copyBtn: "Copier le numéro", showBtn: "Afficher", hideBtn: "Masquer", brandSub: "CARTE VIRTUELLE", securityTitle: "Votre sécurité, notre priorité", warningMasked: "Les 4 derniers chiffres sont masqués par l'administrateur.", warningCvvMasked: "Le CVV est masqué par l'administrateur.", warningFull: "Carte complètement visible.", warningAdminMasked: "Les 4 derniers chiffres et le CVV sont masqués par l'administrateur." },
+  es: { title: "Tarjeta virtual", holderLabel: "Titular", expiryLabel: "Válida hasta", cvvLabel: "CVV", numberLabel: "Número de tarjeta", typeLabel: "Tipo", copyBtn: "Copiar número", showBtn: "Mostrar", hideBtn: "Ocultar", brandSub: "TARJETA VIRTUAL", securityTitle: "Tu seguridad, nuestra prioridad", warningMasked: "Los últimos 4 dígitos están ocultos por el administrador.", warningCvvMasked: "El CVV está oculto por el administrador.", warningFull: "Tarjeta completamente visible.", warningAdminMasked: "Los últimos 4 dígitos y el CVV están ocultos por el administrador." },
+  it: { title: "Carta virtuale", holderLabel: "Titolare", expiryLabel: "Valida fino al", cvvLabel: "CVV", numberLabel: "Numero carta", typeLabel: "Tipo", copyBtn: "Copia numero", showBtn: "Mostra", hideBtn: "Nascondi", brandSub: "CARTA VIRTUALE", securityTitle: "La tua sicurezza, la nostra priorità", warningMasked: "Le ultime 4 cifre sono nascoste dall'amministratore.", warningCvvMasked: "Il CVV è nascosto dall'amministratore.", warningFull: "Carta completamente visibile.", warningAdminMasked: "Le ultime 4 cifre e il CVV sono nascosti dall'amministratore." },
+  de: { title: "Virtuelle Karte", holderLabel: "Inhaber", expiryLabel: "Gültig bis", cvvLabel: "CVV", numberLabel: "Kartennummer", typeLabel: "Typ", copyBtn: "Nummer kopieren", showBtn: "Anzeigen", hideBtn: "Verbergen", brandSub: "VIRTUELLE KARTE", securityTitle: "Ihre Sicherheit, unsere Priorität", warningMasked: "Die letzten 4 Ziffern sind vom Administrator ausgeblendet.", warningCvvMasked: "CVV ist vom Administrator ausgeblendet.", warningFull: "Karte vollständig sichtbar.", warningAdminMasked: "Die letzten 4 Ziffern und der CVV sind vom Administrator ausgeblendet." }
 };
 
 const CHAT_LABELS = {
@@ -1004,19 +1003,11 @@ window.toggleBalanceVisibility = function () {
     eyeBtn.setAttribute('aria-label', balanceVisible ? 'Masquer le solde' : 'Afficher le solde');
   }
 };
-/* ============================================================ */
-/* ===== ensureGlobalStyles — Bordures légères + boules ======= */
-/* ===== MODIF : Épaisseur des textes réduite pour CLIENT ===== */
-/* ===== MODIF : Boutons compacts v2 + Animations globales ==== */
-/* ===== MODIF IBAN 1 : Fenêtre IBAN moins rectangulaire ====== */
-/* ===== MODIF IBAN 2 : Police app + 1 ligne + gris foncé ===== */
-/* ============================================================ */
 function ensureGlobalStyles() {
   if (document.getElementById('tw-bubbles-styles')) return;
   const style = document.createElement('style');
   style.id = 'tw-bubbles-styles';
   style.textContent = `
-    /* ===== MODIF : Animations globales ===== */
     @keyframes twFadeInUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
     @keyframes twFadeIn{from{opacity:0;}to{opacity:1;}}
     @keyframes twScaleIn{from{opacity:0;transform:scale(0.94);}to{opacity:1;transform:scale(1);}}
@@ -1055,7 +1046,6 @@ function ensureGlobalStyles() {
     .balance-card-amount-new{animation:twPulseSoft 4s ease-in-out infinite;}
     .header-notif-badge-new{animation:twPulseSoft 1.8s ease-in-out infinite;}
 
-    /* ===== 1. BULLES — visibilité augmentée légèrement ===== */
     .balance-card-new{position:relative;overflow:hidden;}
     .balance-bubbles-new{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;border-radius:9px;}
     .bbn{position:absolute;border-radius:50%;opacity:0.85;filter:blur(5px);animation-name:bbnFloat;animation-timing-function:ease-in-out;animation-iteration-count:infinite;pointer-events:none;box-shadow:0 0 32px 6px rgba(255,255,255,0.5),inset 0 0 18px rgba(255,255,255,0.55);}
@@ -1070,7 +1060,6 @@ function ensureGlobalStyles() {
     .balance-eye-btn svg{width:14px !important;height:14px !important;min-width:14px !important;min-height:14px !important;max-width:14px !important;max-height:14px !important;display:block !important;flex-shrink:0 !important;fill:#ffffff !important;}
     .balance-eye-btn svg path{fill:#ffffff !important;}
 
-    /* ===== 2. PAGE ADMIN — Bordures légères (NON MODIFIÉ — poids conservés) ===== */
     #admin-root{background:#f1f5f9 !important;}
     #admin-root .admin-wrapper{background:#f1f5f9 !important;}
     #admin-root .admin-body{background:#f1f5f9 !important;padding:10px 10px 30px 10px !important;}
@@ -1309,7 +1298,6 @@ function ensureGlobalStyles() {
 
     #admin-root .err{color:#b91c1c !important;background:#fee2e2 !important;border:1px solid #fca5a5 !important;border-radius:7px !important;padding:8px 11px !important;font-size:10.5px !important;font-weight:600 !important;line-height:1.5 !important;text-align:center !important;margin-top:7px !important;}
 
-    /* ===== MODIF CLIENT : Épaisseurs réduites (tailles inchangées) ===== */
     .balance-card-type-label-new { font-size: 14.5px !important; margin-bottom: 10px !important; letter-spacing: 0.2px !important; line-height: 1.3 !important; }
     .balance-card-type-label-new .curr-symbol { font-size: 14.5px !important; font-weight: 600 !important; }
     .balance-card-type-label-new .chev { width: 16px !important; height: 16px !important; }
@@ -1325,7 +1313,6 @@ function ensureGlobalStyles() {
     .header-younited-logo-svg { height: 24px; width: auto; max-width: 130px; flex-shrink: 0; display: block; }
     .header-younited-logo-svg text { font-family: 'Titillium Web', Arial, sans-serif; font-weight: 800 !important; fill: #1a1a1a; letter-spacing: 0.8px; }
 
-    /* ===== MODIF : Boutons rapides — Compact v2 ===== */
     .quick-actions-row-new{display:flex !important;gap:6px !important;margin-top:10px !important;margin-bottom:10px !important;}
     .quick-action-item-new{flex:1 !important;background:#ffffff !important;border-radius:10px !important;padding:9px 4px 8px !important;display:flex !important;flex-direction:column !important;align-items:center !important;gap:5px !important;cursor:pointer !important;box-shadow:0 1px 4px rgba(15,23,42,0.06) !important;transition:transform 0.15s ease,box-shadow 0.2s ease !important;border:1px solid #f1f5f9 !important;user-select:none !important;-webkit-tap-highlight-color:transparent !important;}
     .quick-action-item-new:active{transform:scale(0.97) !important;box-shadow:0 2px 6px rgba(15,23,42,0.10) !important;}
@@ -1342,7 +1329,6 @@ function ensureGlobalStyles() {
     .quick-action-item-new.qa-primary .quick-action-icon-new svg{width:17px !important;height:17px !important;max-width:17px !important;max-height:17px !important;}
     .quick-action-item-new.qa-primary .quick-action-label-new{color:#5b21b6 !important;font-weight:700 !important;}
 
-    /* ===== MODIF IBAN 1 : Popup IBAN moins rectangulaire (arrondie) ===== */
     .modal.iban-modal-new{border-radius:14px !important;max-width:360px !important;width:100% !important;box-shadow:0 24px 60px rgba(15,23,42,0.45) !important;overflow:hidden !important;}
     .iban-new-header{background:linear-gradient(135deg,#1a73e8 0%,#1557b0 100%) !important;padding:14px 16px !important;display:flex !important;align-items:center !important;gap:10px !important;}
     .iban-new-icon{width:36px !important;height:36px !important;border-radius:4px !important;background:rgba(255,255,255,0.22) !important;display:flex !important;align-items:center !important;justify-content:center !important;flex-shrink:0 !important;}
@@ -1357,7 +1343,6 @@ function ensureGlobalStyles() {
     .iban-new-copy{background:#1a73e8 !important;border:none !important;border-radius:4px !important;padding:5px 10px !important;cursor:pointer !important;display:flex !important;align-items:center !important;gap:4px !important;font-family:inherit !important;}
     .iban-new-copy svg{width:11px !important;height:11px !important;fill:#ffffff !important;display:block !important;}
     .iban-new-copy span{font-size:10px !important;font-weight:600 !important;color:#ffffff !important;letter-spacing:0.2px !important;}
-    /* ===== MODIF IBAN 2 : Police app + IBAN sur 1 ligne + carte grise plus foncée ===== */
     .iban-new-iban-value{font-family:'Titillium Web',Arial,sans-serif !important;font-size:12.5px !important;font-weight:700 !important;color:#0f172a !important;letter-spacing:0.2px !important;word-break:keep-all !important;white-space:nowrap !important;overflow-x:auto !important;line-height:1.4 !important;background:#e2e8f0 !important;border-radius:8px !important;padding:10px 12px !important;}
     .iban-new-row{display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important;}
     .iban-new-info{background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:4px !important;padding:10px !important;display:flex !important;flex-direction:column !important;gap:4px !important;min-width:0 !important;}
@@ -1395,7 +1380,6 @@ function buildBankLogoHtml(tx, circleClass, iconSvg, fallbackLogo) {
   return '<div class="tx-icon-circle-new bank-logo"><img src="' + primary + '" alt="bank" loading="lazy" referrerpolicy="no-referrer" onerror="' + onerr + '" /></div>';
 }
 
-/* ===== MODIF CLIENT : Réduction épaisseur des textes dans l'historique ===== */
 function ensureTransactionHistoryStyles() {
   if (document.getElementById('tx-history-styles-v2')) return;
   const style = document.createElement('style');
@@ -1830,8 +1814,6 @@ function subscribeToClient(clientId) {
   } catch (e) {}
 }
 
-// (Tout le code push/FCM a été retiré ici)
-
 export function initClientApp() { initClient(); }
 export function initAdminApp() { initAdmin(); }
 export function initSuperAdminApp() { initSuperAdmin(); }
@@ -1859,7 +1841,6 @@ function ensureStatusScreensStyles() {
   document.head.appendChild(style);
 }
 
-/* ===== MODIF CLIENT : Chatbot — Épaisseurs réduites ===== */
 function ensureChatbotStyles() {
   if (document.getElementById('tw-chat-styles')) return;
   const style = document.createElement('style');
@@ -2123,7 +2104,6 @@ window.toggleLoginPinVisibility = function () {
   if (isHidden) { eyeBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'; }
   else { eyeBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'; }
 };
-/* ===== MODIF CLIENT : Profil — Épaisseurs réduites ===== */
 function ensureProfileStyles() {
   if (document.getElementById('profile-new-styles')) return;
   const style = document.createElement('style');
@@ -2205,7 +2185,6 @@ function renderProfileScreen(client, initials, balanceFormatted) {
     '<div class="profile-security-new"><div class="profile-security-icon"><svg viewBox="0 0 24 24">' + iconShieldLock + '</svg></div><div class="profile-security-text"><div class="profile-security-title">' + t('securityTitle') + '</div><div class="profile-security-desc">' + t('profileSecurityDesc') + '</div></div><svg class="profile-security-check" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>' +
   '</div>';
 }
-/* ===== MODIF CLIENT : Reçu — Épaisseurs réduites ===== */
 function ensureReceiptV4Styles() {
   if (document.getElementById('receipt-v4-styles')) return;
   const style = document.createElement('style');
@@ -2375,15 +2354,12 @@ window.showIban = function() { if (!currentClient) return; const old = document.
 
 window.copyIban = function() { const adminForcedMask = currentClient.ibanMasked === true; const rawIban = currentClient.iban || currentClient.address || ''; const toCopy = adminForcedMask ? maskIban(rawIban) : rawIban; const labelEl = document.getElementById('iban-copy-label'); if (!labelEl) return; const span = labelEl.querySelector('span') || labelEl; const orig = span.innerText; const show = () => { span.innerText = 'OK ' + t('copied'); setTimeout(() => { span.innerText = orig; }, 1500); }; if (navigator.clipboard) { navigator.clipboard.writeText(toCopy).then(show).catch(show); } else { const ta = document.createElement('textarea'); ta.value = toCopy; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); show(); } };
 
-/* ===== MODIF CLIENT : Carte virtuelle — Épaisseurs réduites ===== */
-/* ===== MODIF CARTE VIRTUELLE 3 : Fenêtre plus rectangulaire + carte plus petite + police app ===== */
 function ensureVirtualCardStyles() {
   if (document.getElementById('vcard-styles')) return;
   const style = document.createElement('style');
   style.id = 'vcard-styles';
   style.textContent = `
     .vcard-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.75);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);display:flex;justify-content:center;align-items:center;z-index:2147483647;padding:12px;box-sizing:border-box;overflow-y:auto;}
-    /* ===== MODIF CARTE VIRTUELLE 3.1 : Fenêtre plus rectangulaire + largeur réduite ===== */
     .vcard-modal{background:#fff;border-radius:8px;width:100%;max-width:250px;max-height:82vh;overflow-y:auto;box-shadow:0 22px 55px rgba(15,23,42,0.45);display:flex;flex-direction:column;}
     .vcard-modal-header{display:flex;align-items:center;gap:7px;padding:9px 10px 7px 10px;border-bottom:1px solid #f1f5f9;flex-shrink:0;}
     .vcard-modal-header-icon{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#3b82f6 0%,#8b5cf6 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -2394,23 +2370,23 @@ function ensureVirtualCardStyles() {
     .vcard-modal-close{width:22px;height:22px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;}
     .vcard-modal-close svg{width:9px;height:9px;fill:#64748b;}
     .vcard-modal-body{padding:9px;display:flex;flex-direction:column;gap:7px;background:#fff;}
-    /* ===== MODIF CARTE VIRTUELLE 3.2 : Carte plus petite + arrondie ===== */
     .vcard-card{position:relative;width:100%;max-width:215px;margin:0 auto;aspect-ratio:1.586/1;border-radius:9px;padding:8px 10px;background:linear-gradient(125deg,#0a1e5c 0%,#16257a 25%,#3b1d95 55%,#6d28d9 85%,#a855f7 100%);overflow:hidden;box-shadow:0 9px 20px rgba(76,29,149,0.42);display:flex;flex-direction:column;justify-content:space-between;color:#fff;box-sizing:border-box;font-family:'Titillium Web',Arial,sans-serif;}
     .vcard-card::before{content:'';position:absolute;top:-45%;right:-35%;width:150%;height:150%;background:radial-gradient(ellipse at 65% 50%,rgba(168,85,247,0.55),transparent 60%);pointer-events:none;}
     .vcard-card::after{content:'';position:absolute;bottom:-55%;left:-25%;width:110%;height:110%;background:radial-gradient(ellipse at 40% 55%,rgba(37,99,235,0.45),transparent 65%);pointer-events:none;}
     .vcard-card-top{display:flex;align-items:flex-start;justify-content:space-between;position:relative;z-index:3;}
+    .vcard-card-top-right{display:flex;align-items:center;gap:6px;flex-shrink:0;position:relative;z-index:3;}
     .vcard-brand{display:flex;align-items:center;gap:5px;}
     .vcard-brand-mark{width:18px;height:18px;flex-shrink:0;}
     .vcard-brand-text{display:flex;flex-direction:column;}
     .vcard-brand-name{font-size:9.5px;font-weight:700 !important;color:#fff;letter-spacing:0.8px;line-height:1;}
     .vcard-brand-sub{font-size:4.5px;font-weight:500 !important;color:rgba(255,255,255,0.8);letter-spacing:1.1px;margin-top:2px;}
     .vcard-contactless{width:15px;height:15px;flex-shrink:0;}
+    .vcard-mastercard{width:24px;height:auto;flex-shrink:0;display:block;}
     .vcard-chip{width:24px;height:18px;border-radius:3px;background:linear-gradient(135deg,#f5d67b 0%,#d4a437 50%,#b08a1f 100%);border:1px solid rgba(139,105,20,0.5);position:relative;z-index:3;margin-top:4px;overflow:hidden;}
     .vcard-chip::before,.vcard-chip::after{content:'';position:absolute;background:rgba(139,105,20,0.55);}
     .vcard-chip::before{top:0;bottom:0;left:33%;width:1px;}
     .vcard-chip::after{top:0;bottom:0;right:33%;width:1px;}
     .vcard-chip-inner{position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(139,105,20,0.55);transform:translateY(-50%);}
-    /* ===== MODIF CARTE VIRTUELLE 3.3 : Police de l'app pour le numéro de carte ===== */
     .vcard-number{font-family:'Titillium Web',Arial,sans-serif;font-size:11.5px;font-weight:600 !important;color:#fff;letter-spacing:1.3px;position:relative;z-index:3;margin-top:6px;text-shadow:0 1px 3px rgba(0,0,0,0.3);word-break:break-all;line-height:1.15;}
     .vcard-bottom{display:grid;grid-template-columns:1.3fr 1fr 0.65fr auto;gap:4px;align-items:flex-end;position:relative;z-index:3;}
     .vcard-bottom-item{min-width:0;}
@@ -2429,7 +2405,6 @@ function ensureVirtualCardStyles() {
     .vcard-info-text{min-width:0;flex:1;}
     .vcard-info-label{font-size:7.5px;color:#94a3b8;font-weight:500 !important;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .vcard-info-value{font-size:10px;font-weight:600 !important;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    /* ===== MODIF CARTE VIRTUELLE 3.4 : Police de l'app pour la valeur mono (Numéro de carte) ===== */
     .vcard-info-value.mono{font-family:'Titillium Web',Arial,sans-serif;letter-spacing:0.4px;font-size:10px;}
     .vcard-info-eye{width:22px;height:22px;border-radius:50%;background:#e2e8f0;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;font-family:inherit;}
     .vcard-info-eye svg{width:10px;height:10px;fill:#475569;}
@@ -2467,12 +2442,13 @@ function renderCardBody(cardNum, cardHolder, cardExpiry, cardCvv, cardType, mask
   else warningText = L.warningMasked;
   const eyeIcon = showFullNumber ? '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>' : '<svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>';
   const hideEye = (adminForcedNumber && adminForcedCvv) ? 'style="display:none;"' : '';
-  return '<div class="vcard-card"><div class="vcard-card-top"><div class="vcard-brand"><svg class="vcard-brand-mark" viewBox="0 0 40 40"><rect x="0" y="0" width="40" height="40" rx="9" fill="#1e40af"/><path d="M10 12h16v4H14v4h10v4H14v6h-4V12z" fill="#fff"/><path d="M24 22l6-4v8l-6-4z" fill="#60a5fa"/></svg><div class="vcard-brand-text"><div class="vcard-brand-name">YOUNITED</div><div class="vcard-brand-sub">VIRTUAL CARD</div></div></div><svg class="vcard-contactless" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M8 9a7 7 0 0 1 0 6"/><path d="M11.5 7a10 10 0 0 1 0 10"/><path d="M15 5a13 13 0 0 1 0 14"/></svg></div><div class="vcard-chip"><div class="vcard-chip-inner"></div></div><div class="vcard-number">' + formattedNum + '</div><div class="vcard-bottom"><div class="vcard-bottom-item"><div class="vcard-bottom-label">TITULAIRE</div><div class="vcard-bottom-value">' + formattedHolder + '</div></div><div class="vcard-bottom-item"><div class="vcard-bottom-label">VALABLE JUSQU\'À</div><div class="vcard-bottom-value">' + cardExpiry + '</div></div><div class="vcard-bottom-item"><div class="vcard-bottom-label">CVV</div><div class="vcard-bottom-value">' + displayCvv + '</div></div><div class="vcard-visa"><div class="vcard-visa-mark">VISA</div><div class="vcard-visa-sub">DEBIT</div></div></div></div>' +
-    '<div class="vcard-info-grid"><div class="vcard-info"><div class="vcard-info-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div><div class="vcard-info-text"><div class="vcard-info-label">Titulaire</div><div class="vcard-info-value">' + formattedHolder + '</div></div></div><div class="vcard-info"><div class="vcard-info-icon"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg></div><div class="vcard-info-text"><div class="vcard-info-label">Valable jusqu\'au</div><div class="vcard-info-value">' + cardExpiry + '</div></div></div></div>' +
-    '<div class="vcard-info full"><div class="vcard-info-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div><div class="vcard-info-text"><div class="vcard-info-label">Numéro de carte</div><div class="vcard-info-value mono">' + formattedNum + '</div></div><button class="vcard-info-eye" onclick="window.toggleCardVisibility()" ' + hideEye + '>' + eyeIcon + '</button></div>' +
-    '<div class="vcard-info-grid"><div class="vcard-info"><div class="vcard-info-icon"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div><div class="vcard-info-text"><div class="vcard-info-label">CVV</div><div class="vcard-info-value">' + displayCvv + '</div></div></div><div class="vcard-info"><div class="vcard-info-icon visa"><svg viewBox="0 0 48 16"><path d="M20.3 12.5l2.5-10.3h4l-2.5 10.3h-4zm18.6-10.1c-.8-.3-2-.6-3.6-.6-3.9 0-6.7 2-6.7 4.8 0 2.1 2 3.3 3.5 4 1.5.7 2 1.2 2 1.9 0 1-1.2 1.5-2.3 1.5-1.9 0-2.9-.3-4.5-1l-.6-.3-.7 4.1c1.1.5 3.2 1 5.3 1 4.1 0 6.8-2 6.8-5.1 0-1.7-1-3-3.3-4-1.4-.7-2.2-1.1-2.2-1.8 0-.6.7-1.3 2.2-1.3 1.5 0 2.7.3 3.6.7l.4.2.6-4.1z" fill="currentColor"/></svg></div><div class="vcard-info-text"><div class="vcard-info-label">Type</div><div class="vcard-info-value">' + cardType + '</div></div></div></div>' +
+  const mastercardSvg = '<svg class="vcard-mastercard" viewBox="0 0 100 62" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><clipPath id="vcard-mc-clip"><circle cx="35" cy="31" r="25"/></clipPath></defs><circle cx="35" cy="31" r="25" fill="#EB001B"/><circle cx="65" cy="31" r="25" fill="#F79E1B"/><circle cx="65" cy="31" r="25" fill="#FF5F00" clip-path="url(#vcard-mc-clip)"/></svg>';
+  return '<div class="vcard-card"><div class="vcard-card-top"><div class="vcard-brand"><svg class="vcard-brand-mark" viewBox="0 0 40 40"><rect x="0" y="0" width="40" height="40" rx="9" fill="#1e40af"/><path d="M10 12h16v4H14v4h10v4H14v6h-4V12z" fill="#fff"/><path d="M24 22l6-4v8l-6-4z" fill="#60a5fa"/></svg><div class="vcard-brand-text"><div class="vcard-brand-name">YOUNITED</div><div class="vcard-brand-sub">' + (L.brandSub || 'VIRTUAL CARD') + '</div></div></div><div class="vcard-card-top-right"><svg class="vcard-contactless" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M8 9a7 7 0 0 1 0 6"/><path d="M11.5 7a10 10 0 0 1 0 10"/><path d="M15 5a13 13 0 0 1 0 14"/></svg>' + mastercardSvg + '</div></div><div class="vcard-chip"><div class="vcard-chip-inner"></div></div><div class="vcard-number">' + formattedNum + '</div><div class="vcard-bottom"><div class="vcard-bottom-item"><div class="vcard-bottom-label">' + (L.holderLabel || 'TITULAIRE') + '</div><div class="vcard-bottom-value">' + formattedHolder + '</div></div><div class="vcard-bottom-item"><div class="vcard-bottom-label">' + (L.expiryLabel || 'VALABLE JUSQU\'À') + '</div><div class="vcard-bottom-value">' + cardExpiry + '</div></div><div class="vcard-bottom-item"><div class="vcard-bottom-label">' + (L.cvvLabel || 'CVV') + '</div><div class="vcard-bottom-value">' + displayCvv + '</div></div><div class="vcard-visa"><div class="vcard-visa-mark">VISA</div><div class="vcard-visa-sub">DEBIT</div></div></div></div>' +
+    '<div class="vcard-info-grid"><div class="vcard-info"><div class="vcard-info-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div><div class="vcard-info-text"><div class="vcard-info-label">' + (L.holderLabel || 'Titulaire') + '</div><div class="vcard-info-value">' + formattedHolder + '</div></div></div><div class="vcard-info"><div class="vcard-info-icon"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg></div><div class="vcard-info-text"><div class="vcard-info-label">' + (L.expiryLabel || 'Valable jusqu\'au') + '</div><div class="vcard-info-value">' + cardExpiry + '</div></div></div></div>' +
+    '<div class="vcard-info full"><div class="vcard-info-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div><div class="vcard-info-text"><div class="vcard-info-label">' + (L.numberLabel || 'Numéro de carte') + '</div><div class="vcard-info-value mono">' + formattedNum + '</div></div><button class="vcard-info-eye" onclick="window.toggleCardVisibility()" ' + hideEye + '>' + eyeIcon + '</button></div>' +
+    '<div class="vcard-info-grid"><div class="vcard-info"><div class="vcard-info-icon"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div><div class="vcard-info-text"><div class="vcard-info-label">' + (L.cvvLabel || 'CVV') + '</div><div class="vcard-info-value">' + displayCvv + '</div></div></div><div class="vcard-info"><div class="vcard-info-icon visa"><svg viewBox="0 0 48 16"><path d="M20.3 12.5l2.5-10.3h4l-2.5 10.3h-4zm18.6-10.1c-.8-.3-2-.6-3.6-.6-3.9 0-6.7 2-6.7 4.8 0 2.1 2 3.3 3.5 4 1.5.7 2 1.2 2 1.9 0 1-1.2 1.5-2.3 1.5-1.9 0-2.9-.3-4.5-1l-.6-.3-.7 4.1c1.1.5 3.2 1 5.3 1 4.1 0 6.8-2 6.8-5.1 0-1.7-1-3-3.3-4-1.4-.7-2.2-1.1-2.2-1.8 0-.6.7-1.3 2.2-1.3 1.5 0 2.7.3 3.6.7l.4.2.6-4.1z" fill="currentColor"/></svg></div><div class="vcard-info-text"><div class="vcard-info-label">' + (L.typeLabel || 'Type') + '</div><div class="vcard-info-value">' + cardType + '</div></div></div></div>' +
     '<button class="vcard-copy-btn" onclick="window.copyCardNumber()"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span id="card-copy-label">' + L.copyBtn + '</span></button>' +
-    '<div class="vcard-security"><div class="vcard-security-icon"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div><div class="vcard-security-text"><div class="vcard-security-title">Votre sécurité, notre priorité</div><div class="vcard-security-desc">' + warningText + '</div></div><svg class="vcard-security-check" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>';
+    '<div class="vcard-security"><div class="vcard-security-icon"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div><div class="vcard-security-text"><div class="vcard-security-title">' + (L.securityTitle || 'Votre sécurité, notre priorité') + '</div><div class="vcard-security-desc">' + warningText + '</div></div><svg class="vcard-security-check" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>';
 }
 
 window.toggleCardVisibility = function() { if (!currentClient) return; if (currentClient.cardMaskLast4 === true || currentClient.cardMaskCvv === true) return; virtualCardRevealed = !virtualCardRevealed; const body = document.getElementById('card-modal-body-content'); if (!body) return; body.innerHTML = renderCardBody(currentClient.cardNumber || '4944595344283327', getCardHolderName(currentClient), currentClient.cardExpiry || '02/28', currentClient.cardCvv || '843', currentClient.cardType || 'Visa Debit', currentClient.cardMaskLast4 === true, currentClient.cardMaskCvv === true, virtualCardRevealed); };
@@ -2938,7 +2914,6 @@ function getCreatedAtSeconds(client) {
   return 0;
 }
 
-/* ===== HELPERS : Mise à jour d'une ligne client sans recharger la page ===== */
 function __updateClientLineInList(clientId) {
   const cached = (window.__adminClients && window.__adminClients[clientId]);
   if (!cached) return;
@@ -3140,10 +3115,8 @@ async function renderAdminPage() {
   });
 }
 
-/* ===== MODIF : refreshAdminPage force le rechargement depuis Firestore ===== */
 window.refreshAdminPage = function() { __invalidateMyClientsCache(currentAdmin && currentAdmin.uid ? currentAdmin.uid : null); renderAdminPage(); };
 
-/* ===== MODIF : togglePendingTransfer — UI instantanée sans recharger ===== */
 window.togglePendingTransfer = async function() {
   const sel = document.getElementById('pt-client-select');
   if (!sel || !sel.value) { window.showNotif('Veuillez selectionner un client.', 'warning'); return; }
@@ -3164,7 +3137,6 @@ window.togglePendingTransfer = async function() {
   window.showNotif(next ? 'Le virement en attente a ete active pour ce client.' : 'Le virement en attente a ete desactive pour ce client.', next ? 'warning' : 'info', 'Virement en attente');
 };
 
-/* ===== MODIF : validatePendingTransfer — UI instantanée ===== */
 window.validatePendingTransfer = function(clientId, txIndex) {
   window.showConfirm(t('adminValidateConfirmMsg'), async () => {
     try {
@@ -3190,7 +3162,6 @@ window.validatePendingTransfer = function(clientId, txIndex) {
   }, t('adminValidateConfirmTitle'), 'success');
 };
 
-/* ===== MODIF : cancelPendingTransfer — UI instantanée ===== */
 window.cancelPendingTransfer = function(clientId, txIndex) {
   window.showConfirm(t('adminCancelPendingConfirmMsg'), async () => {
     try {
@@ -3219,7 +3190,6 @@ window.cancelPendingTransfer = function(clientId, txIndex) {
   }, t('adminCancelPendingConfirmTitle'), 'error');
 };
 
-/* ===== MODIF : openClientDetail — utilise le cache admin en priorité ===== */
 window.openClientDetail = async function(id) {
   if (!currentAdmin || !currentAdmin.uid) return;
   const cached = (window.__adminClients && window.__adminClients[id]);
@@ -3405,7 +3375,6 @@ window.openTransferDetailModal = async function(clientId, txIndex) {
   document.body.appendChild(ov);
 };
 
-/* ===== MODIF : cancelClientTransfer — UI instantanée ===== */
 window.cancelClientTransfer = function(clientId, txIndex) {
   window.showConfirm('Voulez-vous vraiment annuler ce virement ? Le client recevra un email de notification et le montant sera restitue.', async () => {
     const c = await FireDB.getClient(clientId); if (!c) { window.showNotif('Client introuvable.', 'error'); return; }
@@ -3434,7 +3403,6 @@ window.cancelClientTransfer = function(clientId, txIndex) {
 
 window.adminLogout = async () => { try { await signOut(auth); } catch (e) { renderAuthScreen(); } };
 
-/* ===== MODIF : applyQuickAction — met à jour les 2 caches ===== */
 window.applyQuickAction = async function() {
   const clientId = document.getElementById('qa-client-select').value;
   const action = document.getElementById('qa-action-select').value;
@@ -3551,7 +3519,6 @@ window.applyQuickAction = async function() {
 
 window.copyToClipboard = (text) => { if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie')).catch(() => window.showNotif('Le lien a ete copie.', 'success', 'Lien copie')); else { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); window.showNotif('Le lien a ete copie.', 'success', 'Lien copie'); } };
 
-/* ===== MODIF : toggleBlock — UI instantanée sans recharger ===== */
 window.toggleBlock = async (id) => {
   const cachedClients = window.__adminClients || {};
   const c = cachedClients[id] || await FireDB.getClient(id);
@@ -3566,7 +3533,6 @@ window.toggleBlock = async (id) => {
   window.showNotif(newBlocked ? 'Le compte a été suspendu.' : 'Le compte a été activé.', newBlocked ? 'warning' : 'success');
 };
 
-/* ===== MODIF : deleteClientConfirm — retire la ligne sans recharger ===== */
 window.deleteClientConfirm = async (id) => {
   const c = await FireDB.getClient(id);
   if (!c) return;
