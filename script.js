@@ -2257,10 +2257,11 @@ function ensureAppSearchStyles() {
   const style = document.createElement('style');
   style.id = 'app-search-styles';
   style.textContent = `
-    .header-search-pill{height:26px;padding:0 9px 0 7px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:13px;display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-family:inherit;min-width:0;max-width:110px;transition:background 0.15s ease,border-color 0.15s ease,transform 0.1s ease;-webkit-tap-highlight-color:transparent;}
-    .header-search-pill:active{background:#e2e8f0;border-color:#cbd5e1;transform:scale(0.97);}
-    .header-search-pill svg{width:12px;height:12px;fill:#64748b;flex-shrink:0;min-width:12px;}
-    .header-search-pill span{font-size:10px;font-weight:500;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+    .header-search-pill{height:32px;padding:0 13px 0 10px;background:#ffffff;border:1.5px solid #cbd5e1;border-radius:16px;display:inline-flex;align-items:center;gap:7px;cursor:pointer;font-family:inherit;min-width:0;flex:1 1 auto;max-width:170px;margin-right:4px;box-shadow:0 1px 3px rgba(15,23,42,0.06);transition:background 0.15s ease,border-color 0.15s ease,transform 0.1s ease,box-shadow 0.15s ease;-webkit-tap-highlight-color:transparent;}
+    .header-search-pill:hover{background:#f8fafc;border-color:#3b82f6;box-shadow:0 2px 5px rgba(59,130,246,0.15);}
+    .header-search-pill:active{background:#eff6ff;border-color:#2563eb;transform:scale(0.97);}
+    .header-search-pill svg{width:14px;height:14px;fill:#3b82f6;flex-shrink:0;min-width:14px;}
+    .header-search-pill span{font-size:11.5px;font-weight:600;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
 
     .app-search-overlay{position:fixed;inset:0;background:#f1f5f9;z-index:2147483647;display:flex;flex-direction:column;animation:appSearchFadeIn 0.22s ease-out;}
     @keyframes appSearchFadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
