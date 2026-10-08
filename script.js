@@ -3741,14 +3741,16 @@ window.applyQuickAction = async function() {
   if (!action) { window.showNotif('Veuillez selectionner une action.', 'warning'); return; }
   if (!currentAdmin || !currentAdmin.uid) { window.showNotif('Vous devez etre connecte.', 'error'); return; }
 
-  const cachedClients = window.__adminClients || {};
-  let client = cachedClients[clientId];
-  if (!client) {
-    client = await FireDB.getClient(clientId);
-    if (!client) { window.showNotif('Client introuvable.', 'error'); return; }
-  }
+  __invalidateClientCache(clientId);
+  const client = await FireDB.getClient(clientId);
+  if (!client) { window.showNotif('Client introuvable.', 'error'); return; }
 
   if (client.adminUid !== currentAdmin.uid) { window.showNotif('Acces refuse.', 'error'); return; }
+
+  if (window.__adminClients) window.__adminClients[clientId] = client;
+  if (currentAdmin && currentAdmin.uid && __myClientsCache[currentAdmin.uid]) {
+    __myClientsCache[currentAdmin.uid][clientId] = client;
+  }
 
   const closeModalAndRefreshList = () => {
     const card = document.querySelector('#admin-root .quick-actions-card');
