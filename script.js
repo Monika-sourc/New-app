@@ -2361,6 +2361,23 @@ function ensureAppSearchStyles() {
     .app-search-hint-item-icon.purple svg{fill:#7c3aed;}
     .app-search-hint-item span{font-size:12.5px;font-weight:600;color:#334155;text-align:left;flex:1;min-width:0;}
     .app-search-hint-item-arrow{width:12px;height:12px;fill:#cbd5e1;flex-shrink:0;}
+
+    /* === Lignes de séparation entre les transactions dans l'historique : visibilité réduite === */
+    #transaction-list > * + *,
+    .tx-history-body > * + *,
+    #transaction-list .tx-item + .tx-item,
+    #transaction-list .transaction-item + .transaction-item,
+    #transaction-list .tx-row + .tx-row,
+    #transaction-list li + li {
+      border-top-color: rgba(226, 232, 240, 0.35) !important;
+      border-bottom-color: rgba(226, 232, 240, 0.35) !important;
+    }
+    #transaction-list hr,
+    .tx-history-body hr {
+      background: rgba(226, 232, 240, 0.35) !important;
+      border-color: rgba(226, 232, 240, 0.35) !important;
+      opacity: 0.55 !important;
+    }
   `;
   document.head.appendChild(style);
 }
