@@ -1377,7 +1377,7 @@ function ensureGlobalStyles() {
     .balance-card-type-label-new .curr-symbol { font-size: 14.5px !important; font-weight: 600 !important; }
     .balance-card-type-label-new .chev { width: 16px !important; height: 16px !important; }
     .greeting-title-new { font-size: 18px !important; font-weight: 700 !important; line-height: 1.3 !important; letter-spacing: -0.2px !important; }
-    .balance-card-amount-new { margin-top: 6px !important; margin-bottom: 6px !important; padding-left: 8px !important; font-size: 26px !important; font-weight: 700 !important; letter-spacing: -0.6px !important; line-height: 1.1 !important; }
+    .balance-card-amount-new { margin-top: 6px !important; margin-bottom: 6px !important; font-size: 26px !important; font-weight: 700 !important; letter-spacing: -0.6px !important; line-height: 1.1 !important; }
     .balance-card-amount-new .int-part { font-size: 26px !important; font-weight: 700 !important; }
     .balance-card-amount-new .dec-part { font-size: 18px !important; font-weight: 600 !important; }
     .balance-card-amount-new .cur-part { font-size: 18px !important; font-weight: 600 !important; margin-left: 4px !important; }
@@ -1476,7 +1476,8 @@ function ensureTransactionHistoryStyles() {
     .tx-history-divider { height: 2px; background: linear-gradient(90deg, #7c3aed 0%, #7c3aed 12%, #ede9fe 12%, #ede9fe 100%); margin: 0; }
     .tx-history-body { padding: 6px 0 10px; }
     .tx-date-group { font-size: 11.5px; font-weight: 600; color: #64748b; padding: 10px 16px 4px; letter-spacing: 0.3px; }
-    .tx-item-new { display: flex !important; align-items: flex-start !important; gap: 12px !important; padding: 11px 16px !important; cursor: pointer; background: #ffffff; transition: background 0.15s ease; border: none !important; border-radius: 0 !important; margin: 0 !important; flex-wrap: nowrap !important; }
+    .tx-item-new { display: flex !important; align-items: flex-start !important; gap: 12px !important; padding: 11px 16px !important; cursor: pointer; background: #ffffff; transition: background 0.15s ease; border: none !important; border-bottom: 1.5px solid rgba(15, 23, 42, 0.18) !important; border-radius: 0 !important; margin: 0 !important; flex-wrap: nowrap !important; }
+    .tx-item-new:last-child { border-bottom: none !important; }
     .tx-item-new:active { background: #f8fafc !important; }
     .tx-item-new.tx-bg-in { background: linear-gradient(90deg, #f0fdf4 0%, #ffffff 70%) !important; }
     .tx-item-new.tx-bg-out { background: linear-gradient(90deg, #fef2f2 0%, #ffffff 70%) !important; }
@@ -1537,10 +1538,7 @@ function getDateGroupLabel(dateStr) {
   const diffDays = Math.round((today - dNorm) / 86400000);
   if (diffDays === 0) return t('dateToday');
   if (diffDays === 1) return t('dateYesterday');
-  if (diffDays === -1) return t('dateTomorrow');
-  if (diffDays === 2) return t('dateDayBefore');
-  if (diffDays > 2 && diffDays < 7) return t('dateDaysAgoPrefix') + diffDays + t('dateDaysAgoSuffix');
-  return dparts[0] + '/' + dparts[1] + '/' + dparts[2];
+  return dparts[0].padStart(2, '0') + '/' + dparts[1].padStart(2, '0') + '/' + dparts[2];
 }
 
 function getTimeFromDateStr(dateStr) {
