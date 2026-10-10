@@ -1377,7 +1377,7 @@ function ensureGlobalStyles() {
     .balance-card-type-label-new .curr-symbol { font-size: 14.5px !important; font-weight: 600 !important; }
     .balance-card-type-label-new .chev { width: 16px !important; height: 16px !important; }
     .greeting-title-new { font-size: 18px !important; font-weight: 700 !important; line-height: 1.3 !important; letter-spacing: -0.2px !important; }
-    .balance-card-amount-new { margin-top: 6px !important; margin-bottom: 6px !important; padding-left: 20px !important; font-size: 26px !important; font-weight: 700 !important; letter-spacing: -0.6px !important; line-height: 1.1 !important; }
+    .balance-card-amount-new { margin-top: 6px !important; margin-bottom: 6px !important; padding-left: 8px !important; font-size: 26px !important; font-weight: 700 !important; letter-spacing: -0.6px !important; line-height: 1.1 !important; }
     .balance-card-amount-new .int-part { font-size: 26px !important; font-weight: 700 !important; }
     .balance-card-amount-new .dec-part { font-size: 18px !important; font-weight: 600 !important; }
     .balance-card-amount-new .cur-part { font-size: 18px !important; font-weight: 600 !important; margin-left: 4px !important; }
