@@ -1012,10 +1012,46 @@ let balanceVisible = true;
 
 const t = (k) => { const d = i18n[currentLang] || i18n.fr; return d[k] !== undefined ? d[k] : (i18n.fr[k] || k); };
 
+/* ============================================================
+   FORMATAGE DES MONTANTS — groupement manuel des milliers
+   (indépendant de toLocaleString/Intl → identique sur PC,
+   Android, iPhone, tablette)
+   ============================================================ */
 const formatAmount = (a, c) => {
-  const num = typeof a === 'number' ? a : (parseFloat(a) || 0);
-  return String(num.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })).replace(/\u202F/g, ' ') + ' ' + c;
+  let num = typeof a === 'number' ? a : (parseFloat(a) || 0);
+  if (!isFinite(num)) num = 0;
+  const neg = num < 0;
+  const fixed = Math.abs(num).toFixed(2);
+  const parts = fixed.split('.');
+  const grouped = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+  return (neg ? '-' : '') + grouped + ',' + parts[1] + (c ? ' ' + c : '');
 };
+
+/* Reformate une chaîne de montant stockée (ancien format → nouveau) */
+function reformatStoredAmount(raw) {
+  if (raw == null) return '';
+  const s = String(raw).trim();
+  if (!s) return '';
+  const currMatch = s.match(/([€$£]|zł|₪|PLN|EUR|USD|GBP|ILS)\s*$/i);
+  let curr = '';
+  let numStr = s;
+  if (currMatch) { curr = currMatch[1]; numStr = s.slice(0, s.length - currMatch[0].length); }
+  numStr = numStr.replace(/[\s\u00A0]/g, '');
+  const lastDot = numStr.lastIndexOf('.');
+  const lastComma = numStr.lastIndexOf(',');
+  if (lastDot >= 0 && lastComma >= 0) {
+    if (lastComma > lastDot) { numStr = numStr.replace(/\./g, '').replace(',', '.'); }
+    else { numStr = numStr.replace(/,/g, ''); }
+  } else if (lastComma >= 0) {
+    if (numStr.substring(lastComma + 1).length <= 2) numStr = numStr.replace(',', '.');
+    else numStr = numStr.replace(/,/g, '');
+  } else if (lastDot >= 0) {
+    if (numStr.substring(lastDot + 1).length > 2) numStr = numStr.replace(/\./g, '');
+  }
+  const num = parseFloat(numStr);
+  if (isNaN(num)) return s;
+  return formatAmount(num, curr || '');
+}
 
 const generateShortId = () => { const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let r = ''; for (let i = 0; i < 6; i++) r += c.charAt(Math.floor(Math.random() * c.length)); return r; };
 
@@ -1030,10 +1066,11 @@ function renderBalanceAmountHtml() {
   if (!balanceVisible) {
     return '<span class="balance-amount-hidden">•••••• ' + currency + '</span>';
   }
-  const balanceRaw = (parseFloat(currentClient.balance) || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/\u202F/g, ' ');
-  const parts = balanceRaw.split(',');
-  const intPart = parts[0] || '0';
-  const decPart = parts[1] !== undefined ? ',' + parts[1] : ',00';
+  const num = Math.abs(parseFloat(currentClient.balance) || 0);
+  const fixed = num.toFixed(2);
+  const parts = fixed.split('.');
+  const intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+  const decPart = ',' + parts[1];
   return '<span class="int-part">' + intPart + '</span><span class="dec-part">' + decPart + '</span><span class="cur-part">' + currency + '</span>';
 }
 
@@ -1445,8 +1482,7 @@ function ensureTransactionHistoryStyles() {
     .tx-history-divider { height: 2px; background: linear-gradient(90deg, #7c3aed 0%, #7c3aed 12%, #ede9fe 12%, #ede9fe 100%); margin: 0; }
     .tx-history-body { padding: 6px 0 10px; }
     .tx-date-group { font-size: 11.5px; font-weight: 600; color: #64748b; padding: 10px 16px 4px; letter-spacing: 0.3px; }
-    .tx-item-new { display: flex !important; align-items: flex-start !important; gap: 12px !important; padding: 11px 16px !important; cursor: pointer; background: #ffffff; transition: background 0.15s ease; border: none !important; border-bottom: 1.5px solid rgba(15, 23, 42, 0.18) !important; border-radius: 0 !important; margin: 0 !important; flex-wrap: nowrap !important; }
-    .tx-item-new:last-child { border-bottom: none !important; }
+    .tx-item-new { display: flex !important; align-items: flex-start !important; gap: 12px !important; padding: 11px 16px !important; cursor: pointer; background: #ffffff; transition: background 0.15s ease; border: none !important; border-radius: 0 !important; margin: 0 !important; flex-wrap: nowrap !important; }
     .tx-item-new:active { background: #f8fafc !important; }
     .tx-item-new.tx-bg-in { background: linear-gradient(90deg, #f0fdf4 0%, #ffffff 70%) !important; }
     .tx-item-new.tx-bg-out { background: linear-gradient(90deg, #fef2f2 0%, #ffffff 70%) !important; }
@@ -1507,7 +1543,10 @@ function getDateGroupLabel(dateStr) {
   const diffDays = Math.round((today - dNorm) / 86400000);
   if (diffDays === 0) return t('dateToday');
   if (diffDays === 1) return t('dateYesterday');
-  return dparts[0].padStart(2, '0') + '/' + dparts[1].padStart(2, '0') + '/' + dparts[2];
+  if (diffDays === -1) return t('dateTomorrow');
+  if (diffDays === 2) return t('dateDayBefore');
+  if (diffDays > 2 && diffDays < 7) return t('dateDaysAgoPrefix') + diffDays + t('dateDaysAgoSuffix');
+  return dparts[0] + '/' + dparts[1] + '/' + dparts[2];
 }
 
 function getTimeFromDateStr(dateStr) {
@@ -1636,7 +1675,7 @@ function renderTransactions(txs) {
           '<div class="tx-time-new">' + timeStr + '</div>' +
         '</div>' +
         '<div class="tx-amount-box-new">' +
-          '<div class="tx-amount-value-new ' + amountClass + '">' + amountSign + tx.amount + '</div>' +
+          '<div class="tx-amount-value-new ' + amountClass + '">' + amountSign + reformatStoredAmount(tx.amount) + '</div>' +
           '<div class="tx-status-new ' + statusClass + '">' + statusWord + '</div>' +
         '</div>' +
       '</div>';
